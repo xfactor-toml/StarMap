@@ -1,0 +1,23 @@
+{
+    "name": "galaxy",
+    "version": "1.0.0",
+    "description": "",
+    "main": "./src/script.js",
+    "scripts": {
+        "start": "webpack-dev-server",
+        "start:open": "webpack-dev-server --open",
+        "prod": "webpack --mode=production"
+    },
+    "author": "Monax",
+    "license": "ISC",
+    "devDependencies": {
+        "webpack": "^4.41.6",
+        "webpack-cli": "^3.3.11",
+        "webpack-dev-server": "^3.11.2"
+    },
+    "dependencies": {
+        "dat.gui": "^0.7.6",
+        "stats-js": "^1.0.1",
+        "three": "^0.124.0"
+    }
+}
