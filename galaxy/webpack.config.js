@@ -1,34 +1,44 @@
 const path = require('path');
 
 module.exports = {
-  mode: 'development',
-  entry: './src/script.js',
-  
-  output: {
-    filename: 'game.bundle.js',
-    path: path.resolve(__dirname, 'build'),
-    publicPath: '/'
-  },
+    mode: 'development',
+    entry: './src/index.ts',
 
-  resolve: {
-    extensions: ['.js']
-  },
-
-  watchOptions: {
-    ignored: /node_modules/
-  },
-
-  devServer: {
-    contentBase: path.join(__dirname, 'build'),
-    compress: true,
-    port: 9184,
-    inline: true,
-    watchOptions: {
-      aggregateTimeout: 300,
-      poll: true,
-      ignored: /node_modules/
+    output: {
+        filename: 'game.bundle.js',
+        path: path.resolve(__dirname, 'build'),
+        publicPath: '/'
     },
-    overlay: true
-  },
+
+    resolve: {
+        extensions: ['.js', '.ts', 'd.ts']
+    },
+
+    module: {
+        rules: [
+            {
+                test: /\.ts$/,
+                use: 'ts-loader',
+                exclude: /node_modules/
+            },
+        ]
+    },
+
+    watchOptions: {
+        ignored: /node_modules/
+    },
+
+    devServer: {
+        contentBase: path.join(__dirname, 'build'),
+        compress: true,
+        port: 9184,
+        inline: true,
+        watchOptions: {
+            aggregateTimeout: 300,
+            poll: true,
+            ignored: /node_modules/
+        },
+        overlay: true
+    },
 
 }
