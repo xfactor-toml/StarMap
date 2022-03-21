@@ -1,4 +1,15 @@
 import * as THREE from 'three';
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
+import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass";
+import { SavePass } from "three/examples/jsm/postprocessing/SavePass";
+import { SMAAPass } from "three/examples/jsm/postprocessing/SMAAPass";
+import { FXAAShader } from "three/examples/jsm/shaders/FXAAShader";
+// import { GodRaysFakeSunShader, GodRaysDepthMaskShader, GodRaysCombineShader, GodRaysGenerateShader } from "three/examples/jsm/shaders/GodRaysShader";
+// import { BloomEffect, EffectComposer, EffectPass, RenderPass } from "postprocessing";
+import { SSAARenderPass } from "three/examples/jsm/postprocessing/SSAARenderPass";
+import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
+
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
@@ -664,7 +675,7 @@ var layersNames = {
 };
 
 let planetsData = [
-    
+
 ];
 
 let rickmobilesPull = [];
@@ -672,6 +683,8 @@ let rickmobilesPull = [];
 let camOrbit;
 let renderer;
 let renderTarget;
+let composer;
+
 let firststars;
 let firstgalaxy;
 let secondstars;
@@ -1097,7 +1110,7 @@ function setScene() {
     sceneBg = new THREE.Scene();
     scene = new THREE.Scene();
 
-    camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.5, 1000000);
+    camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.5, 1000000);
     camera.position.set(-90, 120, 180);
 
     renderTarget = new THREE.WebGLRenderTarget(innerWidth, innerHeight);
@@ -1106,10 +1119,50 @@ function setScene() {
     renderer.autoClear = false;
     renderer.setSize(innerWidth, innerHeight);
 
-    // renderer.context.getExtension('OES_standard_derivatives');
-
     renderer.setClearColor(0x0000000);
     document.body.appendChild(renderer.domElement);
+
+
+    // Post-processing inits
+    composer = new EffectComposer(renderer);
+
+    // render pass
+    const renderPass = new RenderPass(scene, camera);
+
+    const renderTargetParameters = {
+        minFilter: THREE.LinearFilter,
+        magFilter: THREE.LinearFilter,
+        stencilBuffer: false
+    };
+
+    // save pass
+    const savePass = new SavePass(
+        new THREE.WebGLRenderTarget(
+            innerWidth,
+            innerHeight,
+            renderTargetParameters
+        )
+    );
+
+    // blend pass
+    const blendPass = new ShaderPass(THREE.BlendShader, "tDiffuse1");
+    if (!blendPass.uniforms) blendPass.uniforms = {
+        tDiffuse2: { value: null },
+        mixRatio: { value: 0 }
+    };
+    blendPass.uniforms["tDiffuse2"].value = savePass.renderTarget.texture;
+    blendPass.uniforms["mixRatio"].value = 0.8;
+
+    // output pass
+    const outputPass = new ShaderPass(THREE.CopyShader);
+    outputPass.renderToScreen = true;
+
+    // adding passes to composer
+    composer.addPass(renderPass);
+    composer.addPass(blendPass);
+    composer.addPass(savePass);
+    composer.addPass(outputPass);
+
 
     // axe helper
     // let ah = new THREE.AxesHelper(150);
@@ -2184,8 +2237,9 @@ function onKeyPress(event) {
 }
 
 function render() {
-    renderer.render(sceneBg, camera);
-    renderer.render(scene, camera);
+    // renderer.render(sceneBg, camera);
+    // renderer.render(scene, camera);
+    composer.render();
 }
 
 function update(dt) {

@@ -4,6 +4,7 @@ import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
 import { ThreeLoader } from './loaders/ThreeLoader';
 import { MyMath } from './utils/MyMath';
+import { LogMng } from './utils/LogMng';
 
 const SKY_BOX_SIZE = 4000;
 const SMALL_GALAXIES_COUNT = 5;
@@ -332,7 +333,7 @@ uniform float z;
 
       if(z>0.)gl_FragColor*=cos(1.57*z/322.)*(1.-.001*length(mPosition));
     }
-`,
+    `,
     `
 uniform float z;
         
@@ -374,7 +375,7 @@ uniform float z;
 
       if(z>0.)gl_FragColor*=cos(1.57*z/322.)*(1.-.001*length(mPosition));
     }
-`,
+    `,
     `
     uniform float z;
         
@@ -416,7 +417,7 @@ uniform float z;
 
       if(z>0.)gl_FragColor*=cos(1.57*z/322.)*(1.-.001*length(mPosition));
     }
-`,
+    `,
     `
     uniform float z;
         
@@ -432,12 +433,10 @@ uniform float z;
         float tickness = pointSize;
         float r  = distance(uv, pt1) / distance(pt1, pt2);
         
-        if(r <= tensionPower)
-        {
+        if (r <= tensionPower) {
             vec2 ptc = mix(pt1, pt2, r); 
             float dist = distance(ptc, uv);
-            if(dist < tickness / 2.0)
-            {
+            if (dist < tickness / 2.0) {
                 clrFactor = 1.0;
             }
         }
@@ -445,86 +444,86 @@ uniform float z;
     }
 
 
-    void main(){
+    void main() {
       float tension = 4.9;
       float pointSize = 0.06;
       float tensionPower = 1.0;
 
-      if(z>0.)gl_FragColor*=cos(1.57*z/322.)*(1.-.001*length(mPosition));
+      if (z > 0.) gl_FragColor *= cos(1.57 * z/322.) * (1. - .001 * length(mPosition));
 
-      if(distance(gl_PointCoord, vec2(0.5, 0.5)) < 0.05){
+      if (distance(gl_PointCoord, vec2(0.5, 0.5)) < 0.05) {
         gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
       }
 
-      if(distance(vPosition, vec3(0.5, 0.5, 0.5)) < 10000.){
+      if (distance(vPosition, vec3(0.5, 0.5, 0.5)) < 10000.) {
         tension = 3.6;
         float pointSize = 0.06;
         float tensionPower = 1.0;
       }
 
-      if(distance(vPosition, vec3(0.5, 0.5, 0.5)) < 900.){
+      if (distance(vPosition, vec3(0.5, 0.5, 0.5)) < 900.) {
         tension = 0.5;
         float pointSize = 0.06;
         float tensionPower = 1.0;
       }
 
-      if(abs(cameraMovmentPower.x) > 0.02 || abs(cameraMovmentPower.y) > 0.02){
+      if (abs(cameraMovmentPower.x) > 0.1 || abs(cameraMovmentPower.y) > 0.1) {
         float distanceToLine = line(gl_PointCoord.xy, (cameraMovmentPower.xy * tension) + .5, vec2(0.5, 0.5), pointSize, tensionPower) * 5.0;
         gl_FragColor = vec4(distanceToLine, distanceToLine, distanceToLine, distanceToLine);
       }
 
     }
-`
+    `
 ];
 
-var verticalCameraMagnitude = 5.0;
+let verticalCameraMagnitude = 5.0;
 
-var firstGalaxyPower = 0.4;
-var secondGalaxyPower = 3.2;
-var thirdGalaxyPower = 1.2;
-var fouthGalaxyPower = 0.9;
+let firstGalaxyPower = 0.4;
+let secondGalaxyPower = 3.2;
+let thirdGalaxyPower = 1.2;
+let fouthGalaxyPower = 0.9;
 
-var starsOutsideGalaxysPower = 2.0;
+let starsOutsideGalaxysPower = 2.0;
 
-var rickMobileCount = 0;
+let rickMobileCount = 0;
 
 const minCameraDistance = 50;
 const maxCameraDistance = 250;
 
-var controlls;
+// let controlls;
 
-var camera;
+let camera;
 
-var lastFreeCameraPosition = {
+let lastFreeCameraPosition = {
     x: null,
     y: null,
     z: null
 };
 
-var galaxy;
+let galaxy;
 
-var raycaster;
-var mouse;
+let raycaster;
+let mouseNormal = {x: 0, y: 0};
 
 let scene;
 let sceneBg;
 
-var objectHovered = false;
-var selectedPlanet = false;
+let objectHovered = false;
+let selectedPlanet = false;
 
-var selectedImage = null;
-var currentObjectIsFounded = false;
+let selectedImage = null;
+let currentObjectIsFounded = false;
 
-var backButton;
-var playButton;
-var comingSoonWindow;
-var taskTable;
-var readyButton;
-var youWonWindow;
-var wrongWindow;
-var getAGiftButton;
+let backButton;
+let playButton;
+let comingSoonWindow;
+let taskTable;
+let readyButton;
+let youWonWindow;
+let wrongWindow;
+let getAGiftButton;
 
-var giftURL = "https://google.com";
+let giftURL = "https://google.com";
 
 var dynamicStars;
 var starsOutsideGalaxy;
@@ -1461,6 +1460,9 @@ let planetsData = [
 let rickmobilesPull = [];
 
 let camOrbit;
+let prevCamPolarAngle = 0;
+let prevCamAzimutAngle = 0;
+
 let renderer;
 let renderTarget;
 let firststars;
@@ -1475,6 +1477,8 @@ let stars;
 let loader;
 
 let clock;
+
+let checkMousePointerTimer = 0;
 
 export function initScene() {
     clock = new THREE.Clock();
@@ -1800,87 +1804,18 @@ function newGalaxy(_n, xSize, zSize, armOffsetMax, filterType = false) {
     return stars;
 }
 
-function newStarsOutsideGalaxys(starsCount) {
+function newStarsOutsideGalaxys(starsCount, maxRadius) {
     stars = [];
-    for (var i = 0; i < (starsCount * 0.2); i++) {
-        var newStar;
-
-        newStar = {
-            x: 0,
-            y: 0,
-            z: 0
-        }
-
-        while (getDistanceBetweenTwoVectors(newStar, { x: 0, y: 0, z: 0 }) < 4000) {
-            newStar = {
-                x: Math.random() * 5000 - Math.random() * 5000,
-                y: Math.random() * 5000 - Math.random() * 5000,
-                z: Math.random() * 5000 - Math.random() * 5000
-            }
-        }
-
-        stars[i] = newStar;
+    for (var i = 0; i < starsCount; i++) {
+        let newStarPos = new THREE.Vector3(
+            MyMath.randomInRange(-10, 10),
+            MyMath.randomInRange(-10, 10),
+            MyMath.randomInRange(-10, 10)
+        );
+        newStarPos.normalize().multiplyScalar(MyMath.randomInRange(1, maxRadius));
+        stars.push(newStarPos);
     }
-
-    for (var i = 0; i < (starsCount * 0.08); i++) {
-        var newStar;
-
-        newStar = {
-            x: 0,
-            y: 0,
-            z: 0
-        }
-
-        newStar = {
-            x: Math.random() * 1000 - Math.random() * 1000,
-            y: Math.random() * 1000 - Math.random() * 1000,
-            z: Math.random() * 1000 - Math.random() * 1000
-        }
-
-        stars[i] = newStar;
-
-    }
-
-    for (var i = 0; i < (starsCount * 0.14); i++) {
-        var newStar;
-
-        newStar = {
-            x: 0,
-            y: 0,
-            z: 0
-        }
-
-        newStar = {
-            x: Math.random() * 3000 - Math.random() * 3000,
-            y: Math.random() * 3000 - Math.random() * 3000,
-            z: Math.random() * 3000 - Math.random() * 3000
-        }
-
-        stars[i] = newStar;
-
-    }
-
-    for (var i = 0; i < (starsCount * 0.01); i++) {
-        var newStar;
-
-        newStar = {
-            x: 0,
-            y: 0,
-            z: 0
-        }
-
-        newStar = {
-            x: Math.random() * 200 - Math.random() * 200,
-            y: Math.random() * 200 - Math.random() * 200,
-            z: Math.random() * 200 - Math.random() * 200
-        }
-
-        stars[i] = newStar;
-
-    }
-
     return stars;
-
 }
 
 //threejs functions
@@ -2079,7 +2014,7 @@ function setScene() {
 
 
     var fifthstars = new THREE.Geometry();
-    fifthstars.vertices = newStarsOutsideGalaxys(4000);
+    fifthstars.vertices = newStarsOutsideGalaxys(600, 600);
 
     var fifthgalaxyMaterial = new THREE.ShaderMaterial({
         vertexShader: vShaders[4],
@@ -2425,7 +2360,7 @@ function setScene() {
     wrongWindow.name = "wrongWindow";
 
     raycaster = new THREE.Raycaster();
-    mouse = new THREE.Vector2();
+    mouseNormal = new THREE.Vector2();
 
 }
 
@@ -2538,9 +2473,9 @@ function createCameraControls(aParams) {
     if (!aParams.noTarget)
         camOrbit.target = new THREE.Vector3();
     camOrbit.enabled = !(aParams.isOrbitLock == true);
-    camOrbit.rotateSpeed = 0.4;
+    camOrbit.rotateSpeed = .5;
     camOrbit.enableDamping = true;
-    camOrbit.dampingFactor = 0.035;
+    camOrbit.dampingFactor = 0.025;
     camOrbit.zoomSpeed = aParams.zoomSpeed || 1;
     camOrbit.enablePan = aParams.enablePan == true;
     // this.camOrbitCtrl.keys = {};
@@ -2564,43 +2499,18 @@ function createCameraControls(aParams) {
 
 
 function onMouseMove(event) {
-    if (objectHovered !== false) {
-        objectHovered == false;
-        document.body.style.cursor = 'grab';
-    }
-
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
-
-    raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObjects(scene.children, true);
-
-    intersects.forEach(function (object) {
-        if (object.object.type == "Sprite") {
-            objectHovered = object.object;
-            document.body.style.cursor = 'pointer';
-        }
-    });
-
-    if (selectedPlanet !== false) {
-        if (objectHovered !== false) {
-            document.body.style.cursor = 'default';
-            if (objectHovered.name !== "planetPreview") {
-                document.body.style.cursor = "pointer";
-            }
-        }
-    }
-
+    mouseNormal.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouseNormal.y = - (event.clientY / window.innerHeight) * 2 + 1;
 }
 
 function onMouseClick(event) {
 
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+    mouseNormal.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouseNormal.y = - (event.clientY / window.innerHeight) * 2 + 1;
 
     return;
     
-    raycaster.setFromCamera(mouse, camera);
+    raycaster.setFromCamera(mouseNormal, camera);
 
     const intersects = raycaster.intersectObjects(scene.children, true);
 
@@ -2974,6 +2884,41 @@ function onKeyPress(event) {
 
 }
 
+function checkMousePointer() {
+    raycaster.setFromCamera(mouseNormal, camera);
+    const intersects = raycaster.intersectObjects(scene.children, true);
+
+    let isHover = false;
+
+    intersects.forEach(function (object) {
+        if (object.object.type == 'Sprite') {
+            objectHovered = object.object;
+            if (objectHovered.name == 'planetPreview') {
+                document.body.style.cursor = 'pointer';
+                isHover = true;
+            }
+        }
+    });
+
+    if (!isHover) {
+        document.body.style.cursor = 'default';
+    }
+
+    // if (selectedPlanet !== false) {
+    //     if (objectHovered !== false) {
+    //         document.body.style.cursor = 'default';
+    //         if (objectHovered.name !== "planetPreview") {
+    //             document.body.style.cursor = "pointer";
+    //         }
+    //     }
+    // }
+
+    // if (objectHovered !== false) {
+    //     objectHovered == false;
+    //     document.body.style.cursor = 'default';
+    // }
+}
+
 function render() {
     renderer.render(sceneBg, camera);
     renderer.render(scene, camera);
@@ -2982,10 +2927,20 @@ function render() {
 function update(dt) {
     let dtMs = dt * 1000;
     
+    let aAngle = camOrbit.getAzimuthalAngle();
+    let dtAzimut = aAngle - prevCamAzimutAngle;
+    prevCamAzimutAngle = aAngle;
 
+    let pAngle = camOrbit.getPolarAngle();
+    let dtPolar = pAngle - prevCamPolarAngle;
+    prevCamPolarAngle = pAngle;
 
-    let spDelta = camOrbit['sphericalDelta'] || {};
-    fifthgalaxy.material.uniforms.cameraMovmentPower.value = [spDelta.theta, spDelta.phi];
+    let azFactor = dtAzimut * 10;
+    let polFactor = dtPolar * 10;
+    
+    fifthgalaxy.material.uniforms.cameraMovmentPower.value = [azFactor, polFactor];
+
+    // LogMng.debug(`azFactor: ${azFactor}; polFactor: ${polFactor};`);
 
     var polarAngle = camOrbit.getPolarAngle();
     var cameraRotationFactor = Math.abs(polarAngle - Math.PI / 2);
@@ -3026,10 +2981,13 @@ function update(dt) {
         }
     }
 
-
-
-
     camOrbit.update();
+
+    checkMousePointerTimer -= dt;
+    if (checkMousePointerTimer <= 0) {
+        checkMousePointerTimer = 0.1;
+        checkMousePointer();
+    }
 
     render(dt);
 }

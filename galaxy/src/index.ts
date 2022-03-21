@@ -1,6 +1,6 @@
-// import { initScene } from "./game.js";
+import { initScene } from "./game.js";
 // import { initScene } from "./gameTs";
-import { initScene } from "./TestStars.js";
+// import { initScene } from "./TestStars.js";
 
 window.addEventListener('load', () => {
     initScene();
