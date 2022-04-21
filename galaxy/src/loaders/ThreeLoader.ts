@@ -345,7 +345,7 @@ export class ThreeLoader {
     }
 
     private loadTexture(aKey: string, aFile: string) {
-        var loader = new THREE.TextureLoader();
+        let loader = new THREE.TextureLoader();
         loader.crossOrigin = "Anonymous";
         loader.load(aFile,
             (tex: THREE.Texture) => {
