@@ -138,6 +138,17 @@ export class MyMath {
         return "#" + this.componentToHex(r) + this.componentToHex(g) + this.componentToHex(b);
     }
 
+    /**
+   * Convert RGB to Hex
+   * @param r Red in format 0 - 255
+   * @param g Green in format 0 - 255
+   * @param b Blue in format 0 - 255
+   * @returns 
+   */
+    public static rgbToHex(r: number, g: number, b: number) {
+        return (Math.floor(r) << 16) + (Math.floor(g) << 8) + Math.floor(b);
+    }
+
     public static getVectorLength(x1: number, y1: number, x2: number, y2: number): number {
         let dx = x2 - x1;
         let dy = y2 - y1;

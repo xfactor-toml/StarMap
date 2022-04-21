@@ -8,7 +8,16 @@ import { LogMng } from './utils/LogMng';
 
 const SKY_BOX_SIZE = 6000;
 const SMALL_GALAXIES_COUNT = 5;
-const SUN_SCALE = 100;
+const SUN_SCALE = 150;
+
+const GAL1_COLORS = [
+    [0.505 * 255, 0.39 * 255, 0.3 * 255],
+    [0.258 * 255, 0.282 * 255, 0.145 * 255],
+    [0.694 * 255, 0.301 * 255, 0.282 * 255],
+    [0.745 * 255, 0.635 * 255, 0.360 * 255],
+    [0.431 * 255, 0.831 * 255, 0.819 * 255],
+    [1.0 * 255, 0.901 * 255, 0.890 * 255]
+];
 
 let vShaders = [
     `
@@ -293,15 +302,14 @@ let fShaders = [
     }
     `,
     `
-uniform float z;
+    uniform float z;
         
     varying vec3 vPosition;
     varying vec3 mPosition;
     varying float gas;
     varying float customStarColor;
         
-    void main(){
- 
+    void main() { 
 
       float a=distance(mPosition,vPosition);
       if(a>0.)a=1.;
@@ -374,7 +382,7 @@ uniform float z;
         gl_FragColor=vec4(1.0, 0.901, 0.190, 1.)*texture*(0.13-a*.35);
       }
 
-      if(z>0.)gl_FragColor*=cos(1.57*z/322.)*(1.-.001*length(mPosition));
+      if (z>0.) gl_FragColor *= cos(1.57 * z/322.)  *(1. - .001*length(mPosition));
     }
     `,
     `
@@ -532,6 +540,8 @@ var starsOutsideGalaxy;
 var allStars = [];
 
 var firstGalaxyActiveStarsPull = [];
+let firstStarSprites = [];
+
 var secondGalaxyActiveStarsPull = [];
 var thirdGalaxyActiveStarsPull = [];
 var fouthGalaxyActiveStarsPull = [];
@@ -1483,6 +1493,8 @@ let fifthgalaxy;
 
 let stars;
 
+let starsCountData = [];
+
 let loader;
 
 let clock;
@@ -1534,11 +1546,16 @@ function preload(cb) {
     }
 
     path = './assets/particles/';
-    loader.texture('circle_01', `${path}circle_01.png`);
+    // loader.texture('circle_01', `${path}circle_01.png`);
+    loader.texture('starSprite', `${path}Star_3_256.png`);
 
     path = './assets/sun/';
     loader.texture('sun_01', `${path}Sun_01.png`);
     loader.texture('sun_02', `${path}Sun_02.png`);
+    loader.texture('sun_romb', `${path}Galaxy_512.png`);
+
+    path = './assets/';
+    loader.json('galaxyStructure', `${path}galaxyStructure.json`);
 
     loader.start();
 }
@@ -1590,7 +1607,7 @@ function initStarsCount() {
     ];
     const desktopStarsCount = [
         {
-            active: 900,
+            active: 1100,
             customColor: 2000
         },
         {
@@ -1611,19 +1628,19 @@ function initStarsCount() {
         }
     ];
 
-    let starsArr = desktopStarsCount;
+    starsCountData = desktopStarsCount;
 
     if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-        starsArr = iphoneStarsCount;
+        starsCountData = iphoneStarsCount;
     }
 
     if (/Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-        starsArr = androidStarsCount;
+        starsCountData = androidStarsCount;
     }
 
     for (let i = 0; i < vShaders.length; i++) {
-        let act = String(starsArr[i].active);
-        let clr = String(starsArr[i].customColor);
+        let act = String(starsCountData[i].active);
+        let clr = String(starsCountData[i].customColor);
         console.log('act, clr: ', act, clr);
         vShaders[i] = vShaders[i].replace('GALAXY_ACTIVE_STARS_COUNT', act);
         vShaders[i] = vShaders[i].replace('GALAXY_ACTIVE_STARS_COUNT', act);
@@ -1648,6 +1665,46 @@ function upStarActivity(starID, starX, starY, starZ, currentGalaxy) {
     } else {
         setTimeout(downStarActivity, 1, starID, starX, starY, starZ, currentGalaxy);
     }
+}
+
+function createStarSprite(x, y, z, aScale) {
+    let t = loader.getTexture('starSprite');
+    let opacity = MyMath.randomInRange(0.4, 0.9);
+
+    let clr = 0xFFFFFF;
+
+    let customStarColor = MyMath.randomIntInRange(0, 10);
+    if (customStarColor == 0.0) {
+        clr = MyMath.rgbToHex(GAL1_COLORS[0][0], GAL1_COLORS[0][1], GAL1_COLORS[0][2]);
+    }
+    else if (customStarColor <= 2.0) {
+        clr = MyMath.rgbToHex(GAL1_COLORS[1][0], GAL1_COLORS[1][1], GAL1_COLORS[1][2]);
+    }
+    else if (customStarColor <= 4.0) {
+        clr = MyMath.rgbToHex(GAL1_COLORS[2][0], GAL1_COLORS[2][1], GAL1_COLORS[2][2]);
+    }
+    else if (customStarColor <= 6.0) {
+        clr = MyMath.rgbToHex(GAL1_COLORS[3][0], GAL1_COLORS[3][1], GAL1_COLORS[3][2]);
+    }
+    else if (customStarColor <= 8.0) {
+        clr = MyMath.rgbToHex(GAL1_COLORS[4][0], GAL1_COLORS[4][1], GAL1_COLORS[4][2]);
+    }
+    else if (customStarColor <= 10.0) {
+        clr = MyMath.rgbToHex(GAL1_COLORS[5][0], GAL1_COLORS[5][1], GAL1_COLORS[5][2]);
+    }
+
+    let mat = new THREE.SpriteMaterial({
+        map: t,
+        color: clr,
+        transparent: true,
+        opacity: opacity,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+    });
+    let sprite = new THREE.Sprite(mat);
+    sprite.scale.set(aScale, aScale, aScale);
+    sprite.position.set(x, y, z);
+    return sprite;
 }
 
 function downStarActivity(starID, starX, starY, starZ, currentGalaxy) {
@@ -1870,7 +1927,7 @@ function setScene() {
     renderer.autoClear = false;
     renderer.setSize(innerWidth, innerHeight);
 
-    renderer.context.getExtension('OES_standard_derivatives');
+    renderer.getContext().getExtension('OES_standard_derivatives');
 
     renderer.setClearColor(0x0000000);
     document.body.appendChild(renderer.domElement);
@@ -1893,20 +1950,20 @@ function setScene() {
     });
 
     firststars = new THREE.Geometry();
+
     clouds = new THREE.Group();
-    warpStars = new THREE.Group()
     scene.add(clouds);
+
+    warpStars = new THREE.Group()
     scene.add(warpStars);
 
-    var HTTPRequest = new XMLHttpRequest();
-
-    HTTPRequest.open("GET", "./assets/galaxyStructure.json", false);
-
-    HTTPRequest.onload = function () {
-        firststars.vertices = newGalaxy(40, 20, 20, 0.7);
-    }
-
-    HTTPRequest.send();
+    // let HTTPRequest = new XMLHttpRequest();
+    // HTTPRequest.open("GET", "./assets/galaxyStructure.json", false);
+    // HTTPRequest.onload = function () {
+    let starsCnt = starsCountData[0].active; // 40
+    firststars.vertices = newGalaxy(starsCnt, 20, 20, 0.7);
+    // }
+    // HTTPRequest.send();
 
     new THREE.TextureLoader().load('./assets/BC10.webp',
         function (texture) {
@@ -1917,12 +1974,13 @@ function setScene() {
                     side: THREE.DoubleSide,
                     transparent: true,
                     depthWrite: false,
-                    opacity: 1.0
+                    opacity: 1.0,
+                    blending: THREE.AdditiveBlending
                 }));
             galaxyPlane.rotation.x = -Math.PI / 2;
             galaxyPlane.rotation.z = -1.2;
-            galaxyPlane.position.y = -1;
-            galaxyPlane.position.z = 9;
+            // galaxyPlane.position.y = -1;
+            // galaxyPlane.position.z = 9;
             scene.add(galaxyPlane);
         },
         undefined,
@@ -1937,33 +1995,33 @@ function setScene() {
 
     //*
     let firstgalaxyMaterial =
-        // new THREE.ShaderMaterial({
-        //     vertexShader: vShaders[0],
-        //     fragmentShader: fShaders[0],
-        //     uniforms: {
-        //         size: { type: 'f', value: 2.5 },
-        //         distanceSize: { type: 'f', value: 1 },
-        //         t: { type: "f", value: 0 },
-        //         z: { type: "f", value: 0 },
-        //         pixelRatio: { type: "f", value: innerHeight },
-        //         activeStars: { value: firstGalaxyActiveStarsPull },
-        //         starsWithCustomColor: { value: customColorStars },
-        //         cameraRotationPower: { value: cameraRotationPower },
-        //         galaxyPower: { value: firstGalaxyPower },
-        //         derivatives: true
-        //     },
-        //     depthTest: false,
-        //     depthWrite: false,
-        //     blending: THREE.AdditiveBlending
-        // });
-        
-        new THREE.SpriteMaterial({
-            map: loader.getTexture('circle_01'),
-            transparent: true,
+        new THREE.ShaderMaterial({
+            vertexShader: vShaders[0],
+            fragmentShader: fShaders[0],
+            uniforms: {
+                size: { type: 'f', value: 2.5 },
+                distanceSize: { type: 'f', value: 1 },
+                t: { type: "f", value: 0 },
+                z: { type: "f", value: 0 },
+                pixelRatio: { type: "f", value: innerHeight },
+                activeStars: { value: firstGalaxyActiveStarsPull },
+                starsWithCustomColor: { value: customColorStars },
+                cameraRotationPower: { value: cameraRotationPower },
+                galaxyPower: { value: firstGalaxyPower },
+                derivatives: true
+            },
             depthTest: false,
             depthWrite: false,
             blending: THREE.AdditiveBlending
         });
+        
+        // new THREE.SpriteMaterial({
+        //     map: loader.getTexture('circle_01'),
+        //     transparent: true,
+        //     depthTest: false,
+        //     depthWrite: false,
+        //     blending: THREE.AdditiveBlending
+        // });
         
     firstgalaxyMaterial.renderOrder = 999;
 
@@ -1971,16 +2029,16 @@ function setScene() {
     firstgalaxy.renderOrder = 999;
     
     firstgalaxy.rotation.set(0, Math.PI / 1.5, 0);
-    firstgalaxy.position.x = 5;
-    firstgalaxy.position.z = 12;
+    // firstgalaxy.position.x = 5;
+    // firstgalaxy.position.z = 12;
 
     // scene.add(firstgalaxy);
     //*/
     
     // center sprite    
     let sMat = new THREE.SpriteMaterial({
-        map: loader.getTexture('sun_01'),
-        color: 0xFFCC33,
+        map: loader.getTexture('sun_romb'),
+        color: 0xFFCCCC,
         transparent: true,
         opacity: 1,
         depthWrite: false,
@@ -1988,7 +2046,8 @@ function setScene() {
     });
     sunSprite = new THREE.Sprite(sMat);
     sunSprite.scale.set(SUN_SCALE, SUN_SCALE, SUN_SCALE);
-    sunSprite.position.set(5, 0, 12);
+    // sunSprite.position.set(5, 0, 12);
+    sunSprite.renderOrder = 999;
     scene.add(sunSprite);
 
     // second stars
@@ -2172,11 +2231,25 @@ function setScene() {
     scene.add(centerCloud);
 
     if (firstgalaxy) {
-        for (let starID = 0; starID < 900; starID++) {
-            var star = firstgalaxy.geometry.vertices[Math.floor(Math.random() * firstgalaxy.geometry.vertices.length)];
-            firstGalaxyActiveStarsPull.push(new THREE.Vector4(star.x, star.y, star.z, 1.0));
-            setTimeout(upStarActivity, Math.random() * 3000, starID, star.x, star.y, star.z, firstgalaxy);
+        let starsCnt = starsCountData[0].active;
+        for (let starID = 0; starID < starsCnt; starID++) {
+            let star = firstgalaxy.geometry.vertices[Math.floor(Math.random() * firstgalaxy.geometry.vertices.length)];
+            const dPos = 4;
+            let starPos = {
+                x: star.x + MyMath.randomInRange(-dPos, dPos),
+                y: star.y + MyMath.randomInRange(-dPos/2, dPos/2),
+                z: star.z + MyMath.randomInRange(-dPos, dPos)
+            };
+            firstGalaxyActiveStarsPull.push(new THREE.Vector4(starPos.x, starPos.y, starPos.z, 1.0));
+            setTimeout(upStarActivity, Math.random() * 2000, starID, starPos.x, starPos.y, starPos.z, firstgalaxy);
+
+            let starSprite = createStarSprite(starPos.x, starPos.y, starPos.z, 5);
+            firstStarSprites.push(starSprite);
+            scene.add(starSprite);
         }
+
+        console.log('firstStarSprites cnt: ', firstStarSprites.length);
+
     }
 
     for (let starID = 0; starID < 1200; starID++) {
@@ -3036,9 +3109,10 @@ function update(dt) {
     if (sunSprite) {
         // debugger;
         // console.log(`polarAngle: ${polarAngle}`);
-        let anFactor = 0.3 + 0.7 * (1 - (polarAngle / (Math.PI / 2)));
+        const scMin = 0.2;
+        let anFactor = scMin + (1 - scMin) * (1 - (polarAngle / (Math.PI / 2)));
         if (polarAngle > Math.PI / 2) {
-            anFactor = 0.3 + 0.7 * (1 - (Math.abs(polarAngle - Math.PI) / (Math.PI / 2)));
+            anFactor = scMin + (1 - scMin) * (1 - (Math.abs(polarAngle - Math.PI) / (Math.PI / 2)));
         }
         sunSprite.scale.y = SUN_SCALE * anFactor;
         // console.log(sunSprite.scale.y);
