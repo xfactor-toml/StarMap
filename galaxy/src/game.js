@@ -570,7 +570,7 @@ let getAGiftButton;
 
 let giftURL = "https://google.com";
 
-var dynamicStars;
+var blinkStarsData;
 
 var allStars = [];
 
@@ -1608,6 +1608,9 @@ function preload(cb) {
     path = './assets/';
     loader.json('galaxyStructure', `${path}galaxyStructure.json`);
 
+    path = './assets/audio/';
+    // loader.sound('sndMain', `${path}vorpal-12.mp3`);
+
     loader.start();
 }
 
@@ -1787,7 +1790,7 @@ function downStarActivity(starID, starX, starY, starZ, currentGalaxy) {
 
 function refrestStarsActivity(starID, starX, starY, starZ, currentGalaxy) {
     if (currentGalaxy == fouthgalaxy) {
-        var star = dynamicStars[Math.floor(Math.random() * dynamicStars.length)];
+        var star = blinkStarsData[Math.floor(Math.random() * blinkStarsData.length)];
         currentGalaxy.geometry.vertices[starID].set(star.x, star.y, star.z);
         currentGalaxy.geometry.verticesNeedUpdate = true;
         currentGalaxy.material.uniforms.activeStars.value[starID] = new THREE.Vector4(star.x, star.y, star.z, 0.0);
@@ -2047,7 +2050,6 @@ function setScene() {
     scene.add(sprGalaxyCenter2);
 
 
-
     let customColorStars = [];
     
 
@@ -2074,7 +2076,7 @@ function setScene() {
 
     // FOUTH STARS
 
-    dynamicStars = newGalaxy(550, 150, 150, 0.2, 4);
+    blinkStarsData = newGalaxy(550, 150, 150, 0.2, 4);
 
     let fouthstars = new THREE.Geometry();
 
@@ -2169,7 +2171,7 @@ function setScene() {
 
     for (let dynamicStarID = 0; dynamicStarID < 400; dynamicStarID++) {
 
-        var star = dynamicStars[dynamicStarID];
+        var star = blinkStarsData[dynamicStarID];
 
         var cloudMaterial = cloudMaterial.clone();
         var cloudMesh = new THREE.Sprite(cloudMaterial);
@@ -2292,7 +2294,7 @@ function setScene() {
     // if (firstgalaxy) allStars = allStars.concat(firstgalaxy.geometry.vertices);
     // allStars = allStars.concat(secondgalaxy.geometry.vertices);
     // allStars = allStars.concat(thirdgalaxy.geometry.vertices);
-    allStars = allStars.concat(dynamicStars);
+    allStars = allStars.concat(blinkStarsData);
     allStars = allStars.concat(fifthgalaxy.geometry.vertices);
 
     for (let customColorStarID = 0; customColorStarID < 2200; customColorStarID++) {
@@ -2444,9 +2446,9 @@ function setScene() {
     });
 
     taskTableImages.forEach(function (image, imageID) {
-        var newImageTexture = new THREE.TextureLoader().load(image.texture);
-        var newImageMaterial = new THREE.SpriteMaterial({ map: newImageTexture });
-        var newImage = new THREE.Sprite(newImageMaterial);
+        let newImageTexture = new THREE.TextureLoader().load(image.texture);
+        let newImageMaterial = new THREE.SpriteMaterial({ map: newImageTexture });
+        let newImage = new THREE.Sprite(newImageMaterial);
 
         newImage.position.set(image.spawnPosition.x, image.spawnPosition.y, -2.9);
         newImage.scale.set(0.4 * image.scale.x, 0.4 * image.scale.y, 0.4 * image.scale.z);
@@ -2455,16 +2457,16 @@ function setScene() {
         taskTableImages[imageID].object = newImage;
     });
 
-    var readyButtonTexture = new THREE.TextureLoader().load("./assets/interface/ready.png");
-    var readyButtonMaterial = new THREE.SpriteMaterial({ map: readyButtonTexture });
+    let readyButtonTexture = new THREE.TextureLoader().load("./assets/interface/ready.png");
+    let readyButtonMaterial = new THREE.SpriteMaterial({ map: readyButtonTexture });
     readyButton = new THREE.Sprite(readyButtonMaterial);
     readyButton.scale.set(0.6, 0.2, 0.2);
     readyButton.position.set(1.0, -0.6, -2.9);
 
     readyButton.name = "readyButton";
 
-    var youWonWindowTexture = new THREE.TextureLoader().load("./assets/interface/you_won.png");
-    var youWonWindowMaterial = new THREE.SpriteMaterial({ map: youWonWindowTexture });
+    let youWonWindowTexture = new THREE.TextureLoader().load("./assets/interface/you_won.png");
+    let youWonWindowMaterial = new THREE.SpriteMaterial({ map: youWonWindowTexture });
 
     youWonWindow = new THREE.Sprite(youWonWindowMaterial);
 
@@ -2474,8 +2476,8 @@ function setScene() {
     youWonWindow.name = "youWonWindow";
 
 
-    var getAGiftButtonTexture = new THREE.TextureLoader().load("./assets/interface/get_a_gift.png");
-    var getAGiftButtonMaterial = new THREE.SpriteMaterial({ map: getAGiftButtonTexture });
+    let getAGiftButtonTexture = new THREE.TextureLoader().load("./assets/interface/get_a_gift.png");
+    let getAGiftButtonMaterial = new THREE.SpriteMaterial({ map: getAGiftButtonTexture });
 
     getAGiftButton = new THREE.Sprite(getAGiftButtonMaterial);
 
@@ -2484,8 +2486,8 @@ function setScene() {
 
     getAGiftButton.name = "giftButton";
 
-    var wrongWindowTexture = new THREE.TextureLoader().load("./assets/interface/wrong.png");
-    var wrongWindowMaterial = new THREE.SpriteMaterial({ map: wrongWindowTexture });
+    let wrongWindowTexture = new THREE.TextureLoader().load("./assets/interface/wrong.png");
+    let wrongWindowMaterial = new THREE.SpriteMaterial({ map: wrongWindowTexture });
     wrongWindow = new THREE.Sprite(wrongWindowMaterial);
 
     wrongWindow.position.set(0.0, 0.0, -2.6);
@@ -2495,6 +2497,10 @@ function setScene() {
 
     raycaster = new THREE.Raycaster();
     mouseNormal = new THREE.Vector2();
+
+    // music
+    let music = new Audio('./assets/audio/vorpal-12.mp3')
+    // music.play();
 
 }
 

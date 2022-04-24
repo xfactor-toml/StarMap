@@ -2,7 +2,6 @@ import * as THREE from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 // import { FontLoader } from "three/examples/jsm/loaders/FontLoader";
-import { FontLoader } from "three";
 import { GLTFLoader, GLTF } from "three/examples/jsm/loaders/GLTFLoader";
 import { Signal } from "../events/Signal";
 import { LogMng } from "../utils/LogMng";
@@ -17,6 +16,9 @@ const TYPE_GZ = 'gz';
 const TYPE_GZIP = 'gzip';
 const TYPE_JSON = 'json';
 const TYPE_FONT = 'font';
+const TYPE_MP3 = 'mp3';
+const TYPE_OGG = 'ogg';
+const TYPE_WAV = 'wav';
 
 const TEXTURE_PREF = 't_';
 const MODEL_PREF = 'm_';
@@ -178,7 +180,7 @@ export class ThreeLoader {
             return;
         }
 
-        var postfix = modelFile.substr(modelFile.length - 3, 3).toLowerCase();
+        let postfix = modelFile.substr(modelFile.length - 3, 3).toLowerCase();
         if (postfix == '.gz') {
             postfix = modelFile.substr(modelFile.length - 6, 3).toLowerCase();
         }
@@ -218,6 +220,33 @@ export class ThreeLoader {
             return;
         }
         this.loadQueue.push({ type: TYPE_FONT, key: aKey, file: fontFile });
+    }
+
+    sound(aKey: string, fileName: string) {
+        if (this.isItemExists(aKey)) {
+            this.logDebug(`Sound Key (${aKey}) load request already exists: aborted.`);
+            return;
+        }
+
+        let postfix = fileName.substr(fileName.length - 3, 3).toLowerCase();
+        // this.logDebug('Sound file postfix = ' + postfix);
+        switch (postfix) {
+            case TYPE_MP3:
+                this.loadQueue.push({ type: TYPE_MP3, key: aKey, file: fileName });
+                break;
+
+            case TYPE_OGG:
+                this.loadQueue.push({ type: TYPE_OGG, key: aKey, file: fileName });
+                break;
+
+            case TYPE_WAV:
+                this.loadQueue.push({ type: TYPE_WAV, key: aKey, file: fileName });
+                break;
+
+            default:
+                this.logWarn(`TJSLoader unknown sound file: ${fileName}`);
+                break;
+        }
     }
 
     start() {
@@ -285,6 +314,12 @@ export class ThreeLoader {
 
             case TYPE_FONT:
                 this.loadFont(aData.key, aData.file);
+                break;
+            
+            case TYPE_MP3:
+            case TYPE_OGG:
+            case TYPE_WAV:
+                this.loadSound(aData.key, aData.file);
                 break;
 
             default:
@@ -580,7 +615,7 @@ export class ThreeLoader {
     }
 
     private loadFont(aKey: string, aFile: string) {
-        let fontLoader = new FontLoader();
+        let fontLoader = new THREE.FontLoader();
         fontLoader.load(aFile,
             (aFont) => {
                 this.cache[aKey] = aFont;
@@ -607,6 +642,45 @@ export class ThreeLoader {
                 }
                 else {
                     this.logError(`loadFont error:`);
+                    console.log(error);
+                }
+            }
+        );
+    }
+
+    private loadSound(aKey: string, aFile: string) {
+        // debugger;
+        // this.logDebug('audio load start...');
+        let loader = new THREE.AudioLoader();
+        loader.load(aFile,
+            // on loaded
+            (aBuffer: AudioBuffer) => {
+                this.cache[aKey] = aBuffer;
+                if (this.isDebugMode) console.log(`loadSound: load complete (${aKey}):`, aBuffer);
+                this.onItemLoaded();
+            },
+            // on progress
+            (event) => {
+                
+            },
+            // on error
+            (error) => {
+                if (this.retryCount > 0) {
+                    if (!this.retryCounter[aKey]) this.retryCounter[aKey] = 0;
+                    this.retryCounter[aKey]++;
+                    if (this.retryCounter[aKey] <= this.retryCount) {
+                        this.logWarn(`loadSound: retry loading ${this.retryCounter[aKey]} (${aKey})`);
+                        setTimeout(() => {
+                            this.loadSound(aKey, aFile);
+                        }, 100);
+                    }
+                    else {
+                        this.logError(`loadSound error (try cnt ${this.retryCount}):`);
+                        console.log(error);
+                    }
+                }
+                else {
+                    this.logError(`loadSound error:`);
                     console.log(error);
                 }
             }
@@ -670,6 +744,12 @@ export class ThreeLoader {
         let font = this.cache[aKey];
         if (!font) this.logWarn('ThreeLoader.getFont() key not found: ' + aKey);
         return font;
+    }
+
+    getSound(aKey: string): AudioBuffer {
+        let cache = this.cache[aKey];
+        if (!cache) this.logWarn('ThreeLoader.getSound() key not found: ' + aKey);
+        return cache;
     }
 
 }
