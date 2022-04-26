@@ -2209,8 +2209,21 @@ function setScene() {
     blinkStars = [];
     let len = blinkStarsData.length;
 
-    for (let i = 0; i < 200; i++) {
+    const blinkStar = (aStarSprite) => {
+        gsap.to(aStarSprite.material, {
+            opacity: 2.5,
+            delay: MyMath.randomInRange(1, 10),
+            duration: MyMath.randomInRange(1, 2),
+            yoyo: true,
+            repeat: 1,
+            onComplete: () => {
+                blinkStar(aStarSprite);
+            }
+        });
+    };
 
+    for (let i = 0; i < 500; i++) {
+        
         let k = i;
         while (k > len - 1) k -= len;
 
@@ -2225,15 +2238,8 @@ function setScene() {
         let starSprite = createStarSprite('star4_512', starPos.x, starPos.y, starPos.z, MyMath.randomIntInRange(4, 8), STARS_2_COLORS);
         starSprite.material.opacity = 0;
         blinkStars.push(starSprite);
-        gsap.to(starSprite.material, {
-            delay: MyMath.randomInRange(0, 5),
-            duration: MyMath.randomInRange(1, 5),
-            yoyo: true,
-            repeatDelay: MyMath.randomInRange(1, 3),
-            repeat: -1,
-            opacity: 2.5
-        });
         scene.add(starSprite);
+        blinkStar(starSprite);
     }
 
     window.addEventListener('resize', function () {
