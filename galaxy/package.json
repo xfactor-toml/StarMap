@@ -19,12 +19,14 @@
         "webpack-dev-server": "^3.11.2"
     },
     "dependencies": {
+        "@pixi/sound": "^4.2.0",
         "@types/dat.gui": "^0.7.7",
         "@types/stats": "^0.16.30",
         "@types/three": "^0.138.0",
         "dat.gui": "^0.7.6",
         "gsap": "^3.10.2",
         "stats-js": "^1.0.1",
-        "three": "^0.124.0"
+        "three": "^0.124.0",
+        "tone": "^14.7.77"
     }
 }

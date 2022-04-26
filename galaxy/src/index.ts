@@ -3,7 +3,6 @@ import { initScene } from "./game.js";
 // import { initScene } from "./TestStars.js";
 
 window.addEventListener('load', () => {
-    initScene();
     // let gameStarter2 = new GameStarter();
     // let event = new CustomEvent('gameStarterCreated', {
     //     detail: {
@@ -12,4 +11,15 @@ window.addEventListener('load', () => {
     //     }
     // });
     // window.dispatchEvent(event);
+
+    const startButton = document.getElementById('startButton');
+    startButton.addEventListener('click', async () => {
+        const overlay = document.getElementById('overlay');
+        overlay.remove();
+        initScene();
+        // await Tone.start();
+        // console.log("audio is ready");
+        // new Ambient();
+        // init();
+    });
 }, false);

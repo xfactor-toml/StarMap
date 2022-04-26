@@ -4,8 +4,10 @@ import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
 import { ThreeLoader } from './loaders/ThreeLoader';
 import gsap from 'gsap';
+import * as Tone from "tone";
 import { MyMath } from './utils/MyMath';
 import { LogMng } from './utils/LogMng';
+import { sound } from '@pixi/sound';
 
 let Config = {
     isDebugMode: false
@@ -2437,9 +2439,22 @@ function setScene() {
     raycaster = new THREE.Raycaster();
     mouseNormal = new THREE.Vector2();
 
-    // music
-    let music = new Audio('./assets/audio/vorpal-12.mp3')
-    music.play();
+    // simple music
+    // let music = new Audio('./assets/audio/vorpal-12.mp3');
+    // music.play();
+
+    // pixi music
+    sound.add('music', './assets/audio/vorpal-12.mp3');
+    sound.play('music');
+
+    // tone music example
+    // Tone.start();
+    // console.log("audio is ready");
+    // new Ambient();
+    // const autoPanner = new Tone.AutoPanner(0.5).toDestination().start();
+    // const fatOsc = new Tone.FatOscillator("Cb1", "sine3", 10).connect(autoPanner).start();
+    // const autoFilter = new Tone.AutoFilter({ frequency: 0.05, baseFrequency: 220, octaves: 2 }).toDestination().start();
+    // const noise = new Tone.Noise({ type: "brown", volume: -22 }).connect(autoFilter).start();
 
 }
 
