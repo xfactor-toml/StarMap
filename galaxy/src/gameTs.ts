@@ -3,11 +3,62 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
 import { ThreeLoader } from './loaders/ThreeLoader';
-import { LogMng } from './utils/LogMng';
+import gsap from 'gsap';
 import { MyMath } from './utils/MyMath';
+import { LogMng } from './utils/LogMng';
+import { sound } from '@pixi/sound';
 
 
-const SKY_BOX_SIZE = 4000;
+let Config = {
+    isDebugMode: false
+};
+
+const SKY_BOX_SIZE = 6000;
+const SMALL_GALAXIES_COUNT = 5;
+const SUN_SCALE = 150;
+const SUN_SCALE_2 = SUN_SCALE * 0.8;
+
+const STARS_1_COLORS = [
+    [0.505 * 255, 0.39 * 255, 0.3 * 255],
+    [0.258 * 255, 0.282 * 255, 0.145 * 255],
+    [0.694 * 255, 0.301 * 255, 0.282 * 255],
+    [0.745 * 255, 0.635 * 255, 0.360 * 255],
+    [0.431 * 255, 0.831 * 255, 0.819 * 255],
+    [1.0 * 255, 0.901 * 255, 0.890 * 255]
+];
+
+const STARS_2_COLORS = [
+    [0.505 * 255, 0.39 * 255, 0.3 * 255],
+    [0.258 * 255, 0.282 * 255, 0.145 * 255],
+    [0.694 * 255, 0.301 * 255, 0.282 * 255],
+    [0.745 * 255, 0.635 * 255, 0.360 * 255],
+    [0.431 * 255, 0.831 * 255, 0.819 * 255],
+    [1.0 * 255, 0.901 * 255, 0.890 * 255]
+];
+
+const STARS_3_COLORS = [
+    // orange
+    // [0.505 * 255, 0.39 * 255, 0.3 * 255],
+
+    // green
+    // [0.258 * 255, 0.282 * 255, 0.145 * 255],
+
+    // red
+    // [0.694 * 255, 0.301 * 255, 0.282 * 255],
+
+    // yellow
+    // [0.745 * 255, 0.635 * 255, 0.360 * 255],
+
+    // teal
+    [0.431 * 255, 0.831 * 255, 0.819 * 255],
+    [0.431 * 255, 0.831 * 255, 0.819 * 255],
+
+    // violet
+    [0xb3, 0x8d, 0xf9],
+    [0xb3, 0x8d, 0xf9],
+    [0xb3, 0x8d, 0xf9],
+    [0xb3, 0x8d, 0xf9],
+];
 
 let vShaders = [
     `
@@ -292,15 +343,14 @@ let fShaders = [
     }
     `,
     `
-uniform float z;
+    uniform float z;
         
     varying vec3 vPosition;
     varying vec3 mPosition;
     varying float gas;
     varying float customStarColor;
         
-    void main(){
- 
+    void main() { 
 
       float a=distance(mPosition,vPosition);
       if(a>0.)a=1.;
@@ -333,7 +383,7 @@ uniform float z;
 
       if(z>0.)gl_FragColor*=cos(1.57*z/322.)*(1.-.001*length(mPosition));
     }
-`,
+    `,
     `
 uniform float z;
         
@@ -373,9 +423,9 @@ uniform float z;
         gl_FragColor=vec4(1.0, 0.901, 0.190, 1.)*texture*(0.13-a*.35);
       }
 
-      if(z>0.)gl_FragColor*=cos(1.57*z/322.)*(1.-.001*length(mPosition));
+      if (z>0.) gl_FragColor *= cos(1.57 * z/322.)  *(1. - .001*length(mPosition));
     }
-`,
+    `,
     `
     uniform float z;
         
@@ -417,7 +467,7 @@ uniform float z;
 
       if(z>0.)gl_FragColor*=cos(1.57*z/322.)*(1.-.001*length(mPosition));
     }
-`,
+    `,
     `
     uniform float z;
         
@@ -433,12 +483,10 @@ uniform float z;
         float tickness = pointSize;
         float r  = distance(uv, pt1) / distance(pt1, pt2);
         
-        if(r <= tensionPower)
-        {
+        if (r <= tensionPower) {
             vec2 ptc = mix(pt1, pt2, r); 
             float dist = distance(ptc, uv);
-            if(dist < tickness / 2.0)
-            {
+            if (dist < tickness / 2.0) {
                 clrFactor = 1.0;
             }
         }
@@ -446,157 +494,80 @@ uniform float z;
     }
 
 
-    void main(){
+    void main() {
       float tension = 4.9;
       float pointSize = 0.06;
-      float tensionPower = 1.0;
+      float tensionPower = 3.0;
 
-      if(z>0.)gl_FragColor*=cos(1.57*z/322.)*(1.-.001*length(mPosition));
+      if (z > 0.) gl_FragColor *= cos(1.57 * z/322.) * (1. - .001 * length(mPosition));
 
-      if(distance(gl_PointCoord, vec2(0.5, 0.5)) < 0.05){
+      if (distance(gl_PointCoord, vec2(0.5, 0.5)) < 0.05) {
         gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
       }
 
-      if(distance(vPosition, vec3(0.5, 0.5, 0.5)) < 10000.){
+      if (distance(vPosition, vec3(0.5, 0.5, 0.5)) < 10000.) {
         tension = 3.6;
         float pointSize = 0.06;
-        float tensionPower = 1.0;
+        // float tensionPower = 1.0;
       }
 
-      if(distance(vPosition, vec3(0.5, 0.5, 0.5)) < 900.){
+      if (distance(vPosition, vec3(0.5, 0.5, 0.5)) < 900.) {
         tension = 0.5;
         float pointSize = 0.06;
-        float tensionPower = 1.0;
+        // float tensionPower = 1.0;
       }
 
-      if(abs(cameraMovmentPower.x) > 0.02 || abs(cameraMovmentPower.y) > 0.02){
+      if (abs(cameraMovmentPower.x) > 0.02 || abs(cameraMovmentPower.y) > 0.02) {
         float distanceToLine = line(gl_PointCoord.xy, (cameraMovmentPower.xy * tension) + .5, vec2(0.5, 0.5), pointSize, tensionPower) * 5.0;
         gl_FragColor = vec4(distanceToLine, distanceToLine, distanceToLine, distanceToLine);
       }
 
     }
-`
+    `
 ];
 
-var verticalCameraMagnitude = 5.0;
+let verticalCameraMagnitude = 5.0;
+let starsOutsideGalaxysPower = 2.0;
+let rickMobileCount = 0;
 
-var firstGalaxyPower = 0.4;
-var secondGalaxyPower = 3.2;
-var thirdGalaxyPower = 1.2;
-var fouthGalaxyPower = 0.9;
+const minCameraDistance = 50;
+const maxCameraDistance = 250;
 
-var starsOutsideGalaxysPower = 2.0;
+let camera;
 
-var rickMobileCount = 0;
+let lastFreeCameraPosition = { x: 0, y: 0, z: 0 };
 
-var minCameraDistance = 150;
-var maxCameraDistance = 200;
+let raycaster;
+let mouseNormal = { x: 0, y: 0 };
 
-var controlls;
+let scene;
+let sceneBg;
 
-var camera;
+let objectHovered = false;
+let selectedPlanet = false;
 
-var lastFreeCameraPosition = {
-    x: null,
-    y: null,
-    z: null
-};
+let backButton;
+let playButton;
+let comingSoonWindow;
+let taskTable;
+let readyButton;
+let youWonWindow;
+let wrongWindow;
+let getAGiftButton;
 
-var galaxy;
+let giftURL = "https://google.com";
 
-var raycaster;
-var mouse;
-var scene;
+let blinkStarsData;
 
-var objectHovered = false;
-var selectedPlanet = -1;
-
-var selectedImage = null;
-var currentObjectIsFounded = false;
-
-var backButton;
-var playButton;
-var comingSoonWindow;
-var taskTable;
-var readyButton;
-var youWonWindow;
-var wrongWindow;
-var getAGiftButton;
-
-var giftURL = "https://google.com";
-
-var dynamicStars;
-var starsOutsideGalaxy;
-
-var allStars = [];
-
-var firstGalaxyActiveStarsPull = [];
-var secondGalaxyActiveStarsPull = [];
-var thirdGalaxyActiveStarsPull = [];
-var fouthGalaxyActiveStarsPull = [];
-var fifthGalaxyActiveStarsPull = [];
-
-var cameraRotationPower = 1.0;
+let cameraRotationPower = 1.0;
 
 let clouds;
-let fouthGalaxyClouds = {};
 let warpStars;
-let galaxyPlane;
+let mainGalaxyPlane;
 
-var smallGalaxys = [
-    {
-        mtlFile: './assets/models/smallGalaxy/minigalaxy020.mtl',
-        objFile: './assets/models/smallGalaxy/minigalaxy.obj',
-        position: new THREE.Vector3(200.0, 0.0, -1000.0),
-        scale: new THREE.Vector3(2000.0, 2000.0, 2000.0),
-        defaultRotation: new THREE.Vector3(55, 45, 0),
-        rotationPower: 0.2
-    },
-    {
-        mtlFile: './assets/models/smallGalaxy/minigalaxy520.mtl',
-        objFile: './assets/models/smallGalaxy/minigalaxy.obj',
-        position: new THREE.Vector3(700, 250, -800.0),
-        scale: new THREE.Vector3(2000.0, 2000.0, 2000.0),
-        defaultRotation: new THREE.Vector3(65, 0, 25),
-        rotationPower: 0.2
-    },
-    {
-        mtlFile: './assets/models/smallGalaxy/minigalaxy020.mtl',
-        objFile: './assets/models/smallGalaxy/minigalaxy.obj',
-        position: new THREE.Vector3(1300, 400, 100.0),
-        scale: new THREE.Vector3(2000.0, 2000.0, 2000.0),
-        defaultRotation: new THREE.Vector3(20, 0, 55),
-        rotationPower: 0.2
-    },
-    {
-        mtlFile: './assets/models/smallGalaxy/minigalaxy320.mtl',
-        objFile: './assets/models/smallGalaxy/minigalaxy.obj',
-        position: new THREE.Vector3(1300.0, -500, 0.0),
-        scale: new THREE.Vector3(2000.0, 2000.0, 2000.0),
-        defaultRotation: new THREE.Vector3(45, 90, 0),
-        rotationPower: 0.3
-    },
-    {
-        mtlFile: './assets/models/smallGalaxy/minigalaxy620.mtl',
-        objFile: './assets/models/smallGalaxy/minigalaxy.obj',
-        position: new THREE.Vector3(-0.0, 0.0, 1100.0),
-        scale: new THREE.Vector3(2000.0, 2000.0, 2000.0),
-        defaultRotation: new THREE.Vector3(-95, 45, 9),
-        rotationPower: 0.2
-    },
-    {
-        mtlFile: './assets/models/smallGalaxy/minigalaxy420.mtl',
-        objFile: './assets/models/smallGalaxy/minigalaxy.obj',
-        position: new THREE.Vector3(-1300.0, 150.0, -0.0),
-        scale: new THREE.Vector3(2000.0, 2000.0, 2000.0),
-        defaultRotation: new THREE.Vector3(90, 90, 0),
-        rotationPower: 0.1
-    }
-];
+let smallGalaxies = [];
 
-var smallGalaxysObjectsArray = [];
-
-var taskTableSlots = [
+let taskTableSlots = [
     {
         inUseBy: null,
         object: null,
@@ -640,7 +611,7 @@ var taskTableSlots = [
     }
 ];
 
-var taskTableImages = [
+let taskTableImages = [
     {
         agreeWith: 1,
         spawnPosition: new THREE.Vector2(-1.2, -0.62),
@@ -707,13 +678,13 @@ var taskTableImages = [
     }
 ];
 
-var layersNames = {
+let layersNames = {
     1: 'first',
     2: 'second',
     3: 'third'
 };
 
-var planets = [
+let planetsData = [
     {
         preview: './assets/Star.svg',
         previewObject: null,
@@ -721,7 +692,7 @@ var planets = [
         modelsFolder: './assets/models/gasorpasorp/',
         layersCount: 3,
         planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
-        position: new THREE.Vector3(70, 3.5, 0),
+        position: new THREE.Vector3(70, 0, 0),
         name: "gasorpasorp",
 
         layersPerFrameTransformation: {
@@ -802,9 +773,6 @@ var planets = [
             }
         }
     },
-
-
-
     {
         preview: './assets/Star.svg',
         previewObject: null,
@@ -812,7 +780,7 @@ var planets = [
         modelsFolder: './assets/models/planeta_skwoth/',
         layersCount: 3,
         planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
-        position: new THREE.Vector3(-70, 3.5, 35),
+        position: new THREE.Vector3(-70, 0, 35),
         name: "skwoth",
 
         layersPerFrameTransformation: {
@@ -893,9 +861,6 @@ var planets = [
             }
         }
     },
-
-
-
     {
         preview: './assets/Star.svg',
         previewObject: null,
@@ -903,7 +868,7 @@ var planets = [
         modelsFolder: './assets/models/moon/',
         layersCount: 1,
         planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
-        position: new THREE.Vector3(-25, 3.5, -75),
+        position: new THREE.Vector3(-25, 0, -75),
         name: "moon",
 
         layersPerFrameTransformation: {
@@ -984,9 +949,6 @@ var planets = [
             }
         }
     },
-
-
-
     {
         preview: './assets/Star.svg',
         previewObject: null,
@@ -994,7 +956,7 @@ var planets = [
         modelsFolder: './assets/models/planetEarth/',
         layersCount: 1,
         planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
-        position: new THREE.Vector3(30, 3.5, 65),
+        position: new THREE.Vector3(30, 0, 65),
         name: "earth",
 
         layersPerFrameTransformation: {
@@ -1075,9 +1037,6 @@ var planets = [
             }
         }
     },
-
-
-
     {
         preview: './assets/Star.svg',
         previewObject: null,
@@ -1085,7 +1044,7 @@ var planets = [
         modelsFolder: './assets/models/moon/',
         layersCount: 1,
         planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
-        position: new THREE.Vector3(-75, 3.5, 1),
+        position: new THREE.Vector3(-75, 0, 1),
         name: "earth",
 
         layersPerFrameTransformation: {
@@ -1166,9 +1125,6 @@ var planets = [
             }
         }
     },
-
-
-
     {
         preview: './assets/Star.svg',
         previewObject: null,
@@ -1176,7 +1132,7 @@ var planets = [
         modelsFolder: './assets/models/moon/',
         layersCount: 1,
         planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
-        position: new THREE.Vector3(25, 3.5, -90),
+        position: new THREE.Vector3(25, 0, -90),
         name: "earth",
 
         layersPerFrameTransformation: {
@@ -1257,9 +1213,6 @@ var planets = [
             }
         }
     },
-
-
-
     {
         preview: './assets/Star.svg',
         previewObject: null,
@@ -1267,7 +1220,7 @@ var planets = [
         modelsFolder: './assets/models/moon/',
         layersCount: 1,
         planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
-        position: new THREE.Vector3(45, 3.5, 110),
+        position: new THREE.Vector3(45, 0, 110),
         name: "earth",
 
         layersPerFrameTransformation: {
@@ -1348,9 +1301,6 @@ var planets = [
             }
         }
     },
-
-
-
     {
         preview: './assets/Star.svg',
         previewObject: null,
@@ -1358,7 +1308,7 @@ var planets = [
         modelsFolder: './assets/models/moon/',
         layersCount: 1,
         planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
-        position: new THREE.Vector3(85, 3.5, -80),
+        position: new THREE.Vector3(85, 0, -80),
         name: "earth",
 
         layersPerFrameTransformation: {
@@ -1439,9 +1389,6 @@ var planets = [
             }
         }
     },
-
-
-
     {
         preview: './assets/Star.svg',
         previewObject: null,
@@ -1449,7 +1396,7 @@ var planets = [
         modelsFolder: './assets/models/planet_x/',
         layersCount: 3,
         planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
-        position: new THREE.Vector3(120, 3.5, 80),
+        position: new THREE.Vector3(120, 0, 80),
         name: "planet_x",
 
         layersPerFrameTransformation: {
@@ -1532,68 +1479,134 @@ var planets = [
     }
 ];
 
-var rickmobilesPull = [];
+let rickmobilesPull = [];
 
-// var sceneForSmallGalaxys;
-var controls;
-var renderer;
-var renderTarget;
-let firststars: THREE.Geometry;
-let firstgalaxy: THREE.Points;
-var secondstars;
-var secondgalaxy;
-var thirdgalaxy;
-var fouthgalaxy;
-var fifthgalaxy;
-var stars;
+let camOrbit;
+let prevCamPolarAngle = 0;
+let prevCamAzimutAngle = 0;
 
-let loader: ThreeLoader;
+let renderer;
+
+let sprGalaxyCenter;
+let sprGalaxyCenter2;
+
+// let firstGalaxyStarsData: any[];
+// let firstStarSprites = [];
+
+let galaxyStarsData: any[];
+let galaxyStarSprites = [];
+
+// let thirdGalaxyStarsData: any[];
+// let thirdStarSprites = [];
+
+let blinkStars = [];
+
+let outStars;
+let stars;
+
+let starsCountData = [];
+
+let loader;
+
+let clock;
+
+let checkMousePointerTimer = 0;
 
 export function initScene() {
+
+    // check #debug
+    let anc = window.location.hash.replace("#", "");
+    Config.isDebugMode = (anc === "debug");
+
+    // LogMng settings
+    if (!Config.isDebugMode) LogMng.setMode(LogMng.MODE_RELEASE);
+    LogMng.system('client log mode: ' + LogMng.getMode());
+
+    clock = new THREE.Clock();
+
     preload(() => {
-        // LogMng.debug('initStarsCount');
         initStarsCount();
-        // LogMng.debug('setScene');
         setScene();
 
         document.addEventListener('pointermove', onMouseMove);
-        document.addEventListener('click', onMouseClick);
+        // document.addEventListener('click', onMouseClick);
         document.addEventListener('keydown', onKeyPress);
+
+        document.querySelector('canvas').addEventListener('touchstart', function (event) {
+            (event as any).target.requestFullscreen();
+        });
 
         animate();
     });
 }
 
 function preload(cb) {
-    let sb_format = '.jpg';
-    let sb_path = './assets/' + 'skybox/blue/1024/';
+    let sb_format = '.png';
+    let path = './assets/skybox/black/1024/';
 
-    loader = ThreeLoader.getInstance();
+    // ts loader
+    loader = ThreeLoader.getInstance({ isDebugMode: true });
+    // js loader
+    // loader = new ThreeLoader({ isDebugMode: true });
+
     loader.onLoadCompleteSignal.addOnce(cb);
 
-    loader.texture('skybox1-xpos', sb_path + 'right' + sb_format);
-    loader.texture('skybox1-xneg', sb_path + 'left' + sb_format);
-    loader.texture('skybox1-ypos', sb_path + 'top' + sb_format);
-    loader.texture('skybox1-yneg', sb_path + 'bot' + sb_format);
-    loader.texture('skybox1-zpos', sb_path + 'front' + sb_format);
-    loader.texture('skybox1-zneg', sb_path + 'back' + sb_format);
+    loader.texture('skybox1-xpos', path + 'right' + sb_format);
+    loader.texture('skybox1-xneg', path + 'left' + sb_format);
+    loader.texture('skybox1-ypos', path + 'top' + sb_format);
+    loader.texture('skybox1-yneg', path + 'bot' + sb_format);
+    loader.texture('skybox1-zpos', path + 'front' + sb_format);
+    loader.texture('skybox1-zneg', path + 'back' + sb_format);
+
+    // main sprite
+    path = './assets/galaxies/';
+    loader.texture('galaxySprite', `./assets/BC10.webp`);
+
+    // galaxy sprites
+    path = './assets/galaxies/';
+    for (let i = 0; i < SMALL_GALAXIES_COUNT; i++) {
+        let gName = `galaxy_${(i + 1).toString().padStart(2, '0')}`;
+        loader.texture(gName, path + `${gName}.png`);
+    }
+
+    path = './assets/particles/';
+    // loader.texture('circle_01', `${path}circle_01.png`);
+    loader.texture('star3', `${path}Star_3_256.png`);
+    loader.texture('star4', `${path}Star_4_256.png`);
+    loader.texture('star4_512', `${path}Star_4_512.png`);
+
+    path = './assets/sun/';
+    loader.texture('sun_01', `${path}Sun_01.png`);
+    loader.texture('sun_02', `${path}Sun_02.png`);
+    loader.texture('sun_romb', `${path}Galaxy_512.png`);
+
+    path = './assets/';
+    loader.json('galaxyStructure', `${path}galaxyStructure.json`);
+
+    path = './assets/audio/';
+    // loader.sound('sndMain', `${path}vorpal-12.mp3`);
+
+    loader.texture('cloud', './assets/cloud.png');
 
     loader.start();
 }
 
 function initStarsCount() {
     const iphoneStarsCount = [
+        // center
         {
-            active: 25,
-            customColor: 90
+            active: 2,
+            customColor: 2000
         },
+        // second
         {
-            active: 55,
-            customColor: 40
+            active: 1000,
+            customColor: 1000
         },
+        // third
         {
-            active: 20,
-            customColor: 50
+            active: 400,
+            customColor: 1000
         },
         {
             active: 30,
@@ -1604,19 +1617,21 @@ function initStarsCount() {
             customColor: 110
         }
     ];
-
     const androidStarsCount = [
+        // center
         {
-            active: 45,
-            customColor: 90
+            active: 2,
+            customColor: 2000
         },
+        // second
         {
-            active: 35,
-            customColor: 50
+            active: 1000,
+            customColor: 1000
         },
+        // third
         {
-            active: 20,
-            customColor: 50
+            active: 400,
+            customColor: 1000
         },
         {
             active: 50,
@@ -1627,18 +1642,20 @@ function initStarsCount() {
             customColor: 110
         }
     ];
-
     const desktopStarsCount = [
+        // center
         {
-            active: 900,
+            active: 2,
             customColor: 2000
         },
+        // second
         {
-            active: 700,
+            active: 1700,
             customColor: 1000
         },
+        // third
         {
-            active: 400,
+            active: 700,
             customColor: 1000
         },
         {
@@ -1651,19 +1668,19 @@ function initStarsCount() {
         }
     ];
 
-    let starsArr = desktopStarsCount;
+    starsCountData = desktopStarsCount;
 
     if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-        starsArr = iphoneStarsCount;
+        starsCountData = iphoneStarsCount;
     }
 
     if (/Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-        starsArr = androidStarsCount;
+        starsCountData = androidStarsCount;
     }
 
     for (let i = 0; i < vShaders.length; i++) {
-        let act: string = String(starsArr[i].active);
-        let clr: string = String(starsArr[i].customColor);
+        let act = String(starsCountData[i].active);
+        let clr = String(starsCountData[i].customColor);
         console.log('act, clr: ', act, clr);
         vShaders[i] = vShaders[i].replace('GALAXY_ACTIVE_STARS_COUNT', act);
         vShaders[i] = vShaders[i].replace('GALAXY_ACTIVE_STARS_COUNT', act);
@@ -1671,586 +1688,6 @@ function initStarsCount() {
         vShaders[i] = vShaders[i].replace('GALAXY_STARS_WITH_CUSTOM_COLOR_COUNT', clr);
         // console.log(`vShaders[${i}]:`, vShaders[i]);
     }
-}
-
-//threejs functions
-function setScene() {
-    let domParent = document.getElementById('game');
-
-    scene = new THREE.Scene();
-    // sceneForSmallGalaxys = new THREE.Scene();
-
-    camera = new THREE.PerspectiveCamera(70, innerWidth / innerHeight, 0.5, 1000000);
-    camera.position.set(-90, 120, 180);
-
-    renderTarget = new THREE.WebGLRenderTarget(innerWidth, innerHeight);
-
-    renderer = new THREE.WebGLRenderer();
-    renderer.setSize(innerWidth, innerHeight);
-
-    renderer.context.getExtension('OES_standard_derivatives');
-
-    renderer.setClearColor(0x0000000);
-    domParent.appendChild(renderer.domElement);
-
-    createSkybox();
-
-    controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.035;
-    controls.enablePan = false;
-    controls.minDistance = minCameraDistance;
-    controls.maxDistance = maxCameraDistance;
-
-    firststars = new THREE.Geometry();
-    clouds = new THREE.Group();
-    warpStars = new THREE.Group()
-    scene.add(clouds);
-    scene.add(warpStars);
-
-    var HTTPRequest = new XMLHttpRequest();
-
-    HTTPRequest.open("GET", "./assets/galaxyStructure.json", false);
-
-    HTTPRequest.onload = function () {
-        firststars.vertices = newGalaxy(40, 20, 20, 0.7);
-    }
-
-    HTTPRequest.send();
-
-    new THREE.TextureLoader().load('./assets/BC10.webp',
-        function (texture) {
-            galaxyPlane = new THREE.Mesh(
-                new THREE.PlaneGeometry(350, 350),
-                new THREE.MeshBasicMaterial({
-                    map: texture,
-                    side: THREE.DoubleSide,
-                    transparent: true,
-                    depthWrite: false,
-                    opacity: 1.0
-                }));
-            galaxyPlane.rotation.x = -Math.PI / 2;
-            galaxyPlane.rotation.z = -1.2;
-            galaxyPlane.position.y = -1;
-            galaxyPlane.position.z = 9;
-            scene.add(galaxyPlane);
-        },
-        undefined,
-        function (err) {
-            console.error('An error happened.');
-        }
-    );
-
-    var customColorStars = [];
-
-    var uf: any = {
-        size: { type: 'f', value: 2.5 },
-        distanceSize: { type: 'f', value: 1 },
-        t: { type: "f", value: 0 },
-        z: { type: "f", value: 0 },
-        pixelRatio: { type: "f", value: innerHeight },
-        activeStars: { value: firstGalaxyActiveStarsPull },
-        starsWithCustomColor: { value: customColorStars },
-        cameraRotationPower: { value: cameraRotationPower },
-        galaxyPower: { value: firstGalaxyPower },
-        derivatives: true
-    };
-
-    var firstgalaxyMaterial = new THREE.ShaderMaterial({
-        vertexShader: vShaders[0],
-        fragmentShader: fShaders[0],
-        uniforms: uf,
-        depthTest: false,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending
-    });
-    // firstgalaxyMaterial.renderOrder = 999;
-
-    firstgalaxy = new THREE.Points(firststars, firstgalaxyMaterial);
-    firstgalaxy.renderOrder = 999;
-
-    firstgalaxy.rotation.set(0, Math.PI / 1.5, 0);
-    firstgalaxy.position.x = 5;
-    firstgalaxy.position.z = 12;
-
-    scene.add(firstgalaxy);
-
-    secondstars = new THREE.Geometry();
-    secondstars.vertices = newGalaxy(2200, 145, 145, 0.3, 2);
-
-    uf = {
-        size: { type: 'f', value: 0.2 },
-        distanceSize: { type: 'f', value: 1 },
-        t: { type: "f", value: 0 },
-        z: { type: "f", value: 0 },
-        pixelRatio: { type: "f", value: innerHeight },
-        activeStars: { value: secondGalaxyActiveStarsPull },
-        starsWithCustomColor: { value: customColorStars },
-        cameraRotationPower: { value: cameraRotationPower },
-        galaxyPower: { value: secondGalaxyPower },
-        derivatives: true
-    };
-        
-    var secondgalaxyMaterial = new THREE.ShaderMaterial({
-        vertexShader: vShaders[1],
-        fragmentShader: fShaders[1],
-        uniforms: uf,
-        // depthTest: false,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending
-    });
-
-    secondgalaxy = new THREE.Points(secondstars, secondgalaxyMaterial);
-    secondgalaxy.rotation.set(0, 0, 0);
-
-    scene.add(secondgalaxy);
-
-
-    var thirdstars = new THREE.Geometry();
-    thirdstars.vertices = newGalaxy(600, 150, 150, 0.4, 3);
-
-    uf = {
-        size: { type: 'f', value: 0.5 },
-        distanceSize: { type: 'f', value: 1 },
-        t: { type: "f", value: 0 },
-        z: { type: "f", value: 0 },
-        pixelRatio: { type: "f", value: innerHeight },
-        activeStars: { value: thirdGalaxyActiveStarsPull },
-        starsWithCustomColor: { value: customColorStars },
-        cameraRotationPower: { value: cameraRotationPower },
-        galaxyPower: { value: thirdGalaxyPower },
-        derivatives: true
-    };
-
-    var thirdgalaxyMaterial = new THREE.ShaderMaterial({
-        vertexShader: vShaders[2],
-        fragmentShader: fShaders[2],
-        uniforms: uf,
-        // depthTest: false,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending
-    });
-
-    thirdgalaxy = new THREE.Points(thirdstars, thirdgalaxyMaterial);
-    thirdgalaxy.rotation.set(0, 0, 0);
-
-    scene.add(thirdgalaxy);
-
-
-    dynamicStars = newGalaxy(550, 150, 150, 0.2, 4);
-
-    var fouthstars = new THREE.Geometry();
-
-    uf = {
-        size: { type: 'f', value: 4.0 },
-        distanceSize: { type: 'f', value: 1 },
-        t: { type: "f", value: 0 },
-        z: { type: "f", value: 0 },
-        pixelRatio: { type: "f", value: innerHeight },
-        activeStars: { value: fouthGalaxyActiveStarsPull },
-        starsWithCustomColor: { value: customColorStars },
-        cameraRotationPower: { value: cameraRotationPower },
-        galaxyPower: { value: fouthGalaxyPower },
-        derivatives: true
-    };
-
-    var fouthgalaxyMaterial = new THREE.ShaderMaterial({
-        vertexShader: vShaders[3],
-        fragmentShader: fShaders[3],
-        uniforms: uf,
-        // depthTest: false,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending
-    });
-
-    fouthgalaxy = new THREE.Points(fouthstars, fouthgalaxyMaterial);
-    fouthgalaxy.rotation.set(0, 0, 0);
-    fouthgalaxy.position.y = 3;
-    scene.add(fouthgalaxy);
-
-
-    var fifthstars = new THREE.Geometry();
-    fifthstars.vertices = newStarsOutsideGalaxys(4000);
-
-    uf = {
-        size: { type: 'f', value: 2.5 },
-        distanceSize: { type: 'f', value: 1 },
-        t: { type: "f", value: 0 },
-        z: { type: "f", value: 0 },
-        pixelRatio: { type: "f", value: innerHeight },
-        cameraRotationPower: { value: cameraRotationPower },
-        galaxyPower: { value: starsOutsideGalaxysPower },
-        cameraMovmentPower: { value: [0.0, 0.0] },
-        derivatives: true
-    };
-
-    var fifthgalaxyMaterial = new THREE.ShaderMaterial({
-        vertexShader: vShaders[4],
-        fragmentShader: fShaders[4],
-        uniforms: uf,
-        // depthTest: false,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending
-    });
-
-    fifthgalaxy = new THREE.Points(fifthstars, fifthgalaxyMaterial);
-    fifthgalaxy.rotation.set(0, 0, 0);
-
-    scene.add(fifthgalaxy);
-
-    smallGalaxys.forEach(function (smallGalaxy) {
-
-        new MTLLoader().load(smallGalaxy.mtlFile, (materials: any) => {
-            materials.preload();
-            // materials.depthTest = false;
-            materials.depthWrite = false;
-
-            var objLoader = new OBJLoader();
-            objLoader.setMaterials(materials);
-            objLoader.load(smallGalaxy.objFile, function (newSmallGalaxys) {
-
-                newSmallGalaxys.position.x = smallGalaxy.position.x;
-                newSmallGalaxys.position.y = smallGalaxy.position.y;
-                newSmallGalaxys.position.z = smallGalaxy.position.z;
-
-                newSmallGalaxys.scale.x = smallGalaxy.scale.x;
-                newSmallGalaxys.scale.y = smallGalaxy.scale.y;
-                newSmallGalaxys.scale.z = smallGalaxy.scale.z;
-
-                smallGalaxysObjectsArray.push(newSmallGalaxys);
-                // sceneForSmallGalaxys.add(newSmallGalaxys);
-                scene.add(newSmallGalaxys);
-
-                newSmallGalaxys.rotateOnWorldAxis(new THREE.Vector3(1, 0, 0), THREE.MathUtils.degToRad(smallGalaxy.defaultRotation.x));
-                newSmallGalaxys.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), THREE.MathUtils.degToRad(smallGalaxy.defaultRotation.y));
-                newSmallGalaxys.rotateOnWorldAxis(new THREE.Vector3(0, 0, 1), THREE.MathUtils.degToRad(smallGalaxy.defaultRotation.z));
-            });
-
-        });
-
-    });
-
-    const startActivity = (starID, currentGalaxy) => {
-        let star = currentGalaxy.material.uniforms.activeStars.value[starID];
-        const starUp = () => {
-            let up = setInterval(() => {
-                currentGalaxy.material.uniforms.activeStars.value[starID].w += 0.6;
-                fouthGalaxyClouds[starID].material.opacity += 0.009;
-                if (star.w >= 5) {
-                    clearInterval(up);
-                    setTimeout(starDown, 1);
-                }
-            }, 100);
-        }
-        const starDown = () => {
-            let down = setInterval(() => {
-                currentGalaxy.material.uniforms.activeStars.value[starID].w -= 0.6;
-                if (fouthGalaxyClouds[starID].material.opacity > 0) {
-                    fouthGalaxyClouds[starID].material.opacity -= 0.009;
-                }
-                if (star.w <= 0) {
-                    clearInterval(down);
-                    fouthGalaxyClouds[starID].material.opacity = 0;
-                    setTimeout(starUp, Math.random() * 30000);
-                }
-            }, 100);
-        }
-        starUp();
-    }
-
-    var cloudTexture = new THREE.TextureLoader().load('./assets/cloud.png');
-    var cloudMaterial = new THREE.SpriteMaterial({
-        map: cloudTexture,
-        transparent: true,
-        opacity: 0.0,
-        depthWrite: false
-    });
-
-    for (let dynamicStarID = 0; dynamicStarID < 400; dynamicStarID++) {
-
-        var star = dynamicStars[dynamicStarID];
-
-        var cloudMaterial = cloudMaterial.clone();
-        var cloudMesh = new THREE.Sprite(cloudMaterial);
-        cloudMesh.material.rotation = Math.PI * Math.random();
-        cloudMesh.renderOrder = 1;
-        cloudMesh.scale.set(7, 7, 7);
-
-        var cloud = cloudMesh.clone();
-        cloud.position.set(star.x, star.y, star.z - 1);
-        clouds.add(cloud);
-
-        fouthGalaxyClouds[dynamicStarID] = cloud;
-
-        fouthGalaxyActiveStarsPull[dynamicStarID] = new THREE.Vector4(star.x, star.y, star.z, 0);
-        fouthgalaxy.geometry.vertices[dynamicStarID] = new THREE.Vector3(star.x, star.y, star.z);
-
-        setTimeout(startActivity, Math.random() * 30000, dynamicStarID, fouthgalaxy);
-    }
-
-    var centerCloud = cloudMesh.clone();
-    centerCloud.position.set(0, 0, 0);
-    centerCloud.scale.set(45, 45, 45);
-    scene.add(centerCloud);
-
-    for (let starID = 0; starID < 900; starID++) {
-        // var star = firstgalaxy.geometry.vertices[Math.floor(Math.random() * firstgalaxy.geometry.vertices.length)];
-        let star = firststars.vertices[MyMath.randomIntInRange(0, firststars.vertices.length - 1)];
-        firstGalaxyActiveStarsPull.push(new THREE.Vector4(star.x, star.y, star.z, 1.0));
-        setTimeout(upStarActivity, Math.random() * 3000, starID, star.x, star.y, star.z, firstgalaxy);
-    }
-
-    for (let starID = 0; starID < 1200; starID++) {
-        let star = secondgalaxy.geometry.vertices[Math.floor(Math.random() * secondgalaxy.geometry.vertices.length)];
-        secondGalaxyActiveStarsPull.push(new THREE.Vector4(star.x, star.y, star.z, 1.0));
-        setTimeout(upStarActivity, Math.random() * 3000, starID, star.x, star.y, star.z, secondgalaxy);
-    }
-
-    for (let starID = 0; starID < 400; starID++) {
-        let star = thirdgalaxy.geometry.vertices[Math.floor(Math.random() * thirdgalaxy.geometry.vertices.length)];
-        thirdGalaxyActiveStarsPull.push(new THREE.Vector4(star.x, star.y, star.z, 1.0));
-        setTimeout(upStarActivity, Math.random() * 3000, starID, star.x, star.y, star.z, thirdgalaxy);
-    }
-
-    allStars = [];
-    allStars = allStars.concat(firststars.vertices);
-    allStars = allStars.concat(secondgalaxy.geometry.vertices);
-    allStars = allStars.concat(thirdgalaxy.geometry.vertices);
-    allStars = allStars.concat(dynamicStars);
-    allStars = allStars.concat(fifthgalaxy.geometry.vertices);
-
-    for (let customColorStarID = 0; customColorStarID < 2200; customColorStarID++) {
-        var star = allStars[Math.floor(Math.random() * allStars.length)];
-        customColorStars.push(new THREE.Vector4(star.x, star.y, star.z, Math.random() * 10));
-    }
-
-    window.addEventListener('resize', function () {
-        camera.aspect = innerWidth / innerHeight;
-        renderer.setSize(innerWidth, innerHeight);
-        camera.updateProjectionMatrix();
-        renderer.render(scene, camera);
-    }, false);
-
-    planets.forEach(function (planet, planetIndex) {
-
-        var previewTexture = new THREE.TextureLoader().load(planet.preview);
-        var previewMaterial = new THREE.SpriteMaterial({
-            map: previewTexture,
-            depthWrite: false
-        });
-        var newPlanetPreview = new THREE.Sprite(previewMaterial);
-
-        newPlanetPreview.scale.set(12, 12, 12);
-        newPlanetPreview.position.set(planet.position.x, planet.position.y, planet.position.z);
-
-        newPlanetPreview.name = "planetPreview";
-
-        newPlanetPreview.renderOrder = 1;
-
-        scene.add(newPlanetPreview);
-
-        for (var layer = 1; layer < planet.layersCount + 1; layer++) {
-
-            new MTLLoader().load(planet.modelsFolder + layersNames[layer] + "_layer.mtl", (materials) => {
-                let currentLayer = layer;
-
-                materials.preload();
-
-                var objLoader = new OBJLoader();
-                objLoader.setMaterials(materials);
-                objLoader.load(planet.modelsFolder + layersNames[currentLayer] + "_layer.obj", function (model) {
-
-                    model.scale.set(planet.planetScale.x, planet.planetScale.y, planet.planetScale.z);
-
-                    planets[planetIndex].physicalPlanet[currentLayer] = model;
-
-                    if (currentLayer == 1) {
-
-                        model.children[0]['material'].transparent = false;
-
-                    }
-
-                    model.scale.x += planets[planetIndex].layersDefaultTransformation[currentLayer].scale.x;
-                    model.scale.y += planets[planetIndex].layersDefaultTransformation[currentLayer].scale.y;
-                    model.scale.z += planets[planetIndex].layersDefaultTransformation[currentLayer].scale.z;
-
-                    model.rotation.x = planets[planetIndex].layersDefaultTransformation[currentLayer].rotation.x;
-                    model.rotation.y = planets[planetIndex].layersDefaultTransformation[currentLayer].rotation.y;
-                    model.rotation.z = planets[planetIndex].layersDefaultTransformation[currentLayer].rotation.z;
-
-                    model.position.set(planet.position.x, planet.position.y, planet.position.z);
-                    model.children[0]['material'].visible = false;
-                    scene.add(model);
-
-                    model.name = planets[planetIndex].name;
-
-                });
-
-            });
-
-        }
-
-        planets[planetIndex].previewObject = newPlanetPreview;
-    });
-
-    for (var rickmobile = 0; rickmobile < rickMobileCount; rickmobile++) {
-        var newRickmobileStartPosition = planets[Math.floor(Math.random() * planets.length)].position;
-        var newRickmobileEndPosition = planets[Math.floor(Math.random() * planets.length)].position;
-
-        while (newRickmobileStartPosition == newRickmobileEndPosition) {
-            newRickmobileEndPosition = planets[Math.floor(Math.random() * planets.length)].position;
-        }
-
-        rickmobilesPull[rickmobile] = {
-            startPosition: newRickmobileStartPosition,
-            endPosition: newRickmobileEndPosition,
-            model: null,
-            speed: Math.random() * 3
-        };
-
-        new MTLLoader().load("./assets/models/rickmobil/rickmobil.mtl", (materials) => {
-            let currentRickmobile = rickmobile;
-            materials.preload();
-
-            var objLoader = new OBJLoader();
-            objLoader.setMaterials(materials);
-            objLoader.load("./assets/models/rickmobil/rickmobil.obj", function (model) {
-                model.position.set(rickmobilesPull[currentRickmobile].startPosition.x, rickmobilesPull[currentRickmobile].startPosition.y, rickmobilesPull[currentRickmobile].startPosition.z);
-                model.lookAt(rickmobilesPull[currentRickmobile].endPosition);
-                model.scale.set(0, 0, 0);
-                rickmobilesPull[currentRickmobile].model = model;
-                scene.add(model);
-                model.visible = false;
-                setTimeout(MoveRickmobil, Math.random() * 5000, currentRickmobile);
-            });
-
-        });
-
-    }
-
-    var backButtonTexture = new THREE.TextureLoader().load("./assets/interface/back.png");
-    var backButtonMaterial = new THREE.SpriteMaterial({ map: backButtonTexture });
-
-    backButton = new THREE.Sprite(backButtonMaterial);
-    backButton.scale.set(1.2, 0.4, 0.4);
-    backButton.position.z = -5;
-    backButton.position.y = 2;
-    backButton.position.x = -2.05;
-    backButton.name = "backButton";
-
-    var playButtonTexture = new THREE.TextureLoader().load("./assets/interface/play.png");
-    var playButtonMaterial = new THREE.SpriteMaterial({ map: playButtonTexture });
-    playButton = new THREE.Sprite(playButtonMaterial);
-
-    playButton.scale.set(0.4, 0.4, 0.4);
-    playButton.position.z = -4;
-    playButton.position.y = 0;
-    playButton.position.x = 1.2;
-    playButton.name = "playButton";
-
-    var comingSoonWindowTexture = new THREE.TextureLoader().load("./assets/interface/coming_soon.png");
-    var comingSoonWindowMaterial = new THREE.SpriteMaterial({ map: comingSoonWindowTexture });
-    comingSoonWindow = new THREE.Sprite(comingSoonWindowMaterial);
-    comingSoonWindow.scale.set(1.2, 0.4, 0.4);
-    comingSoonWindow.name = "comingSoonWindow";
-    comingSoonWindow.position.z = -3;
-
-    var taskTableTexture = new THREE.TextureLoader().load("./assets/interface/table.png");
-    var taskTableMaterial = new THREE.SpriteMaterial({ map: taskTableTexture });
-    taskTable = new THREE.Sprite(taskTableMaterial);
-    taskTable.scale.set(3.2, 2, 2);
-    taskTable.position.z = -3;
-
-    taskTableSlots.forEach(function (slot, slotID) {
-        var newSlotMaterial = new THREE.SpriteMaterial({ color: "white", opacity: 0.5 });
-        var newSlot = new THREE.Sprite(newSlotMaterial);
-
-        newSlot.position.set(slot.center.x, slot.center.y, -2.9);
-        newSlot.scale.set(0.539, 0.24, 0.5);
-        newSlot.name = "tableSlot";
-        newSlot['slotID'] = slotID;
-        taskTableSlots[slotID].object = newSlot;
-    });
-
-    taskTableImages.forEach(function (image, imageID) {
-        var newImageTexture = new THREE.TextureLoader().load(image.texture);
-        var newImageMaterial = new THREE.SpriteMaterial({ map: newImageTexture });
-        var newImage = new THREE.Sprite(newImageMaterial);
-
-        newImage.position.set(image.spawnPosition.x, image.spawnPosition.y, -2.9);
-        newImage.scale.set(0.4 * image.scale.x, 0.4 * image.scale.y, 0.4 * image.scale.z);
-        newImage.name = "tableImage";
-        newImage['imageID'] = imageID;
-        taskTableImages[imageID].object = newImage;
-    });
-
-    var readyButtonTexture = new THREE.TextureLoader().load("./assets/interface/ready.png");
-    var readyButtonMaterial = new THREE.SpriteMaterial({ map: readyButtonTexture });
-    readyButton = new THREE.Sprite(readyButtonMaterial);
-    readyButton.scale.set(0.6, 0.2, 0.2);
-    readyButton.position.set(1.0, -0.6, -2.9);
-
-    readyButton.name = "readyButton";
-
-    var youWonWindowTexture = new THREE.TextureLoader().load("./assets/interface/you_won.png");
-    var youWonWindowMaterial = new THREE.SpriteMaterial({ map: youWonWindowTexture });
-
-    youWonWindow = new THREE.Sprite(youWonWindowMaterial);
-
-    youWonWindow.position.set(0.0, 0.0, -2.8);
-    youWonWindow.scale.set(1.5, 0.75, 0.75);
-
-    youWonWindow.name = "youWonWindow";
-
-
-    var getAGiftButtonTexture = new THREE.TextureLoader().load("./assets/interface/get_a_gift.png");
-    var getAGiftButtonMaterial = new THREE.SpriteMaterial({ map: getAGiftButtonTexture });
-
-    getAGiftButton = new THREE.Sprite(getAGiftButtonMaterial);
-
-    getAGiftButton.position.set(0.0, -0.2, -2.7);
-    getAGiftButton.scale.set(0.6, 0.2, 0.2);
-
-    getAGiftButton.name = "giftButton";
-
-    var wrongWindowTexture = new THREE.TextureLoader().load("./assets/interface/wrong.png");
-    var wrongWindowMaterial = new THREE.SpriteMaterial({ map: wrongWindowTexture });
-    wrongWindow = new THREE.Sprite(wrongWindowMaterial);
-
-    wrongWindow.position.set(0.0, 0.0, -2.6);
-    wrongWindow.scale.set(0.8, 0.4, 0.4);
-
-    wrongWindow.name = "wrongWindow";
-
-    raycaster = new THREE.Raycaster();
-    mouse = new THREE.Vector2();
-
-    domParent.addEventListener('touchstart', (event) => {
-        // event.target.requestFullscreen();
-    });
-}
-
-function createSkybox() {
-    let imagePrefix = "skybox1-";
-    let directions = ["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
-    let materialArray = [];
-    for (let i = 0; i < directions.length; i++)
-        materialArray.push(new THREE.MeshBasicMaterial({
-            map: loader.getTexture(imagePrefix + directions[i]),
-            side: THREE.BackSide,
-            // transparent: true,
-            // opacity: 0.8,
-            depthWrite: false
-        }));
-
-    let imgArray = [];
-    for (let i = 0; i < directions.length; i++)
-        imgArray.push(loader.getTexture(imagePrefix + directions[i]).image);
-
-    let skyGeometry = new THREE.BoxBufferGeometry(SKY_BOX_SIZE, SKY_BOX_SIZE, SKY_BOX_SIZE);
-    let skyBox = new THREE.Mesh(skyGeometry, materialArray);
-    skyBox.position.set(0, 0, 0);
-    scene.add(skyBox);
 }
 
 function getDistanceBetweenTwoVectors(v1, v2) {
@@ -2270,9 +1707,49 @@ function upStarActivity(starID, starX, starY, starZ, currentGalaxy) {
     }
 }
 
+function createStarSprite(aSpriteAlias: string, x: number, y: number, z: number, aScale: number, aGalColors): THREE.Sprite {
+    let t = loader.getTexture(aSpriteAlias);
+    let opacity = MyMath.randomInRange(0.8, 1.0);
+
+    let clr = 0xFFFFFF;
+
+    let customStarColor = MyMath.randomIntInRange(0, 10);
+    if (customStarColor == 0.0) {
+        clr = MyMath.rgbToHex(aGalColors[0][0], aGalColors[0][1], aGalColors[0][2]);
+    }
+    else if (customStarColor <= 2.0) {
+        clr = MyMath.rgbToHex(aGalColors[1][0], aGalColors[1][1], aGalColors[1][2]);
+    }
+    else if (customStarColor <= 4.0) {
+        clr = MyMath.rgbToHex(aGalColors[2][0], aGalColors[2][1], aGalColors[2][2]);
+    }
+    else if (customStarColor <= 6.0) {
+        clr = MyMath.rgbToHex(aGalColors[3][0], aGalColors[3][1], aGalColors[3][2]);
+    }
+    else if (customStarColor <= 8.0) {
+        clr = MyMath.rgbToHex(aGalColors[4][0], aGalColors[4][1], aGalColors[4][2]);
+    }
+    else if (customStarColor <= 10.0) {
+        clr = MyMath.rgbToHex(aGalColors[5][0], aGalColors[5][1], aGalColors[5][2]);
+    }
+
+    let mat = new THREE.SpriteMaterial({
+        map: t,
+        color: clr,
+        transparent: true,
+        opacity: opacity,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+    });
+    let sprite = new THREE.Sprite(mat);
+    sprite.scale.set(aScale, aScale, aScale);
+    sprite.position.set(x, y, z);
+    return sprite;
+}
+
 function downStarActivity(starID, starX, starY, starZ, currentGalaxy) {
     let star = currentGalaxy.material.uniforms.activeStars.value[starID];
-    if (currentGalaxy == fouthgalaxy) {
+    if (currentGalaxy == blinkStars) {
         var minStarActivity = 0.0;
     }
     else {
@@ -2289,8 +1766,8 @@ function downStarActivity(starID, starX, starY, starZ, currentGalaxy) {
 }
 
 function refrestStarsActivity(starID, starX, starY, starZ, currentGalaxy) {
-    if (currentGalaxy == fouthgalaxy) {
-        var star = dynamicStars[Math.floor(Math.random() * dynamicStars.length)];
+    if (currentGalaxy == blinkStars) {
+        var star = blinkStarsData[Math.floor(Math.random() * blinkStarsData.length)];
         currentGalaxy.geometry.vertices[starID].set(star.x, star.y, star.z);
         currentGalaxy.geometry.verticesNeedUpdate = true;
         currentGalaxy.material.uniforms.activeStars.value[starID] = new THREE.Vector4(star.x, star.y, star.z, 0.0);
@@ -2303,6 +1780,8 @@ function refrestStarsActivity(starID, starX, starY, starZ, currentGalaxy) {
 
 function MoveRickmobil(rickmobileID) {
     let currentRickmobile = rickmobilesPull[rickmobileID];
+
+    if (!currentRickmobile) return;
 
     if (currentRickmobile.model.visible == false) {
         currentRickmobile.model.visible = true;
@@ -2325,13 +1804,13 @@ function MoveRickmobil(rickmobileID) {
     currentRickmobile.model.position.z += (currentRickmobile.endPosition.z - currentRickmobile.startPosition.z) / (300 * currentRickmobile.speed);
 
     if (getDistanceBetweenTwoVectors(currentRickmobile.model.position, currentRickmobile.endPosition) <= (getDistanceBetweenTwoVectors(currentRickmobile.endPosition, currentRickmobile.startPosition) / (150 * currentRickmobile.speed))) {
-        var newRickmobileStartPosition = planets[Math.floor(Math.random() * planets.length)].position;
-        var newRickmobileEndPosition = planets[Math.floor(Math.random() * planets.length)].position;
+        var newRickmobileStartPosition = planetsData[Math.floor(Math.random() * planetsData.length)].position;
+        var newRickmobileEndPosition = planetsData[Math.floor(Math.random() * planetsData.length)].position;
         currentRickmobile.startPosition = newRickmobileStartPosition;
         currentRickmobile.endPosition = newRickmobileEndPosition;
 
         while (newRickmobileStartPosition == newRickmobileEndPosition) {
-            newRickmobileEndPosition = planets[Math.floor(Math.random() * planets.length)].position;
+            newRickmobileEndPosition = planetsData[Math.floor(Math.random() * planetsData.length)].position;
         }
 
         currentRickmobile.model.position.set(currentRickmobile.startPosition.x, currentRickmobile.startPosition.y, currentRickmobile.startPosition.z);
@@ -2363,207 +1842,668 @@ function moveCameraTo(camera, startX, startY, startZ, endX, endY, endZ, maxFrame
 
 }
 
-function newGalaxy(_n, xSize, zSize, armOffsetMax, filterType = -1) {
-    var stars = [];
+function newGalaxy(_n, xSize, zSize): any[] {
+    let stars: any[] = [];
+    const maxAngle = Math.PI * 1.15;
     const numArms = 5;
-    const armSeparationDistance = 2 * Math.PI / numArms;
-    const rotationFactor = 3.5;
-    if ((filterType == 4)) {
-        var randomOffsetXY = 0.2;
-    }
-    else {
-        var randomOffsetXY = 0.1;
-    }
+    const armDeltaAngle = 2 * Math.PI / numArms;
 
-    for (var i = 0; i < _n; i++) {
-        // Choose a distance from the center of the galaxy.
-        var distance = Math.random();
-        distance = Math.pow(distance, 2);
+    for (let i = 0; i < _n; i++) {
+        // choose an angle
+        let angle = Math.pow(Math.random(), 2) * maxAngle;
+        let k = 0.3;
+        let r = k * angle;
 
-        if (filterType == 2) {
-            while (distance < 0.15 || distance > 0.75) {
-                distance = Math.pow(Math.random(), 2);
-            }
-        }
+        // set random galaxy arm
+        let armId = MyMath.randomIntInRange(0, numArms - 1);
+        let armAngle = angle + armId * armDeltaAngle;
+        if (armId == 1) armAngle += .2;
 
-        if (filterType == 3 || filterType == 4) {
-            while (distance < 0.4) {
-                distance = Math.pow(Math.random(), 2);
-            }
-        }
+        // convert polar coordinates to 2D
+        let px = r * Math.cos(armAngle);
+        let py = r * Math.sin(armAngle);
 
-        // Choose an angle between 0 and 2 * PI.
-        var angle = Math.random() * 2 * Math.PI;
-        var armOffset = Math.random() * armOffsetMax;
-        armOffset = armOffset - armOffsetMax / 2;
-        armOffset = armOffset * (1 / distance);
+        // random offset
+        let randomOffsetXY = 0.01 + (maxAngle - angle) * 0.03;
+        let randomOffsetX = randomOffsetXY * MyMath.randomInRange(-1, 1);
+        let randomOffsetY = randomOffsetXY * MyMath.randomInRange(-1, 1);
 
-        var squaredArmOffset = Math.pow(armOffset, 2);
-        if (armOffset < 0)
-            squaredArmOffset = squaredArmOffset * -1;
-        armOffset = squaredArmOffset;
-
-        var rotation = distance * rotationFactor;
-
-        angle = angle / armSeparationDistance * armSeparationDistance + armOffset + rotation;
-
-        // Convert polar coordinates to 2D cartesian coordinates.
-        var starX = Math.cos(angle) * distance;
-        var starY = Math.sin(angle) * distance;
-
-        var randomOffsetX = Math.random() * randomOffsetXY;
-        var randomOffsetY = Math.random() * randomOffsetXY;
-
-        starX += randomOffsetX;
-        starY += randomOffsetY;
+        px += randomOffsetX;
+        py += randomOffsetY;
 
         // Now we can assign xy coords.
         stars[i] = {
-            x: null,
-            y: null,
-            z: null,
+            x: px * xSize,
+            y: Math.random() * 2,
+            z: py * zSize,
             w: 24
         };
 
-        stars[i].x = starX * xSize;
-
-        if (filterType == 4) {
-            stars[i].y = (Math.random() * 3) - ((Math.random() * 3));
-        }
-        else {
-            stars[i].y = Math.random() * 2;
-        }
-
-        stars[i].z = starY * zSize;
     }
 
+    // debugger;
     return stars;
 }
 
-function newStarsOutsideGalaxys(starsCount) {
+function newStarsOutsideGalaxys() {
+    const starsCount = 1000;
+    const systemRadius = 300;
     stars = [];
-    for (var i = 0; i < (starsCount * 0.2); i++) {
-        var newStar;
+    for (var i = 0; i < starsCount; i++) {
+        let layer = 0;
+        let r = MyMath.randomIntInRange(0, 100);
+        if (r < 10) layer = 0;
+        else if (r < 30) layer = 1;
+        else layer = 2;
 
-        newStar = {
-            x: 0,
-            y: 0,
-            z: 0
+        let radius = 0;
+
+        switch (layer) {
+            case 0:
+                radius = MyMath.randomInRange(systemRadius / 2, systemRadius);
+                break;
+            case 1:
+                radius = MyMath.randomInRange(systemRadius, systemRadius * 2);
+                break;
+            case 2:
+                radius = MyMath.randomInRange(systemRadius * 2, systemRadius * 8);
+                break;
         }
 
-        while (getDistanceBetweenTwoVectors(newStar, { x: 0, y: 0, z: 0 }) < 4000) {
-            newStar = {
-                x: Math.random() * 5000 - Math.random() * 5000,
-                y: Math.random() * 5000 - Math.random() * 5000,
-                z: Math.random() * 5000 - Math.random() * 5000
-            }
-        }
-
-        stars[i] = newStar;
+        let newStarPos = new THREE.Vector3(
+            MyMath.randomInRange(-10, 10),
+            MyMath.randomInRange(-10, 10),
+            MyMath.randomInRange(-10, 10)
+        );
+        newStarPos.normalize().multiplyScalar(radius);
+        stars.push(newStarPos);
     }
-
-    for (var i = 0; i < (starsCount * 0.08); i++) {
-        var newStar;
-
-        newStar = {
-            x: 0,
-            y: 0,
-            z: 0
-        }
-
-        newStar = {
-            x: Math.random() * 1000 - Math.random() * 1000,
-            y: Math.random() * 1000 - Math.random() * 1000,
-            z: Math.random() * 1000 - Math.random() * 1000
-        }
-
-        stars[i] = newStar;
-
-    }
-
-    for (var i = 0; i < (starsCount * 0.14); i++) {
-        var newStar;
-
-        newStar = {
-            x: 0,
-            y: 0,
-            z: 0
-        }
-
-        newStar = {
-            x: Math.random() * 3000 - Math.random() * 3000,
-            y: Math.random() * 3000 - Math.random() * 3000,
-            z: Math.random() * 3000 - Math.random() * 3000
-        }
-
-        stars[i] = newStar;
-
-    }
-
-    for (var i = 0; i < (starsCount * 0.01); i++) {
-        var newStar;
-
-        newStar = {
-            x: 0,
-            y: 0,
-            z: 0
-        }
-
-        newStar = {
-            x: Math.random() * 200 - Math.random() * 200,
-            y: Math.random() * 200 - Math.random() * 200,
-            z: Math.random() * 200 - Math.random() * 200
-        }
-
-        stars[i] = newStar;
-
-    }
-
     return stars;
-
 }
 
-function onMouseMove(event) {
-    if (objectHovered !== false) {
-        objectHovered = false;
-        document.body.style.cursor = 'grab';
-    }
+//threejs functions
+function setScene() {
+    sceneBg = new THREE.Scene();
+    scene = new THREE.Scene();
 
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+    camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.5, 100000);
+    camera.position.set(-90, 120, 180);
 
-    raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObjects(scene.children, true);
+    renderer = new THREE.WebGLRenderer();
+    renderer.autoClear = false;
+    renderer.setSize(innerWidth, innerHeight);
 
-    intersects.forEach(function (object) {
-        if (object.object.type == "Sprite") {
-            objectHovered = object.object;
-            document.body.style.cursor = 'pointer';
-        }
+    renderer.getContext().getExtension('OES_standard_derivatives');
+
+    renderer.setClearColor(0x0000000);
+    document.body.appendChild(renderer.domElement);
+
+    // axe helper
+    // let ah = new THREE.AxesHelper(150);
+    // ah.position.set(5, 0, 0);
+    // scene.add(ah);
+
+    createSkybox();
+
+    createSmallGalaxies();
+
+    createCameraControls({
+        minDist: minCameraDistance,
+        maxDist: maxCameraDistance,
+        stopAngleTop: 10,
+        stopAngleBot: 170,
+        pos: { x: 5, y: 0, z: 0 }
     });
 
-    if (selectedPlanet >= 0) {
-        if (objectHovered !== false) {
-            document.body.style.cursor = 'default';
-            if (objectHovered['name'] !== "planetPreview") {
-                document.body.style.cursor = "pointer";
+    clouds = new THREE.Group();
+    scene.add(clouds);
+
+    warpStars = new THREE.Group()
+    scene.add(warpStars);
+
+    // main galaxy sprite
+    mainGalaxyPlane = createMainGalaxy();
+    scene.add(mainGalaxyPlane);
+
+    // galaxy center sprite
+    sprGalaxyCenter = new THREE.Sprite(
+        new THREE.SpriteMaterial({
+            map: loader.getTexture('sun_01'),
+            color: 0xFFCCCC,
+            transparent: true,
+            opacity: 1,
+            depthWrite: false,
+            blending: THREE.AdditiveBlending
+        })
+    );
+    sprGalaxyCenter.scale.set(SUN_SCALE, SUN_SCALE, SUN_SCALE);
+    sprGalaxyCenter.renderOrder = 999;
+    scene.add(sprGalaxyCenter);
+
+    sprGalaxyCenter2 = new THREE.Sprite(
+        new THREE.SpriteMaterial({
+            map: loader.getTexture('sun_romb'),
+            color: 0xFFCCCC,
+            transparent: true,
+            opacity: 1,
+            depthWrite: false,
+            blending: THREE.AdditiveBlending
+        })
+    );
+    sprGalaxyCenter2.scale.set(SUN_SCALE_2, SUN_SCALE_2, SUN_SCALE_2);
+    sprGalaxyCenter2.renderOrder = 999;
+    scene.add(sprGalaxyCenter2);
+
+
+    // FIRST STARS
+
+    let starsCnt = starsCountData[0].active;// + starsCountData[0].customColor;
+    // let starsCnt = 200;
+    // firstGalaxyStarsData = newGalaxy(starsCnt, 20, 20, 0.7);
+
+
+    // SECOND STARS
+
+    // secondstars = new THREE.Geometry();
+    // secondstars.vertices = newGalaxy(2200, 145, 145, 0.3, 2);
+
+    // starsCnt = starsCountData[1].active + starsCountData[1].customColor;
+    galaxyStarsData = newGalaxy(4000, 145, 145);
+
+
+    // THIRD STARS
+
+    // thirdGalaxyStarsData = newGalaxy(1000, 150, 150);
+
+
+    // FOUTH STARS
+
+    blinkStarsData = newGalaxy(550, 150, 150);
+
+
+    // OUT STARS
+
+    let outStarsGeometry = new THREE.Geometry();
+    outStarsGeometry.vertices = newStarsOutsideGalaxys();
+
+    let outStarsMaterial = new THREE.ShaderMaterial({
+        vertexShader: vShaders[4],
+        fragmentShader: fShaders[4],
+        uniforms: {
+            size: { value: 2.5 },
+            distanceSize: { value: 1 },
+            t: { value: 0 },
+            z: { value: 0 },
+            pixelRatio: { value: innerHeight },
+            cameraRotationPower: { value: cameraRotationPower },
+            galaxyPower: { value: starsOutsideGalaxysPower },
+            cameraMovmentPower: { value: [0.0, 0.0] },
+            // derivatives: true
+        },
+        // depthTest: false,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+    });
+
+    outStars = new THREE.Points(outStarsGeometry, outStarsMaterial);
+    outStars.rotation.set(0, 0, 0);
+
+    scene.add(outStars);
+
+
+    if (galaxyStarsData) {
+
+        galaxyStarSprites = [];
+        let len = galaxyStarsData.length;
+
+        for (let i = 0; i < len - 1; i++) {
+            let k = i;
+
+            // let starData = secondGalaxyStarsData[MyMath.randomIntInRange(0, len - 1)];
+            let starData = galaxyStarsData[k];
+            const dPos = 3;
+            let starPos = {
+                x: starData.x + MyMath.randomInRange(-dPos, dPos),
+                y: starData.y + MyMath.randomInRange(-dPos / 2, dPos / 2),
+                z: starData.z + MyMath.randomInRange(-dPos, dPos)
+            };
+
+            let starSprite = createStarSprite('star4', starPos.x, starPos.y, starPos.z, 4, STARS_2_COLORS);
+            galaxyStarSprites.push(starSprite);
+            scene.add(starSprite);
+        }
+
+        LogMng.debug(`secondStarSprites cnt: ${galaxyStarSprites.length}`);
+    }
+
+    // create blink stars
+    blinkStars = [];
+    let len = blinkStarsData.length;
+
+    const blinkStar = (aStarSprite) => {
+        gsap.to(aStarSprite.material, {
+            opacity: 2.5,
+            delay: MyMath.randomInRange(1, 10),
+            duration: MyMath.randomInRange(1, 2),
+            yoyo: true,
+            repeat: 1,
+            onComplete: () => {
+                blinkStar(aStarSprite);
+            }
+        });
+    };
+
+    for (let i = 0; i < 500; i++) {
+
+        let k = i;
+        while (k > len - 1) k -= len;
+
+        let starData = blinkStarsData[i];
+        const dPos = 1;
+        let starPos = {
+            x: starData.x + MyMath.randomInRange(-dPos, dPos),
+            y: starData.y + MyMath.randomInRange(-dPos / 2, dPos / 2),
+            z: starData.z + MyMath.randomInRange(-dPos, dPos)
+        };
+
+        let starSprite = createStarSprite('star4_512', starPos.x, starPos.y, starPos.z, MyMath.randomIntInRange(4, 8), STARS_2_COLORS);
+        starSprite.material.opacity = 0;
+        blinkStars.push(starSprite);
+        scene.add(starSprite);
+        blinkStar(starSprite);
+    }
+
+    window.addEventListener('resize', function () {
+        camera.aspect = innerWidth / innerHeight;
+        renderer.setSize(innerWidth, innerHeight);
+        camera.updateProjectionMatrix();
+        renderer.render(scene, camera);
+    }, false);
+
+    planetsData.forEach(function (planet, planetIndex) {
+
+        var previewTexture = new THREE.TextureLoader().load(planet.preview);
+        var previewMaterial = new THREE.SpriteMaterial({
+            map: previewTexture,
+            depthWrite: false
+        });
+        var newPlanetPreview = new THREE.Sprite(previewMaterial);
+
+        newPlanetPreview.scale.set(12, 12, 12);
+        newPlanetPreview.position.set(planet.position.x, planet.position.y, planet.position.z);
+
+        newPlanetPreview.name = "planetPreview";
+
+        newPlanetPreview.renderOrder = 1;
+
+        scene.add(newPlanetPreview);
+
+        for (let layer = 1; layer < planet.layersCount + 1; layer++) {
+
+            new MTLLoader().load(planet.modelsFolder + layersNames[layer] + "_layer.mtl", (materials) => {
+                const currentLayer = layer;
+
+                materials.preload();
+
+                var objLoader = new OBJLoader();
+                objLoader.setMaterials(materials);
+                objLoader.load(planet.modelsFolder + layersNames[currentLayer] + "_layer.obj", (model) => {
+
+                    model.scale.set(planet.planetScale.x, planet.planetScale.y, planet.planetScale.z);
+                    planetsData[planetIndex].physicalPlanet[currentLayer] = model;
+
+                    if (currentLayer == 1) {
+                        (model.children[0] as any).material.transparent = false;
+                    }
+
+                    model.scale.x += planetsData[planetIndex].layersDefaultTransformation[currentLayer].scale.x;
+                    model.scale.y += planetsData[planetIndex].layersDefaultTransformation[currentLayer].scale.y;
+                    model.scale.z += planetsData[planetIndex].layersDefaultTransformation[currentLayer].scale.z;
+
+                    model.rotation.x = planetsData[planetIndex].layersDefaultTransformation[currentLayer].rotation.x;
+                    model.rotation.y = planetsData[planetIndex].layersDefaultTransformation[currentLayer].rotation.y;
+                    model.rotation.z = planetsData[planetIndex].layersDefaultTransformation[currentLayer].rotation.z;
+
+                    model.position.set(planet.position.x, planet.position.y, planet.position.z);
+                    (model.children[0] as any).material.visible = false;
+                    scene.add(model);
+
+                    model.name = planetsData[planetIndex].name;
+
+                });
+
+            });
+
+        }
+
+        planetsData[planetIndex].previewObject = newPlanetPreview;
+    });
+
+    for (var rickmobile = 0; rickmobile < rickMobileCount; rickmobile++) {
+        var newRickmobileStartPosition = planetsData[Math.floor(Math.random() * planetsData.length)].position;
+        var newRickmobileEndPosition = planetsData[Math.floor(Math.random() * planetsData.length)].position;
+
+        while (newRickmobileStartPosition == newRickmobileEndPosition) {
+            newRickmobileEndPosition = planetsData[Math.floor(Math.random() * planetsData.length)].position;
+        }
+
+        rickmobilesPull[rickmobile] = {
+            startPosition: newRickmobileStartPosition,
+            endPosition: newRickmobileEndPosition,
+            model: null,
+            speed: Math.random() * 3
+        };
+
+        new MTLLoader().load("./assets/models/rickmobil/rickmobil.mtl", (materials) => {
+            const currentRickmobile = rickmobile;
+            materials.preload();
+
+            var objLoader = new OBJLoader();
+            objLoader.setMaterials(materials);
+            objLoader.load("./assets/models/rickmobil/rickmobil.obj", (model) => {
+                model.position.set(rickmobilesPull[currentRickmobile].startPosition.x, rickmobilesPull[currentRickmobile].startPosition.y, rickmobilesPull[currentRickmobile].startPosition.z);
+                model.lookAt(rickmobilesPull[currentRickmobile].endPosition);
+                model.scale.set(0, 0, 0);
+                rickmobilesPull[currentRickmobile].model = model;
+                scene.add(model);
+                model.visible = false;
+                setTimeout(MoveRickmobil, Math.random() * 5000, currentRickmobile);
+            });
+
+        });
+
+    }
+
+    let backButtonTexture = new THREE.TextureLoader().load("./assets/interface/back.png");
+    let backButtonMaterial = new THREE.SpriteMaterial({ map: backButtonTexture });
+
+    backButton = new THREE.Sprite(backButtonMaterial);
+    backButton.scale.set(1.2, 0.4, 0.4);
+    backButton.position.z = -5;
+    backButton.position.y = 2;
+    backButton.position.x = -2.05;
+    backButton.name = "backButton";
+
+    let playButtonTexture = new THREE.TextureLoader().load("./assets/interface/play.png");
+    let playButtonMaterial = new THREE.SpriteMaterial({ map: playButtonTexture });
+    playButton = new THREE.Sprite(playButtonMaterial);
+
+    playButton.scale.set(0.4, 0.4, 0.4);
+    playButton.position.z = -4;
+    playButton.position.y = 0;
+    playButton.position.x = 1.2;
+    playButton.name = "playButton";
+
+    let comingSoonWindowTexture = new THREE.TextureLoader().load("./assets/interface/coming_soon.png");
+    let comingSoonWindowMaterial = new THREE.SpriteMaterial({ map: comingSoonWindowTexture });
+    comingSoonWindow = new THREE.Sprite(comingSoonWindowMaterial);
+    comingSoonWindow.scale.set(1.2, 0.4, 0.4);
+    comingSoonWindow.name = "comingSoonWindow";
+    comingSoonWindow.position.z = -3;
+
+    let taskTableTexture = new THREE.TextureLoader().load("./assets/interface/table.png");
+    let taskTableMaterial = new THREE.SpriteMaterial({ map: taskTableTexture });
+    taskTable = new THREE.Sprite(taskTableMaterial);
+    taskTable.scale.set(3.2, 2, 2);
+    taskTable.position.z = -3;
+
+    taskTableSlots.forEach((slot, slotID) => {
+        let newSlotMaterial = new THREE.SpriteMaterial({ color: "white", opacity: 0.5 });
+        let newSlot = new THREE.Sprite(newSlotMaterial);
+
+        newSlot.position.set(slot.center.x, slot.center.y, -2.9);
+        newSlot.scale.set(0.539, 0.24, 0.5);
+        newSlot.name = "tableSlot";
+        newSlot['slotID'] = slotID;
+        taskTableSlots[slotID].object = newSlot;
+    });
+
+    taskTableImages.forEach((image, imageID) => {
+        let newImageTexture = new THREE.TextureLoader().load(image.texture);
+        let newImageMaterial = new THREE.SpriteMaterial({ map: newImageTexture });
+        let newImage = new THREE.Sprite(newImageMaterial);
+
+        newImage.position.set(image.spawnPosition.x, image.spawnPosition.y, -2.9);
+        newImage.scale.set(0.4 * image.scale.x, 0.4 * image.scale.y, 0.4 * image.scale.z);
+        newImage.name = "tableImage";
+        newImage['imageID'] = imageID;
+        taskTableImages[imageID].object = newImage;
+    });
+
+    let readyButtonTexture = new THREE.TextureLoader().load("./assets/interface/ready.png");
+    let readyButtonMaterial = new THREE.SpriteMaterial({ map: readyButtonTexture });
+    readyButton = new THREE.Sprite(readyButtonMaterial);
+    readyButton.scale.set(0.6, 0.2, 0.2);
+    readyButton.position.set(1.0, -0.6, -2.9);
+
+    readyButton.name = "readyButton";
+
+    let youWonWindowTexture = new THREE.TextureLoader().load("./assets/interface/you_won.png");
+    let youWonWindowMaterial = new THREE.SpriteMaterial({ map: youWonWindowTexture });
+
+    youWonWindow = new THREE.Sprite(youWonWindowMaterial);
+
+    youWonWindow.position.set(0.0, 0.0, -2.8);
+    youWonWindow.scale.set(1.5, 0.75, 0.75);
+
+    youWonWindow.name = "youWonWindow";
+
+    let getAGiftButtonTexture = new THREE.TextureLoader().load("./assets/interface/get_a_gift.png");
+    let getAGiftButtonMaterial = new THREE.SpriteMaterial({ map: getAGiftButtonTexture });
+
+    getAGiftButton = new THREE.Sprite(getAGiftButtonMaterial);
+
+    getAGiftButton.position.set(0.0, -0.2, -2.7);
+    getAGiftButton.scale.set(0.6, 0.2, 0.2);
+
+    getAGiftButton.name = "giftButton";
+
+    let wrongWindowTexture = new THREE.TextureLoader().load("./assets/interface/wrong.png");
+    let wrongWindowMaterial = new THREE.SpriteMaterial({ map: wrongWindowTexture });
+    wrongWindow = new THREE.Sprite(wrongWindowMaterial);
+
+    wrongWindow.position.set(0.0, 0.0, -2.6);
+    wrongWindow.scale.set(0.8, 0.4, 0.4);
+
+    wrongWindow.name = "wrongWindow";
+
+    raycaster = new THREE.Raycaster();
+    mouseNormal = new THREE.Vector2();
+
+    // simple music
+    // let music = new Audio('./assets/audio/vorpal-12.mp3');
+    // music.play();
+
+    // pixi music
+    sound.add('music', './assets/audio/vorpal-12.mp3');
+    sound.play('music');
+
+    // tone music example
+    // Tone.start();
+    // console.log("audio is ready");
+    // new Ambient();
+    // const autoPanner = new Tone.AutoPanner(0.5).toDestination().start();
+    // const fatOsc = new Tone.FatOscillator("Cb1", "sine3", 10).connect(autoPanner).start();
+    // const autoFilter = new Tone.AutoFilter({ frequency: 0.05, baseFrequency: 220, octaves: 2 }).toDestination().start();
+    // const noise = new Tone.Noise({ type: "brown", volume: -22 }).connect(autoFilter).start();
+
+}
+
+function createSkybox() {
+    let imagePrefix = "skybox1-";
+    let directions = ["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
+    let materialArray = [];
+    for (let i = 0; i < directions.length; i++)
+        materialArray.push(new THREE.MeshBasicMaterial({
+            map: loader.getTexture(imagePrefix + directions[i]),
+            side: THREE.BackSide,
+            depthWrite: false,
+            // transparent: true,
+            // opacity: 1.,
+        }));
+
+    let imgArray = [];
+    for (let i = 0; i < directions.length; i++)
+        imgArray.push(loader.getTexture(imagePrefix + directions[i]).image);
+
+    let skyGeometry = new THREE.BoxBufferGeometry(SKY_BOX_SIZE, SKY_BOX_SIZE, SKY_BOX_SIZE);
+    let skyBox = new THREE.Mesh(skyGeometry, materialArray);
+    skyBox.position.set(0, 0, 0);
+    sceneBg.add(skyBox);
+}
+
+function createSmallGalaxies() {
+    smallGalaxies = [];
+
+    let galaxyCnt = MyMath.randomIntInRange(Math.min(3, SMALL_GALAXIES_COUNT), Math.min(6, SMALL_GALAXIES_COUNT));
+    let ids = Array.from(Array(galaxyCnt).keys());
+    // console.log('ids: ', ids);
+    MyMath.shuffleArray(ids, 4);
+    // console.log('shuff ids: ', ids);
+    for (let i = 0; i < ids.length; i++) {
+        const id = ids[i];
+        // console.log('id: ', id);
+        const galaxy = createSmallGalaxy(id);
+        // console.log('galaxy created...');
+        smallGalaxies.push(galaxy);
+        sceneBg.add(galaxy);
+        // scene.add(galaxy);
+    }
+
+}
+
+// return THREE.Mesh
+function createSmallGalaxy(aGalaxyId) {
+    const systemRadius = 1500;
+    let tNum = MyMath.randomIntInRange(1, SMALL_GALAXIES_COUNT);
+    if (aGalaxyId != undefined) tNum = aGalaxyId + 1;
+    let tName = `galaxy_${tNum.toString().padStart(2, '0')}`;
+    let t = loader.getTexture(tName);
+    let alpha = MyMath.randomInRange(0.5, 0.8);
+    let mat = new THREE.MeshBasicMaterial({
+        map: t,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: alpha,
+        depthWrite: false,
+        // depthTest: true
+        // blending: THREE.AdditiveBlending
+    });
+
+    let size = MyMath.randomInRange(400, 800);
+    let geom = new THREE.PlaneGeometry(size, size, 1, 1);
+
+    let galaxy = new THREE.Mesh(geom, mat);
+
+    const distFactor = MyMath.randomInRange(1.5, 2);
+    let posDone = false;
+    let pos = new THREE.Vector3();
+    while (!posDone) {
+        pos.set(
+            MyMath.randomInRange(-10, 10),
+            MyMath.randomInRange(-10, 10),
+            MyMath.randomInRange(-10, 10)).
+            normalize().
+            multiplyScalar(systemRadius * distFactor);
+
+        posDone = true;
+
+        for (let i = 0; i < smallGalaxies.length; i++) {
+            const g = smallGalaxies[i];
+            if (g.position.distanceTo(pos) <= systemRadius * 1.5) {
+                posDone = false;
             }
         }
     }
 
+    galaxy.position.copy(pos);
+    // galaxy.rotation.set(
+    //     MyMath.randomInRange(-Math.PI, Math.PI),
+    //     MyMath.randomInRange(-Math.PI, Math.PI),
+    //     MyMath.randomInRange(-Math.PI, Math.PI)
+    // );
+    let dir = new THREE.Vector3(
+        MyMath.randomInRange(-10, 10),
+        MyMath.randomInRange(-10, 10),
+        MyMath.randomInRange(-10, 10)).
+        normalize().
+        multiplyScalar(systemRadius * 1.5);
+    galaxy.lookAt(dir);
+    galaxy['rotSpeed'] = MyMath.randomInRange(0.01, 0.03);
+    return galaxy;
+}
+
+function createMainGalaxy() {
+    let t = loader.getTexture('galaxySprite');
+    let galaxy = new THREE.Mesh(
+        new THREE.PlaneGeometry(350, 350),
+        new THREE.MeshBasicMaterial({
+            map: t,
+            side: THREE.DoubleSide,
+            transparent: true,
+            depthWrite: false,
+            opacity: 1.0,
+            blending: THREE.AdditiveBlending
+        })
+    );
+    galaxy.rotation.x = -Math.PI / 2;
+    galaxy.rotation.z = -1.2;
+    // galaxyPlane.position.y = -1;
+    // galaxyPlane.position.z = 9;
+    return galaxy;
+}
+
+function createCameraControls(aParams) {
+
+    if (camOrbit) return;
+    if (!aParams) aParams = {};
+    let domElement = renderer.domElement;
+    camOrbit = new OrbitControls(camera, domElement);
+    if (!aParams.noTarget)
+        camOrbit.target = new THREE.Vector3();
+    camOrbit.enabled = !(aParams.isOrbitLock == true);
+    camOrbit.rotateSpeed = .5;
+    camOrbit.enableDamping = true;
+    camOrbit.dampingFactor = 0.025;
+    camOrbit.zoomSpeed = aParams.zoomSpeed || 1;
+    camOrbit.enablePan = aParams.enablePan == true;
+    // this.camOrbitCtrl.keys = {};
+    camOrbit.minDistance = aParams.minDist || 1;
+    camOrbit.maxDistance = aParams.maxDist || 100;
+    camOrbit.minPolarAngle = MyMath.toRadian(aParams.stopAngleTop || 0); // Math.PI / 2.5;
+    // camOrbit.maxPolarAngle = Math.PI - an;
+    camOrbit.maxPolarAngle = MyMath.toRadian(aParams.stopAngleBot || 0);
+    if (aParams.pos) {
+        camOrbit.target.x = aParams.pos.x || 0;
+        camOrbit.target.y = aParams.pos.y || 0;
+        camOrbit.target.z = aParams.pos.z || 0;
+    }
+    camOrbit.update();
+    camOrbit.addEventListener('change', () => {
+    });
+    camOrbit.addEventListener('end', () => {
+    });
+
+}
+
+
+function onMouseMove(event) {
+    mouseNormal.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouseNormal.y = - (event.clientY / window.innerHeight) * 2 + 1;
 }
 
 function onMouseClick(event) {
 
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+    mouseNormal.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouseNormal.y = - (event.clientY / window.innerHeight) * 2 + 1;
 
     return;
-    
-    raycaster.setFromCamera(mouse, camera);
+
+    raycaster.setFromCamera(mouseNormal, camera);
 
     const intersects = raycaster.intersectObjects(scene.children, true);
 
+    /*
     intersects.forEach(function (object) {
         if (currentObjectIsFounded == true) {
             return;
@@ -2571,7 +2511,7 @@ function onMouseClick(event) {
 
         if (object.object.type == "Sprite") {
             if (object.object.name == 'planetPreview') {
-                planets.forEach(function (planet, planetIndex) {
+                planetsData.forEach(function (planet, planetIndex) {
                     if (planet.position.x == object.object.position.x && planet.position.y == object.object.position.y && planet.position.z == object.object.position.z) {
                         selectedPlanet = planetIndex;
                         planet.physicalPlanet.forEach(function (layer) {
@@ -2587,8 +2527,8 @@ function onMouseClick(event) {
                     rickmobile.model.children[1].material.visible = false;
                 });
 
-                controls.minDistance = 0;
-                controls.enableDamping = false;
+                camOrbit.minDistance = 0;
+                camOrbit.enableDamping = false;
 
                 lastFreeCameraPosition = {
                     x: camera.position.x,
@@ -2598,8 +2538,8 @@ function onMouseClick(event) {
 
                 setTimeout(moveCameraTo, Math.random(), camera, camera.position.x, camera.position.y, camera.position.z, object.object.position.x, object.object.position.y, object.object.position.z - 5, 150, 0, true);
 
-                controls.target = object.object.position;
-                controls.enabled = false;
+                camOrbit.target = object.object.position;
+                camOrbit.enabled = false;
 
                 camera.add(backButton);
                 camera.add(playButton);
@@ -2641,17 +2581,17 @@ function onMouseClick(event) {
                 camera.remove(playButton);
                 camera.remove(comingSoonWindow);
 
-                controls.enabled = true;
-                controls.target = new THREE.Vector3(0, 0, 0);
+                camOrbit.enabled = true;
+                camOrbit.target = new THREE.Vector3(0, 0, 0);
 
-                selectedPlanet = -1;
+                selectedPlanet = false;
 
-                controls.minDistance = minCameraDistance;
-                controls.enableDamping = true;
+                camOrbit.minDistance = minCameraDistance;
+                camOrbit.enableDamping = true;
 
                 setTimeout(moveCameraTo, Math.random(), camera, camera.position.x, camera.position.y, camera.position.z, lastFreeCameraPosition.x, lastFreeCameraPosition.y, lastFreeCameraPosition.z, 150, 0, false);
 
-                planets.forEach(function (planet) {
+                planetsData.forEach(function (planet) {
                     scene.add(planet.previewObject);
                     planet.physicalPlanet.forEach(function (layer) {
                         layer.children[0].material.visible = false;
@@ -2667,7 +2607,7 @@ function onMouseClick(event) {
 
             if (object.object.name == 'playButton') {
 
-                let planet = planets[selectedPlanet];
+                planet = planetsData[selectedPlanet];
 
                 if (planet.name == "skwoth") {
                     camera.add(taskTable);
@@ -2703,7 +2643,7 @@ function onMouseClick(event) {
                         isAllRight = false;
                     }
                     else {
-                        let downSlot = taskTableSlots[slotID + 4];
+                        downSlot = taskTableSlots[slotID + 4];
                         if (taskTableImages[slot.inUseBy].agreeWith !== downSlot.inUseBy) {
                             isAllRight = false;
                         }
@@ -2737,12 +2677,12 @@ function onMouseClick(event) {
                 }
 
                 if (selectedImage !== object.object) {
-                    let currentImagePosition = new THREE.Vector3(object.object.position.x, object.object.position.y, object.object.position.z);
+                    currentImagePosition = new THREE.Vector3(object.object.position.x, object.object.position.y, object.object.position.z);
                     object.object.position.set(selectedImage.position.x, selectedImage.position.y, selectedImage.position.z);
                     selectedImage.position.set(currentImagePosition.x, currentImagePosition.y, currentImagePosition.z);
 
-                    let currentImageSlot = taskTableImages[object.object.imageID].currentSlot;
-                    let selectedImageSlot = taskTableImages[selectedImage.imageID].currentSlot;
+                    currentImageSlot = taskTableImages[object.object.imageID].currentSlot;
+                    selectedImageSlot = taskTableImages[selectedImage.imageID].currentSlot;
 
                     if (currentImageSlot !== null) {
                         selectedImage.currentSlot = currentImageSlot;
@@ -2769,7 +2709,7 @@ function onMouseClick(event) {
                     return;
                 }
 
-                let currentSlot = taskTableSlots[object.object.slotID];
+                currentSlot = taskTableSlots[object.object.slotID];
                 var PreviousImageSlot = null;
                 taskTableSlots.forEach(function (slot, slotID) {
                     if (slot.inUseBy == selectedImage.imageID) {
@@ -2821,14 +2761,14 @@ function onMouseClick(event) {
         }
 
     });
+    //*/
 
-    currentObjectIsFounded = false;
 }
 
 function onKeyPress(event) {
 
     if (event.key == "Escape") {
-        if (selectedPlanet < 0) {
+        if (selectedPlanet === false) {
             return;
         }
 
@@ -2849,16 +2789,16 @@ function onKeyPress(event) {
             camera.remove(image.object);
         });
 
-        controls.enabled = true;
-        controls.target = new THREE.Vector3(0, 0, 0);
+        camOrbit.enabled = true;
+        camOrbit.target = new THREE.Vector3(0, 0, 0);
 
-        selectedPlanet = -1;
+        selectedPlanet = false;
 
-        controls.minDistance = minCameraDistance;
-        controls.enableDamping = true;
+        camOrbit.minDistance = minCameraDistance;
+        camOrbit.enableDamping = true;
         camera.position.set(-90, 120, 180);
 
-        planets.forEach(function (planet) {
+        planetsData.forEach(function (planet) {
             scene.add(planet.previewObject);
             planet.physicalPlanet.forEach(function (layer) {
                 layer.children[0].material.visible = false;
@@ -2873,38 +2813,42 @@ function onKeyPress(event) {
     }
 
     if (event.key == "1") {
-        if (scene.children.includes(firstgalaxy)) {
-            scene.remove(firstgalaxy);
-        }
-        else {
-            scene.add(firstgalaxy);
-        }
+        // if (firstgalaxy) {
+        //     if (scene.children.includes(firstgalaxy)) {
+        //         scene.remove(firstgalaxy);
+        //         scene.add(sunSprite);
+        //     }
+        //     else {
+        //         scene.remove(sunSprite);
+        //         scene.add(firstgalaxy);
+        //     }
+        // }
     }
 
     if (event.key == "2") {
-        if (scene.children.includes(secondgalaxy)) {
-            scene.remove(secondgalaxy);
-        }
-        else {
-            scene.add(secondgalaxy);
-        }
+        // if (scene.children.includes(secondgalaxy)) {
+        //     scene.remove(secondgalaxy);
+        // }
+        // else {
+        //     scene.add(secondgalaxy);
+        // }
     }
 
     if (event.key == "3") {
-        if (scene.children.includes(thirdgalaxy)) {
-            scene.remove(thirdgalaxy);
-        }
-        else {
-            scene.add(thirdgalaxy);
-        }
+        // if (scene.children.includes(thirdgalaxy)) {
+        //     scene.remove(thirdgalaxy);
+        // }
+        // else {
+        //     scene.add(thirdgalaxy);
+        // }
     }
 
     if (event.key == "4") {
-        if (scene.children.includes(fouthgalaxy)) {
-            scene.remove(fouthgalaxy);
+        if (scene.children.includes(blinkStars)) {
+            scene.remove(blinkStars);
         }
         else {
-            scene.add(fouthgalaxy);
+            scene.add(blinkStars);
         }
         if (scene.children.includes(clouds)) {
             scene.remove(clouds);
@@ -2915,11 +2859,11 @@ function onKeyPress(event) {
     }
 
     if (event.key == "5") {
-        if (scene.children.includes(fifthgalaxy)) {
-            scene.remove(fifthgalaxy);
+        if (scene.children.includes(outStars)) {
+            scene.remove(outStars);
         }
         else {
-            scene.add(fifthgalaxy);
+            scene.add(outStars);
         }
     }
 
@@ -2934,14 +2878,67 @@ function onKeyPress(event) {
 
 }
 
-function animate() {
-    requestAnimationFrame(animate);
-    controls.update();
+function checkMousePointer() {
+    raycaster.setFromCamera(mouseNormal, camera);
+    const intersects = raycaster.intersectObjects(scene.children, true);
 
-    let spDelta = controls['sphericalDelta'] || {};
-    fifthgalaxy.material.uniforms.cameraMovmentPower.value = [spDelta.theta, spDelta.phi];
+    let isHover = false;
 
-    var polarAngle = controls.getPolarAngle();
+    intersects.forEach(function (object) {
+        if (object.object.type == 'Sprite') {
+            objectHovered = object.object;
+            if (objectHovered['name'] == 'planetPreview') {
+                document.body.style.cursor = 'pointer';
+                isHover = true;
+            }
+        }
+    });
+
+    if (!isHover) {
+        document.body.style.cursor = 'default';
+    }
+
+    // if (selectedPlanet !== false) {
+    //     if (objectHovered !== false) {
+    //         document.body.style.cursor = 'default';
+    //         if (objectHovered.name !== "planetPreview") {
+    //             document.body.style.cursor = "pointer";
+    //         }
+    //     }
+    // }
+
+    // if (objectHovered !== false) {
+    //     objectHovered == false;
+    //     document.body.style.cursor = 'default';
+    // }
+}
+
+function render() {
+    renderer.autoClear = true;
+    renderer.render(sceneBg, camera);
+    renderer.autoClear = false;
+    renderer.render(scene, camera);
+}
+
+function update(dt) {
+    let dtMs = dt * 1000;
+
+    let aAngle = camOrbit.getAzimuthalAngle();
+    let dtAzimut = aAngle - prevCamAzimutAngle;
+    prevCamAzimutAngle = aAngle;
+
+    let pAngle = camOrbit.getPolarAngle();
+    let dtPolar = pAngle - prevCamPolarAngle;
+    prevCamPolarAngle = pAngle;
+
+    let azFactor = dtAzimut * 10;
+    let polFactor = dtPolar * 10;
+
+    outStars.material.uniforms.cameraMovmentPower.value = [azFactor, polFactor];
+
+    // LogMng.debug(`azFactor: ${azFactor}; polFactor: ${polFactor};`);
+
+    var polarAngle = camOrbit.getPolarAngle();
     var cameraRotationFactor = Math.abs(polarAngle - Math.PI / 2);
 
     if (cameraRotationFactor >= 0.75) {
@@ -2951,41 +2948,75 @@ function animate() {
         cameraRotationPower = 1.0 + ((verticalCameraMagnitude - 1.0) * (cameraRotationFactor / 0.75));
     }
 
-    [firstgalaxy, secondgalaxy, thirdgalaxy, fouthgalaxy].forEach(function (galaxy) {
-        galaxy.material.uniforms.cameraRotationPower.value = cameraRotationPower;
-    });
+    // let mas = [];
+    // if (firstgalaxy) mas.push(firstgalaxy);
+    // if (secondgalaxy) mas.push(secondgalaxy);
+    // if (thirdgalaxy) mas.push(thirdgalaxy);
+    // if (blinkStars) mas.push(blinkStars);
+    // mas.forEach(function (galaxy) {
+    //     galaxy.material.uniforms.cameraRotationPower.value = cameraRotationPower;
+    // });
 
-    planets.forEach(function (planet) {
-        planet.physicalPlanet.forEach(function (layer, layerIndex) {
-            layer.rotation.x += planet.layersPerFrameTransformation[layerIndex].rotation.x;
-            layer.rotation.y += planet.layersPerFrameTransformation[layerIndex].rotation.y;
-            layer.rotation.z += planet.layersPerFrameTransformation[layerIndex].rotation.z;
+    // planets.forEach(function (planet) {
+    //     planet.physicalPlanet.forEach(function (layer, layerIndex) {
+    //         layer.rotation.x += planet.layersPerFrameTransformation[layerIndex].rotation.x;
+    //         layer.rotation.y += planet.layersPerFrameTransformation[layerIndex].rotation.y;
+    //         layer.rotation.z += planet.layersPerFrameTransformation[layerIndex].rotation.z;
 
-            layer.scale.x += planet.layersPerFrameTransformation[layerIndex].scale.x;
-            layer.scale.y += planet.layersPerFrameTransformation[layerIndex].scale.y;
-            layer.scale.z += planet.layersPerFrameTransformation[layerIndex].scale.z;
-        });
-    });
+    //         layer.scale.x += planet.layersPerFrameTransformation[layerIndex].scale.x;
+    //         layer.scale.y += planet.layersPerFrameTransformation[layerIndex].scale.y;
+    //         layer.scale.z += planet.layersPerFrameTransformation[layerIndex].scale.z;
+    //     });
+    // });
 
-    smallGalaxys.forEach(function (galaxy, galaxyIndex) {
-        let g = smallGalaxysObjectsArray[galaxyIndex];
-        // console.log(smallGalaxysObjectsArray);
-        // console.log(g);
-        if (g) g.rotateY(THREE.MathUtils.degToRad(galaxy.rotationPower));
-    });
+    for (let i = 0; i < smallGalaxies.length; i++) {
+        const g = smallGalaxies[i];
+        if (g) g.rotateZ(g['rotSpeed'] * dt);
+    }
 
-    if (galaxyPlane) {
+    if (mainGalaxyPlane) {
         if (polarAngle < Math.PI / 2) {
-            galaxyPlane.material.opacity = 1 - (polarAngle / (Math.PI / 2));
+            mainGalaxyPlane.material.opacity = 1 - (polarAngle / (Math.PI / 2));
         } else {
-            galaxyPlane.material.opacity = 1 - (Math.abs(polarAngle - Math.PI) / (Math.PI / 2));
+            mainGalaxyPlane.material.opacity = 1 - (Math.abs(polarAngle - Math.PI) / (Math.PI / 2));
         }
     }
-    renderer.autoClear = false;
-    renderer.render(scene, camera);
-    // renderer.render(sceneForSmallGalaxys, camera);
+
+    if (sprGalaxyCenter) {
+        // debugger;
+        // console.log(`polarAngle: ${polarAngle}`);
+        const scMin = 0.1;
+        let anFactor = scMin + (1 - scMin) * (1 - (polarAngle / (Math.PI / 2)));
+        if (polarAngle > Math.PI / 2) {
+            anFactor = scMin + (1 - scMin) * (1 - (Math.abs(polarAngle - Math.PI) / (Math.PI / 2)));
+        }
+        sprGalaxyCenter.scale.y = SUN_SCALE * anFactor;
+    }
+
+    if (sprGalaxyCenter2) {
+        // debugger;
+        // console.log(`polarAngle: ${polarAngle}`);
+        const scMin = 0.3;
+        let anFactor = scMin + (1 - scMin) * (1 - (polarAngle / (Math.PI / 2)));
+        if (polarAngle > Math.PI / 2) {
+            anFactor = scMin + (1 - scMin) * (1 - (Math.abs(polarAngle - Math.PI) / (Math.PI / 2)));
+        }
+        sprGalaxyCenter2.scale.y = SUN_SCALE_2 * anFactor;
+    }
+
+    camOrbit.update();
+
+    checkMousePointerTimer -= dt;
+    if (checkMousePointerTimer <= 0) {
+        checkMousePointerTimer = 0.1;
+        checkMousePointer();
+    }
+
+    render();
 }
 
-// window.addEventListener('load', () => {
-//     initScene();
-// }, false);
+function animate() {
+    let dt = clock.getDelta();
+    update(dt);
+    requestAnimationFrame(animate);
+}

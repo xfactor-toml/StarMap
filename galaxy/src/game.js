@@ -4,7 +4,6 @@ import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
 import { ThreeLoader } from './loaders/ThreeLoader';
 import gsap from 'gsap';
-import * as Tone from "tone";
 import { MyMath } from './utils/MyMath';
 import { LogMng } from './utils/LogMng';
 import { sound } from '@pixi/sound';
@@ -528,8 +527,6 @@ uniform float z;
 
 let verticalCameraMagnitude = 5.0;
 
-// let firstGalaxyPower = 0.4;
-// let secondGalaxyPower = 3.2;
 let thirdGalaxyPower = 1.2;
 let fouthGalaxyPower = 0.9;
 
@@ -575,17 +572,9 @@ let giftURL = "https://google.com";
 
 var blinkStarsData;
 
-// var allStars = [];
-
-// var secondGalaxyActiveStarsPull = [];
-// var thirdGalaxyActiveStarsPull = [];
-// var fouthGalaxyActiveStarsPull = [];
-// var fifthGalaxyActiveStarsPull = [];
-
 var cameraRotationPower = 1.0;
 
 let clouds;
-// let fouthGalaxyClouds = {};
 let warpStars;
 let mainGalaxyPlane;
 
@@ -1517,19 +1506,15 @@ let sprGalaxyCenter2;
 let firstGalaxyStarsData;
 let firstStarSprites = [];
 
-// let secondstars;
-// let secondgalaxy;
 let secondGalaxyStarsData;
 let secondStarSprites = [];
 
-// let thirdgalaxy;
 let thirdGalaxyStarsData;
 let thirdStarSprites = [];
 
 let blinkStars = [];
 
 let outStars;
-
 let stars;
 
 let starsCountData = [];
