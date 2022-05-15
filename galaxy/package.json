@@ -12,6 +12,7 @@
     "license": "ISC",
     "devDependencies": {
         "ts-loader": "^8.0.0",
+        "ts-shader-loader": "^1.0.6",
         "webpack": "^4.41.6",
         "webpack-cli": "^3.3.11",
         "webpack-dev-server": "^3.11.2"
@@ -21,10 +22,11 @@
         "@types/dat.gui": "^0.7.7",
         "@types/stats": "^0.16.30",
         "@types/three": "^0.138.0",
+        "@types/ua-parser-js": "^0.7.36",
         "dat.gui": "^0.7.6",
         "gsap": "^3.10.2",
         "stats-js": "^1.0.1",
         "three": "^0.124.0",
-        "tone": "^14.7.77"
+        "ua-parser-js": "^1.0.2"
     }
 }
