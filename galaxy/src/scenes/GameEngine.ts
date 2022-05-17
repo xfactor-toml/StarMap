@@ -15,8 +15,7 @@ import { Config } from "../data/Config";
 import { LogMng } from "../utils/LogMng";
 import { Params } from "../data/Params";
 import { GlobalEvents } from "../events/GlobalEvents";
-import { Galaxy as Galaxy } from "./Galaxy";
-import { initScene, updateTest } from "./GalaxyTest";
+import { Galaxy } from "./Galaxy";
 
 
 export class GameEngine {
