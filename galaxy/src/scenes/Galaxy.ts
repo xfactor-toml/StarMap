@@ -13,109 +13,6 @@ import { Config } from '../data/Config';
 import vsFarStars from '../shaders/farStars/vs.glsl';
 import fsFarStars from '../shaders/farStars/fs.glsl';
 
-let vsFarShader_OLD = `
-    uniform float size;
-    uniform float distanceSize;
-    uniform float t;
-    uniform float z;
-    uniform float pixelRatio;
-    uniform vec4 activeStars[GALAXY_ACTIVE_STARS_COUNT];
-    uniform vec4 starsWithCustomColor[GALAXY_STARS_WITH_CUSTOM_COLOR_COUNT];
-    uniform float cameraRotationPower;
-    uniform float galaxyPower;
-    
-    varying vec3 vPosition;
-    varying vec3 mPosition;//modified position
-    varying float gas;
-    varying float customStarColor;
-  
-    
-    void main() {
-    
-      vPosition=position;
-      mPosition=position;
-      vec4 mvPosition=modelViewMatrix*vec4(mPosition,1.);
-      gl_Position=mvPosition*projectionMatrix;
-      float multiplier = 200000.;
-
-      if(distance(position, vec3(0.5, 0.5, 0.5)) < 100000.){
-        multiplier = 1000.;
-      }
-
-      if(distance(position, vec3(0.5, 0.5, 0.5)) < 2000.){
-        multiplier = 100.;
-      }
-
-      gl_PointSize=50./(length(mvPosition.xyz) / multiplier);
-
-      if(gl_PointSize < 15.){
-        gl_PointSize = 15.;
-      }
-
-      if(gl_PointSize > 20.){
-        gl_PointSize = 20.;
-      }
-    
-    }
-`;
-
-let fsFarShader_OLD = `
-    uniform float z;
-        
-    varying vec3 vPosition;
-    varying vec3 mPosition;
-    varying float gas;
-    varying float customStarColor;
-    uniform vec2 cameraMovmentPower;
-    
-    float line(vec2 uv, vec2 pt1, vec2 pt2, float pointSize, float tensionPower)
-    {
-        float clrFactor = 0.0;
-        float tickness = pointSize;
-        float r  = distance(uv, pt1) / distance(pt1, pt2);
-        
-        if (r <= tensionPower) {
-            vec2 ptc = mix(pt1, pt2, r); 
-            float dist = distance(ptc, uv);
-            if (dist < tickness / 2.0) {
-                clrFactor = 1.0;
-            }
-        }
-        return clrFactor;
-    }
-
-
-    void main() {
-      float tension = 4.9;
-      float pointSize = 0.06;
-      float tensionPower = 3.0;
-
-      if (z > 0.) gl_FragColor *= cos(1.57 * z/322.) * (1. - .001 * length(mPosition));
-
-      if (distance(gl_PointCoord, vec2(0.5, 0.5)) < 0.05) {
-        gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-      }
-
-      if (distance(vPosition, vec3(0.5, 0.5, 0.5)) < 10000.) {
-        tension = 3.6;
-        float pointSize = 0.06;
-        // float tensionPower = 1.0;
-      }
-
-      if (distance(vPosition, vec3(0.5, 0.5, 0.5)) < 900.) {
-        tension = 0.5;
-        float pointSize = 0.06;
-        // float tensionPower = 1.0;
-      }
-
-      if (abs(cameraMovmentPower.x) > 0.02 || abs(cameraMovmentPower.y) > 0.02) {
-        float distanceToLine = line(gl_PointCoord.xy, (cameraMovmentPower.xy * tension) + .5, vec2(0.5, 0.5), pointSize, tensionPower) * 5.0;
-        gl_FragColor = vec4(distanceToLine, distanceToLine, distanceToLine, distanceToLine);
-      }
-
-    }
-`;
-
 const STARS_1_COLORS = [
     [0.505 * 255, 0.39 * 255, 0.3 * 255],
     [0.258 * 255, 0.282 * 255, 0.145 * 255],
@@ -163,26 +60,12 @@ let starsOutsideGalaxysPower = 2.0;
 let rickMobileCount = 0;
 
 const minCameraDistance = 50;
-const maxCameraDistance = 250;
+const maxCameraDistance = 300;
 
-let camera;
-
-let lastFreeCameraPosition = { x: 0, y: 0, z: 0 };
-
-let raycaster;
 let mouseNormal = { x: 0, y: 0 };
 
-let objectHovered = false;
+let objectHovered: any;
 let selectedPlanet = false;
-
-let backButton;
-let playButton;
-let comingSoonWindow;
-let taskTable;
-let readyButton;
-let youWonWindow;
-let wrongWindow;
-let getAGiftButton;
 
 let blinkStarsData;
 
@@ -1112,41 +995,34 @@ let camOrbit;
 let prevCamPolarAngle = 0;
 let prevCamAzimutAngle = 0;
 
-// let firstGalaxyStarsData: any[];
-// let firstStarSprites = [];
-
 let galaxyStarsData: any[];
 let galaxyStarSprites = [];
 
-// let thirdGalaxyStarsData: any[];
-// let thirdStarSprites = [];
-
 let blinkStars = [];
-
-let outStars;
-let stars;
-
-let starsCountData = [];
 
 let checkMousePointerTimer = 0;
 
-export class GalaxyScene {
+export class Galaxy {
     private scene: THREE.Scene;
     private sceneBg: THREE.Scene;
+    private camera: THREE.PerspectiveCamera;
 
     private sprGalaxyCenter: THREE.Sprite;
     private sprGalaxyCenter2: THREE.Sprite;
+
+    private raycaster: THREE.Raycaster;
+
+    private outStars: THREE.Points;
 
 
     constructor(aParams: any) {
         this.scene = aParams.scene;
         this.sceneBg = aParams.backScene;
-        camera = aParams.camera;
+        this.camera = aParams.camera;
     }
 
     init() {
 
-        this.initStarsCount();
         this.setScene();
 
         // document.addEventListener('pointermove', onMouseMove);
@@ -1156,115 +1032,6 @@ export class GalaxyScene {
         document.querySelector('canvas').addEventListener('touchstart', (event) => {
             (event as any).target.requestFullscreen();
         });
-
-    }
-
-    initStarsCount() {
-        const iphoneStarsCount = [
-            // center
-            {
-                active: 2,
-                customColor: 2000
-            },
-            // second
-            {
-                active: 1000,
-                customColor: 1000
-            },
-            // third
-            {
-                active: 400,
-                customColor: 1000
-            },
-            {
-                active: 30,
-                customColor: 40
-            },
-            {
-                active: 2,
-                customColor: 110
-            }
-        ];
-        const androidStarsCount = [
-            // center
-            {
-                active: 2,
-                customColor: 2000
-            },
-            // second
-            {
-                active: 1000,
-                customColor: 1000
-            },
-            // third
-            {
-                active: 400,
-                customColor: 1000
-            },
-            {
-                active: 50,
-                customColor: 70
-            },
-            {
-                active: 2,
-                customColor: 110
-            }
-        ];
-        const desktopStarsCount = [
-            // center
-            {
-                active: 2,
-                customColor: 2000
-            },
-            // second
-            {
-                active: 1700,
-                customColor: 1000
-            },
-            // third
-            {
-                active: 700,
-                customColor: 1000
-            },
-            {
-                active: 400,
-                customColor: 1000
-            },
-            {
-                active: 5,
-                customColor: 2200
-            }
-        ];
-
-        starsCountData = desktopStarsCount;
-
-        if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-            starsCountData = iphoneStarsCount;
-        }
-
-        if (/Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-            starsCountData = androidStarsCount;
-        }
-
-        // for (let i = 0; i < vShaders.length; i++) {
-        //     let act = String(starsCountData[i].active);
-        //     let clr = String(starsCountData[i].customColor);
-        //     console.log('act, clr: ', act, clr);
-        //     vShaders[i] = vShaders[i].replace('GALAXY_ACTIVE_STARS_COUNT', act);
-        //     vShaders[i] = vShaders[i].replace('GALAXY_ACTIVE_STARS_COUNT', act);
-        //     vShaders[i] = vShaders[i].replace('GALAXY_STARS_WITH_CUSTOM_COLOR_COUNT', clr);
-        //     vShaders[i] = vShaders[i].replace('GALAXY_STARS_WITH_CUSTOM_COLOR_COUNT', clr);
-        //     // console.log(`vShaders[${i}]:`, vShaders[i]);
-        // }
-
-        let act = String(starsCountData[4].active);
-        let clr = String(starsCountData[4].customColor);
-        console.log('act, clr: ', act, clr);
-        vsFarShader_OLD = vsFarShader_OLD.replace('GALAXY_ACTIVE_STARS_COUNT', act);
-        vsFarShader_OLD = vsFarShader_OLD.replace('GALAXY_ACTIVE_STARS_COUNT', act);
-        vsFarShader_OLD = vsFarShader_OLD.replace('GALAXY_STARS_WITH_CUSTOM_COLOR_COUNT', clr);
-        vsFarShader_OLD = vsFarShader_OLD.replace('GALAXY_STARS_WITH_CUSTOM_COLOR_COUNT', clr);
-        // console.log(`vShaders[${i}]:`, vShaders[i]);
 
     }
 
@@ -1463,11 +1230,12 @@ export class GalaxyScene {
         return stars;
     }
 
-    newStarsOutsideGalaxys() {
-        const starsCount = 1000;
+    newStarsOutsideGalaxys(): THREE.Vector3[] {
+        const starsCount = 500;
         const systemRadius = 300;
-        stars = [];
-        for (var i = 0; i < starsCount; i++) {
+        let stars: THREE.Vector3[] = [];
+
+        for (let i = 0; i < starsCount; i++) {
             let layer = 0;
             let r = MyMath.randomIntInRange(0, 100);
             if (r < 10) layer = 0;
@@ -1502,14 +1270,8 @@ export class GalaxyScene {
     //threejs functions
     setScene() {
 
-        camera.position.set(-90, 120, 180);
+        this.camera.position.set(-90, 120, 180);
         
-        // renderer = new THREE.WebGLRenderer();
-        // renderer.autoClear = false;
-        // renderer.setSize(innerWidth, innerHeight);
-        // renderer.setClearColor(0x0000000);
-        // document.body.appendChild(renderer.domElement);
-
         // axe helper
         // let ah = new THREE.AxesHelper(150);
         // ah.position.set(5, 0, 0);
@@ -1568,59 +1330,29 @@ export class GalaxyScene {
 
 
         // FIRST STARS
-
-        let starsCnt = starsCountData[0].active;// + starsCountData[0].customColor;
-        // let starsCnt = 200;
-        // firstGalaxyStarsData = newGalaxy(starsCnt, 20, 20, 0.7);
-
-
-        // SECOND STARS
-
-        // secondstars = new THREE.Geometry();
-        // secondstars.vertices = newGalaxy(2200, 145, 145, 0.3, 2);
-
-        // starsCnt = starsCountData[1].active + starsCountData[1].customColor;
         galaxyStarsData = this.newGalaxy(4000, 145, 145);
 
-
-        // THIRD STARS
-
-        // thirdGalaxyStarsData = newGalaxy(1000, 150, 150);
-
-
-        // FOUTH STARS
-
+        // BLINK STARS
         blinkStarsData = this.newGalaxy(550, 150, 150);
 
-
         // OUT STARS
-
         let outStarsGeometry = new THREE.Geometry();
         outStarsGeometry.vertices = this.newStarsOutsideGalaxys();
 
         let outStarsMaterial = new THREE.ShaderMaterial({
-            vertexShader: vsFarShader_OLD, // vsFarStars,
-            fragmentShader: fsFarShader_OLD, // fsFarStars,
+            vertexShader: vsFarStars,
+            fragmentShader: fsFarStars,
             uniforms: {
-                size: { value: 2.5 },
-                distanceSize: { value: 1 },
-                t: { value: 0 },
-                z: { value: 0 },
-                pixelRatio: { value: innerHeight },
-                cameraRotationPower: { value: cameraRotationPower },
-                galaxyPower: { value: starsOutsideGalaxysPower },
                 cameraMovmentPower: { value: [0.0, 0.0] },
-                derivatives: true
-            } as any,
-            // depthTest: false,
+            },
             depthWrite: false,
             blending: THREE.AdditiveBlending
         });
 
-        outStars = new THREE.Points(outStarsGeometry, outStarsMaterial);
-        outStars.rotation.set(0, 0, 0);
+        this.outStars = new THREE.Points(outStarsGeometry, outStarsMaterial);
+        this.outStars.rotation.set(0, 0, 0);
 
-        this.scene.add(outStars);
+        this.scene.add(this.outStars);
 
 
         if (galaxyStarsData) {
@@ -1786,39 +1518,6 @@ export class GalaxyScene {
 
         }
 
-        let backButtonTexture = new THREE.TextureLoader().load("./assets/interface/back.png");
-        let backButtonMaterial = new THREE.SpriteMaterial({ map: backButtonTexture });
-
-        backButton = new THREE.Sprite(backButtonMaterial);
-        backButton.scale.set(1.2, 0.4, 0.4);
-        backButton.position.z = -5;
-        backButton.position.y = 2;
-        backButton.position.x = -2.05;
-        backButton.name = "backButton";
-
-        let playButtonTexture = new THREE.TextureLoader().load("./assets/interface/play.png");
-        let playButtonMaterial = new THREE.SpriteMaterial({ map: playButtonTexture });
-        playButton = new THREE.Sprite(playButtonMaterial);
-
-        playButton.scale.set(0.4, 0.4, 0.4);
-        playButton.position.z = -4;
-        playButton.position.y = 0;
-        playButton.position.x = 1.2;
-        playButton.name = "playButton";
-
-        let comingSoonWindowTexture = new THREE.TextureLoader().load("./assets/interface/coming_soon.png");
-        let comingSoonWindowMaterial = new THREE.SpriteMaterial({ map: comingSoonWindowTexture });
-        comingSoonWindow = new THREE.Sprite(comingSoonWindowMaterial);
-        comingSoonWindow.scale.set(1.2, 0.4, 0.4);
-        comingSoonWindow.name = "comingSoonWindow";
-        comingSoonWindow.position.z = -3;
-
-        let taskTableTexture = new THREE.TextureLoader().load("./assets/interface/table.png");
-        let taskTableMaterial = new THREE.SpriteMaterial({ map: taskTableTexture });
-        taskTable = new THREE.Sprite(taskTableMaterial);
-        taskTable.scale.set(3.2, 2, 2);
-        taskTable.position.z = -3;
-
         taskTableSlots.forEach((slot, slotID) => {
             let newSlotMaterial = new THREE.SpriteMaterial({ color: "white", opacity: 0.5 });
             let newSlot = new THREE.Sprite(newSlotMaterial);
@@ -1842,62 +1541,12 @@ export class GalaxyScene {
             taskTableImages[imageID].object = newImage;
         });
 
-        let readyButtonTexture = new THREE.TextureLoader().load("./assets/interface/ready.png");
-        let readyButtonMaterial = new THREE.SpriteMaterial({ map: readyButtonTexture });
-        readyButton = new THREE.Sprite(readyButtonMaterial);
-        readyButton.scale.set(0.6, 0.2, 0.2);
-        readyButton.position.set(1.0, -0.6, -2.9);
-
-        readyButton.name = "readyButton";
-
-        let youWonWindowTexture = new THREE.TextureLoader().load("./assets/interface/you_won.png");
-        let youWonWindowMaterial = new THREE.SpriteMaterial({ map: youWonWindowTexture });
-
-        youWonWindow = new THREE.Sprite(youWonWindowMaterial);
-
-        youWonWindow.position.set(0.0, 0.0, -2.8);
-        youWonWindow.scale.set(1.5, 0.75, 0.75);
-
-        youWonWindow.name = "youWonWindow";
-
-        let getAGiftButtonTexture = new THREE.TextureLoader().load("./assets/interface/get_a_gift.png");
-        let getAGiftButtonMaterial = new THREE.SpriteMaterial({ map: getAGiftButtonTexture });
-
-        getAGiftButton = new THREE.Sprite(getAGiftButtonMaterial);
-
-        getAGiftButton.position.set(0.0, -0.2, -2.7);
-        getAGiftButton.scale.set(0.6, 0.2, 0.2);
-
-        getAGiftButton.name = "giftButton";
-
-        let wrongWindowTexture = new THREE.TextureLoader().load("./assets/interface/wrong.png");
-        let wrongWindowMaterial = new THREE.SpriteMaterial({ map: wrongWindowTexture });
-        wrongWindow = new THREE.Sprite(wrongWindowMaterial);
-
-        wrongWindow.position.set(0.0, 0.0, -2.6);
-        wrongWindow.scale.set(0.8, 0.4, 0.4);
-
-        wrongWindow.name = "wrongWindow";
-
-        raycaster = new THREE.Raycaster();
+        this.raycaster = new THREE.Raycaster();
         mouseNormal = new THREE.Vector2();
-
-        // simple music
-        // let music = new Audio('./assets/audio/vorpal-12.mp3');
-        // music.play();
 
         // pixi music
         sound.add('music', './assets/audio/vorpal-12.mp3');
         sound.play('music');
-
-        // tone music example
-        // Tone.start();
-        // console.log("audio is ready");
-        // new Ambient();
-        // const autoPanner = new Tone.AutoPanner(0.5).toDestination().start();
-        // const fatOsc = new Tone.FatOscillator("Cb1", "sine3", 10).connect(autoPanner).start();
-        // const autoFilter = new Tone.AutoFilter({ frequency: 0.05, baseFrequency: 220, octaves: 2 }).toDestination().start();
-        // const noise = new Tone.Noise({ type: "brown", volume: -22 }).connect(autoFilter).start();
 
     }
 
@@ -2033,7 +1682,7 @@ export class GalaxyScene {
         if (camOrbit) return;
         if (!aParams) aParams = {};
         let domElement = Params.domCanvasParent;
-        camOrbit = new OrbitControls(camera, domElement);
+        camOrbit = new OrbitControls(this.camera, domElement);
         if (!aParams.noTarget)
             camOrbit.target = new THREE.Vector3();
         camOrbit.enabled = !(aParams.isOrbitLock == true);
@@ -2074,8 +1723,8 @@ export class GalaxyScene {
 
         return;
 
-        raycaster.setFromCamera(mouseNormal, camera);
-        const intersects = raycaster.intersectObjects(this.scene.children, true);
+        this.raycaster.setFromCamera(mouseNormal, this.camera);
+        const intersects = this.raycaster.intersectObjects(this.scene.children, true);
 
     }
 
@@ -2086,21 +1735,12 @@ export class GalaxyScene {
                 return;
             }
 
-            camera.remove(youWonWindow);
-            camera.remove(wrongWindow);
-            camera.remove(getAGiftButton);
-            camera.remove(backButton);
-            camera.remove(playButton);
-            camera.remove(comingSoonWindow);
-            camera.remove(taskTable);
-            camera.remove(readyButton);
-
             taskTableSlots.forEach(function (slot) {
-                camera.remove(slot.object);
+                this.camera.remove(slot.object);
             });
 
             taskTableImages.forEach(function (image) {
-                camera.remove(image.object);
+                this.camera.remove(image.object);
             });
 
             camOrbit.enabled = true;
@@ -2110,7 +1750,7 @@ export class GalaxyScene {
 
             camOrbit.minDistance = minCameraDistance;
             camOrbit.enableDamping = true;
-            camera.position.set(-90, 120, 180);
+            this.camera.position.set(-90, 120, 180);
 
             planetsData.forEach(function (planet) {
                 this.scene.add(planet.previewObject);
@@ -2129,12 +1769,12 @@ export class GalaxyScene {
     }
 
     checkMousePointer() {
-        raycaster.setFromCamera(mouseNormal, camera);
-        const intersects = raycaster.intersectObjects(this.scene.children, true);
+        this.raycaster.setFromCamera(mouseNormal, this.camera);
+        const intersects = this.raycaster.intersectObjects(this.scene.children, true);
 
         let isHover = false;
 
-        intersects.forEach(function (object) {
+        intersects.forEach((object) => {
             if (object.object.type == 'Sprite') {
                 objectHovered = object.object;
                 if (objectHovered['name'] == 'planetPreview') {
@@ -2184,12 +1824,12 @@ export class GalaxyScene {
         let azFactor = dtAzimut * 10;
         let polFactor = dtPolar * 10;
 
-        outStars.material.uniforms.cameraMovmentPower.value = [azFactor, polFactor];
+        this.outStars.material['uniforms'].cameraMovmentPower.value = [azFactor, polFactor];
 
         // LogMng.debug(`azFactor: ${azFactor}; polFactor: ${polFactor};`);
 
-        var polarAngle = camOrbit.getPolarAngle();
-        var cameraRotationFactor = Math.abs(polarAngle - Math.PI / 2);
+        let polarAngle = camOrbit.getPolarAngle();
+        let cameraRotationFactor = Math.abs(polarAngle - Math.PI / 2);
 
         if (cameraRotationFactor >= 0.75) {
             cameraRotationPower = verticalCameraMagnitude;

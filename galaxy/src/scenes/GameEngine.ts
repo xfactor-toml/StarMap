@@ -15,7 +15,8 @@ import { Config } from "../data/Config";
 import { LogMng } from "../utils/LogMng";
 import { Params } from "../data/Params";
 import { GlobalEvents } from "../events/GlobalEvents";
-import { GalaxyScene as Galaxy } from "./Galaxy";
+import { Galaxy as Galaxy } from "./Galaxy";
+import { initScene, updateTest } from "./GalaxyTest";
 
 
 export class GameEngine {
@@ -27,9 +28,6 @@ export class GameEngine {
     
     private renderPixelRatio = 1;
 
-    private renderPassBackScene: RenderPass;
-    private renderPassScene: RenderPass;
-    
     private backScene: THREE.Scene;
     private scene: THREE.Scene;
     private camera: THREE.PerspectiveCamera;
@@ -39,7 +37,9 @@ export class GameEngine {
     private stats: Stats;
     
     constructor() {
+
         // RENDER
+
         let w = innerWidth;
         let h = innerHeight;
 
@@ -48,12 +48,9 @@ export class GameEngine {
         this.renderer = new THREE.WebGLRenderer({
             antialias: false
         });
-        // this.renderer.extensions.get('EXT_color_buffer_float');
         this.renderer.autoClear = false;
-        // this.renderer.toneMapping = THREE.ReinhardToneMapping;
         this.renderer.getContext().getExtension('OES_standard_derivatives');
         if (Config.USE_DEVICE_PIXEL_RATIO) {
-            // this.renderer.setPixelRatio(window.devicePixelRatio);
             this.renderer.setPixelRatio(Math.min(2, window.devicePixelRatio));
         }
         this.renderer.setSize(w, h);
@@ -72,9 +69,8 @@ export class GameEngine {
         this.camera = new THREE.PerspectiveCamera(
             45,
             innerWidth / innerHeight,
-            0.1,
-            10000
-        );
+            0.5,
+            10000);
         this.camera.position.set(10, 0, 10);
         this.camera.lookAt(new THREE.Vector3(0, 0, 0));
         // this.scene.add(this.camera);
@@ -85,39 +81,6 @@ export class GameEngine {
             inputDomElement: Params.domCanvasParent,
             desktop: DeviceInfo.getInstance().desktop
         });
-
-
-        // COMPOSERS
-
-        this.renderPassBackScene = new RenderPass(this.backScene, this.camera);
-        // renderBackScene.needsSwap = false;
-        this.renderPassScene = new RenderPass(this.scene, this.camera);
-        // renderScene.needsSwap = false;
-
-        let aaPass: any;
-        switch (Config.AA_TYPE) {
-            case 1:
-                // FXAA
-                aaPass = this.fxaaPass = new ShaderPass(FXAAShader);
-                this.fxaaPass.material.uniforms['resolution'].value.x = 1 / (w * this.renderPixelRatio);
-                this.fxaaPass.material.uniforms['resolution'].value.y = 1 / (h * this.renderPixelRatio);
-                break;
-            
-            case 2:
-                // SMAA
-                aaPass = this.smaaPass = new SMAAPass(w, h);
-                break;
-        
-            default:
-                break;
-        }
-
-        this.composer = new EffectComposer(this.renderer);
-        this.composer.setPixelRatio(1);
-        // this.composer.addPass(renderBackScene);
-        // this.composer.addPass(renderScene);
-        if (aaPass) this.composer.addPass(aaPass);
-        this.initPostprocessing(innerWidth, innerHeight);
 
         // DEBUG GUI INIT
 
@@ -133,7 +96,6 @@ export class GameEngine {
             camera: this.camera
         });
         this.galaxy.init();
-        // this.scene.add(this.galaxyView);
 
         // GUI
 
@@ -142,13 +104,10 @@ export class GameEngine {
         if (Params.isDebugMode) {
 
             const LOCAL_PARAMS = {
-
                 'center visible': true,
-                
                 'recreate': () => {
                     
                 },
-
                 axiesHelper: false
             };
 
@@ -158,7 +117,7 @@ export class GameEngine {
                 this.galaxy.centerVisible = value;
             });
             galaxyFolder.add(LOCAL_PARAMS, 'recreate');
-            // galaxyFolder.open();
+            galaxyFolder.open();
 
             gui.add(LOCAL_PARAMS, 'axiesHelper').onChange((value) => {
                 Params.debugAxeHelperOn = value;
@@ -194,24 +153,28 @@ export class GameEngine {
         }
     }
 
-    private initPostprocessing(w: number, h: number) {
-        
-    }
-
     private onWindowResize() {
 
         if (!this.renderer || !this.camera) return;
+
         let w = innerWidth;
         let h = innerHeight;
+
         this.renderer.setSize(w, h);
-        this.composer.setSize(w, h);
+
+        if (this.composer) {
+            this.composer.setSize(w, h);
+        }
+
         this.camera.aspect = w / h;
         this.camera.updateProjectionMatrix();
         
         switch (Config.AA_TYPE) {
             case 1:
-                this.fxaaPass.material.uniforms['resolution'].value.x = 1 / (w * this.renderPixelRatio);
-                this.fxaaPass.material.uniforms['resolution'].value.y = 1 / (h * this.renderPixelRatio);
+                if (this.fxaaPass) {
+                    this.fxaaPass.material.uniforms['resolution'].value.x = 1 / (w * this.renderPixelRatio);
+                    this.fxaaPass.material.uniforms['resolution'].value.y = 1 / (h * this.renderPixelRatio);
+                }
                 break;
             
             case 2:
@@ -225,46 +188,26 @@ export class GameEngine {
     }
 
     private render() {
-
-        // this.renderer.setRenderTarget(null);
         this.renderer.clear();
         this.renderer.render(this.backScene, this.camera);
         this.renderer.render(this.scene, this.camera);
-        // this.renderPassBackScene.render(this.renderer,);
-        // this.renderPassScene
-        // this.composer.render();
-        
     }
 
     private update(dt: number) {
 
-        // TextureData.update(dt);
-        // MateralMng.update(dt);
-
         // hangar update
         if (this.galaxy) this.galaxy.update(dt);
-        
+
     }
 
     private animate() {
         let dtSec = this.clock.getDelta();
-        
-        // if (Config.USE_MANUAL_FPS) {
-        //     this.currentDt += dt;
-        //     if (this.currentDt >= this.targetDt) {
-        //         if (Config.isDebugMode) this.stats.begin();
-        //         this.update(this.currentDt);
-        //         if (Config.isDebugMode) this.stats.end();
-        //         this.currentDt -= this.targetDt;
-        //     }
-        // }
-        // else {
+
         if (Params.isDebugMode) this.stats.begin();
         this.update(dtSec);
         this.render();
         if (Params.isDebugMode) this.stats.end();
-        // }
-
+        
         requestAnimationFrame(() => this.animate());
     }
 

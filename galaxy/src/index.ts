@@ -1,4 +1,3 @@
-// import { initScene } from "./game.js";
 import { GlobalEvents } from "./events/GlobalEvents";
 import { GameBoot } from "./scenes/GameBoot";
 
@@ -15,8 +14,10 @@ window.addEventListener('load', () => {
     startButton.addEventListener('click', async () => {
         const overlay = document.getElementById('overlay');
         overlay.remove();
+
         let boot = new GameBoot();
         boot.init();
+
     });
 
 }, false);

@@ -8,6 +8,9 @@ import { MyMath } from './utils/MyMath';
 import { LogMng } from './utils/LogMng';
 import { sound } from '@pixi/sound';
 
+import vsFarStars from './shaders/farStars/vs.glsl';
+import fsFarStars from './shaders/farStars/fs.glsl';
+
 let Config = {
     isDebugMode: false
 };
@@ -59,493 +62,13 @@ const STARS_3_COLORS = [
     [0xb3, 0x8d, 0xf9],
 ];
 
-let vShaders = [
-    `
-    uniform float size;
-    uniform float distanceSize;
-    uniform float t;
-    uniform float z;
-    uniform float pixelRatio;
-    uniform vec4 activeStars[GALAXY_ACTIVE_STARS_COUNT];
-    uniform vec4 starsWithCustomColor[GALAXY_STARS_WITH_CUSTOM_COLOR_COUNT];
-    uniform float cameraRotationPower;
-    uniform float galaxyPower;
-    
-    varying vec3 vPosition;
-    varying vec3 mPosition;//modified position
-    varying float gas;
-    varying float customStarColor;
-    
-    float a, b = 0.;
-    
-    void main() {
-
-      vPosition = position;
-      float scaleSize = 0.2;
-
-      for (int starIndex = 0; starIndex < GALAXY_ACTIVE_STARS_COUNT; starIndex++) {
-        if (activeStars[starIndex].x == position.x && activeStars[starIndex].y == position.y && activeStars[starIndex].z == position.z){
-          scaleSize = activeStars[starIndex][3];
-        }
-      }
-
-      customStarColor = 0.0;
-
-      for (int starIndex = 0; starIndex < GALAXY_STARS_WITH_CUSTOM_COLOR_COUNT; starIndex++) {
-        if (starsWithCustomColor[starIndex].x == position.x && starsWithCustomColor[starIndex].y == position.y && starsWithCustomColor[starIndex].z == position.z){
-          customStarColor = starsWithCustomColor[starIndex][3];
-        }
-      }
-
-      a=length(position);
-      if(t > 0.) b = max(0.,(cos(a/20.-t*.02)-.99)*3./a);
-      if(z > 0.) b = max(0.,cos(a/40.-z*.01+2.));
-      mPosition = position*(1.+b*4.) * distanceSize;
-      vec4 mvPosition = modelViewMatrix * vec4(mPosition,1.);
-      gl_Position = mvPosition * projectionMatrix;
-      
-      gas = max(.0, sin(-a/1.));
-      gl_PointSize = (pixelRatio * 28.0 * (1.+gas*2.)/length(mvPosition.xyz) * scaleSize * galaxyPower) * cameraRotationPower;
-    }
-`,
-    `
-    uniform float size;
-    uniform float distanceSize;
-    uniform float t;
-    uniform float z;
-    uniform float pixelRatio;
-    uniform vec4 activeStars[GALAXY_ACTIVE_STARS_COUNT];
-    uniform vec4 starsWithCustomColor[GALAXY_STARS_WITH_CUSTOM_COLOR_COUNT];
-    uniform float cameraRotationPower;
-    uniform float galaxyPower;
-    
-    varying vec3 vPosition;
-    varying vec3 mPosition;//modified position
-    varying float gas;
-    varying float customStarColor;
-    
-    float a,b=0.;
-    
-    void main() {
-    
-      vPosition=position;
-      float scaleSize = 1.0;
-
-      for(int starIndex = 0; starIndex < GALAXY_ACTIVE_STARS_COUNT; starIndex++){
-        if(activeStars[starIndex].x == position.x && activeStars[starIndex].y == position.y && activeStars[starIndex].z == position.z){
-          scaleSize = activeStars[starIndex][3];
-        }
-      }
-
-      customStarColor = 0.0;
-
-      for(int starIndex = 0; starIndex < GALAXY_STARS_WITH_CUSTOM_COLOR_COUNT; starIndex++){
-        if(starsWithCustomColor[starIndex].x == position.x && starsWithCustomColor[starIndex].y == position.y && starsWithCustomColor[starIndex].z == position.z){
-          customStarColor = starsWithCustomColor[starIndex][3];
-        }
-      }
-
-      a=length(position);
-      if(t>0.)b=max(0.,(cos(a/20.-t*.02)-.99)*3./a);
-      if(z>0.)b=max(0.,cos(a/40.-z*.01+2.));
-      mPosition=position*(1.+b*4.) * distanceSize;
-      vec4 mvPosition=modelViewMatrix*vec4(mPosition,1.);
-      gl_Position=mvPosition*projectionMatrix;
-      
-      gas=max(.0,sin(-a/1.));
-      gl_PointSize=(pixelRatio*size*(1.+gas*2.)/length(mvPosition.xyz) * scaleSize * galaxyPower) * cameraRotationPower;
-    }
-`,
-    `
-    uniform float size;
-    uniform float distanceSize;
-    uniform float t;
-    uniform float z;
-    uniform float pixelRatio;
-    uniform vec4 activeStars[GALAXY_ACTIVE_STARS_COUNT];
-    uniform vec4 starsWithCustomColor[GALAXY_STARS_WITH_CUSTOM_COLOR_COUNT];
-    uniform float cameraRotationPower;
-    uniform float galaxyPower;
-    
-    varying vec3 vPosition;
-    varying vec3 mPosition;//modified position
-    varying float gas;
-    varying float customStarColor;
-    
-    float a,b=0.;
-    
-    void main(){
-    
-      vPosition=position;
-      float scaleSize = 1.0;
-
-      for(int starIndex = 0; starIndex < GALAXY_ACTIVE_STARS_COUNT; starIndex++){
-        if(activeStars[starIndex].x == position.x && activeStars[starIndex].y == position.y && activeStars[starIndex].z == position.z){
-          scaleSize = activeStars[starIndex][3];
-        }
-      }
-
-      customStarColor = 0.0;
-
-      for(int starIndex = 0; starIndex < GALAXY_STARS_WITH_CUSTOM_COLOR_COUNT; starIndex++){
-        if(starsWithCustomColor[starIndex].x == position.x && starsWithCustomColor[starIndex].y == position.y && starsWithCustomColor[starIndex].z == position.z){
-          customStarColor = starsWithCustomColor[starIndex][3];
-        }
-      }
-
-      a=length(position);
-      if(t>0.)b=max(0.,(cos(a/20.-t*.02)-.99)*3./a);
-      if(z>0.)b=max(0.,cos(a/40.-z*.01+2.));
-      mPosition=position*(1.+b*4.) * distanceSize;
-      vec4 mvPosition=modelViewMatrix*vec4(mPosition,1.);
-      gl_Position=mvPosition*projectionMatrix;
-      
-      gas=max(.0,sin(-a/1.));
-      gl_PointSize=(pixelRatio*size*(1.+gas*2.)/length(mvPosition.xyz) * scaleSize * galaxyPower) * cameraRotationPower;
-    }
-`,
-    `
-    uniform float size;
-    uniform float distanceSize;
-    uniform float t;
-    uniform float z;
-    uniform float pixelRatio;
-    uniform vec4 activeStars[GALAXY_ACTIVE_STARS_COUNT];
-    uniform vec4 starsWithCustomColor[GALAXY_STARS_WITH_CUSTOM_COLOR_COUNT];
-    uniform float cameraRotationPower;
-    uniform float galaxyPower;
-    
-    varying vec3 vPosition;
-    varying vec3 mPosition;//modified position
-    varying float gas;
-    varying float customStarColor;
-    
-    float a,b=0.;
-    
-    void main() {
-      vPosition=position;
-      float scaleSize = 1.0;
-
-      for(int starIndex = 0; starIndex < GALAXY_ACTIVE_STARS_COUNT; starIndex++){
-        if(activeStars[starIndex].x == position.x && activeStars[starIndex].y == position.y && activeStars[starIndex].z == position.z){
-          scaleSize = activeStars[starIndex][3];
-        }
-      }
-
-      customStarColor = 0.0;
-
-      for(int starIndex = 0; starIndex < GALAXY_STARS_WITH_CUSTOM_COLOR_COUNT; starIndex++){
-        if(starsWithCustomColor[starIndex].x == position.x && starsWithCustomColor[starIndex].y == position.y && starsWithCustomColor[starIndex].z == position.z){
-          customStarColor = starsWithCustomColor[starIndex][3];
-        }
-      }
-
-      a=1.0;
-      if(t>0.)b=max(0.,(cos(a/20.-t*.02)-.99)*3./a);
-      if(z>0.)b=max(0.,cos(a/40.-z*.01+2.));
-      mPosition=position*(1.+b*4.) * distanceSize;
-      vec4 mvPosition=modelViewMatrix*vec4(mPosition,1.);
-      gl_Position=mvPosition*projectionMatrix;
-      
-      gas=max(.0,sin(-a/1.));
-      gl_PointSize=(pixelRatio*size*(1.+gas*2.)/length(mvPosition.xyz) * scaleSize * galaxyPower) * 1.0;
-    }
-`,
-    `
-    uniform float size;
-    uniform float distanceSize;
-    uniform float t;
-    uniform float z;
-    uniform float pixelRatio;
-    uniform vec4 activeStars[GALAXY_ACTIVE_STARS_COUNT];
-    uniform vec4 starsWithCustomColor[GALAXY_STARS_WITH_CUSTOM_COLOR_COUNT];
-    uniform float cameraRotationPower;
-    uniform float galaxyPower;
-    
-    varying vec3 vPosition;
-    varying vec3 mPosition;//modified position
-    varying float gas;
-    varying float customStarColor;
-  
-    
-    void main(){
-    
-      vPosition=position;
-      mPosition=position;
-      vec4 mvPosition=modelViewMatrix*vec4(mPosition,1.);
-      gl_Position=mvPosition*projectionMatrix;
-      float multiplier = 200000.;
-
-      if(distance(position, vec3(0.5, 0.5, 0.5)) < 100000.){
-        multiplier = 1000.;
-      }
-
-      if(distance(position, vec3(0.5, 0.5, 0.5)) < 2000.){
-        multiplier = 100.;
-      }
-
-      gl_PointSize=50./(length(mvPosition.xyz) / multiplier);
-
-      if(gl_PointSize < 15.){
-        gl_PointSize = 15.;
-      }
-
-      if(gl_PointSize > 20.){
-        gl_PointSize = 20.;
-      }
-    
-    }
-`
-];
-
-let fShaders = [
-    `
-    uniform float z;
-        
-    varying vec3 vPosition;
-    varying vec3 mPosition;
-    varying float gas;
-    varying float customStarColor;
-        
-    void main() {
-
-      float a=distance(mPosition,vPosition);
-      if(a>0.)a=1.;
-      
-      float b=max(0.3,.0105*length(vPosition));
-
-      float c=distance(gl_PointCoord,vec2(.5));
-      float starlook=-(c-.5)*1.2; 
-      float gaslook=(1.)/(c*50.);
-      float texture=(starlook * 5.0)+(gaslook * 1.7);
-      
-      if(customStarColor == 0.0){
-        gl_FragColor=vec4(0.505, 0.39, b, 1.)*texture*(0.13-a*.35);
-      }
-      else if(customStarColor <= 2.0){
-        gl_FragColor=vec4(0.258, 0.282, 0.145, 1.)*texture*(0.13-a*.35);
-      }
-      else if(customStarColor <= 4.0){
-        gl_FragColor=vec4(0.694, 0.301, 0.282, 1.)*texture*(0.13-a*.35);
-      }
-      else if(customStarColor <= 6.0){
-        gl_FragColor=vec4(0.745, 0.635, 0.360, 1.)*texture*(0.13-a*.35);
-      }
-      else if(customStarColor <= 8.0){
-        gl_FragColor=vec4(0.431, 0.831, 0.819, 1.)*texture*(0.13-a*.35);
-      }
-      else if(customStarColor <= 10.0){
-        gl_FragColor=vec4(1.0, 0.901, 0.890, 1.)*texture*(0.13-a*.35);
-      }
-
-      if(z>0.)gl_FragColor*=cos(1.57*z/322.)*(1.-.001*length(mPosition));
-    }
-    `,
-    `
-    uniform float z;
-        
-    varying vec3 vPosition;
-    varying vec3 mPosition;
-    varying float gas;
-    varying float customStarColor;
-        
-    void main() { 
-
-      float a=distance(mPosition,vPosition);
-      if(a>0.)a=1.;
-      
-      float b=max(0.3,.0105*length(vPosition));
-
-      float c=distance(gl_PointCoord,vec2(.5));
-      float starlook=-(c-.5)*1.2; 
-      float gaslook=(1.)/(c*50.);
-      float texture=(starlook * 5.0)+(gaslook * 1.7);
-      
-     if(customStarColor == 0.0){
-        gl_FragColor=vec4(0.505, 0.39, b, 1.)*texture*(0.13-a*.35);
-      }
-      else if(customStarColor <= 2.0){
-        gl_FragColor=vec4(0.258, 0.282, 0.145, 1.)*texture*(0.13-a*.35);
-      }
-      else if(customStarColor <= 4.0){
-        gl_FragColor=vec4(0.694, 0.301, 0.282, 1.)*texture*(0.13-a*.35);
-      }
-      else if(customStarColor <= 6.0){
-        gl_FragColor=vec4(0.745, 0.635, 0.360, 1.)*texture*(0.13-a*.35);
-      }
-      else if(customStarColor <= 8.0){
-        gl_FragColor=vec4(0.431, 0.831, 0.819, 1.)*texture*(0.13-a*.35);
-      }
-      else if(customStarColor <= 10.0){
-        gl_FragColor=vec4(1.0, 0.901, 0.890, 1.)*texture*(0.13-a*.35);
-      }
-
-      if(z>0.)gl_FragColor*=cos(1.57*z/322.)*(1.-.001*length(mPosition));
-    }
-    `,
-    `
-uniform float z;
-        
-    varying vec3 vPosition;
-    varying vec3 mPosition;
-    varying float gas;
-    varying float customStarColor;
-        
-    void main(){
-
-      float a=distance(mPosition,vPosition);
-      if(a>0.)a=1.;
-      
-      float b=max(0.3,.0105*length(vPosition));
-
-      float c=distance(gl_PointCoord,vec2(.5));
-      float starlook=-(c-.5)*1.2; 
-      float gaslook=(1.)/(c*50.);
-      float texture=(starlook * 5.0)+(gaslook * 1.7);
-      
-      if(customStarColor == 0.0){
-        gl_FragColor=vec4(0.505, 0.39, b, 1.)*texture*(0.13-a*.35);
-      }
-      else if(customStarColor <= 2.0){
-        gl_FragColor=vec4(0.258, 0.282, 0.145, 1.)*texture*(0.13-a*.35);
-      }
-      else if(customStarColor <= 4.0){
-        gl_FragColor=vec4(0.694, 0.301, 0.282, 1.)*texture*(0.13-a*.35);
-      }
-      else if(customStarColor <= 6.0){
-        gl_FragColor=vec4(0.745, 0.635, 0.060, 1.)*texture*(0.13-a*.35);
-      }
-      else if(customStarColor <= 8.0){
-        gl_FragColor=vec4(0.431, 0.831, 0.119, 1.)*texture*(0.13-a*.35);
-      }
-      else if(customStarColor <= 10.0){
-        gl_FragColor=vec4(1.0, 0.901, 0.190, 1.)*texture*(0.13-a*.35);
-      }
-
-      if (z>0.) gl_FragColor *= cos(1.57 * z/322.)  *(1. - .001*length(mPosition));
-    }
-    `,
-    `
-    uniform float z;
-        
-    varying vec3 vPosition;
-    varying vec3 mPosition;
-    varying float gas;
-    varying float customStarColor;
-        
-    void main(){
-
-      float a=distance(mPosition,vPosition);
-      if(a>0.)a=1.;
-      
-      float b=max(0.3,.0105*length(vPosition));
-
-      float c=distance(gl_PointCoord,vec2(.5));
-      float starlook=-(c-.5)*1.2; 
-      float gaslook=(1.)/(c*50.);
-      float texture=(starlook * 5.0)+(gaslook * 1.7);
-      
-      if(customStarColor == 0.0){
-        gl_FragColor=vec4(0.505, 0.39, 0.445, 1.)*texture*(0.13-a*.35);
-      }
-      else if(customStarColor <= 2.0){
-        gl_FragColor=vec4(0.258, 0.282, 0.245, 1.)*texture*(0.13-a*.35);
-      }
-      else if(customStarColor <= 4.0){
-        gl_FragColor=vec4(0.894, 0.201, 0.282, 1.)*texture*(0.13-a*.35);
-      }
-      else if(customStarColor <= 6.0){
-        gl_FragColor=vec4(0.745, 0.735, 0.460, 1.)*texture*(0.13-a*.35);
-      }
-      else if(customStarColor <= 8.0){
-        gl_FragColor=vec4(0.631, 0.831, 0.019, 1.)*texture*(0.13-a*.35);
-      }
-      else if(customStarColor <= 10.0){
-        gl_FragColor=vec4(1.0, 0.901, 0.290, 1.)*texture*(0.13-a*.35);
-      }
-
-      if(z>0.)gl_FragColor*=cos(1.57*z/322.)*(1.-.001*length(mPosition));
-    }
-    `,
-    `
-    uniform float z;
-        
-    varying vec3 vPosition;
-    varying vec3 mPosition;
-    varying float gas;
-    varying float customStarColor;
-    uniform vec2 cameraMovmentPower;
-    
-    float line(vec2 uv, vec2 pt1, vec2 pt2, float pointSize, float tensionPower)
-    {
-        float clrFactor = 0.0;
-        float tickness = pointSize;
-        float r  = distance(uv, pt1) / distance(pt1, pt2);
-        
-        if (r <= tensionPower) {
-            vec2 ptc = mix(pt1, pt2, r); 
-            float dist = distance(ptc, uv);
-            if (dist < tickness / 2.0) {
-                clrFactor = 1.0;
-            }
-        }
-        return clrFactor;
-    }
-
-
-    void main() {
-      float tension = 4.9;
-      float pointSize = 0.06;
-      float tensionPower = 3.0;
-
-      if (z > 0.) gl_FragColor *= cos(1.57 * z/322.) * (1. - .001 * length(mPosition));
-
-      if (distance(gl_PointCoord, vec2(0.5, 0.5)) < 0.05) {
-        gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-      }
-
-      if (distance(vPosition, vec3(0.5, 0.5, 0.5)) < 10000.) {
-        tension = 3.6;
-        float pointSize = 0.06;
-        // float tensionPower = 1.0;
-      }
-
-      if (distance(vPosition, vec3(0.5, 0.5, 0.5)) < 900.) {
-        tension = 0.5;
-        float pointSize = 0.06;
-        // float tensionPower = 1.0;
-      }
-
-      if (abs(cameraMovmentPower.x) > 0.02 || abs(cameraMovmentPower.y) > 0.02) {
-        float distanceToLine = line(gl_PointCoord.xy, (cameraMovmentPower.xy * tension) + .5, vec2(0.5, 0.5), pointSize, tensionPower) * 5.0;
-        gl_FragColor = vec4(distanceToLine, distanceToLine, distanceToLine, distanceToLine);
-      }
-
-    }
-    `
-];
-
 let verticalCameraMagnitude = 5.0;
-
-let thirdGalaxyPower = 1.2;
-let fouthGalaxyPower = 0.9;
-
-let starsOutsideGalaxysPower = 2.0;
-
 let rickMobileCount = 0;
 
 const minCameraDistance = 50;
 const maxCameraDistance = 250;
 
 let camera;
-
-let lastFreeCameraPosition = {
-    x: null,
-    y: null,
-    z: null
-};
-
-// let galaxy;
 
 let raycaster;
 let mouseNormal = {x: 0, y: 0};
@@ -554,10 +77,6 @@ let scene;
 let sceneBg;
 
 let objectHovered = false;
-let selectedPlanet = false;
-
-let selectedImage = null;
-let currentObjectIsFounded = false;
 
 let backButton;
 let playButton;
@@ -568,11 +87,7 @@ let youWonWindow;
 let wrongWindow;
 let getAGiftButton;
 
-let giftURL = "https://google.com";
-
-var blinkStarsData;
-
-var cameraRotationPower = 1.0;
+let blinkStarsData;
 
 let clouds;
 let warpStars;
@@ -785,710 +300,6 @@ let planetsData = [
                 }
             }
         }
-    },
-    {
-        preview: './assets/Star.svg',
-        previewObject: null,
-        physicalPlanet: [],
-        modelsFolder: './assets/models/planeta_skwoth/',
-        layersCount: 3,
-        planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
-        position: new THREE.Vector3(-70, 0, 35),
-        name: "skwoth",
-
-        layersPerFrameTransformation: {
-            1: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0015,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            2: {
-                rotation: {
-                    x: 0.0015,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            3: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0015
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            }
-        },
-
-        layersDefaultTransformation: {
-            1: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            2: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            3: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            }
-        }
-    },
-    {
-        preview: './assets/Star.svg',
-        previewObject: null,
-        physicalPlanet: [],
-        modelsFolder: './assets/models/moon/',
-        layersCount: 1,
-        planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
-        position: new THREE.Vector3(-25, 0, -75),
-        name: "moon",
-
-        layersPerFrameTransformation: {
-            1: {
-                rotation: {
-                    x: 0.001,
-                    y: 0.0015,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            2: {
-                rotation: {
-                    x: 0.003,
-                    y: 0.002,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            3: {
-                rotation: {
-                    x: 0.0015,
-                    y: 0.0013,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            }
-        },
-
-        layersDefaultTransformation: {
-            1: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            2: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            3: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            }
-        }
-    },
-    {
-        preview: './assets/Star.svg',
-        previewObject: null,
-        physicalPlanet: [],
-        modelsFolder: './assets/models/planetEarth/',
-        layersCount: 1,
-        planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
-        position: new THREE.Vector3(30, 0, 65),
-        name: "earth",
-
-        layersPerFrameTransformation: {
-            1: {
-                rotation: {
-                    x: 0.001,
-                    y: 0.0015,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            2: {
-                rotation: {
-                    x: 0.003,
-                    y: 0.002,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            3: {
-                rotation: {
-                    x: 0.0015,
-                    y: 0.0013,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            }
-        },
-
-        layersDefaultTransformation: {
-            1: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            2: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            3: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            }
-        }
-    },
-    {
-        preview: './assets/Star.svg',
-        previewObject: null,
-        physicalPlanet: [],
-        modelsFolder: './assets/models/moon/',
-        layersCount: 1,
-        planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
-        position: new THREE.Vector3(-75, 0, 1),
-        name: "earth",
-
-        layersPerFrameTransformation: {
-            1: {
-                rotation: {
-                    x: 0.001,
-                    y: 0.0015,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            2: {
-                rotation: {
-                    x: 0.003,
-                    y: 0.002,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            3: {
-                rotation: {
-                    x: 0.0015,
-                    y: 0.0013,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            }
-        },
-
-        layersDefaultTransformation: {
-            1: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            2: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            3: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            }
-        }
-    },
-    {
-        preview: './assets/Star.svg',
-        previewObject: null,
-        physicalPlanet: [],
-        modelsFolder: './assets/models/moon/',
-        layersCount: 1,
-        planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
-        position: new THREE.Vector3(25, 0, -90),
-        name: "earth",
-
-        layersPerFrameTransformation: {
-            1: {
-                rotation: {
-                    x: 0.001,
-                    y: 0.0015,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            2: {
-                rotation: {
-                    x: 0.003,
-                    y: 0.002,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            3: {
-                rotation: {
-                    x: 0.0015,
-                    y: 0.0013,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            }
-        },
-
-        layersDefaultTransformation: {
-            1: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            2: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            3: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            }
-        }
-    },
-    {
-        preview: './assets/Star.svg',
-        previewObject: null,
-        physicalPlanet: [],
-        modelsFolder: './assets/models/moon/',
-        layersCount: 1,
-        planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
-        position: new THREE.Vector3(45, 0, 110),
-        name: "earth",
-
-        layersPerFrameTransformation: {
-            1: {
-                rotation: {
-                    x: 0.001,
-                    y: 0.0015,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            2: {
-                rotation: {
-                    x: 0.003,
-                    y: 0.002,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            3: {
-                rotation: {
-                    x: 0.0015,
-                    y: 0.0013,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            }
-        },
-
-        layersDefaultTransformation: {
-            1: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            2: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            3: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            }
-        }
-    },
-    {
-        preview: './assets/Star.svg',
-        previewObject: null,
-        physicalPlanet: [],
-        modelsFolder: './assets/models/moon/',
-        layersCount: 1,
-        planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
-        position: new THREE.Vector3(85, 0, -80),
-        name: "earth",
-
-        layersPerFrameTransformation: {
-            1: {
-                rotation: {
-                    x: 0.001,
-                    y: 0.0015,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            2: {
-                rotation: {
-                    x: 0.003,
-                    y: 0.002,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            3: {
-                rotation: {
-                    x: 0.0015,
-                    y: 0.0013,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            }
-        },
-
-        layersDefaultTransformation: {
-            1: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            2: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            3: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            }
-        }
-    },
-    {
-        preview: './assets/Star.svg',
-        previewObject: null,
-        physicalPlanet: [],
-        modelsFolder: './assets/models/planet_x/',
-        layersCount: 3,
-        planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
-        position: new THREE.Vector3(120, 0, 80),
-        name: "planet_x",
-
-        layersPerFrameTransformation: {
-            1: {
-                rotation: {
-                    x: 0.001,
-                    y: 0.0015,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            2: {
-                rotation: {
-                    x: 0.003,
-                    y: 0.002,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            3: {
-                rotation: {
-                    x: 0.0015,
-                    y: 0.0013,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            }
-        },
-
-        layersDefaultTransformation: {
-            1: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            2: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            3: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            }
-        }
     }
 ];
 
@@ -1520,7 +331,6 @@ let stars;
 let starsCountData = [];
 
 let loader;
-
 let clock;
 
 let checkMousePointerTimer = 0;
@@ -1541,11 +351,7 @@ export function initScene() {
         initStarsCount();
         setScene();
 
-        document.addEventListener('pointermove', onMouseMove);
-        document.addEventListener('click', onMouseClick);
-        document.addEventListener('keydown', onKeyPress);
-
-        document.querySelector('canvas').addEventListener('touchstart', function (event) {
+        document.querySelector('canvas').addEventListener('touchstart', (event) => {
             event.target.requestFullscreen();
         });
 
@@ -1691,16 +497,16 @@ function initStarsCount() {
         starsCountData = androidStarsCount;
     }
 
-    for (let i = 0; i < vShaders.length; i++) {
-        let act = String(starsCountData[i].active);
-        let clr = String(starsCountData[i].customColor);
-        console.log('act, clr: ', act, clr);
-        vShaders[i] = vShaders[i].replace('GALAXY_ACTIVE_STARS_COUNT', act);
-        vShaders[i] = vShaders[i].replace('GALAXY_ACTIVE_STARS_COUNT', act);
-        vShaders[i] = vShaders[i].replace('GALAXY_STARS_WITH_CUSTOM_COLOR_COUNT', clr);
-        vShaders[i] = vShaders[i].replace('GALAXY_STARS_WITH_CUSTOM_COLOR_COUNT', clr);
-        // console.log(`vShaders[${i}]:`, vShaders[i]);
-    }
+    // for (let i = 0; i < vShaders.length; i++) {
+    //     let act = String(starsCountData[i].active);
+    //     let clr = String(starsCountData[i].customColor);
+    //     console.log('act, clr: ', act, clr);
+    //     vShaders[i] = vShaders[i].replace('GALAXY_ACTIVE_STARS_COUNT', act);
+    //     vShaders[i] = vShaders[i].replace('GALAXY_ACTIVE_STARS_COUNT', act);
+    //     vShaders[i] = vShaders[i].replace('GALAXY_STARS_WITH_CUSTOM_COLOR_COUNT', clr);
+    //     vShaders[i] = vShaders[i].replace('GALAXY_STARS_WITH_CUSTOM_COLOR_COUNT', clr);
+    // }
+
 }
 
 function getDistanceBetweenTwoVectors(v1, v2) {
@@ -1931,7 +737,7 @@ function newGalaxy(_n, xSize, zSize, armOffsetMax, filterType = false) {
 }
 
 function newStarsOutsideGalaxys() {
-    const starsCount = 1000;
+    const starsCount = 500;
     const systemRadius = 300;
     stars = [];
     for (var i = 0; i < starsCount; i++) {
@@ -2003,7 +809,7 @@ function setScene() {
     clouds = new THREE.Group();
     scene.add(clouds);
 
-    warpStars = new THREE.Group()
+    warpStars = new THREE.Group();
     scene.add(warpStars);
 
     // main galaxy sprite
@@ -2075,20 +881,11 @@ function setScene() {
     outStarsGeometry.vertices = newStarsOutsideGalaxys();
 
     let outStarsMaterial = new THREE.ShaderMaterial({
-        vertexShader: vShaders[4],
-        fragmentShader: fShaders[4],
+        vertexShader: vsFarStars,
+        fragmentShader: fsFarStars,
         uniforms: {
-            size: { type: 'f', value: 2.5 },
-            distanceSize: { type: 'f', value: 1 },
-            t: { type: "f", value: 0 },
-            z: { type: "f", value: 0 },
-            pixelRatio: { type: "f", value: innerHeight },
-            cameraRotationPower: { value: cameraRotationPower },
-            galaxyPower: { value: starsOutsideGalaxysPower },
             cameraMovmentPower: { value: [0.0, 0.0] },
-            derivatives: true
         },
-        // depthTest: false,
         depthWrite: false,
         blending: THREE.AdditiveBlending
     });
@@ -2229,14 +1026,14 @@ function setScene() {
         blinkStar(starSprite);
     }
 
-    window.addEventListener('resize', function () {
+    window.addEventListener('resize', () => {
         camera.aspect = innerWidth / innerHeight;
         renderer.setSize(innerWidth, innerHeight);
         camera.updateProjectionMatrix();
         renderer.render(scene, camera);
     }, false);
 
-    planetsData.forEach(function (planet, planetIndex) {
+    planetsData.forEach((planet, planetIndex) => {
 
         var previewTexture = new THREE.TextureLoader().load(planet.preview);
         var previewMaterial = new THREE.SpriteMaterial({
@@ -2424,22 +1221,9 @@ function setScene() {
     raycaster = new THREE.Raycaster();
     mouseNormal = new THREE.Vector2();
 
-    // simple music
-    // let music = new Audio('./assets/audio/vorpal-12.mp3');
-    // music.play();
-
     // pixi music
     sound.add('music', './assets/audio/vorpal-12.mp3');
     sound.play('music');
-
-    // tone music example
-    // Tone.start();
-    // console.log("audio is ready");
-    // new Ambient();
-    // const autoPanner = new Tone.AutoPanner(0.5).toDestination().start();
-    // const fatOsc = new Tone.FatOscillator("Cb1", "sine3", 10).connect(autoPanner).start();
-    // const autoFilter = new Tone.AutoFilter({ frequency: 0.05, baseFrequency: 220, octaves: 2 }).toDestination().start();
-    // const noise = new Tone.Noise({ type: "brown", volume: -22 }).connect(autoFilter).start();
 
 }
 
@@ -2452,8 +1236,6 @@ function createSkybox() {
             map: loader.getTexture(imagePrefix + directions[i]),
             side: THREE.BackSide,
             depthWrite: false,
-            // transparent: true,
-            // opacity: 1.,
         }));
 
     let imgArray = [];
@@ -2471,17 +1253,12 @@ function createSmallGalaxies() {
 
     let galaxyCnt = MyMath.randomIntInRange(Math.min(3, SMALL_GALAXIES_COUNT), Math.min(6, SMALL_GALAXIES_COUNT));
     let ids = Array.from(Array(galaxyCnt).keys());
-    // console.log('ids: ', ids);
     MyMath.shuffleArray(ids, 4);
-    // console.log('shuff ids: ', ids);
     for (let i = 0; i < ids.length; i++) {
         const id = ids[i];
-        // console.log('id: ', id);
         const galaxy = createSmallGalaxy(id);
-        // console.log('galaxy created...');
         smallGalaxies.push(galaxy);
         sceneBg.add(galaxy);
-        // scene.add(galaxy);
     }
 
 }
@@ -2500,8 +1277,6 @@ function createSmallGalaxy(aGalaxyId) {
         transparent: true,
         opacity: alpha,
         depthWrite: false,
-        // depthTest: true
-        // blending: THREE.AdditiveBlending
     });
 
     let size = MyMath.randomInRange(400, 800);
@@ -2600,397 +1375,6 @@ function createCameraControls(aParams) {
 
 }
 
-
-function onMouseMove(event) {
-    mouseNormal.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouseNormal.y = - (event.clientY / window.innerHeight) * 2 + 1;
-}
-
-function onMouseClick(event) {
-
-    mouseNormal.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouseNormal.y = - (event.clientY / window.innerHeight) * 2 + 1;
-
-    return;
-    
-    raycaster.setFromCamera(mouseNormal, camera);
-
-    const intersects = raycaster.intersectObjects(scene.children, true);
-
-    intersects.forEach(function (object) {
-        if (currentObjectIsFounded == true) {
-            return;
-        }
-
-        if (object.object.type == "Sprite") {
-            if (object.object.name == 'planetPreview') {
-                planetsData.forEach(function (planet, planetIndex) {
-                    if (planet.position.x == object.object.position.x && planet.position.y == object.object.position.y && planet.position.z == object.object.position.z) {
-                        selectedPlanet = planetIndex;
-                        planet.physicalPlanet.forEach(function (layer) {
-                            layer.children[0].material.visible = true;
-                        });
-                    }
-
-                    scene.remove(planet.previewObject);
-                });
-
-                rickmobilesPull.forEach(function (rickmobile) {
-                    rickmobile.model.children[0].material.visible = false;
-                    rickmobile.model.children[1].material.visible = false;
-                });
-
-                camOrbit.minDistance = 0;
-                camOrbit.enableDamping = false;
-
-                lastFreeCameraPosition = {
-                    x: camera.position.x,
-                    y: camera.position.y,
-                    z: camera.position.z
-                };
-
-                setTimeout(moveCameraTo, Math.random(), camera, camera.position.x, camera.position.y, camera.position.z, object.object.position.x, object.object.position.y, object.object.position.z - 5, 150, 0, true);
-
-                camOrbit.target = object.object.position;
-                camOrbit.enabled = false;
-
-                camera.add(backButton);
-                camera.add(playButton);
-
-            }
-
-            if (object.object.name == 'backButton') {
-
-                var isTaskTableExist = camera.children.includes(taskTable);
-                var isYouWonWindowExist = camera.children.includes(youWonWindow);
-                var isWrongWindowExist = camera.children.includes(wrongWindow);
-                var isComingSoonWindowExist = camera.children.includes(comingSoonWindow);
-
-                camera.remove(youWonWindow);
-                camera.remove(getAGiftButton);
-                camera.remove(wrongWindow);
-                camera.remove(comingSoonWindow);
-
-                if (isYouWonWindowExist || isWrongWindowExist || isComingSoonWindowExist) {
-                    return;
-                }
-
-                camera.remove(taskTable);
-                camera.remove(readyButton);
-
-                taskTableSlots.forEach(function (slot) {
-                    camera.remove(slot.object);
-                });
-
-                taskTableImages.forEach(function (image) {
-                    camera.remove(image.object);
-                });
-
-                if (isTaskTableExist) {
-                    return;
-                }
-
-                camera.remove(backButton);
-                camera.remove(playButton);
-                camera.remove(comingSoonWindow);
-
-                camOrbit.enabled = true;
-                camOrbit.target = new THREE.Vector3(0, 0, 0);
-
-                selectedPlanet = false;
-
-                camOrbit.minDistance = minCameraDistance;
-                camOrbit.enableDamping = true;
-
-                setTimeout(moveCameraTo, Math.random(), camera, camera.position.x, camera.position.y, camera.position.z, lastFreeCameraPosition.x, lastFreeCameraPosition.y, lastFreeCameraPosition.z, 150, 0, false);
-
-                planetsData.forEach(function (planet) {
-                    scene.add(planet.previewObject);
-                    planet.physicalPlanet.forEach(function (layer) {
-                        layer.children[0].material.visible = false;
-                    });
-                });
-
-                rickmobilesPull.forEach(function (rickmobile) {
-                    rickmobile.model.children[0].material.visible = true;
-                    rickmobile.model.children[1].material.visible = true;
-                });
-
-            }
-
-            if (object.object.name == 'playButton') {
-
-                planet = planetsData[selectedPlanet];
-
-                if (planet.name == "skwoth") {
-                    camera.add(taskTable);
-                    camera.add(readyButton);
-
-                    taskTableSlots.forEach(function (slot) {
-                        slot.inUseBy = null;
-                        camera.add(slot.object);
-                    });
-
-                    taskTableImages.forEach(function (image) {
-                        image.currentSlot = null;
-                        image.object.position.set(image.spawnPosition.x, image.spawnPosition.y, -2.9);
-                        camera.add(image.object);
-                    });
-
-                }
-                else {
-                    camera.add(comingSoonWindow);
-                }
-
-            }
-
-            if (object.object.name == 'comingSoonWindow') {
-                camera.remove(comingSoonWindow);
-            }
-
-            if (object.object.name == 'readyButton') {
-                var isAllRight = true;
-
-                taskTableSlots.slice(0, 4).forEach(function (slot, slotID) {
-                    if (slot.inUseBy == null) {
-                        isAllRight = false;
-                    }
-                    else {
-                        downSlot = taskTableSlots[slotID + 4];
-                        if (taskTableImages[slot.inUseBy].agreeWith !== downSlot.inUseBy) {
-                            isAllRight = false;
-                        }
-                    }
-                });
-
-                if (isAllRight == true) {
-                    camera.add(youWonWindow);
-                    camera.add(getAGiftButton);
-                }
-                else {
-                    camera.add(wrongWindow);
-                }
-
-            }
-
-            if (object.object.name == 'tableImage') {
-                if (selectedImage == null) {
-                    taskTableSlots.forEach(function (slot) {
-                        if (slot.inUseBy == null) {
-                            slot.object.material.color.set("green");
-                        }
-                        else {
-                            slot.object.material.color.set("yellow");
-                        }
-                    });
-
-                    selectedImage = object.object;
-                    currentObjectIsFounded = true;
-                    return;
-                }
-
-                if (selectedImage !== object.object) {
-                    currentImagePosition = new THREE.Vector3(object.object.position.x, object.object.position.y, object.object.position.z);
-                    object.object.position.set(selectedImage.position.x, selectedImage.position.y, selectedImage.position.z);
-                    selectedImage.position.set(currentImagePosition.x, currentImagePosition.y, currentImagePosition.z);
-
-                    currentImageSlot = taskTableImages[object.object.imageID].currentSlot;
-                    selectedImageSlot = taskTableImages[selectedImage.imageID].currentSlot;
-
-                    if (currentImageSlot !== null) {
-                        selectedImage.currentSlot = currentImageSlot;
-                        currentImageSlot.inUseBy = selectedImage.imageID;
-                    }
-
-                    if (selectedImageSlot !== null) {
-                        object.object.currentSlot = selectedImageSlot;
-                        selectedImageSlot.inUseBy = object.object.imageID;
-                    }
-
-                }
-
-                taskTableSlots.forEach(function (slot) {
-                    slot.object.material.color.set("white");
-                });
-
-                selectedImage = null;
-                throw new Error();
-            }
-
-            if (object.object.name == 'tableSlot') {
-                if (selectedImage == null) {
-                    return;
-                }
-
-                currentSlot = taskTableSlots[object.object.slotID];
-                var PreviousImageSlot = null;
-                taskTableSlots.forEach(function (slot, slotID) {
-                    if (slot.inUseBy == selectedImage.imageID) {
-                        PreviousImageSlot = slotID;
-                    }
-                });
-
-
-                if (currentSlot.inUseBy !== null) {
-                    if (PreviousImageSlot == null) {
-                        taskTableImages[currentSlot.inUseBy].currentSlot = null;
-                    }
-                    else {
-                        taskTableImages[currentSlot.inUseBy].currentSlot = taskTableSlots[PreviousImageSlot];
-                        taskTableSlots[PreviousImageSlot].inUseBy = currentSlot.inUseBy;
-                        taskTableSlots[PreviousImageSlot].inUseBy == currentSlot.inUseBy;
-                    }
-                    taskTableImages[currentSlot.inUseBy].object.position.set(selectedImage.position.x, selectedImage.position.y, selectedImage.position.z);
-                }
-                else {
-                    if (PreviousImageSlot !== null) {
-                        taskTableSlots[PreviousImageSlot].inUseBy = null;
-                    }
-                }
-
-                taskTableImages[selectedImage.imageID].currentSlot = currentSlot;
-                selectedImage.position.set(currentSlot.center.x, currentSlot.center.y, -2.9);
-                currentSlot.inUseBy = selectedImage.imageID;
-
-                taskTableSlots.forEach(function (slot) {
-                    slot.object.material.color.set("white");
-                });
-
-                selectedImage = null;
-
-                throw new Error();
-            }
-
-            if (object.object.name == 'wrongWindow') {
-                camera.remove(wrongWindow);
-                currentObjectIsFounded = true;
-            }
-
-            if (object.object.name == 'giftButton') {
-                window.location.href = giftURL;
-                currentObjectIsFounded = true;
-            }
-
-        }
-
-    });
-
-    currentObjectIsFounded = false;
-}
-
-function onKeyPress(event) {
-
-    if (event.key == "Escape") {
-        if (selectedPlanet === false) {
-            return;
-        }
-
-        camera.remove(youWonWindow);
-        camera.remove(wrongWindow);
-        camera.remove(getAGiftButton);
-        camera.remove(backButton);
-        camera.remove(playButton);
-        camera.remove(comingSoonWindow);
-        camera.remove(taskTable);
-        camera.remove(readyButton);
-
-        taskTableSlots.forEach(function (slot) {
-            camera.remove(slot.object);
-        });
-
-        taskTableImages.forEach(function (image) {
-            camera.remove(image.object);
-        });
-
-        camOrbit.enabled = true;
-        camOrbit.target = new THREE.Vector3(0, 0, 0);
-
-        selectedPlanet = false;
-
-        camOrbit.minDistance = minCameraDistance;
-        camOrbit.enableDamping = true;
-        camera.position.set(-90, 120, 180);
-
-        planetsData.forEach(function (planet) {
-            scene.add(planet.previewObject);
-            planet.physicalPlanet.forEach(function (layer) {
-                layer.children[0].material.visible = false;
-            });
-        });
-
-        rickmobilesPull.forEach(function (rickmobile) {
-            rickmobile.model.children[0].material.visible = true;
-            rickmobile.model.children[1].material.visible = true;
-        });
-
-    }
-
-    if (event.key == "1") {
-        // if (firstgalaxy) {
-        //     if (scene.children.includes(firstgalaxy)) {
-        //         scene.remove(firstgalaxy);
-        //         scene.add(sunSprite);
-        //     }
-        //     else {
-        //         scene.remove(sunSprite);
-        //         scene.add(firstgalaxy);
-        //     }
-        // }
-    }
-
-    if (event.key == "2") {
-        // if (scene.children.includes(secondgalaxy)) {
-        //     scene.remove(secondgalaxy);
-        // }
-        // else {
-        //     scene.add(secondgalaxy);
-        // }
-    }
-
-    if (event.key == "3") {
-        // if (scene.children.includes(thirdgalaxy)) {
-        //     scene.remove(thirdgalaxy);
-        // }
-        // else {
-        //     scene.add(thirdgalaxy);
-        // }
-    }
-
-    if (event.key == "4") {
-        if (scene.children.includes(blinkStars)) {
-            scene.remove(blinkStars);
-        }
-        else {
-            scene.add(blinkStars);
-        }
-        if (scene.children.includes(clouds)) {
-            scene.remove(clouds);
-        }
-        else {
-            scene.add(clouds);
-        }
-    }
-
-    if (event.key == "5") {
-        if (scene.children.includes(outStars)) {
-            scene.remove(outStars);
-        }
-        else {
-            scene.add(outStars);
-        }
-    }
-
-    if (event.key == "6") {
-        if (scene.children.includes(warpStars)) {
-            scene.remove(warpStars);
-        }
-        else {
-            scene.add(warpStars);
-        }
-    }
-
-}
-
 function checkMousePointer() {
     raycaster.setFromCamera(mouseNormal, camera);
     const intersects = raycaster.intersectObjects(scene.children, true);
@@ -3010,32 +1394,9 @@ function checkMousePointer() {
     if (!isHover) {
         document.body.style.cursor = 'default';
     }
-
-    // if (selectedPlanet !== false) {
-    //     if (objectHovered !== false) {
-    //         document.body.style.cursor = 'default';
-    //         if (objectHovered.name !== "planetPreview") {
-    //             document.body.style.cursor = "pointer";
-    //         }
-    //     }
-    // }
-
-    // if (objectHovered !== false) {
-    //     objectHovered == false;
-    //     document.body.style.cursor = 'default';
-    // }
 }
 
-function render() {
-    renderer.autoClear = true;
-    renderer.render(sceneBg, camera);
-    renderer.autoClear = false;
-    renderer.render(scene, camera);
-}
-
-function update(dt) {
-    let dtMs = dt * 1000;
-    
+function updateFarStars(dt) {
     let aAngle = camOrbit.getAzimuthalAngle();
     let dtAzimut = aAngle - prevCamAzimutAngle;
     prevCamAzimutAngle = aAngle;
@@ -3046,41 +1407,23 @@ function update(dt) {
 
     let azFactor = dtAzimut * 10;
     let polFactor = dtPolar * 10;
-    
+
     outStars.material.uniforms.cameraMovmentPower.value = [azFactor, polFactor];
+}
 
-    // LogMng.debug(`azFactor: ${azFactor}; polFactor: ${polFactor};`);
+function render() {
+    renderer.clear();
+    renderer.render(sceneBg, camera);
+    renderer.render(scene, camera);
+}
 
-    var polarAngle = camOrbit.getPolarAngle();
-    var cameraRotationFactor = Math.abs(polarAngle - Math.PI / 2);
+function update(dt) {
+    let dtMs = dt * 1000;
+    
+    updateFarStars(dt);
 
-    if (cameraRotationFactor >= 0.75) {
-        cameraRotationPower = verticalCameraMagnitude;
-    }
-    else {
-        cameraRotationPower = 1.0 + ((verticalCameraMagnitude - 1.0) * (cameraRotationFactor / 0.75));
-    }
-
-    // let mas = [];
-    // if (firstgalaxy) mas.push(firstgalaxy);
-    // if (secondgalaxy) mas.push(secondgalaxy);
-    // if (thirdgalaxy) mas.push(thirdgalaxy);
-    // if (blinkStars) mas.push(blinkStars);
-    // mas.forEach(function (galaxy) {
-    //     galaxy.material.uniforms.cameraRotationPower.value = cameraRotationPower;
-    // });
-
-    // planets.forEach(function (planet) {
-    //     planet.physicalPlanet.forEach(function (layer, layerIndex) {
-    //         layer.rotation.x += planet.layersPerFrameTransformation[layerIndex].rotation.x;
-    //         layer.rotation.y += planet.layersPerFrameTransformation[layerIndex].rotation.y;
-    //         layer.rotation.z += planet.layersPerFrameTransformation[layerIndex].rotation.z;
-
-    //         layer.scale.x += planet.layersPerFrameTransformation[layerIndex].scale.x;
-    //         layer.scale.y += planet.layersPerFrameTransformation[layerIndex].scale.y;
-    //         layer.scale.z += planet.layersPerFrameTransformation[layerIndex].scale.z;
-    //     });
-    // });
+    let polarAngle = camOrbit.getPolarAngle();
+    let cameraRotationFactor = Math.abs(polarAngle - Math.PI / 2);
 
     for (let i = 0; i < smallGalaxies.length; i++) {
         const g = smallGalaxies[i];
@@ -3096,8 +1439,6 @@ function update(dt) {
     }
 
     if (sprGalaxyCenter) {
-        // debugger;
-        // console.log(`polarAngle: ${polarAngle}`);
         const scMin = 0.1;
         let anFactor = scMin + (1 - scMin) * (1 - (polarAngle / (Math.PI / 2)));
         if (polarAngle > Math.PI / 2) {
@@ -3107,8 +1448,6 @@ function update(dt) {
     }
 
     if (sprGalaxyCenter2) {
-        // debugger;
-        // console.log(`polarAngle: ${polarAngle}`);
         const scMin = 0.3;
         let anFactor = scMin + (1 - scMin) * (1 - (polarAngle / (Math.PI / 2)));
         if (polarAngle > Math.PI / 2) {
