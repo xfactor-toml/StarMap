@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
-// import { FontLoader } from "three/examples/jsm/loaders/FontLoader";
+import { FontLoader } from "three/examples/jsm/loaders/FontLoader";
 import { GLTFLoader, GLTF } from "three/examples/jsm/loaders/GLTFLoader";
 import { Signal } from "../events/Signal";
 import { LogMng } from "../utils/LogMng";
@@ -615,7 +615,7 @@ export class ThreeLoader {
     }
 
     private loadFont(aKey: string, aFile: string) {
-        let fontLoader = new THREE.FontLoader();
+        let fontLoader = new FontLoader();
         fontLoader.load(aFile,
             (aFont) => {
                 this.cache[aKey] = aFont;
