@@ -68,7 +68,7 @@ export class GameEngine {
         this.camera = new THREE.PerspectiveCamera(
             45,
             innerWidth / innerHeight,
-            0.5,
+            0.8,
             10000);
         this.camera.position.set(10, 0, 10);
         this.camera.lookAt(new THREE.Vector3(0, 0, 0));
@@ -98,31 +98,8 @@ export class GameEngine {
 
         // GUI
 
-        let gui = Params.datGui;
-
         if (Params.isDebugMode) {
-
-            const LOCAL_PARAMS = {
-                'center visible': true,
-                'recreate': () => {
-                    
-                },
-                axiesHelper: false
-            };
-
-            let galaxyFolder = gui.addFolder('Galaxy');
-            galaxyFolder.add(Params.galaxyData, 'stars count', 0, 10000, 100);
-            galaxyFolder.add(LOCAL_PARAMS, 'center visible', true).onChange((value) => {
-                this.galaxy.centerVisible = value;
-            });
-            galaxyFolder.add(LOCAL_PARAMS, 'recreate');
-            galaxyFolder.open();
-
-            gui.add(LOCAL_PARAMS, 'axiesHelper').onChange((value) => {
-                Params.debugAxeHelperOn = value;
-                // GameEvents.onDebugAxeHelperVisibleChange.dispatch(value);
-            });
-            
+            this.galaxy.initDebugGui();
         }
 
         this.clock = new THREE.Clock();

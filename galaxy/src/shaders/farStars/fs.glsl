@@ -1,52 +1,53 @@
 uniform vec2 cameraMovmentPower;
+uniform float starSize;
+uniform float starColor;
+uniform float starAlpha;
 
 varying vec3 vPosition;
-varying vec3 mPosition;
-varying float gas;
-varying float customStarColor;
 
-float line(vec2 uv, vec2 pt1, vec2 pt2, float pointSize, float tensionPower) {
+float line(vec2 uv, vec2 pt1, vec2 pt2, float aPointSize, float tensionPower) {
     float clrFactor = 0.0;
-    float tickness = pointSize;
     float r = distance(uv, pt1) / distance(pt1, pt2);
     
     if (r <= tensionPower) {
         vec2 ptc = mix(pt1, pt2, r); 
         float dist = distance(ptc, uv);
-        if (dist < tickness / 2.0) {
+        if (dist < aPointSize / 1.) {
             clrFactor = 1.0;
         }
     }
+
+    if (distance(uv, vec2(0.5, 0.5)) < aPointSize) {
+        // gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+        clrFactor = 1.0;
+    }
+
     return clrFactor;
 }
 
 
 void main() {
+    float pointSize = starSize * 0.05;
     float tension = 4.9;
-    float pointSize = 0.06;
     float tensionPower = 3.0;
 
-    // if (z > 0.) gl_FragColor *= cos(1.57 * z/322.) * (1. - .001 * length(mPosition));
+    float pDist = distance(vPosition, vec3(0., 0., 0.));
+    tension = pDist * 0.001;
 
-    if (distance(gl_PointCoord, vec2(0.5, 0.5)) < 0.05) {
-        gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-    }
+    // float minDistance = 0.0001;
 
-    if (distance(vPosition, vec3(0.5, 0.5, 0.5)) < 10000.) {
-        tension = 3.6;
-        float pointSize = 0.06;
-        // float tensionPower = 1.0;
-    }
-
-    if (distance(vPosition, vec3(0.5, 0.5, 0.5)) < 900.) {
-        tension = 0.5;
-        float pointSize = 0.06;
-        // float tensionPower = 1.0;
-    }
-
-    if (abs(cameraMovmentPower.x) > 0.02 || abs(cameraMovmentPower.y) > 0.02) {
-        float distanceToLine = line(gl_PointCoord.xy, (cameraMovmentPower.xy * tension) + .5, vec2(0.5, 0.5), pointSize, tensionPower) * 5.0;
-        gl_FragColor = vec4(distanceToLine, distanceToLine, distanceToLine, distanceToLine);
-    }
+    // if (abs(cameraMovmentPower.x) > minDistance || abs(cameraMovmentPower.y) > minDistance) {
+    float clr = line(
+        gl_PointCoord.xy, 
+        (cameraMovmentPower.xy * tension) + .5, 
+        vec2(0.5, 0.5), 
+        // vec2(0., 0.),
+        pointSize, 
+        tensionPower
+        ) * 5.0;
+    gl_FragColor = vec4(clr, clr, clr, starAlpha);
+    // }
+    
+    // gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
 
 }

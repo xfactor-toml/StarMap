@@ -1,29 +1,31 @@
-uniform vec2 cameraMovmentPower;
+uniform float radiusMin;
+uniform float radiusMax;
+uniform float scaleMin;
+uniform float scaleMax;
 
 varying vec3 vPosition;
-varying vec3 mPosition; // modified position
-varying float gas;
-varying float customStarColor;
 
 void main() {
 
+    vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+	gl_Position = mvPosition * projectionMatrix;
     vPosition = position;
-    mPosition = position;
-    vec4 mvPosition = modelViewMatrix * vec4(mPosition, 1.);
-    gl_Position = mvPosition*projectionMatrix;
-    float multiplier = 200000.;
 
-    if (distance(position, vec3(0.5, 0.5, 0.5)) < 100000.) {
-        multiplier = 1000.;
-    }
+    float _radiusMin = 2.;
+    float _radiusMax = 500.;
+    float _scaleMin = 1.;
+    float _scaleMax = 10.;
+    _radiusMin = radiusMin;
+    _radiusMax = radiusMax;
+    _scaleMin = scaleMin;
+    _scaleMax = scaleMax;
 
-    if (distance(position, vec3(0.5, 0.5, 0.5)) < 2000.) {
-        multiplier = 100.;
-    }
+    // float dist = distance(position, vec3(0.5, 0.5, 0.5));
+    float dist = distance(position, vec3(0., 0., 0.));
 
-    gl_PointSize = 50. / (length(mvPosition.xyz) / multiplier);
-
-    if (gl_PointSize < 15.) gl_PointSize = 15.;
-    if (gl_PointSize > 20.) gl_PointSize = 20.;
+    float distFactor = (dist - _radiusMin) / (_radiusMax - _radiusMin);
+    if (distFactor < 0.) distFactor = 0.;
+    if (distFactor > 1.) distFactor = 1.;
+    gl_PointSize = _scaleMin + distFactor * (_scaleMax - _scaleMin);
 
 }
