@@ -8,13 +8,11 @@ import { Params } from "../data/Params";
 
 export type FarStarsParams = {
     starsCount: number;
-    radiusMin: number;
-    radiusMax: number;
 };
 
 export class FarStars extends THREE.Group implements IBaseClass {
     private params: FarStarsParams;
-    private geometry: THREE.Geometry;
+    private geometry: THREE.BufferGeometry;
     private material: THREE.ShaderMaterial;
     private stars: THREE.Points;
     private _azimutAngle = 0;
@@ -26,8 +24,11 @@ export class FarStars extends THREE.Group implements IBaseClass {
         super();
         this.params = aParams;
 
-        this.geometry = new THREE.Geometry();
-        this.geometry.vertices = this.generatePositions(this.params.starsCount, this.params.radiusMin, this.params.radiusMax);
+        // this.geometry = new THREE.Geometry();
+        // this.geometry.vertices = this.generatePositions(this.params.starsCount, this.params.radiusMin, this.params.radiusMax);
+        this.geometry = new THREE.BufferGeometry();
+        let vertices = this.generatePositionsFloat32Array(this.params.starsCount, Params.skyData.radiusMin, Params.skyData.radiusMax);
+        this.geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
 
         this.material = new THREE.ShaderMaterial({
             vertexShader: vsFarStars,
@@ -88,7 +89,50 @@ export class FarStars extends THREE.Group implements IBaseClass {
         }
         return stars;
     }
-    
+
+    private generatePositionsFloat32Array(aStarsCount: number, aRadiusMin: number, aRadiusMax: number): Float32Array {
+        const starsCount = aStarsCount;
+        const systemRadius = aRadiusMax - aRadiusMin;
+        let res = new Float32Array(starsCount * 3);
+        let stars: THREE.Vector3[] = [];
+
+        for (let i = 0; i < starsCount; i++) {
+            let layer = 0;
+            let r = MyMath.randomIntInRange(0, 100);
+            if (r < 10) layer = 0;
+            else if (r < 30) layer = 1;
+            else layer = 2;
+
+            let radius = 0;
+
+            switch (layer) {
+                case 0:
+                    radius = MyMath.randomInRange(0, systemRadius * 0.25);
+                    break;
+                case 1:
+                    radius = MyMath.randomInRange(systemRadius * 0.25, systemRadius * 0.5);
+                    break;
+                case 2:
+                    radius = MyMath.randomInRange(systemRadius * 0.5, systemRadius);
+                    break;
+            }
+
+            radius += aRadiusMin;
+
+            let newStarPos = new THREE.Vector3(
+                MyMath.randomInRange(-10, 10),
+                MyMath.randomInRange(-10, 10),
+                MyMath.randomInRange(-10, 10)
+            );
+            newStarPos.normalize().multiplyScalar(aRadiusMin + radius);
+            //stars.push(newStarPos);
+            res[i] = newStarPos.x;
+            res[i + 1] = newStarPos.y;
+            res[i + 2] = newStarPos.z;
+        }
+        return res;
+    }
+
     public set azimutAngle(v: number) {
         this._azimutAngle = v;
     }
@@ -108,7 +152,7 @@ export class FarStars extends THREE.Group implements IBaseClass {
     
     free() {
         this.remove(this.stars);
-        this.geometry.vertices = [];
+        // this.geometry.vertices = [];
         this.geometry = null;
         this.material = null;
         this.params = null;

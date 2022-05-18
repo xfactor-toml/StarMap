@@ -1325,8 +1325,8 @@ export class Galaxy {
 
         this.farStars = new FarStars({
             starsCount: Params.skyData.starsCount,
-            radiusMin: Params.skyData.radiusMin,
-            radiusMax: Params.skyData.radiusMax
+            // radiusMin: Params.skyData.radiusMin,
+            // radiusMax: Params.skyData.radiusMax
         });
 
         this.scene.add(this.farStars);
