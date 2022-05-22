@@ -10,26 +10,28 @@ import gsap from 'gsap';
 import { Params } from '../data/Params';
 import { Config } from '../data/Config';
 import { FarStars } from '../objects/FarStars';
+import { GalaxyStars } from '../objects/GalaxyStars';
+import { GlobalEvents } from '../events/GlobalEvents';
 
-const STARS_1_COLORS = [
-    [0.505 * 255, 0.39 * 255, 0.3 * 255],
-    [0.258 * 255, 0.282 * 255, 0.145 * 255],
-    [0.694 * 255, 0.301 * 255, 0.282 * 255],
-    [0.745 * 255, 0.635 * 255, 0.360 * 255],
-    [0.431 * 255, 0.831 * 255, 0.819 * 255],
-    [1.0 * 255, 0.901 * 255, 0.890 * 255]
+const STARS_COLORS_1 = [
+    [0.505, 0.39, 0.3],
+    [0.258, 0.282, 0.145],
+    [0.694, 0.301, 0.282],
+    [0.745, 0.635, 0.360],
+    [0.431, 0.831, 0.819],
+    [1.0, 0.901, 0.890]
 ];
 
-const STARS_2_COLORS = [
-    [0.505 * 255, 0.39 * 255, 0.3 * 255],
-    [0.258 * 255, 0.282 * 255, 0.145 * 255],
-    [0.694 * 255, 0.301 * 255, 0.282 * 255],
-    [0.745 * 255, 0.635 * 255, 0.360 * 255],
-    [0.431 * 255, 0.831 * 255, 0.819 * 255],
-    [1.0 * 255, 0.901 * 255, 0.890 * 255]
+const STARS_COLORS_2 = [
+    [0.505, 0.39, 0.3],
+    [0.258, 0.282, 0.145],
+    [0.694, 0.301, 0.282],
+    [0.745, 0.635, 0.360],
+    [0.431, 0.831, 0.819],
+    [1.0, 0.901, 0.890]
 ];
 
-const STARS_3_COLORS = [
+const STARS_COLORS_3 = [
     // orange
     // [0.505 * 255, 0.39 * 255, 0.3 * 255],
 
@@ -43,18 +45,15 @@ const STARS_3_COLORS = [
     // [0.745 * 255, 0.635 * 255, 0.360 * 255],
 
     // teal
-    [0.431 * 255, 0.831 * 255, 0.819 * 255],
-    [0.431 * 255, 0.831 * 255, 0.819 * 255],
+    [0.431, 0.831, 0.819],
+    [0.431, 0.831, 0.819],
 
     // violet
-    [0xb3, 0x8d, 0xf9],
-    [0xb3, 0x8d, 0xf9],
-    [0xb3, 0x8d, 0xf9],
-    [0xb3, 0x8d, 0xf9],
+    [0xb3 / 255, 0x8d / 255, 0xf9 / 255],
+    [0xb3 / 255, 0x8d / 255, 0xf9 / 255],
+    [0xb3 / 255, 0x8d / 255, 0xf9 / 255],
+    [0xb3 / 255, 0x8d / 255, 0xf9 / 255],
 ];
-
-const minCameraDistance = 50;
-const maxCameraDistance = 300;
 
 let layersNames = {
     1: 'first',
@@ -63,798 +62,798 @@ let layersNames = {
 };
 
 let planetsData = [
-    {
-        preview: './assets/Star.svg',
-        previewObject: null,
-        physicalPlanet: [],
-        modelsFolder: './assets/models/gasorpasorp/',
-        layersCount: 3,
-        planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
-        position: new THREE.Vector3(70, 0, 0),
-        name: "gasorpasorp",
+    // {
+    //     preview: './assets/Star.svg',
+    //     previewObject: null,
+    //     physicalPlanet: [],
+    //     modelsFolder: './assets/models/gasorpasorp/',
+    //     layersCount: 3,
+    //     planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
+    //     position: new THREE.Vector3(70, 0, 0),
+    //     name: "gasorpasorp",
 
-        layersPerFrameTransformation: {
-            1: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0125,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            2: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0125,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            3: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.003125,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            }
-        },
+    //     layersPerFrameTransformation: {
+    //         1: {
+    //             rotation: {
+    //                 x: 0.0,
+    //                 y: 0.0125,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         },
+    //         2: {
+    //             rotation: {
+    //                 x: 0.0,
+    //                 y: 0.0125,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         },
+    //         3: {
+    //             rotation: {
+    //                 x: 0.0,
+    //                 y: 0.003125,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         }
+    //     },
 
-        layersDefaultTransformation: {
-            1: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            2: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.1,
-                    y: 0.1,
-                    z: 0.1
-                }
-            },
-            3: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.2,
-                    y: 0.2,
-                    z: 0.2
-                }
-            }
-        }
-    },
-    {
-        preview: './assets/Star.svg',
-        previewObject: null,
-        physicalPlanet: [],
-        modelsFolder: './assets/models/planeta_skwoth/',
-        layersCount: 3,
-        planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
-        position: new THREE.Vector3(-70, 0, 35),
-        name: "skwoth",
+    //     layersDefaultTransformation: {
+    //         1: {
+    //             rotation: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         },
+    //         2: {
+    //             rotation: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.1,
+    //                 y: 0.1,
+    //                 z: 0.1
+    //             }
+    //         },
+    //         3: {
+    //             rotation: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.2,
+    //                 y: 0.2,
+    //                 z: 0.2
+    //             }
+    //         }
+    //     }
+    // },
+    // {
+    //     preview: './assets/Star.svg',
+    //     previewObject: null,
+    //     physicalPlanet: [],
+    //     modelsFolder: './assets/models/planeta_skwoth/',
+    //     layersCount: 3,
+    //     planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
+    //     position: new THREE.Vector3(-70, 0, 35),
+    //     name: "skwoth",
 
-        layersPerFrameTransformation: {
-            1: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0015,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            2: {
-                rotation: {
-                    x: 0.0015,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            3: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0015
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            }
-        },
+    //     layersPerFrameTransformation: {
+    //         1: {
+    //             rotation: {
+    //                 x: 0.0,
+    //                 y: 0.0015,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         },
+    //         2: {
+    //             rotation: {
+    //                 x: 0.0015,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         },
+    //         3: {
+    //             rotation: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0015
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         }
+    //     },
 
-        layersDefaultTransformation: {
-            1: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            2: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            3: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            }
-        }
-    },
-    {
-        preview: './assets/Star.svg',
-        previewObject: null,
-        physicalPlanet: [],
-        modelsFolder: './assets/models/moon/',
-        layersCount: 1,
-        planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
-        position: new THREE.Vector3(-25, 0, -75),
-        name: "moon",
+    //     layersDefaultTransformation: {
+    //         1: {
+    //             rotation: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         },
+    //         2: {
+    //             rotation: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         },
+    //         3: {
+    //             rotation: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         }
+    //     }
+    // },
+    // {
+    //     preview: './assets/Star.svg',
+    //     previewObject: null,
+    //     physicalPlanet: [],
+    //     modelsFolder: './assets/models/moon/',
+    //     layersCount: 1,
+    //     planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
+    //     position: new THREE.Vector3(-25, 0, -75),
+    //     name: "moon",
 
-        layersPerFrameTransformation: {
-            1: {
-                rotation: {
-                    x: 0.001,
-                    y: 0.0015,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            2: {
-                rotation: {
-                    x: 0.003,
-                    y: 0.002,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            3: {
-                rotation: {
-                    x: 0.0015,
-                    y: 0.0013,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            }
-        },
+    //     layersPerFrameTransformation: {
+    //         1: {
+    //             rotation: {
+    //                 x: 0.001,
+    //                 y: 0.0015,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         },
+    //         2: {
+    //             rotation: {
+    //                 x: 0.003,
+    //                 y: 0.002,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         },
+    //         3: {
+    //             rotation: {
+    //                 x: 0.0015,
+    //                 y: 0.0013,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         }
+    //     },
 
-        layersDefaultTransformation: {
-            1: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            2: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            3: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            }
-        }
-    },
-    {
-        preview: './assets/Star.svg',
-        previewObject: null,
-        physicalPlanet: [],
-        modelsFolder: './assets/models/planetEarth/',
-        layersCount: 1,
-        planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
-        position: new THREE.Vector3(30, 0, 65),
-        name: "earth",
+    //     layersDefaultTransformation: {
+    //         1: {
+    //             rotation: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         },
+    //         2: {
+    //             rotation: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         },
+    //         3: {
+    //             rotation: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         }
+    //     }
+    // },
+    // {
+    //     preview: './assets/Star.svg',
+    //     previewObject: null,
+    //     physicalPlanet: [],
+    //     modelsFolder: './assets/models/planetEarth/',
+    //     layersCount: 1,
+    //     planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
+    //     position: new THREE.Vector3(30, 0, 65),
+    //     name: "earth",
 
-        layersPerFrameTransformation: {
-            1: {
-                rotation: {
-                    x: 0.001,
-                    y: 0.0015,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            2: {
-                rotation: {
-                    x: 0.003,
-                    y: 0.002,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            3: {
-                rotation: {
-                    x: 0.0015,
-                    y: 0.0013,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            }
-        },
+    //     layersPerFrameTransformation: {
+    //         1: {
+    //             rotation: {
+    //                 x: 0.001,
+    //                 y: 0.0015,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         },
+    //         2: {
+    //             rotation: {
+    //                 x: 0.003,
+    //                 y: 0.002,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         },
+    //         3: {
+    //             rotation: {
+    //                 x: 0.0015,
+    //                 y: 0.0013,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         }
+    //     },
 
-        layersDefaultTransformation: {
-            1: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            2: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            3: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            }
-        }
-    },
-    {
-        preview: './assets/Star.svg',
-        previewObject: null,
-        physicalPlanet: [],
-        modelsFolder: './assets/models/moon/',
-        layersCount: 1,
-        planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
-        position: new THREE.Vector3(-75, 0, 1),
-        name: "earth",
+    //     layersDefaultTransformation: {
+    //         1: {
+    //             rotation: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         },
+    //         2: {
+    //             rotation: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         },
+    //         3: {
+    //             rotation: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         }
+    //     }
+    // },
+    // {
+    //     preview: './assets/Star.svg',
+    //     previewObject: null,
+    //     physicalPlanet: [],
+    //     modelsFolder: './assets/models/moon/',
+    //     layersCount: 1,
+    //     planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
+    //     position: new THREE.Vector3(-75, 0, 1),
+    //     name: "earth",
 
-        layersPerFrameTransformation: {
-            1: {
-                rotation: {
-                    x: 0.001,
-                    y: 0.0015,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            2: {
-                rotation: {
-                    x: 0.003,
-                    y: 0.002,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            3: {
-                rotation: {
-                    x: 0.0015,
-                    y: 0.0013,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            }
-        },
+    //     layersPerFrameTransformation: {
+    //         1: {
+    //             rotation: {
+    //                 x: 0.001,
+    //                 y: 0.0015,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         },
+    //         2: {
+    //             rotation: {
+    //                 x: 0.003,
+    //                 y: 0.002,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         },
+    //         3: {
+    //             rotation: {
+    //                 x: 0.0015,
+    //                 y: 0.0013,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         }
+    //     },
 
-        layersDefaultTransformation: {
-            1: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            2: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            3: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            }
-        }
-    },
-    {
-        preview: './assets/Star.svg',
-        previewObject: null,
-        physicalPlanet: [],
-        modelsFolder: './assets/models/moon/',
-        layersCount: 1,
-        planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
-        position: new THREE.Vector3(25, 0, -90),
-        name: "earth",
+    //     layersDefaultTransformation: {
+    //         1: {
+    //             rotation: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         },
+    //         2: {
+    //             rotation: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         },
+    //         3: {
+    //             rotation: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         }
+    //     }
+    // },
+    // {
+    //     preview: './assets/Star.svg',
+    //     previewObject: null,
+    //     physicalPlanet: [],
+    //     modelsFolder: './assets/models/moon/',
+    //     layersCount: 1,
+    //     planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
+    //     position: new THREE.Vector3(25, 0, -90),
+    //     name: "earth",
 
-        layersPerFrameTransformation: {
-            1: {
-                rotation: {
-                    x: 0.001,
-                    y: 0.0015,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            2: {
-                rotation: {
-                    x: 0.003,
-                    y: 0.002,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            3: {
-                rotation: {
-                    x: 0.0015,
-                    y: 0.0013,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            }
-        },
+    //     layersPerFrameTransformation: {
+    //         1: {
+    //             rotation: {
+    //                 x: 0.001,
+    //                 y: 0.0015,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         },
+    //         2: {
+    //             rotation: {
+    //                 x: 0.003,
+    //                 y: 0.002,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         },
+    //         3: {
+    //             rotation: {
+    //                 x: 0.0015,
+    //                 y: 0.0013,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         }
+    //     },
 
-        layersDefaultTransformation: {
-            1: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            2: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            3: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            }
-        }
-    },
-    {
-        preview: './assets/Star.svg',
-        previewObject: null,
-        physicalPlanet: [],
-        modelsFolder: './assets/models/moon/',
-        layersCount: 1,
-        planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
-        position: new THREE.Vector3(45, 0, 110),
-        name: "earth",
+    //     layersDefaultTransformation: {
+    //         1: {
+    //             rotation: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         },
+    //         2: {
+    //             rotation: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         },
+    //         3: {
+    //             rotation: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         }
+    //     }
+    // },
+    // {
+    //     preview: './assets/Star.svg',
+    //     previewObject: null,
+    //     physicalPlanet: [],
+    //     modelsFolder: './assets/models/moon/',
+    //     layersCount: 1,
+    //     planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
+    //     position: new THREE.Vector3(45, 0, 110),
+    //     name: "earth",
 
-        layersPerFrameTransformation: {
-            1: {
-                rotation: {
-                    x: 0.001,
-                    y: 0.0015,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            2: {
-                rotation: {
-                    x: 0.003,
-                    y: 0.002,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            3: {
-                rotation: {
-                    x: 0.0015,
-                    y: 0.0013,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            }
-        },
+    //     layersPerFrameTransformation: {
+    //         1: {
+    //             rotation: {
+    //                 x: 0.001,
+    //                 y: 0.0015,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         },
+    //         2: {
+    //             rotation: {
+    //                 x: 0.003,
+    //                 y: 0.002,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         },
+    //         3: {
+    //             rotation: {
+    //                 x: 0.0015,
+    //                 y: 0.0013,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         }
+    //     },
 
-        layersDefaultTransformation: {
-            1: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            2: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            3: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            }
-        }
-    },
-    {
-        preview: './assets/Star.svg',
-        previewObject: null,
-        physicalPlanet: [],
-        modelsFolder: './assets/models/moon/',
-        layersCount: 1,
-        planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
-        position: new THREE.Vector3(85, 0, -80),
-        name: "earth",
+    //     layersDefaultTransformation: {
+    //         1: {
+    //             rotation: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         },
+    //         2: {
+    //             rotation: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         },
+    //         3: {
+    //             rotation: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         }
+    //     }
+    // },
+    // {
+    //     preview: './assets/Star.svg',
+    //     previewObject: null,
+    //     physicalPlanet: [],
+    //     modelsFolder: './assets/models/moon/',
+    //     layersCount: 1,
+    //     planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
+    //     position: new THREE.Vector3(85, 0, -80),
+    //     name: "earth",
 
-        layersPerFrameTransformation: {
-            1: {
-                rotation: {
-                    x: 0.001,
-                    y: 0.0015,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            2: {
-                rotation: {
-                    x: 0.003,
-                    y: 0.002,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            3: {
-                rotation: {
-                    x: 0.0015,
-                    y: 0.0013,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            }
-        },
+    //     layersPerFrameTransformation: {
+    //         1: {
+    //             rotation: {
+    //                 x: 0.001,
+    //                 y: 0.0015,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         },
+    //         2: {
+    //             rotation: {
+    //                 x: 0.003,
+    //                 y: 0.002,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         },
+    //         3: {
+    //             rotation: {
+    //                 x: 0.0015,
+    //                 y: 0.0013,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         }
+    //     },
 
-        layersDefaultTransformation: {
-            1: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            2: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            3: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            }
-        }
-    },
-    {
-        preview: './assets/Star.svg',
-        previewObject: null,
-        physicalPlanet: [],
-        modelsFolder: './assets/models/planet_x/',
-        layersCount: 3,
-        planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
-        position: new THREE.Vector3(120, 0, 80),
-        name: "planet_x",
+    //     layersDefaultTransformation: {
+    //         1: {
+    //             rotation: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         },
+    //         2: {
+    //             rotation: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         },
+    //         3: {
+    //             rotation: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         }
+    //     }
+    // },
+    // {
+    //     preview: './assets/Star.svg',
+    //     previewObject: null,
+    //     physicalPlanet: [],
+    //     modelsFolder: './assets/models/planet_x/',
+    //     layersCount: 3,
+    //     planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
+    //     position: new THREE.Vector3(120, 0, 80),
+    //     name: "planet_x",
 
-        layersPerFrameTransformation: {
-            1: {
-                rotation: {
-                    x: 0.001,
-                    y: 0.0015,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            2: {
-                rotation: {
-                    x: 0.003,
-                    y: 0.002,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            3: {
-                rotation: {
-                    x: 0.0015,
-                    y: 0.0013,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            }
-        },
+    //     layersPerFrameTransformation: {
+    //         1: {
+    //             rotation: {
+    //                 x: 0.001,
+    //                 y: 0.0015,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         },
+    //         2: {
+    //             rotation: {
+    //                 x: 0.003,
+    //                 y: 0.002,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         },
+    //         3: {
+    //             rotation: {
+    //                 x: 0.0015,
+    //                 y: 0.0013,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         }
+    //     },
 
-        layersDefaultTransformation: {
-            1: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            2: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            },
-            3: {
-                rotation: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                },
-                scale: {
-                    x: 0.0,
-                    y: 0.0,
-                    z: 0.0
-                }
-            }
-        }
-    }
+    //     layersDefaultTransformation: {
+    //         1: {
+    //             rotation: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         },
+    //         2: {
+    //             rotation: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         },
+    //         3: {
+    //             rotation: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             },
+    //             scale: {
+    //                 x: 0.0,
+    //                 y: 0.0,
+    //                 z: 0.0
+    //             }
+    //         }
+    //     }
+    // }
 ];
 
 let checkMousePointerTimer = 0;
@@ -868,12 +867,43 @@ type GalaxyParams = {
     startOffsetH?: number;
     endOffsetH?: number;
     k?: number;
+    alphaMin?: number;
+    alphaMax?: number;
+    scaleMin?: number;
+    scaleMax?: number;
 };
 
 let debugObjects = {
     farStarsSphereMin: null,
     farStarsSphereMax: null,
 }
+
+export type GalaxyStarData = {
+
+    pos: {
+        x: number;
+        y: number;
+        z: number;
+    },
+
+    // normalized RGBA
+    color: {
+        r: number;
+        g: number;
+        b: number;
+        a: number;
+    },
+
+    scale: number;
+
+    blink?: {
+        isFade: boolean;
+        duration: number;
+        progressTime: number;
+        tweenFunction: Function;
+    }
+
+};
 
 export class Galaxy {
     private scene: THREE.Scene;
@@ -884,10 +914,13 @@ export class Galaxy {
     private sprGalaxyCenter: THREE.Sprite;
     private sprGalaxyCenter2: THREE.Sprite;
 
-    private galaxyStarsData: any[];
+    private galaxyStarsData: GalaxyStarData[];
     private galaxyStarSprites: THREE.Sprite[];
 
-    private blinkStarsData: any[];
+    private starsParticles: GalaxyStars;
+    private blinkStarsParticles: GalaxyStars;
+
+    private blinkStarsData: GalaxyStarData[];
     private blinkStars: THREE.Sprite[];
 
     private farStars: FarStars;
@@ -1012,6 +1045,8 @@ export class Galaxy {
             planetsData[planetIndex].previewObject = newPlanetPreview;
         });
 
+        const minCameraDistance = 50;
+        const maxCameraDistance = 500;
         this.createCameraControls({
             minDist: minCameraDistance,
             maxDist: maxCameraDistance,
@@ -1055,14 +1090,22 @@ export class Galaxy {
 
         galaxyFolder.add(Params.galaxyData, 'starsCount', 0, 10000, 100).onChange(() => { this.createGalaxyStars(); });
         galaxyFolder.add(Params.galaxyData, 'blinkStarsCount', 0, 5000, 100).onChange(() => { this.createGalaxyStars(); });
+        galaxyFolder.add(Params.galaxyData, 'blinkDurMin', 0.1, 10, 0.1).onChange(() => { this.createGalaxyStars(); });
+        galaxyFolder.add(Params.galaxyData, 'blinkDurMax', 1, 20, 0.1).onChange(() => { this.createGalaxyStars(); });
         galaxyFolder.add(Params.galaxyData, 'startAngle', 0, 2, 0.1).onChange(() => { this.createGalaxyStars(); });
         galaxyFolder.add(Params.galaxyData, 'endAngle', 0, Math.PI * 2, 0.1).onChange(() => { this.createGalaxyStars(); });
         galaxyFolder.add(Params.galaxyData, 'startOffsetXY', 0, 3, 0.1).onChange(() => { this.createGalaxyStars(); });
         galaxyFolder.add(Params.galaxyData, 'endOffsetXY', 0, 3, 0.1).onChange(() => { this.createGalaxyStars(); });
         galaxyFolder.add(Params.galaxyData, 'startOffsetH', 0, 10, 0.1).onChange(() => { this.createGalaxyStars(); });
         galaxyFolder.add(Params.galaxyData, 'endOffsetH', 0, 10, 0.1).onChange(() => { this.createGalaxyStars(); });
+        galaxyFolder.add(Params.galaxyData, 'alphaMin', 0, 1, 0.02).onChange(() => { this.createGalaxyStars(); });
+        galaxyFolder.add(Params.galaxyData, 'alphaMax', 0, 1, 0.02).onChange(() => { this.createGalaxyStars(); });
+        galaxyFolder.add(Params.galaxyData, 'scaleMin', 0.5, 4, 0.1).onChange(() => { this.createGalaxyStars(); });
+        galaxyFolder.add(Params.galaxyData, 'scaleMax', 0.5, 4, 0.1).onChange(() => { this.createGalaxyStars(); });
         //galaxyFolder.add(Params.galaxyData, 'k', 0, 1, 0.02).onChange(() => { this.createGalaxyStars(); });
-        galaxyFolder.add(Params.galaxyData, 'isNewMethod').onChange(() => { this.createGalaxyStars(); });
+        galaxyFolder.add(Params.galaxyData, 'isNewMethod').onChange(() => {
+            this.createGalaxyStars();
+        });
 
         galaxyFolder.add(DEBUG_PARAMS, 'center visible', true).onChange((value) => {
             this.centerVisible = value;
@@ -1126,8 +1169,8 @@ export class Galaxy {
 
         this.destroyGalaxyStars();
 
-        // stars
-        this.galaxyStarsData = this.getGalaxyStarsData({
+        // galaxy static stars data generate
+        this.galaxyStarsData = this.generateGalaxyStars({
             starsCount: Params.galaxyData.starsCount,
             startAngle: Params.galaxyData.startAngle,
             endAngle: Params.galaxyData.endAngle,
@@ -1135,27 +1178,15 @@ export class Galaxy {
             endOffsetXY: Params.galaxyData.endOffsetXY,
             startOffsetH: Params.galaxyData.startOffsetH,
             endOffsetH: Params.galaxyData.endOffsetH,
-            k: Params.galaxyData.k
-        }, 145, 145);
+            k: Params.galaxyData.k,
+            alphaMin: Params.galaxyData.alphaMin,
+            alphaMax: Params.galaxyData.alphaMax,
+            scaleMin: Params.galaxyData.scaleMin,
+            scaleMax: Params.galaxyData.scaleMax
+        }, 145, 145, STARS_COLORS_2);
 
-        this.galaxyStarSprites = [];
-        
-        for (let i = 0; i < this.galaxyStarsData.length; i++) {
-            let starData = this.galaxyStarsData[i];
-            const dPos = 3;
-            let starPos = {
-                x: starData.x + MyMath.randomInRange(-dPos, dPos),
-                y: starData.y + MyMath.randomInRange(-dPos / 2, dPos / 2),
-                z: starData.z + MyMath.randomInRange(-dPos, dPos)
-            };
-
-            let starSprite = this.createStarSprite('star4', starPos.x, starPos.y, starPos.z, 4, STARS_2_COLORS);
-            this.galaxyStarSprites.push(starSprite);
-            this.scene.add(starSprite);
-        }
-
-        // blink stars
-        this.blinkStarsData = this.getGalaxyStarsData({
+        // blink stars data generate
+        this.blinkStarsData = this.generateGalaxyStars({
             starsCount: Params.galaxyData.blinkStarsCount,
             startAngle: Params.galaxyData.startAngle,
             endAngle: Params.galaxyData.endAngle,
@@ -1163,42 +1194,100 @@ export class Galaxy {
             endOffsetXY: Params.galaxyData.endOffsetXY,
             startOffsetH: Params.galaxyData.startOffsetH,
             endOffsetH: Params.galaxyData.endOffsetH,
-            k: Params.galaxyData.k
-        }, 150, 150);
+            k: Params.galaxyData.k,
+            alphaMin: Params.galaxyData.alphaMin,
+            alphaMax: Params.galaxyData.alphaMax,
+            scaleMin: Params.galaxyData.scaleMin,
+            scaleMax: Params.galaxyData.scaleMax,
+        },
+            145, 145,
+            STARS_COLORS_2,
+            {
+                durationMin: Params.galaxyData.blinkDurMin,
+                durationMax: Params.galaxyData.blinkDurMax
+            }
+        );
 
-        this.blinkStars = [];
+        if (Params.galaxyData.isNewMethod) {
 
-        const blinkStar = (aStarSprite) => {
-            gsap.to(aStarSprite.material, {
-                opacity: 2.5,
-                delay: MyMath.randomInRange(1, 10),
-                duration: MyMath.randomInRange(1, 2),
-                yoyo: true,
-                repeat: 1,
-                onComplete: () => {
-                    if (!aStarSprite['stopBlinkAnimation']) blinkStar(aStarSprite);
-                }
+            // particle stars
+            let t = ThreeLoader.getInstance().getTexture('star4');
+            this.starsParticles = new GalaxyStars({
+                starsData: this.galaxyStarsData,
+                texture: t,
+                onWindowResizeSignal: GlobalEvents.onWindowResizeSignal
             });
-        };
 
-        for (let i = 0; i < this.blinkStarsData.length; i++) {
-            let starData = this.blinkStarsData[i];
-            const dPos = 1;
-            let starPos = {
-                x: starData.x + MyMath.randomInRange(-dPos, dPos),
-                y: starData.y + MyMath.randomInRange(-dPos / 2, dPos / 2),
-                z: starData.z + MyMath.randomInRange(-dPos, dPos)
+            this.scene.add(this.starsParticles);
+
+            // blink particle stars
+            this.blinkStarsParticles = new GalaxyStars({
+                starsData: this.blinkStarsData,
+                texture: t,
+                onWindowResizeSignal: GlobalEvents.onWindowResizeSignal
+            });
+
+            this.scene.add(this.blinkStarsParticles);
+
+        }
+        else {
+
+            // static stars sprites
+            this.galaxyStarSprites = [];
+
+            for (let i = 0; i < this.galaxyStarsData.length; i++) {
+                let starData = this.galaxyStarsData[i];
+                const dPos = 3;
+                let starPos = {
+                    x: starData.pos.x + MyMath.randomInRange(-dPos, dPos),
+                    y: starData.pos.y + MyMath.randomInRange(-dPos / 2, dPos / 2),
+                    z: starData.pos.z + MyMath.randomInRange(-dPos, dPos)
+                };
+
+                starData.scale *= 6;
+
+                let starSprite = this.createStarSprite('star4', starData);
+                this.galaxyStarSprites.push(starSprite);
+                this.scene.add(starSprite);
+            }
+
+            // blink stars sprites
+            this.blinkStars = [];
+
+            const blinkStar = (aStarSprite) => {
+                gsap.to(aStarSprite.material, {
+                    opacity: 2.5,
+                    delay: MyMath.randomInRange(1, 10),
+                    duration: MyMath.randomInRange(1, 2),
+                    yoyo: true,
+                    repeat: 1,
+                    onComplete: () => {
+                        if (!aStarSprite['stopBlinkAnimation']) blinkStar(aStarSprite);
+                    }
+                });
             };
 
-            let starSprite = this.createStarSprite('star4_512', starPos.x, starPos.y, starPos.z, MyMath.randomIntInRange(4, 8), STARS_2_COLORS);
-            starSprite.material.opacity = 0;
-            this.blinkStars.push(starSprite);
-            this.scene.add(starSprite);
-            blinkStar(starSprite);
+            for (let i = 0; i < this.blinkStarsData.length; i++) {
+                let starData = this.blinkStarsData[i];
+                const dPos = 1;
+                let starPos = {
+                    x: starData.pos.x + MyMath.randomInRange(-dPos, dPos),
+                    y: starData.pos.y + MyMath.randomInRange(-dPos / 2, dPos / 2),
+                    z: starData.pos.z + MyMath.randomInRange(-dPos, dPos)
+                };
+
+                let starSprite = this.createStarSprite('star4_512', starData);
+                starSprite.material.opacity = 0;
+                this.blinkStars.push(starSprite);
+                this.scene.add(starSprite);
+                blinkStar(starSprite);
+            }
+
         }
+
     }
 
-    private getGalaxyStarsData(aParams: GalaxyParams, xScale: number, zScale: number): any[] {
+    private generateGalaxyStars(aParams: GalaxyParams, xScale: number, zScale: number, aColorSet: any[], aBlinkData?: any): GalaxyStarData[] {
 
         if (!aParams.startAngle) aParams.startAngle = 0;
         if (!aParams.endAngle) aParams.endAngle = Math.PI;
@@ -1207,8 +1296,12 @@ export class Galaxy {
         if (!aParams.startOffsetH) aParams.startOffsetH = 0;
         if (!aParams.endOffsetH) aParams.endOffsetH = 0;
         if (!aParams.k) aParams.k = 0.3;
+        if (!aParams.alphaMin) aParams.alphaMin = 1;
+        if (!aParams.alphaMax) aParams.alphaMax = 1;
+        if (!aParams.scaleMin) aParams.scaleMin = 1;
+        if (!aParams.scaleMax) aParams.scaleMax = 1;
 
-        let stars: any[] = [];
+        let resData: GalaxyStarData[] = [];
         const numArms = 5;
         const armDeltaAngle = 2 * Math.PI / numArms;
 
@@ -1247,55 +1340,59 @@ export class Galaxy {
             let offsetH = aParams.startOffsetH + anglePercent * (aParams.endOffsetH - aParams.startOffsetH);
             offsetH = offsetH * MyMath.randomInRange(-1, 1);
 
-            // Now we can assign xy coords.
-            stars[i] = {
-                x: px * xScale,
-                y: offsetH,
-                z: py * zScale
+            let clr = new THREE.Color(1, 1, 1);
+
+            let customStarColor = aColorSet[MyMath.randomIntInRange(0, aColorSet.length - 1)];
+            clr.r = customStarColor[0];
+            clr.g = customStarColor[1];
+            clr.b = customStarColor[2];
+
+            // make result
+            resData[i] = {
+                pos: {
+                    x: px * xScale,
+                    y: offsetH,
+                    z: py * zScale
+                },
+                color: {
+                    r: clr.r,
+                    g: clr.g,
+                    b: clr.b,
+                    a: MyMath.randomInRange(aParams.alphaMin, aParams.alphaMax)
+                },
+                scale: MyMath.randomInRange(aParams.scaleMin, aParams.scaleMax)
             };
 
+            if (aBlinkData) {
+                let dur = MyMath.randomInRange(aBlinkData.durationMin, aBlinkData.durationMax);
+                resData[i].blink = {
+                    isFade: Math.random() > 0.5,
+                    duration: dur,
+                    progressTime: MyMath.randomInRange(0, dur),
+                    tweenFunction: MyMath.easeInOutSine
+                }
+            }
+            
         }
 
-        return stars;
+        return resData;
     }
 
-    private createStarSprite(aSpriteAlias: string, x: number, y: number, z: number, aScale: number, aGalColors): THREE.Sprite {
+    private createStarSprite(aSpriteAlias: string, aStarData: GalaxyStarData): THREE.Sprite {
         let t = ThreeLoader.getInstance().getTexture(aSpriteAlias);
-        let opacity = MyMath.randomInRange(0.8, 1.0);
-
-        let clr = 0xFFFFFF;
-
-        let customStarColor = MyMath.randomIntInRange(0, 10);
-        if (customStarColor == 0.0) {
-            clr = MyMath.rgbToHex(aGalColors[0][0], aGalColors[0][1], aGalColors[0][2]);
-        }
-        else if (customStarColor <= 2.0) {
-            clr = MyMath.rgbToHex(aGalColors[1][0], aGalColors[1][1], aGalColors[1][2]);
-        }
-        else if (customStarColor <= 4.0) {
-            clr = MyMath.rgbToHex(aGalColors[2][0], aGalColors[2][1], aGalColors[2][2]);
-        }
-        else if (customStarColor <= 6.0) {
-            clr = MyMath.rgbToHex(aGalColors[3][0], aGalColors[3][1], aGalColors[3][2]);
-        }
-        else if (customStarColor <= 8.0) {
-            clr = MyMath.rgbToHex(aGalColors[4][0], aGalColors[4][1], aGalColors[4][2]);
-        }
-        else if (customStarColor <= 10.0) {
-            clr = MyMath.rgbToHex(aGalColors[5][0], aGalColors[5][1], aGalColors[5][2]);
-        }
 
         let mat = new THREE.SpriteMaterial({
             map: t,
-            color: clr,
+            color: new THREE.Color(aStarData.color.r, aStarData.color.g, aStarData.color.b),
             transparent: true,
-            opacity: opacity,
+            opacity: aStarData.color.a,
             depthWrite: false,
+            depthTest: true,
             blending: THREE.AdditiveBlending
         });
         let sprite = new THREE.Sprite(mat);
-        sprite.scale.set(aScale, aScale, aScale);
-        sprite.position.set(x, y, z);
+        sprite.scale.set(aStarData.scale, aStarData.scale, aStarData.scale);
+        sprite.position.set(aStarData.pos.x, aStarData.pos.y, aStarData.pos.z);
         return sprite;
     }
 
@@ -1313,6 +1410,16 @@ export class Galaxy {
                 this.scene.remove(spr);
             }
         this.blinkStars = [];
+
+        if (this.starsParticles) {
+            this.starsParticles.free();
+            this.starsParticles = null;
+        }
+
+        if (this.blinkStarsParticles) {
+            this.blinkStarsParticles.free();
+            this.blinkStarsParticles = null;
+        }
     }
 
     private createFarStars() {
@@ -1562,6 +1669,8 @@ export class Galaxy {
 
         let cameraAzimutAngle = this.camOrbit.getAzimuthalAngle();
         let cameraPolarAngle = this.camOrbit.getPolarAngle();
+
+        if (this.blinkStarsParticles) this.blinkStarsParticles.update(dt);
 
         // far stars
         this.farStars.azimutAngle = cameraAzimutAngle;

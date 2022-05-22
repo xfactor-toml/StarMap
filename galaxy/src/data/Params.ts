@@ -12,14 +12,20 @@ export class Params {
     // galaxy default data and varaibled
     static galaxyData = {
         starsCount: 3000,
-        blinkStarsCount: 500,
+        blinkStarsCount: 1000,
+        blinkDurMin: 1,
+        blinkDurMax: 2,
         startAngle: 0.7,
         endAngle: 3.6,
-        startOffsetXY: 1.8,
-        endOffsetXY: 0,
+        startOffsetXY: 2.2,
+        endOffsetXY: 0.8,
         startOffsetH: 4,
-        endOffsetH: 0,
+        endOffsetH: 1,
         k: 0.3,
+        alphaMin: 1,
+        alphaMax: 1,
+        scaleMin: 1,
+        scaleMax: 1,
         isNewMethod: false
     };
 
