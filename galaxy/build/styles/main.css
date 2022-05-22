@@ -47,7 +47,7 @@ select {
     height: 100%;
     display: flex;
     align-items: center;
-    justify-content: center;
+    /* justify-content: center; */
     flex-direction: column;
     background: rgba(0, 0, 0, 0.7);
 }
@@ -69,4 +69,9 @@ select {
     background-color: #f00;
     margin-top: 20px;
     padding: 10px;
+}
+
+.container-buttons {
+    display: flex;
+    justify-content: space-around;
 }

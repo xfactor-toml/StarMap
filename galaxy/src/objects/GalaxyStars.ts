@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { IBaseClass } from "../interfaces/IBaseClass";
 import { Params } from "../data/Params";
 import { Signal } from "../events/Signal";
-import { GalaxyStarData } from "../scenes/Galaxy";
+import { GalaxyStarParams } from "../scenes/Galaxy";
 
 const _vShader = `
     attribute vec4 clr;
@@ -28,7 +28,7 @@ const _fShader = `
 `;
 
 export type GalaxyStarsParams = {
-    starsData: GalaxyStarData[];
+    starsData: GalaxyStarParams[];
     texture: THREE.Texture;
     onWindowResizeSignal: Signal;
 };
@@ -82,7 +82,7 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
         this.uniforms.pointMultiplier.value = window.innerHeight / (2.0 * Math.tan(.02 * 60.0 * Math.PI / 180));
     }
 
-    private generateStars(aStarsData: GalaxyStarData[]): {
+    private generateStars(aStarsData: GalaxyStarParams[]): {
         positionsXYZ: Float32Array,
         colorsRGBA: Float32Array,
         sizes: Float32Array

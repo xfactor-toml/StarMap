@@ -43,45 +43,55 @@ export class Preloader {
     private addCommonAssetsToLoader() {
         let assetsPath = Params.assetsPath;
 
-        let sb_format = '.png';
-        let path = './assets/skybox/black/1024/';
-        
-        this.loader.texture('skybox1-xpos', path + 'right' + sb_format);
-        this.loader.texture('skybox1-xneg', path + 'left' + sb_format);
-        this.loader.texture('skybox1-ypos', path + 'top' + sb_format);
-        this.loader.texture('skybox1-yneg', path + 'bot' + sb_format);
-        this.loader.texture('skybox1-zpos', path + 'front' + sb_format);
-        this.loader.texture('skybox1-zneg', path + 'back' + sb_format);
+        // skybox
+
+        let path = assetsPath + 'skybox/skybox5/';
+        let sbNames = ['right', 'left', 'top', 'bottom', 'front', 'back'];
+        let sb_ext = '.png';
+        // let sb_size = SkyboxMng.size = '2048';
+        let sbFullFileNames = [];
+        for (let i = 0; i < sbNames.length; i++) {
+            const name = sbNames[i];
+            let fileName = path + name + sb_ext;
+            sbFullFileNames.push(fileName);
+        }
+        let alias = 'skybox';
+        this.loader.cubeTexture(alias, sbFullFileNames);
+
 
         // main sprite
-        path = './assets/galaxies/';
+        path = assetsPath + 'galaxies/';
         this.loader.texture('galaxySprite', `./assets/BC10.webp`);
 
         // galaxy sprites
-        path = './assets/galaxies/';
-        for (let i = 0; i < Config.SMALL_GALAXIES_COUNT; i++) {
+        path = assetsPath + 'galaxies/';
+        for (let i = 0; i < Config.SMALL_GALAXIES_SPRITE_COUNT; i++) {
             let gName = `galaxy_${(i + 1).toString().padStart(2, '0')}`;
             this.loader.texture(gName, path + `${gName}.png`);
         }
 
-        path = './assets/particles/';
+        path = assetsPath + 'particles/';
         // loader.texture('circle_01', `${path}circle_01.png`);
         this.loader.texture('star3', `${path}Star_3_256.png`);
         this.loader.texture('star4', `${path}Star_4_256.png`);
         this.loader.texture('star4_512', `${path}Star_4_512.png`);
 
-        path = './assets/sun/';
+        path = assetsPath + 'sun/';
         this.loader.texture('sun_01', `${path}Sun_01.png`);
         this.loader.texture('sun_02', `${path}Sun_02.png`);
         this.loader.texture('sun_romb', `${path}Galaxy_512.png`);
 
-        path = './assets/';
-        this.loader.json('galaxyStructure', `${path}galaxyStructure.json`);
+        // ready system state
+        path = assetsPath;
+        this.loader.json('galaxyState', `${path}galaxyState.json`);
 
-        path = './assets/audio/';
+        // path = assetsPath + 'audio/';
         // loader.sound('sndMain', `${path}vorpal-12.mp3`);
 
-        this.loader.texture('cloud', './assets/cloud.png');
+        // this.loader.texture('cloud', assetsPath + 'cloud.png');
+
+        
+
 
     }
 

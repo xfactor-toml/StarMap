@@ -5,11 +5,11 @@ uniform float starAlpha;
 
 varying vec3 vPosition;
 
-float line(vec2 uv, vec2 pt1, vec2 pt2, float aPointSize, float tensionPower) {
+float line(vec2 uv, vec2 pt1, vec2 pt2, float aPointSize, float aTensionPower) {
     float clrFactor = 0.0;
     float r = distance(uv, pt1) / distance(pt1, pt2);
     
-    if (r <= tensionPower) {
+    if (r <= aTensionPower) {
         vec2 ptc = mix(pt1, pt2, r); 
         float dist = distance(ptc, uv);
         if (dist < aPointSize / 1.) {
@@ -28,8 +28,8 @@ float line(vec2 uv, vec2 pt1, vec2 pt2, float aPointSize, float tensionPower) {
 
 void main() {
     float pointSize = starSize * 0.05;
-    float tension = 4.9;
-    float tensionPower = 3.0;
+    float tension = 5.0;
+    float tensionPower = 2.0;
 
     float pDist = distance(vPosition, vec3(0., 0., 0.));
     tension = pDist * 0.001;
@@ -44,7 +44,7 @@ void main() {
         // vec2(0., 0.),
         pointSize, 
         tensionPower
-        ) * 5.0;
+        ) * 1.0;
     gl_FragColor = vec4(clr, clr, clr, starAlpha);
     // }
     

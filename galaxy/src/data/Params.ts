@@ -25,19 +25,21 @@ export class Params {
         alphaMin: 1,
         alphaMax: 1,
         scaleMin: 1,
-        scaleMax: 1,
-        isNewMethod: false
+        scaleMax: 1
     };
 
     static skyData = {
         starsCount: 500,
-        // radius: 300,
         radiusMin: 30,
         radiusMax: 1000,
-        scaleMin: 2,
-        scaleMax: 20,
-        starSize: 1,
-        starAlpha: 0.8
+        scaleMin: 3,
+        scaleMax: 30,
+        starSize: 1.5,
+        starAlpha: 0.8,
+
+        galaxiesCount: 5,
+        galaxiesSizeMin: 1000,
+        galaxiesSizeMax: 2000
     };
 
     // game

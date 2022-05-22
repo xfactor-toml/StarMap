@@ -27,7 +27,7 @@ export class GameEngine {
     
     private renderPixelRatio = 1;
 
-    private backScene: THREE.Scene;
+    // private backScene: THREE.Scene;
     private scene: THREE.Scene;
     private camera: THREE.PerspectiveCamera;
     private galaxy: Galaxy;
@@ -60,7 +60,7 @@ export class GameEngine {
 
         // SCENES
 
-        this.backScene = new THREE.Scene();
+        // this.backScene = new THREE.Scene();
         this.scene = new THREE.Scene();
 
         // CAMERA
@@ -68,8 +68,8 @@ export class GameEngine {
         this.camera = new THREE.PerspectiveCamera(
             45,
             innerWidth / innerHeight,
-            0.8,
-            10000);
+            Config.CAMERA.near,
+            Config.CAMERA.far);
         this.camera.position.set(10, 0, 10);
         this.camera.lookAt(new THREE.Vector3(0, 0, 0));
         // this.scene.add(this.camera);
@@ -90,7 +90,7 @@ export class GameEngine {
         // SCENES
 
         this.galaxy = new Galaxy({
-            backScene: this.backScene,
+            // backScene: this.backScene,
             scene: this.scene,
             camera: this.camera
         });
@@ -113,6 +113,28 @@ export class GameEngine {
 
         // global events
         GlobalEvents.onWindowResizeSignal.add(this.onWindowResize, this);
+
+        if (Config.FULL_SCREEN) {
+
+            Params.domCanvasParent.requestFullscreen();
+
+            var f1 = (event) => {
+                Params.domCanvasParent.removeEventListener('click', f1);
+                (event as any).target.requestFullscreen();
+            }
+
+            var f2 = (event) => {
+                Params.domCanvasParent.removeEventListener('touchstart', f2);
+                (event as any).target.requestFullscreen();
+            }
+
+            if (DeviceInfo.getInstance().desktop) {
+                // (Params.domCanvasParent as HTMLElement).addEventListener('click', f1);
+            }
+            else {
+                (Params.domCanvasParent as HTMLElement).addEventListener('touchstart', f2);
+            }
+        }
 
         this.animate();
 
@@ -163,9 +185,27 @@ export class GameEngine {
 
     }
 
+    private openFullscreen() {
+        let elem = Params.domCanvasParent;
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+        }
+        else if (elem.mozRequestFullScreen) { /* Firefox */
+            elem.mozRequestFullScreen();
+        }
+        else if (elem.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+            elem.webkitRequestFullscreen();
+        }
+        else if (elem.msRequestFullscreen) { /* IE/Edge */
+            elem.msRequestFullscreen();
+        }
+        elem.style.width = '100%';
+        elem.style.height = '100%';
+    }
+
     private render() {
         this.renderer.clear();
-        this.renderer.render(this.backScene, this.camera);
+        // this.renderer.render(this.backScene, this.camera);
         this.renderer.render(this.scene, this.camera);
     }
 
