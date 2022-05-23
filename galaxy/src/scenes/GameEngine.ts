@@ -128,12 +128,10 @@ export class GameEngine {
                 (event as any).target.requestFullscreen();
             }
 
-            if (DeviceInfo.getInstance().desktop) {
-                // (Params.domCanvasParent as HTMLElement).addEventListener('click', f1);
+            if (DeviceInfo.getInstance().iOS) {
+                // (Params.domCanvasParent as HTMLElement).addEventListener('touchstart', f2);
             }
-            else {
-                (Params.domCanvasParent as HTMLElement).addEventListener('touchstart', f2);
-            }
+            
         }
 
         this.animate();

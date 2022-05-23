@@ -12,6 +12,7 @@ import { Config } from '../data/Config';
 import { FarStars } from '../objects/FarStars';
 import { GalaxyStars } from '../objects/GalaxyStars';
 import { GlobalEvents } from '../events/GlobalEvents';
+import { DeviceInfo } from '../utils/DeviceInfo';
 
 const STARS_COLORS_1 = [
     [0.505, 0.39, 0.3],
@@ -1063,8 +1064,9 @@ export class Galaxy {
             planetsData[planetIndex].previewObject = newPlanetPreview;
         });
 
-        const minCameraDistance = 50;
-        const maxCameraDistance = 500;
+        let minCameraDistance = 50;
+        let maxCameraDistance = 500;
+        if (!DeviceInfo.getInstance().desktop) maxCameraDistance = 1000;
         this.createCameraControls({
             minDist: minCameraDistance,
             maxDist: maxCameraDistance,
