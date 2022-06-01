@@ -23,6 +23,7 @@ export const Config = {
     FAR_GALAXIES_RADIUS_MAX: 5000,
     
 
+    GALAXY_CENTER_COLOR: 0xd3ccff,
     GALAXY_CENTER_SCALE: 150,
     GALAXY_CENTER_SCALE_2: 150 * 0.8,
     

@@ -63,7 +63,7 @@ export class Star2 extends THREE.Group {
             fragmentShader: fsSun,
             uniforms: this.uniforms,
             transparent: true,
-            // depthWrite: false,
+            depthWrite: false,
             // blending: THREE.AdditiveBlending
         });
 

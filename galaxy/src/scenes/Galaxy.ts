@@ -135,8 +135,9 @@ export class Galaxy {
     private dummyGalaxy: THREE.Group;
 
     private galaxyPlane: THREE.Mesh;
-    private sprGalaxyCenter: THREE.Sprite;
-    private sprGalaxyCenter2: THREE.Sprite;
+    private galaxyCenterSprite: THREE.Sprite;
+    private galaxyCenterSprite2: THREE.Sprite;
+    private galaxyCenterPlane: THREE.Mesh;
 
     private galaxyStarsData: GalaxyStarParams[];
     // private galaxyStarSprites: THREE.Sprite[];
@@ -161,6 +162,8 @@ export class Galaxy {
 
     private solarSystem: SolarSystem;
 
+    private galaxySaveAnimData: any = {};
+
 
     constructor(aParams: any) {
         this.scene = aParams.scene;
@@ -170,8 +173,8 @@ export class Galaxy {
     }
 
     public set centerVisible(v: boolean) {
-        this.sprGalaxyCenter.visible = v;
-        this.sprGalaxyCenter2.visible = v;
+        this.galaxyCenterSprite.visible = v;
+        this.galaxyCenterSprite2.visible = v;
     }
 
     init() {
@@ -190,34 +193,48 @@ export class Galaxy {
         this.dummyGalaxy.add(this.galaxyPlane);
 
         // galaxy center sprite
-        this.sprGalaxyCenter = new THREE.Sprite(
+        this.galaxyCenterSprite = new THREE.Sprite(
             new THREE.SpriteMaterial({
                 map: ThreeLoader.getInstance().getTexture('sun_01'),
-                color: 0xFFCCCC,
+                color: Config.GALAXY_CENTER_COLOR,
                 transparent: true,
+                alphaTest: 0.01,
                 opacity: 1,
                 depthWrite: false,
                 blending: THREE.AdditiveBlending
             })
         );
-        this.sprGalaxyCenter.scale.set(Config.GALAXY_CENTER_SCALE, Config.GALAXY_CENTER_SCALE, Config.GALAXY_CENTER_SCALE);
-        this.sprGalaxyCenter.renderOrder = 999;
-        this.dummyGalaxy.add(this.sprGalaxyCenter);
+        this.galaxyCenterSprite.scale.set(Config.GALAXY_CENTER_SCALE, Config.GALAXY_CENTER_SCALE, Config.GALAXY_CENTER_SCALE);
+        this.galaxyCenterSprite.renderOrder = 999;
+        this.dummyGalaxy.add(this.galaxyCenterSprite);
 
-        this.sprGalaxyCenter2 = new THREE.Sprite(
+        this.galaxyCenterSprite2 = new THREE.Sprite(
             new THREE.SpriteMaterial({
                 map: ThreeLoader.getInstance().getTexture('sun_romb'),
-                color: 0xFFCCCC,
+                color: Config.GALAXY_CENTER_COLOR,
                 transparent: true,
+                alphaTest: 0.01,
                 opacity: 1,
                 depthWrite: false,
                 blending: THREE.AdditiveBlending
             })
         );
-        this.sprGalaxyCenter2.scale.set(Config.GALAXY_CENTER_SCALE_2, Config.GALAXY_CENTER_SCALE_2, Config.GALAXY_CENTER_SCALE_2);
-        this.sprGalaxyCenter2.renderOrder = 999;
-        this.dummyGalaxy.add(this.sprGalaxyCenter2);
+        this.galaxyCenterSprite2.scale.set(Config.GALAXY_CENTER_SCALE_2, Config.GALAXY_CENTER_SCALE_2, Config.GALAXY_CENTER_SCALE_2);
+        this.galaxyCenterSprite2.renderOrder = 999;
+        this.dummyGalaxy.add(this.galaxyCenterSprite2);
 
+        let planeGeom = new THREE.PlaneBufferGeometry(1, 1);
+        let planeMat = new THREE.MeshBasicMaterial({
+            map: ThreeLoader.getInstance().getTexture('sun_romb'),
+            color: Config.GALAXY_CENTER_COLOR,
+            transparent: true,
+            opacity: 0,
+            depthWrite: false,
+            // blending: THREE.AdditiveBlending
+        });
+        this.galaxyCenterPlane = new THREE.Mesh(planeGeom, planeMat);
+        this.galaxyCenterPlane.visible = false;
+        this.dummyGalaxy.add(this.galaxyCenterPlane);
 
         this.createGalaxyStars(true);
 
@@ -282,6 +299,11 @@ export class Galaxy {
             'saveState': () => {
                 this.saveState();
             },
+            'flyFromStar': () => {
+                if (this.fsm.getCurrentState().name == States.STAR) {
+                    this.fsm.startState(States.FROM_STAR);
+                }
+            },
             showSpheres: false,
             axiesHelper: false
         };
@@ -343,7 +365,8 @@ export class Galaxy {
         skyFolder.add(Params.skyData, 'galaxiesSizeMax', 100, 8000, 10).onChange(() => { this.createSmallGalaxies(); });
         skyFolder.add(DEBUG_PARAMS, 'recreateSmallGalaxies');
 
-        // let starsFolder = gui.addFolder('Stars');
+        let starsFolder = gui.addFolder('Stars');
+        starsFolder.add(DEBUG_PARAMS, 'flyFromStar');
 
         gui.add(DEBUG_PARAMS, 'saveState');
 
@@ -911,7 +934,7 @@ export class Galaxy {
     private updateGalaxyCenter() {
         let cameraPolarAngle = this.orbitControl.getPolarAngle();
 
-        if (this.sprGalaxyCenter) {
+        if (this.galaxyCenterSprite) {
             // debugger;
             // console.log(`polarAngle: ${polarAngle}`);
             const scMin = 0.1;
@@ -919,10 +942,10 @@ export class Galaxy {
             if (cameraPolarAngle > Math.PI / 2) {
                 anFactor = scMin + (1 - scMin) * (1 - (Math.abs(cameraPolarAngle - Math.PI) / (Math.PI / 2)));
             }
-            this.sprGalaxyCenter.scale.y = Config.GALAXY_CENTER_SCALE * anFactor;
+            this.galaxyCenterSprite.scale.y = Config.GALAXY_CENTER_SCALE * anFactor;
         }
 
-        if (this.sprGalaxyCenter2) {
+        if (this.galaxyCenterSprite2) {
             // debugger;
             // console.log(`polarAngle: ${polarAngle}`);
             const scMin = 0.3;
@@ -930,7 +953,7 @@ export class Galaxy {
             if (cameraPolarAngle > Math.PI / 2) {
                 anFactor = scMin + (1 - scMin) * (1 - (Math.abs(cameraPolarAngle - Math.PI) / (Math.PI / 2)));
             }
-            this.sprGalaxyCenter2.scale.y = Config.GALAXY_CENTER_SCALE_2 * anFactor;
+            this.galaxyCenterSprite2.scale.y = Config.GALAXY_CENTER_SCALE_2 * anFactor;
         }
     }
 
@@ -967,7 +990,7 @@ export class Galaxy {
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private onGalaxyEnter() {
-        
+        this.orbitControl.enabled = true;
     }
 
     private onGalaxyUpdate(dt: number) {
@@ -1014,13 +1037,15 @@ export class Galaxy {
 
     private onToStarEnter(aParams: any) {
 
-        const DUR = 4;
+        const LOOK_DUR = 2;
+        const DUR = 3;
         
         this.orbitControl.enabled = false;
         document.body.style.cursor = 'default';
 
         let systemData = SOLAR_SYSTEMS_DATA[aParams.starId];
 
+        // create Solar System
         this.solarSystem = new SolarSystem({
             camera: this.camera,
             starSize: systemData.starSize
@@ -1038,8 +1063,8 @@ export class Galaxy {
         this.solarSystem.visible = false;
         this.scene.add(this.solarSystem);
 
-        // hide point sprite and galo
-        gsap.to([this.starPointHovered.material, this.sprGalaxyCenter.material, this.sprGalaxyCenter2.material], {
+        // hide point sprite
+        gsap.to([this.starPointHovered.material], {
             opacity: 0,
             duration: DUR / 2,
             ease: 'sine.in',
@@ -1048,22 +1073,55 @@ export class Galaxy {
             }
         });
 
-        // expand solar system
-        gsap.to(this.solarSystem.scale, {
-            x: 1,
-            y: 1,
-            z: 1,
-            duration: DUR,
-            delay: DUR / 1.5,
-            ease: 'sine.Out',
-            onStart: () => {
-                this.solarSystem.visible = true;
-            },
-            onUpdate: () => {
-
-            },
+        // hide galaxy plane
+        this.galaxySaveAnimData.galaxyPlaneOpacity = this.galaxyPlane.material['opacity'];
+        gsap.to(this.galaxyPlane.material, {
+            opacity: 0,
+            duration: DUR / 1.5,
+            ease: 'sine.in',
             onComplete: () => {
-                this.fsm.startState(States.STAR);
+                this.galaxyPlane.visible = false;
+            }
+        });
+
+        // change galo
+        this.galaxySaveAnimData.galaxyCenter1Opacity = this.galaxyCenterSprite.material['opacity'];
+        this.galaxySaveAnimData.galaxyCenter2Opacity = this.galaxyCenterSprite2.material['opacity'];
+        gsap.to([this.galaxyCenterSprite.material, this.galaxyCenterSprite2.material], {
+            opacity: 0.2,
+            duration: DUR,
+            ease: 'sine.in',
+            onComplete: () => {
+                // this.galaxyCenterSprite.visible = false;
+                // this.galaxyCenterSprite2.visible = false;
+            }
+        });
+        this.galaxySaveAnimData.galaxyCenter1Scale = this.galaxyCenterSprite.scale.clone();
+        this.galaxySaveAnimData.galaxyCenter2Scale = this.galaxyCenterSprite2.scale.clone();
+        gsap.to([this.galaxyCenterSprite.scale, this.galaxyCenterSprite2.scale], {
+            x: Config.GALAXY_CENTER_SCALE * 0.5,
+            y: Config.GALAXY_CENTER_SCALE * 0.1,
+            duration: DUR,
+            ease: 'sine.in'
+        });
+
+        // show galaxyCenterPlane
+        this.galaxyCenterPlane.lookAt(starPos);
+        gsap.to([this.galaxyCenterPlane.material], {
+            opacity: 1,
+            duration: DUR,
+            ease: 'sine.in',
+            onStart: () => {
+                this.galaxyCenterPlane.visible = true;
+            }
+        });
+        gsap.to([this.galaxyCenterPlane.scale], {
+            x: Config.GALAXY_CENTER_SCALE * 1.5,
+            y: Config.GALAXY_CENTER_SCALE * 0.1,
+            duration: DUR,
+            ease: 'sine.in',
+            onStart: () => {
+                this.galaxyCenterPlane.visible = true;
             }
         });
 
@@ -1076,22 +1134,12 @@ export class Galaxy {
             ease: 'sine.inOut',
             onUpdate: () => {
                 this.orbitCenter.copy(this.cameraTarget);
-            },
-            onComplete: () => {
-
             }
         });
 
-        // hide galaxy plane
-        gsap.to(this.galaxyPlane.material, {
-            opacity: 0,
-            duration: DUR / 1.5,
-            ease: 'sine.in',
-            onComplete: () => {
-                this.galaxyPlane.visible = false;
-            }
-        });
+        this.galaxySaveAnimData.cameraPosition = this.camera.position.clone();
 
+        // movce camera
         let newCameraPos = this.camera.position.clone().sub(starPos).normalize().multiplyScalar(systemData.starSize * 2).add(starPos);
 
         gsap.to(this.camera.position, {
@@ -1099,11 +1147,7 @@ export class Galaxy {
             y: newCameraPos.y,
             z: newCameraPos.z,
             duration: DUR,
-            ease: 'sine.inOut',
-            onUpdate: () => {                
-            },
-            onComplete: () => {
-            }
+            ease: 'sine.inOut'
         });
 
         // scale galaxy
@@ -1116,8 +1160,22 @@ export class Galaxy {
             onUpdate: () => {
                 this.dummyGalaxy.scale.set(tObj.s, tObj.s, tObj.s);
                 this.dummyGalaxy.position.copy(starPos.clone().add(gVec.clone().multiplyScalar(tObj.s)));
+            }
+        });
+
+        // expand solar system
+        gsap.to(this.solarSystem.scale, {
+            x: 1,
+            y: 1,
+            z: 1,
+            duration: DUR,
+            delay: DUR * 2 / 3,
+            ease: 'sine.Out',
+            onStart: () => {
+                this.solarSystem.visible = true;
             },
             onComplete: () => {
+                this.fsm.startState(States.STAR);
             }
         });
 
@@ -1187,10 +1245,149 @@ export class Galaxy {
 
     private onFromStarEnter() {
 
+        const DUR = 3;
+
+        this.orbitControl.enabled = false;
+
+        let starPos = this.solarSystem.position.clone();
+
+        // show galaxy main sprite
+        gsap.to(this.galaxyPlane.material, {
+            opacity: this.galaxySaveAnimData.galaxyPlaneOpacity,
+            duration: DUR * 2 / 3,
+            delay: DUR * 1 / 3,
+            ease: 'sine.Out',
+            onStart: () => {
+                this.galaxyPlane.visible = true;
+            }
+        });
+
+        // show point sprite
+        gsap.to([this.starPointHovered.material], {
+            opacity: 1,
+            duration: DUR / 2,
+            delay: DUR / 2,
+            ease: 'sine.out',
+            onStart: () => {
+                this.starPointHovered.visible = true;
+            }
+        });
+
+        // change galo
+        gsap.to([this.galaxyCenterSprite.material], {
+            opacity: this.galaxySaveAnimData.galaxyCenter1Opacity,
+            duration: DUR,
+            ease: 'sine.Out'
+        });
+        gsap.to([this.galaxyCenterSprite2.material], {
+            opacity: this.galaxySaveAnimData.galaxyCenter2Opacity,
+            duration: DUR,
+            ease: 'sine.Out'
+        });
+        // galaxyCenter1Scale
+        gsap.to([this.galaxyCenterSprite.scale], {
+            x: this.galaxySaveAnimData.galaxyCenter1Scale.x,
+            y: this.galaxySaveAnimData.galaxyCenter1Scale.y,
+            duration: DUR,
+            ease: 'sine.in'
+        });
+        gsap.to([this.galaxyCenterSprite2.scale], {
+            x: this.galaxySaveAnimData.galaxyCenter2Scale.x,
+            y: this.galaxySaveAnimData.galaxyCenter2Scale.y,
+            duration: DUR,
+            ease: 'sine.in'
+        });
+        
+        // hide galaxyCenterPlane
+        gsap.to([this.galaxyCenterPlane.material], {
+            opacity: 0,
+            duration: DUR,
+            ease: 'sine.Out',
+            onComplete: () => {
+                this.galaxyCenterPlane.visible = false;
+            }
+        });
+
+        // move camera target to center of Galaxy
+        gsap.to(this.cameraTarget, {
+            x: 0,
+            y: 0,
+            z: 0,
+            duration: DUR,
+            ease: 'sine.inOut',
+            onUpdate: () => {
+                this.orbitCenter.copy(this.cameraTarget);
+            }
+        });
+
+        // scale galaxy
+        let tObj = { s: 100 };
+        let gVec = starPos.clone().negate();
+        gsap.to(tObj, {
+            s: 1,
+            duration: DUR,
+            ease: 'sine.inOut',
+            onUpdate: () => {
+                this.dummyGalaxy.scale.set(tObj.s, tObj.s, tObj.s);
+                this.dummyGalaxy.position.copy(starPos.clone().add(gVec.clone().multiplyScalar(tObj.s)));
+            }
+        });
+
+        // hide solar system
+        gsap.to(this.solarSystem.scale, {
+            x: 0.001,
+            y: 0.001,
+            z: 0.001,
+            duration: DUR * 2 / 3,
+            ease: 'sine.in',
+            onComplete: () => {
+                this.solarSystem.visible = false;
+                this.solarSystem.free();
+                this.scene.remove(this.solarSystem);
+                this.solarSystem = null;
+            }
+        });
+
+        // move camera
+        gsap.to(this.camera.position, {
+            x: this.galaxySaveAnimData.cameraPosition.x,
+            y: this.galaxySaveAnimData.cameraPosition.y,
+            z: this.galaxySaveAnimData.cameraPosition.z,
+            duration: DUR,
+            ease: 'sine.inOut',
+            onComplete: () => {
+                this.fsm.startState(States.GALAXY);
+            }
+        });
+
     }
     
     private onFromStarUpdate(dt: number) {
-        
+        this.orbitControl.update();
+
+        if (this.cameraTarget && this.camera) {
+            this.camera.lookAt(this.cameraTarget);
+        }
+
+        let cameraAzimutAngle = this.orbitControl.getAzimuthalAngle();
+        let cameraPolarAngle = this.orbitControl.getPolarAngle();
+
+        // this.updateGalaxyCenter();
+
+        if (this.blinkStarsParticles) this.blinkStarsParticles.update(dt);
+
+        // far stars
+        this.farStars.azimutAngle = cameraAzimutAngle;
+        this.farStars.polarAngle = cameraPolarAngle;
+        this.farStars.update(dt);
+
+        // small galaxies
+        for (let i = 0; i < this.smallGalaxies.length; i++) {
+            const g = this.smallGalaxies[i];
+            if (g) g.rotateZ(g['rotSpeed'] * dt);
+        }
+
+        if (this.solarSystem) this.solarSystem.update(dt);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -17,11 +17,8 @@ export class SolarSystem extends THREE.Group {
         
     constructor(aParams: SolarSystemParams) {
         super();
-        
         this.params = aParams;
-
         this.createStar();
-
     }
 
     private createStar() {
@@ -34,6 +31,12 @@ export class SolarSystem extends THREE.Group {
 
         this.add(this.star);
 
+    }
+
+    free() {
+        this.remove(this.star);
+        this.star = null;
+        this.params = null;
     }
 
     update(dt: number) {
