@@ -43,6 +43,10 @@ export class Preloader {
     private addCommonAssetsToLoader() {
         let assetsPath = Params.assetsPath;
 
+        // star point sprite
+        this.loader.texture('starPoint', `./assets/star.svg`);
+        this.loader.texture('starInducePoint', `./assets/star_induce.svg`);
+
         // skybox
 
         let path = assetsPath + 'skybox/skybox5/';
@@ -61,9 +65,9 @@ export class Preloader {
 
         // main sprite
         path = assetsPath + 'galaxies/';
-        this.loader.texture('galaxySprite', `./assets/BC10.webp`);
+        this.loader.texture('galaxySprite', `./assets/galaxySprite.webp`);
 
-        // galaxy sprites
+        // small galaxy sprites
         path = assetsPath + 'galaxies/';
         for (let i = 0; i < Config.SMALL_GALAXIES_SPRITE_COUNT; i++) {
             let gName = `galaxy_${(i + 1).toString().padStart(2, '0')}`;

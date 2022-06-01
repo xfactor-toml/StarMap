@@ -121,7 +121,7 @@ export class MyMath {
      * @param c number in 0-255 format
      * @returns 
      */
-    static componentToHex(c: number) {
+    static byteToHex(c: number) {
         let hex = c.toString(16);
         //LogMng.debug(`componentToHex: c = ${c}, hex = ${hex}`);
         return hex.length == 1 ? "0" + hex : hex;
@@ -135,7 +135,7 @@ export class MyMath {
      * @returns 
      */
     public static rgbToHexStr(r: number, g: number, b: number) {
-        return "#" + this.componentToHex(r) + this.componentToHex(g) + this.componentToHex(b);
+        return "#" + this.byteToHex(r) + this.byteToHex(g) + this.byteToHex(b);
     }
 
     /**

@@ -13,7 +13,7 @@ export const Config = {
 
     CAMERA: {
         near: 0.5,
-        far: 8000
+        far: 15000
     },
 
     // SKY_BOX_SIZE: 8000,

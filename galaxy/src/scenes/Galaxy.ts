@@ -13,8 +13,24 @@ import { FarStars } from '../objects/FarStars';
 import { GalaxyStars } from '../objects/GalaxyStars';
 import { GlobalEvents } from '../events/GlobalEvents';
 import { DeviceInfo } from '../utils/DeviceInfo';
+import { InputMng } from '../inputs/InputMng';
+import { FSM } from '../states/FSM';
+import { States } from '../states/States';
+import { SolarSystem } from '../objects/SolarSystem';
 
-const STARS_COLORS_1 = [
+const SOLAR_SYSTEMS_DATA = [
+
+    {
+        name: "Star1",
+        positionInGalaxy: {
+            x: 40, y: 0, z: 100
+        },
+        starSize: 100
+    },
+
+];
+
+const STARS_COLORS = [
     [0.505, 0.39, 0.3],
     [0.258, 0.282, 0.145],
     [0.694, 0.301, 0.282],
@@ -24,840 +40,23 @@ const STARS_COLORS_1 = [
 ];
 
 const STARS_COLORS_2 = [
-    [0.505, 0.39, 0.3],
-    [0.258, 0.282, 0.145],
-    [0.694, 0.301, 0.282],
-    [0.745, 0.635, 0.360],
-    [0.431, 0.831, 0.819],
-    [1.0, 0.901, 0.890]
-];
-
-const STARS_COLORS_3 = [
     // orange
     // [0.505 * 255, 0.39 * 255, 0.3 * 255],
-
     // green
     // [0.258 * 255, 0.282 * 255, 0.145 * 255],
-
     // red
     // [0.694 * 255, 0.301 * 255, 0.282 * 255],
-
     // yellow
     // [0.745 * 255, 0.635 * 255, 0.360 * 255],
-
     // teal
     [0.431, 0.831, 0.819],
     [0.431, 0.831, 0.819],
-
     // violet
     [0xb3 / 255, 0x8d / 255, 0xf9 / 255],
     [0xb3 / 255, 0x8d / 255, 0xf9 / 255],
     [0xb3 / 255, 0x8d / 255, 0xf9 / 255],
     [0xb3 / 255, 0x8d / 255, 0xf9 / 255],
 ];
-
-let layersNames = {
-    1: 'first',
-    2: 'second',
-    3: 'third'
-};
-
-let planetsData = [
-    // {
-    //     preview: './assets/Star.svg',
-    //     previewObject: null,
-    //     physicalPlanet: [],
-    //     modelsFolder: './assets/models/gasorpasorp/',
-    //     layersCount: 3,
-    //     planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
-    //     position: new THREE.Vector3(70, 0, 0),
-    //     name: "gasorpasorp",
-
-    //     layersPerFrameTransformation: {
-    //         1: {
-    //             rotation: {
-    //                 x: 0.0,
-    //                 y: 0.0125,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         },
-    //         2: {
-    //             rotation: {
-    //                 x: 0.0,
-    //                 y: 0.0125,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         },
-    //         3: {
-    //             rotation: {
-    //                 x: 0.0,
-    //                 y: 0.003125,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         }
-    //     },
-
-    //     layersDefaultTransformation: {
-    //         1: {
-    //             rotation: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         },
-    //         2: {
-    //             rotation: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.1,
-    //                 y: 0.1,
-    //                 z: 0.1
-    //             }
-    //         },
-    //         3: {
-    //             rotation: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.2,
-    //                 y: 0.2,
-    //                 z: 0.2
-    //             }
-    //         }
-    //     }
-    // },
-    // {
-    //     preview: './assets/Star.svg',
-    //     previewObject: null,
-    //     physicalPlanet: [],
-    //     modelsFolder: './assets/models/planeta_skwoth/',
-    //     layersCount: 3,
-    //     planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
-    //     position: new THREE.Vector3(-70, 0, 35),
-    //     name: "skwoth",
-
-    //     layersPerFrameTransformation: {
-    //         1: {
-    //             rotation: {
-    //                 x: 0.0,
-    //                 y: 0.0015,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         },
-    //         2: {
-    //             rotation: {
-    //                 x: 0.0015,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         },
-    //         3: {
-    //             rotation: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0015
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         }
-    //     },
-
-    //     layersDefaultTransformation: {
-    //         1: {
-    //             rotation: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         },
-    //         2: {
-    //             rotation: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         },
-    //         3: {
-    //             rotation: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         }
-    //     }
-    // },
-    // {
-    //     preview: './assets/Star.svg',
-    //     previewObject: null,
-    //     physicalPlanet: [],
-    //     modelsFolder: './assets/models/moon/',
-    //     layersCount: 1,
-    //     planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
-    //     position: new THREE.Vector3(-25, 0, -75),
-    //     name: "moon",
-
-    //     layersPerFrameTransformation: {
-    //         1: {
-    //             rotation: {
-    //                 x: 0.001,
-    //                 y: 0.0015,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         },
-    //         2: {
-    //             rotation: {
-    //                 x: 0.003,
-    //                 y: 0.002,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         },
-    //         3: {
-    //             rotation: {
-    //                 x: 0.0015,
-    //                 y: 0.0013,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         }
-    //     },
-
-    //     layersDefaultTransformation: {
-    //         1: {
-    //             rotation: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         },
-    //         2: {
-    //             rotation: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         },
-    //         3: {
-    //             rotation: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         }
-    //     }
-    // },
-    // {
-    //     preview: './assets/Star.svg',
-    //     previewObject: null,
-    //     physicalPlanet: [],
-    //     modelsFolder: './assets/models/planetEarth/',
-    //     layersCount: 1,
-    //     planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
-    //     position: new THREE.Vector3(30, 0, 65),
-    //     name: "earth",
-
-    //     layersPerFrameTransformation: {
-    //         1: {
-    //             rotation: {
-    //                 x: 0.001,
-    //                 y: 0.0015,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         },
-    //         2: {
-    //             rotation: {
-    //                 x: 0.003,
-    //                 y: 0.002,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         },
-    //         3: {
-    //             rotation: {
-    //                 x: 0.0015,
-    //                 y: 0.0013,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         }
-    //     },
-
-    //     layersDefaultTransformation: {
-    //         1: {
-    //             rotation: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         },
-    //         2: {
-    //             rotation: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         },
-    //         3: {
-    //             rotation: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         }
-    //     }
-    // },
-    // {
-    //     preview: './assets/Star.svg',
-    //     previewObject: null,
-    //     physicalPlanet: [],
-    //     modelsFolder: './assets/models/moon/',
-    //     layersCount: 1,
-    //     planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
-    //     position: new THREE.Vector3(-75, 0, 1),
-    //     name: "earth",
-
-    //     layersPerFrameTransformation: {
-    //         1: {
-    //             rotation: {
-    //                 x: 0.001,
-    //                 y: 0.0015,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         },
-    //         2: {
-    //             rotation: {
-    //                 x: 0.003,
-    //                 y: 0.002,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         },
-    //         3: {
-    //             rotation: {
-    //                 x: 0.0015,
-    //                 y: 0.0013,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         }
-    //     },
-
-    //     layersDefaultTransformation: {
-    //         1: {
-    //             rotation: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         },
-    //         2: {
-    //             rotation: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         },
-    //         3: {
-    //             rotation: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         }
-    //     }
-    // },
-    // {
-    //     preview: './assets/Star.svg',
-    //     previewObject: null,
-    //     physicalPlanet: [],
-    //     modelsFolder: './assets/models/moon/',
-    //     layersCount: 1,
-    //     planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
-    //     position: new THREE.Vector3(25, 0, -90),
-    //     name: "earth",
-
-    //     layersPerFrameTransformation: {
-    //         1: {
-    //             rotation: {
-    //                 x: 0.001,
-    //                 y: 0.0015,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         },
-    //         2: {
-    //             rotation: {
-    //                 x: 0.003,
-    //                 y: 0.002,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         },
-    //         3: {
-    //             rotation: {
-    //                 x: 0.0015,
-    //                 y: 0.0013,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         }
-    //     },
-
-    //     layersDefaultTransformation: {
-    //         1: {
-    //             rotation: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         },
-    //         2: {
-    //             rotation: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         },
-    //         3: {
-    //             rotation: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         }
-    //     }
-    // },
-    // {
-    //     preview: './assets/Star.svg',
-    //     previewObject: null,
-    //     physicalPlanet: [],
-    //     modelsFolder: './assets/models/moon/',
-    //     layersCount: 1,
-    //     planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
-    //     position: new THREE.Vector3(45, 0, 110),
-    //     name: "earth",
-
-    //     layersPerFrameTransformation: {
-    //         1: {
-    //             rotation: {
-    //                 x: 0.001,
-    //                 y: 0.0015,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         },
-    //         2: {
-    //             rotation: {
-    //                 x: 0.003,
-    //                 y: 0.002,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         },
-    //         3: {
-    //             rotation: {
-    //                 x: 0.0015,
-    //                 y: 0.0013,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         }
-    //     },
-
-    //     layersDefaultTransformation: {
-    //         1: {
-    //             rotation: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         },
-    //         2: {
-    //             rotation: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         },
-    //         3: {
-    //             rotation: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         }
-    //     }
-    // },
-    // {
-    //     preview: './assets/Star.svg',
-    //     previewObject: null,
-    //     physicalPlanet: [],
-    //     modelsFolder: './assets/models/moon/',
-    //     layersCount: 1,
-    //     planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
-    //     position: new THREE.Vector3(85, 0, -80),
-    //     name: "earth",
-
-    //     layersPerFrameTransformation: {
-    //         1: {
-    //             rotation: {
-    //                 x: 0.001,
-    //                 y: 0.0015,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         },
-    //         2: {
-    //             rotation: {
-    //                 x: 0.003,
-    //                 y: 0.002,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         },
-    //         3: {
-    //             rotation: {
-    //                 x: 0.0015,
-    //                 y: 0.0013,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         }
-    //     },
-
-    //     layersDefaultTransformation: {
-    //         1: {
-    //             rotation: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         },
-    //         2: {
-    //             rotation: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         },
-    //         3: {
-    //             rotation: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         }
-    //     }
-    // },
-    // {
-    //     preview: './assets/Star.svg',
-    //     previewObject: null,
-    //     physicalPlanet: [],
-    //     modelsFolder: './assets/models/planet_x/',
-    //     layersCount: 3,
-    //     planetScale: new THREE.Vector3(1.0, 1.0, 1.0),
-    //     position: new THREE.Vector3(120, 0, 80),
-    //     name: "planet_x",
-
-    //     layersPerFrameTransformation: {
-    //         1: {
-    //             rotation: {
-    //                 x: 0.001,
-    //                 y: 0.0015,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         },
-    //         2: {
-    //             rotation: {
-    //                 x: 0.003,
-    //                 y: 0.002,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         },
-    //         3: {
-    //             rotation: {
-    //                 x: 0.0015,
-    //                 y: 0.0013,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         }
-    //     },
-
-    //     layersDefaultTransformation: {
-    //         1: {
-    //             rotation: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         },
-    //         2: {
-    //             rotation: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         },
-    //         3: {
-    //             rotation: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             },
-    //             scale: {
-    //                 x: 0.0,
-    //                 y: 0.0,
-    //                 z: 0.0
-    //             }
-    //         }
-    //     }
-    // }
-];
-
-let checkMousePointerTimer = 0;
 
 type GalaxyParams = {
     starsCount: number;
@@ -924,39 +123,61 @@ let debugObjects = {
 }
 
 export class Galaxy {
+
+    private fsm: FSM;
+
     private scene: THREE.Scene;
-    // private sceneBg: THREE.Scene;
     private camera: THREE.PerspectiveCamera;
+
+    private cameraTarget: THREE.Vector3;
+    private orbitCenter: THREE.Vector3;
+
+    private dummyGalaxy: THREE.Group;
 
     private galaxyPlane: THREE.Mesh;
     private sprGalaxyCenter: THREE.Sprite;
     private sprGalaxyCenter2: THREE.Sprite;
 
     private galaxyStarsData: GalaxyStarParams[];
-    private galaxyStarSprites: THREE.Sprite[];
-
+    // private galaxyStarSprites: THREE.Sprite[];
     private starsParticles: GalaxyStars;
-    private blinkStarsParticles: GalaxyStars;
 
     private blinkStarsData: GalaxyStarParams[];
-    private blinkStars: THREE.Sprite[];
+    // private blinkStars: THREE.Sprite[];
+    private blinkStarsParticles: GalaxyStars;
 
     private farStars: FarStars;
 
     private farGalaxiesData: FarGalaxyParams[];
     private smallGalaxies: THREE.Mesh[];
 
-    private camOrbit: OrbitControls;
+    private orbitControl: OrbitControls;
+
+    private axiesHelper: THREE.AxesHelper;
 
     private raycaster: THREE.Raycaster;
+    private checkMousePointerTimer = 0;
+    private starPointHovered: THREE.Sprite;
+
+    private solarSystem: SolarSystem;
+
 
     constructor(aParams: any) {
         this.scene = aParams.scene;
-        // this.sceneBg = aParams.backScene;
         this.camera = aParams.camera;
+        this.cameraTarget = new THREE.Vector3();
+        this.orbitCenter = new THREE.Vector3();
+    }
+
+    public set centerVisible(v: boolean) {
+        this.sprGalaxyCenter.visible = v;
+        this.sprGalaxyCenter2.visible = v;
     }
 
     init() {
+
+        this.dummyGalaxy = new THREE.Group();
+        this.scene.add(this.dummyGalaxy);
 
         this.camera.position.set(-90, 120, 180);
 
@@ -966,7 +187,7 @@ export class Galaxy {
 
         // main galaxy sprite
         this.galaxyPlane = this.createGalaxyPlane();
-        this.scene.add(this.galaxyPlane);
+        this.dummyGalaxy.add(this.galaxyPlane);
 
         // galaxy center sprite
         this.sprGalaxyCenter = new THREE.Sprite(
@@ -981,7 +202,7 @@ export class Galaxy {
         );
         this.sprGalaxyCenter.scale.set(Config.GALAXY_CENTER_SCALE, Config.GALAXY_CENTER_SCALE, Config.GALAXY_CENTER_SCALE);
         this.sprGalaxyCenter.renderOrder = 999;
-        this.scene.add(this.sprGalaxyCenter);
+        this.dummyGalaxy.add(this.sprGalaxyCenter);
 
         this.sprGalaxyCenter2 = new THREE.Sprite(
             new THREE.SpriteMaterial({
@@ -995,7 +216,7 @@ export class Galaxy {
         );
         this.sprGalaxyCenter2.scale.set(Config.GALAXY_CENTER_SCALE_2, Config.GALAXY_CENTER_SCALE_2, Config.GALAXY_CENTER_SCALE_2);
         this.sprGalaxyCenter2.renderOrder = 999;
-        this.scene.add(this.sprGalaxyCenter2);
+        this.dummyGalaxy.add(this.sprGalaxyCenter2);
 
 
         this.createGalaxyStars(true);
@@ -1004,66 +225,9 @@ export class Galaxy {
         this.createFarStars();
 
         // PLANETS
+        this.createStarPoints();
 
-        planetsData.forEach((planet, planetIndex) => {
-
-            var previewTexture = new THREE.TextureLoader().load(planet.preview);
-            var previewMaterial = new THREE.SpriteMaterial({
-                map: previewTexture,
-                depthWrite: false
-            });
-            var newPlanetPreview = new THREE.Sprite(previewMaterial);
-
-            newPlanetPreview.scale.set(12, 12, 12);
-            newPlanetPreview.position.set(planet.position.x, planet.position.y, planet.position.z);
-
-            newPlanetPreview.name = "planetPreview";
-
-            newPlanetPreview.renderOrder = 1;
-
-            this.scene.add(newPlanetPreview);
-
-            for (let layer = 1; layer < planet.layersCount + 1; layer++) {
-
-                new MTLLoader().load(planet.modelsFolder + layersNames[layer] + "_layer.mtl", (materials) => {
-                    const currentLayer = layer;
-
-                    materials.preload();
-
-                    var objLoader = new OBJLoader();
-                    objLoader.setMaterials(materials);
-                    objLoader.load(planet.modelsFolder + layersNames[currentLayer] + "_layer.obj", (model) => {
-
-                        model.scale.set(planet.planetScale.x, planet.planetScale.y, planet.planetScale.z);
-                        planetsData[planetIndex].physicalPlanet[currentLayer] = model;
-
-                        if (currentLayer == 1) {
-                            (model.children[0] as any).material.transparent = false;
-                        }
-
-                        model.scale.x += planetsData[planetIndex].layersDefaultTransformation[currentLayer].scale.x;
-                        model.scale.y += planetsData[planetIndex].layersDefaultTransformation[currentLayer].scale.y;
-                        model.scale.z += planetsData[planetIndex].layersDefaultTransformation[currentLayer].scale.z;
-
-                        model.rotation.x = planetsData[planetIndex].layersDefaultTransformation[currentLayer].rotation.x;
-                        model.rotation.y = planetsData[planetIndex].layersDefaultTransformation[currentLayer].rotation.y;
-                        model.rotation.z = planetsData[planetIndex].layersDefaultTransformation[currentLayer].rotation.z;
-
-                        model.position.set(planet.position.x, planet.position.y, planet.position.z);
-                        (model.children[0] as any).material.visible = false;
-                        this.scene.add(model);
-
-                        model.name = planetsData[planetIndex].name;
-
-                    });
-
-                });
-
-            }
-
-            planetsData[planetIndex].previewObject = newPlanetPreview;
-        });
-
+        // camera controls
         let minCameraDistance = 50;
         let maxCameraDistance = 500;
         if (!DeviceInfo.getInstance().desktop) maxCameraDistance = 1000;
@@ -1072,7 +236,7 @@ export class Galaxy {
             maxDist: maxCameraDistance,
             stopAngleTop: 10,
             stopAngleBot: 170,
-            pos: { x: 5, y: 0, z: 0 }
+            // pos: { x: 0, y: 0, z: 0 }
         });
 
         this.raycaster = new THREE.Raycaster();
@@ -1081,13 +245,32 @@ export class Galaxy {
         sound.add('music', './assets/audio/vorpal-12.mp3');
         sound.play('music');
 
+        // helpers
+        if (Params.isDebugMode) {
+            this.axiesHelper = new THREE.AxesHelper(200);
+            this.scene.add(this.axiesHelper);
+        }
+
         // document.addEventListener('pointermove', onMouseMove);
         // document.addEventListener('click', onMouseClick);
         // document.addEventListener('keydown', onKeyPress);
 
+        // inputs
+        let inputMng = InputMng.getInstance();
+        inputMng.onInputDownSignal.add(this.onInputDown, this);
+        inputMng.onInputUpSignal.add(this.onInputUp, this);
+
+        this.fsm = new FSM();
+        this.fsm.addState(States.GALAXY, this, this.onGalaxyEnter, this.onGalaxyUpdate);
+        this.fsm.addState(States.TO_STAR, this, this.onToStarEnter, this.onToStarUpdate);
+        this.fsm.addState(States.STAR, this, this.onStarEnter, this.onStarUpdate);
+        this.fsm.addState(States.FROM_STAR, this, this.onFromStarEnter, this.onFromStarUpdate);
+        this.fsm.startState(States.GALAXY);
+
     }
 
     initDebugGui() {
+
         const DEBUG_PARAMS = {
             'center visible': true,
             'recreate': () => {
@@ -1160,7 +343,14 @@ export class Galaxy {
         skyFolder.add(Params.skyData, 'galaxiesSizeMax', 100, 8000, 10).onChange(() => { this.createSmallGalaxies(); });
         skyFolder.add(DEBUG_PARAMS, 'recreateSmallGalaxies');
 
+        // let starsFolder = gui.addFolder('Stars');
+
         gui.add(DEBUG_PARAMS, 'saveState');
+
+        this.axiesHelper.visible = DEBUG_PARAMS.axiesHelper;
+        gui.add(DEBUG_PARAMS, 'axiesHelper').onChange((v: boolean) => {
+            this.axiesHelper.visible = v;
+        });
 
         // galaxyFolder.open();
     }
@@ -1218,7 +408,7 @@ export class Galaxy {
                 alphaMax: Params.galaxyData.alphaMax,
                 scaleMin: Params.galaxyData.scaleMin,
                 scaleMax: Params.galaxyData.scaleMax
-            }, 145, 145, STARS_COLORS_2);
+            }, 145, 145, STARS_COLORS);
         }
 
         // blink stars data generate
@@ -1241,7 +431,7 @@ export class Galaxy {
                 scaleMax: Params.galaxyData.scaleMax,
             },
                 145, 145,
-                STARS_COLORS_2,
+                STARS_COLORS,
                 {
                     durationMin: Params.galaxyData.blinkDurMin,
                     durationMax: Params.galaxyData.blinkDurMax
@@ -1257,7 +447,7 @@ export class Galaxy {
             onWindowResizeSignal: GlobalEvents.onWindowResizeSignal
         });
 
-        this.scene.add(this.starsParticles);
+        this.dummyGalaxy.add(this.starsParticles);
 
         // blink particle stars
         this.blinkStarsParticles = new GalaxyStars({
@@ -1266,7 +456,7 @@ export class Galaxy {
             onWindowResizeSignal: GlobalEvents.onWindowResizeSignal
         });
 
-        this.scene.add(this.blinkStarsParticles);
+        this.dummyGalaxy.add(this.blinkStarsParticles);
 
     }
 
@@ -1361,38 +551,38 @@ export class Galaxy {
         return resData;
     }
 
-    private createStarSprite(aSpriteAlias: string, aStarData: GalaxyStarParams): THREE.Sprite {
-        let t = ThreeLoader.getInstance().getTexture(aSpriteAlias);
+    // private createStarSprite(aSpriteAlias: string, aStarData: GalaxyStarParams): THREE.Sprite {
+    //     let t = ThreeLoader.getInstance().getTexture(aSpriteAlias);
 
-        let mat = new THREE.SpriteMaterial({
-            map: t,
-            color: new THREE.Color(aStarData.color.r, aStarData.color.g, aStarData.color.b),
-            transparent: true,
-            opacity: aStarData.color.a,
-            depthWrite: false,
-            depthTest: true,
-            blending: THREE.AdditiveBlending
-        });
-        let sprite = new THREE.Sprite(mat);
-        sprite.scale.set(aStarData.scale, aStarData.scale, aStarData.scale);
-        sprite.position.set(aStarData.pos.x, aStarData.pos.y, aStarData.pos.z);
-        return sprite;
-    }
+    //     let mat = new THREE.SpriteMaterial({
+    //         map: t,
+    //         color: new THREE.Color(aStarData.color.r, aStarData.color.g, aStarData.color.b),
+    //         transparent: true,
+    //         opacity: aStarData.color.a,
+    //         depthWrite: false,
+    //         depthTest: true,
+    //         blending: THREE.AdditiveBlending
+    //     });
+    //     let sprite = new THREE.Sprite(mat);
+    //     sprite.scale.set(aStarData.scale, aStarData.scale, aStarData.scale);
+    //     sprite.position.set(aStarData.pos.x, aStarData.pos.y, aStarData.pos.z);
+    //     return sprite;
+    // }
 
     private destroyGalaxyStars() {
-        if (this.galaxyStarSprites)
-            for (let i = this.galaxyStarSprites.length - 1; i >= 0; i--) {
-                this.scene.remove(this.galaxyStarSprites[i]);
-            }
-        this.galaxyStarSprites = [];
+        // if (this.galaxyStarSprites)
+        //     for (let i = this.galaxyStarSprites.length - 1; i >= 0; i--) {
+        //         this.scene.remove(this.galaxyStarSprites[i]);
+        //     }
+        // this.galaxyStarSprites = [];
 
-        if (this.blinkStars)
-            for (let i = this.blinkStars.length - 1; i >= 0; i--) {
-                let spr = this.blinkStars[i];
-                spr['stopBlinkAnimation'] = true;
-                this.scene.remove(spr);
-            }
-        this.blinkStars = [];
+        // if (this.blinkStars)
+        //     for (let i = this.blinkStars.length - 1; i >= 0; i--) {
+        //         let spr = this.blinkStars[i];
+        //         spr['stopBlinkAnimation'] = true;
+        //         this.scene.remove(spr);
+        //     }
+        // this.blinkStars = [];
 
         if (this.starsParticles) {
             this.starsParticles.free();
@@ -1447,33 +637,33 @@ export class Galaxy {
         this.scene.add(debugObjects.farStarsSphereMax);
     }
 
-    // private createSkybox(aScene: THREE.Scene) {
-    //     let loader = ThreeLoader.getInstance();
-    //     let imagePrefix = "skybox1-";
-    //     let directions = ["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
-    //     let materialArray = [];
-    //     for (let i = 0; i < directions.length; i++)
-    //         materialArray.push(new THREE.MeshBasicMaterial({
-    //             map: loader.getTexture(imagePrefix + directions[i]),
-    //             side: THREE.BackSide,
-    //             // depthTest: false,
-    //             // depthWrite: false,
-    //             // transparent: true,
-    //             // opacity: 1.,
-    //             // wireframe: true
-    //         }));
+    private createStarPoints() {
 
-    //     let imgArray = [];
-    //     for (let i = 0; i < directions.length; i++)
-    //         imgArray.push(loader.getTexture(imagePrefix + directions[i]).image);
+        let loader = ThreeLoader.getInstance();
 
-    //     let size = Config.SKY_BOX_SIZE;
-    //     let skyGeometry = new THREE.BoxBufferGeometry(size, size, size);
-    //     let skyBox = new THREE.Mesh(skyGeometry, materialArray);
-    //     skyBox.position.set(0, 0, 0);
-    //     skyBox.renderOrder = -100;
-    //     aScene.add(skyBox);
-    // }
+        for (let i = 0; i < SOLAR_SYSTEMS_DATA.length; i++) {
+            const starData = SOLAR_SYSTEMS_DATA[i];
+
+            let previewTexture = loader.getTexture('starPoint');
+            let previewMaterial = new THREE.SpriteMaterial({
+                map: previewTexture,
+                transparent: true,
+                opacity: 1,
+                depthWrite: false,
+                blending: THREE.AdditiveBlending
+            });
+            let starPointSprite = new THREE.Sprite(previewMaterial);
+
+            starPointSprite.scale.set(12, 12, 12);
+            starPointSprite.position.set(starData.positionInGalaxy.x, starData.positionInGalaxy.y, starData.positionInGalaxy.z);
+            starPointSprite[`name`] = "starPoint";
+            starPointSprite[`starId`] = i;
+            // starPointSprite.renderOrder = 1;
+            this.scene.add(starPointSprite);
+
+        }
+
+    }
 
     private createSkybox2() {
         let loader = ThreeLoader.getInstance();
@@ -1646,65 +836,104 @@ export class Galaxy {
 
     private createCameraControls(aParams?: any) {
 
-        if (this.camOrbit) return;
+        if (this.orbitControl) return;
         if (!aParams) aParams = {};
         let domElement = Params.domCanvasParent;
-        this.camOrbit = new OrbitControls(this.camera, domElement);
-        if (!aParams.noTarget)
-            this.camOrbit.target = new THREE.Vector3();
-        this.camOrbit.enabled = !(aParams.isOrbitLock == true);
-        this.camOrbit.rotateSpeed = .5;
-        this.camOrbit.enableDamping = true;
-        this.camOrbit.dampingFactor = 0.025;
-        this.camOrbit.zoomSpeed = aParams.zoomSpeed || 1;
-        this.camOrbit.enablePan = aParams.enablePan == true;
+        this.orbitControl = new OrbitControls(this.camera, domElement);
+        // if (!aParams.noTarget) this.orbitControl.target = new THREE.Vector3();
+        this.orbitControl.enabled = !(aParams.isOrbitLock == true);
+        this.orbitControl.rotateSpeed = .5;
+        this.orbitControl.enableDamping = true;
+        this.orbitControl.dampingFactor = 0.025;
+        this.orbitControl.zoomSpeed = aParams.zoomSpeed || 1;
+        this.orbitControl.enablePan = aParams.enablePan == true;
         // this.camOrbitCtrl.keys = {};
-        this.camOrbit.minDistance = aParams.minDist || 1;
-        this.camOrbit.maxDistance = aParams.maxDist || 100;
-        this.camOrbit.minPolarAngle = MyMath.toRadian(aParams.stopAngleTop || 0); // Math.PI / 2.5;
+        this.orbitControl.minDistance = aParams.minDist || 1;
+        this.orbitControl.maxDistance = aParams.maxDist || 100;
+        this.orbitControl.minPolarAngle = MyMath.toRadian(aParams.stopAngleTop || 0); // Math.PI / 2.5;
         // camOrbit.maxPolarAngle = Math.PI - an;
-        this.camOrbit.maxPolarAngle = MyMath.toRadian(aParams.stopAngleBot || 0);
-        if (aParams.pos) {
-            this.camOrbit.target.x = aParams.pos.x || 0;
-            this.camOrbit.target.y = aParams.pos.y || 0;
-            this.camOrbit.target.z = aParams.pos.z || 0;
-        }
-        this.camOrbit.update();
-        this.camOrbit.addEventListener('change', () => {
-        });
-        this.camOrbit.addEventListener('end', () => {
-        });
-
-    }
-
-    private checkMousePointer() {
-
-        // this.raycaster.setFromCamera(mouseNormal, this.camera);
-        // const intersects = this.raycaster.intersectObjects(this.scene.children, true);
-
-        // let isHover = false;
-
-        // intersects.forEach((object) => {
-        //     if (object.object.type == 'Sprite') {
-        //         objectHovered = object.object;
-        //         if (objectHovered['name'] == 'planetPreview') {
-        //             document.body.style.cursor = 'pointer';
-        //             isHover = true;
-        //         }
-        //     }
-        // });
-
-        // if (!isHover) {
-        //     document.body.style.cursor = 'default';
+        this.orbitControl.maxPolarAngle = MyMath.toRadian(aParams.stopAngleBot || 0);
+        // if (aParams.pos) {
+        //     this.orbitControl.target.x = aParams.pos.x || 0;
+        //     this.orbitControl.target.y = aParams.pos.y || 0;
+        //     this.orbitControl.target.z = aParams.pos.z || 0;
         // }
+        this.orbitControl.target = this.orbitCenter;
+        this.orbitControl.update();
+        this.orbitControl.addEventListener('change', () => {
+        });
+        this.orbitControl.addEventListener('end', () => {
+        });
 
     }
-    
-    public set centerVisible(v: boolean) {
-        this.sprGalaxyCenter.visible = v;
-        this.sprGalaxyCenter2.visible = v;
+
+    private updateInputMove() {
+
+        let inMng = InputMng.getInstance();
+        this.raycaster.setFromCamera(inMng.normalInputPos, this.camera);
+        const intersects = this.raycaster.intersectObjects(this.scene.children, true);
+        let isHover = false;
+
+        for (let i = 0; i < intersects.length; i++) {
+            const obj = intersects[i].object;
+            if (obj[`name`] == 'starPoint') {
+                this.starPointHovered = obj as THREE.Sprite;
+                isHover = true;
+                break;
+            }
+        }
+
+        if (!isHover) this.starPointHovered = null;
+
+        document.body.style.cursor = isHover ? 'pointer' : 'default';
     }
-    
+
+    private onInputDown(x: number, y: number) {
+
+    }
+
+    private onInputUp(x: number, y: number) {
+        let inMng = InputMng.getInstance();
+        let dist = MyMath.getVectorLength(inMng.inputDownClientX, inMng.currInputClientY, inMng.currInputClientX, inMng.currInputClientY);
+        if (dist > 20) return;
+        
+        switch (this.fsm.getCurrentState().name) {
+            case States.GALAXY:
+                if (this.starPointHovered) {
+                    let starId = this.starPointHovered[`starId`]!;
+                    this.fsm.startState(States.TO_STAR, { starId: starId });
+                }
+                break;
+        }
+
+    }
+
+    private updateGalaxyCenter() {
+        let cameraPolarAngle = this.orbitControl.getPolarAngle();
+
+        if (this.sprGalaxyCenter) {
+            // debugger;
+            // console.log(`polarAngle: ${polarAngle}`);
+            const scMin = 0.1;
+            let anFactor = scMin + (1 - scMin) * (1 - (cameraPolarAngle / (Math.PI / 2)));
+            if (cameraPolarAngle > Math.PI / 2) {
+                anFactor = scMin + (1 - scMin) * (1 - (Math.abs(cameraPolarAngle - Math.PI) / (Math.PI / 2)));
+            }
+            this.sprGalaxyCenter.scale.y = Config.GALAXY_CENTER_SCALE * anFactor;
+        }
+
+        if (this.sprGalaxyCenter2) {
+            // debugger;
+            // console.log(`polarAngle: ${polarAngle}`);
+            const scMin = 0.3;
+            let anFactor = scMin + (1 - scMin) * (1 - (cameraPolarAngle / (Math.PI / 2)));
+            if (cameraPolarAngle > Math.PI / 2) {
+                anFactor = scMin + (1 - scMin) * (1 - (Math.abs(cameraPolarAngle - Math.PI) / (Math.PI / 2)));
+            }
+            this.sprGalaxyCenter2.scale.y = Config.GALAXY_CENTER_SCALE_2 * anFactor;
+        }
+    }
+
     private saveState() {
         function download(content, fileName, contentType) {
             var a = document.createElement("a");
@@ -1733,57 +962,26 @@ export class Galaxy {
         download(jsonData, 'galaxyState.json', 'text/plain');
     }
 
-    private updateGalaxyCenter() {
-        let cameraPolarAngle = this.camOrbit.getPolarAngle();
 
-        if (this.sprGalaxyCenter) {
-            // debugger;
-            // console.log(`polarAngle: ${polarAngle}`);
-            const scMin = 0.1;
-            let anFactor = scMin + (1 - scMin) * (1 - (cameraPolarAngle / (Math.PI / 2)));
-            if (cameraPolarAngle > Math.PI / 2) {
-                anFactor = scMin + (1 - scMin) * (1 - (Math.abs(cameraPolarAngle - Math.PI) / (Math.PI / 2)));
-            }
-            this.sprGalaxyCenter.scale.y = Config.GALAXY_CENTER_SCALE * anFactor;
-        }
+    // STATES
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        if (this.sprGalaxyCenter2) {
-            // debugger;
-            // console.log(`polarAngle: ${polarAngle}`);
-            const scMin = 0.3;
-            let anFactor = scMin + (1 - scMin) * (1 - (cameraPolarAngle / (Math.PI / 2)));
-            if (cameraPolarAngle > Math.PI / 2) {
-                anFactor = scMin + (1 - scMin) * (1 - (Math.abs(cameraPolarAngle - Math.PI) / (Math.PI / 2)));
-            }
-            this.sprGalaxyCenter2.scale.y = Config.GALAXY_CENTER_SCALE_2 * anFactor;
-        }
+    private onGalaxyEnter() {
+        
     }
 
-    update(dt: number) {
+    private onGalaxyUpdate(dt: number) {
 
-        // let dtMs = dt * 1000;
+        this.orbitControl.update();
 
-        let cameraAzimutAngle = this.camOrbit.getAzimuthalAngle();
-        let cameraPolarAngle = this.camOrbit.getPolarAngle();
-
-        if (this.blinkStarsParticles) this.blinkStarsParticles.update(dt);
-
-        // far stars
-        this.farStars.azimutAngle = cameraAzimutAngle;
-        this.farStars.polarAngle = cameraPolarAngle;
-        this.farStars.update(dt);
-        
-        // let cameraRotationFactor = Math.abs(cameraPolarAngle - Math.PI / 2);
-
-        // rotate small galaxies
-
-        for (let i = 0; i < this.smallGalaxies.length; i++) {
-            const g = this.smallGalaxies[i];
-            if (g) g.rotateZ(g['rotSpeed'] * dt);
+        if (this.cameraTarget && this.camera) {
+            this.camera.lookAt(this.cameraTarget);
         }
 
+        let cameraAzimutAngle = this.orbitControl.getAzimuthalAngle();
+        let cameraPolarAngle = this.orbitControl.getPolarAngle();
+        
         // opacity of the main galaxy plane
-
         if (this.galaxyPlane) {
             if (cameraPolarAngle < Math.PI / 2) {
                 this.galaxyPlane.material['opacity'] = 0.1 + (1 - (cameraPolarAngle / (Math.PI / 2))) * 0.9;
@@ -1794,14 +992,216 @@ export class Galaxy {
 
         this.updateGalaxyCenter();
 
-        this.camOrbit.update();
+        if (this.blinkStarsParticles) this.blinkStarsParticles.update(dt);
 
-        checkMousePointerTimer -= dt;
-        if (checkMousePointerTimer <= 0) {
-            checkMousePointerTimer = 0.1;
-            this.checkMousePointer();
+        // far stars
+        this.farStars.azimutAngle = cameraAzimutAngle;
+        this.farStars.polarAngle = cameraPolarAngle;
+        this.farStars.update(dt);
+
+        // small galaxies
+        for (let i = 0; i < this.smallGalaxies.length; i++) {
+            const g = this.smallGalaxies[i];
+            if (g) g.rotateZ(g['rotSpeed'] * dt);
         }
 
+        this.checkMousePointerTimer -= dt;
+        if (this.checkMousePointerTimer <= 0) {
+            this.checkMousePointerTimer = 0.1;
+            this.updateInputMove();
+        }
+    }
+
+    private onToStarEnter(aParams: any) {
+
+        const DUR = 4;
+        
+        this.orbitControl.enabled = false;
+        document.body.style.cursor = 'default';
+
+        let systemData = SOLAR_SYSTEMS_DATA[aParams.starId];
+
+        this.solarSystem = new SolarSystem({
+            camera: this.camera,
+            starSize: systemData.starSize
+        });
+
+        let starPos = new THREE.Vector3(
+            systemData.positionInGalaxy.x,
+            systemData.positionInGalaxy.y,
+            systemData.positionInGalaxy.z
+        );
+
+        this.solarSystem.position.copy(starPos);
+
+        this.solarSystem.scale.set(0, 0, 0);
+        this.solarSystem.visible = false;
+        this.scene.add(this.solarSystem);
+
+        // hide point sprite and galo
+        gsap.to([this.starPointHovered.material, this.sprGalaxyCenter.material, this.sprGalaxyCenter2.material], {
+            opacity: 0,
+            duration: DUR / 2,
+            ease: 'sine.in',
+            onComplete: () => {
+                this.starPointHovered.visible = false;
+            }
+        });
+
+        // expand solar system
+        gsap.to(this.solarSystem.scale, {
+            x: 1,
+            y: 1,
+            z: 1,
+            duration: DUR,
+            delay: DUR / 1.5,
+            ease: 'sine.Out',
+            onStart: () => {
+                this.solarSystem.visible = true;
+            },
+            onUpdate: () => {
+
+            },
+            onComplete: () => {
+                this.fsm.startState(States.STAR);
+            }
+        });
+
+        // move camera target to center of Solar System
+        gsap.to(this.cameraTarget, {
+            x: systemData.positionInGalaxy.x,
+            y: systemData.positionInGalaxy.y,
+            z: systemData.positionInGalaxy.z,
+            duration: DUR,
+            ease: 'sine.inOut',
+            onUpdate: () => {
+                this.orbitCenter.copy(this.cameraTarget);
+            },
+            onComplete: () => {
+
+            }
+        });
+
+        // hide galaxy plane
+        gsap.to(this.galaxyPlane.material, {
+            opacity: 0,
+            duration: DUR / 1.5,
+            ease: 'sine.in',
+            onComplete: () => {
+                this.galaxyPlane.visible = false;
+            }
+        });
+
+        let newCameraPos = this.camera.position.clone().sub(starPos).normalize().multiplyScalar(systemData.starSize * 2).add(starPos);
+
+        gsap.to(this.camera.position, {
+            x: newCameraPos.x,
+            y: newCameraPos.y,
+            z: newCameraPos.z,
+            duration: DUR,
+            ease: 'sine.inOut',
+            onUpdate: () => {                
+            },
+            onComplete: () => {
+            }
+        });
+
+        // scale galaxy
+        let tObj = { s: 1 };
+        let gVec = starPos.clone().negate();
+        gsap.to(tObj, {
+            s: 100,
+            duration: DUR,
+            ease: 'sine.in',
+            onUpdate: () => {
+                this.dummyGalaxy.scale.set(tObj.s, tObj.s, tObj.s);
+                this.dummyGalaxy.position.copy(starPos.clone().add(gVec.clone().multiplyScalar(tObj.s)));
+            },
+            onComplete: () => {
+            }
+        });
+
+    }
+
+    private onToStarUpdate(dt: number) {
+
+        this.orbitControl.update();
+
+        if (this.cameraTarget && this.camera) {
+            this.camera.lookAt(this.cameraTarget);
+        }
+
+        let cameraAzimutAngle = this.orbitControl.getAzimuthalAngle();
+        let cameraPolarAngle = this.orbitControl.getPolarAngle();
+
+        // this.updateGalaxyCenter();
+
+        if (this.blinkStarsParticles) this.blinkStarsParticles.update(dt);
+
+        // far stars
+        this.farStars.azimutAngle = cameraAzimutAngle;
+        this.farStars.polarAngle = cameraPolarAngle;
+        this.farStars.update(dt);
+
+        // small galaxies
+        for (let i = 0; i < this.smallGalaxies.length; i++) {
+            const g = this.smallGalaxies[i];
+            if (g) g.rotateZ(g['rotSpeed'] * dt);
+        }
+
+        if (this.solarSystem) this.solarSystem.update(dt);
+    }
+
+    private onStarEnter() {
+        this.orbitControl.enabled = true;
+    }
+
+    private onStarUpdate(dt: number) {
+
+        this.orbitControl.update();
+
+        if (this.cameraTarget && this.camera) {
+            this.camera.lookAt(this.cameraTarget);
+        }
+
+        let cameraAzimutAngle = this.orbitControl.getAzimuthalAngle();
+        let cameraPolarAngle = this.orbitControl.getPolarAngle();
+
+        // this.updateGalaxyCenter();
+
+        if (this.blinkStarsParticles) this.blinkStarsParticles.update(dt);
+
+        // far stars
+        this.farStars.azimutAngle = cameraAzimutAngle;
+        this.farStars.polarAngle = cameraPolarAngle;
+        this.farStars.update(dt);
+
+        // small galaxies
+        for (let i = 0; i < this.smallGalaxies.length; i++) {
+            const g = this.smallGalaxies[i];
+            if (g) g.rotateZ(g['rotSpeed'] * dt);
+        }
+
+        if (this.solarSystem) this.solarSystem.update(dt);
+    }
+
+    private onFromStarEnter() {
+
+    }
+    
+    private onFromStarUpdate(dt: number) {
+        
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    /**
+     * 
+     * @param dt in sec
+     */
+    update(dt: number) {
+        this.fsm.update(dt);
     }
 
 }

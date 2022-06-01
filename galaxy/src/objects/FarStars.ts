@@ -1,10 +1,11 @@
 import * as THREE from "three";
 import { IBaseClass } from "../interfaces/IBaseClass";
+import { MyMath } from "../utils/MyMath";
+import { Params } from "../data/Params";
 
 import vsFarStars from '../shaders/farStars/vs.glsl';
 import fsFarStars from '../shaders/farStars/fs.glsl';
-import { MyMath } from "../utils/MyMath";
-import { Params } from "../data/Params";
+
 
 export type FarStarsParams = {
     starsCount: number;

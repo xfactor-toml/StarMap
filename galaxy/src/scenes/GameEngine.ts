@@ -96,11 +96,13 @@ export class GameEngine {
         });
         this.galaxy.init();
 
-        // GUI
+        // DEBUG GUI
 
         if (Params.isDebugMode) {
             this.galaxy.initDebugGui();
         }
+
+        // clock
 
         this.clock = new THREE.Clock();
 
@@ -118,12 +120,12 @@ export class GameEngine {
 
             Params.domCanvasParent.requestFullscreen();
 
-            var f1 = (event) => {
+            let f1 = (event) => {
                 Params.domCanvasParent.removeEventListener('click', f1);
                 (event as any).target.requestFullscreen();
             }
 
-            var f2 = (event) => {
+            let f2 = (event) => {
                 Params.domCanvasParent.removeEventListener('touchstart', f2);
                 (event as any).target.requestFullscreen();
             }

@@ -39,6 +39,11 @@ export class InputMng {
     /**
      * x, y
      */
+    onInputMoveSignal = new Signal();
+
+    /**
+     * x, y
+     */
     onInputUpSignal = new Signal();
 
     constructor(aParams: InitParams) {
@@ -68,12 +73,19 @@ export class InputMng {
                 dom.addEventListener('mousemove', (e: MouseEvent) => {
                     this.currInputClientX = e.clientX;
                     this.currInputClientY = e.clientY;
-                    // LogMng.debug(`mousedown: x: ${e.clientX}, y: ${e.clientY}`);
+
+                    // LogMng.debug(`mousemove: x: ${e.clientX}, y: ${e.clientY}`);
+
                     // for 3d
                     this.normalInputPos = {
                         x: (e.clientX / dom.clientWidth) * 2 - 1,
                         y: -(e.clientY / dom.clientHeight) * 2 + 1
                     }
+
+                    if (this.params.desktop) {
+                        this.onInputMoveSignal.dispatch(this.currInputClientX, this.currInputClientY);
+                    }
+                    
                 }, true);
 
                 dom.addEventListener("pointerdown", (e) => {
