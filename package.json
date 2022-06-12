@@ -1,0 +1,32 @@
+{
+    "name": "galaxy",
+    "version": "1.0.0",
+    "description": "",
+    "main": "./src/script.js",
+    "scripts": {
+        "start": "webpack-dev-server",
+        "start:open": "webpack-dev-server --open",
+        "prod": "webpack --mode=production"
+    },
+    "author": "Monax",
+    "license": "ISC",
+    "devDependencies": {
+        "ts-loader": "^8.0.0",
+        "ts-shader-loader": "^1.0.6",
+        "webpack": "^4.41.6",
+        "webpack-cli": "^3.3.11",
+        "webpack-dev-server": "^3.11.2"
+    },
+    "dependencies": {
+        "@pixi/sound": "^4.2.0",
+        "@types/dat.gui": "^0.7.7",
+        "@types/stats": "^0.16.30",
+        "@types/three": "^0.138.0",
+        "@types/ua-parser-js": "^0.7.36",
+        "dat.gui": "^0.7.6",
+        "gsap": "^3.10.2",
+        "stats-js": "^1.0.1",
+        "three": "^0.138.3",
+        "ua-parser-js": "^1.0.2"
+    }
+}
