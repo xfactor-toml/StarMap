@@ -181,7 +181,6 @@ body {
   }
   to {
     opacity: 0;
-    left: -100px
   }
   100% {
     visibility: hidden;
@@ -196,7 +195,6 @@ body {
   }
   to {
     opacity: 1;
-    left: 0px;
   }
   100% {
     visibility: visible;
