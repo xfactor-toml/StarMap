@@ -1,0 +1,222 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: 'Exo 2', sans-serif;
+}
+.minInformation {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  min-width: 850px;
+  min-height: 210px;
+  display: flex;
+  align-items: center;
+}
+.star {
+  position: relative;
+  z-index: 2;
+  min-width: 140px;
+  min-height: 140px;
+  background: url("../imgs/starBg3.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+.avatarStar {
+  width: 140px;
+  height: 140px;
+  position: relative;
+  z-index: -1;
+}
+.starBgInf { 
+  position: relative;
+  width: 250px;
+  height: 128px;
+  background: url("../imgs/starBgInf3.png");
+  position: relative;
+  left: -43px
+}
+.starBgInf > .bgInf {
+  position: relative;
+  z-index: -2;
+  min-width: 254px;
+  min-height: 126px;
+  background: url("../imgs/bgInf3.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+.starBgInf > .bgInf > h2 {
+  position: absolute;
+  left: 50px;
+  top: 15px;
+  font-family: 'Helvetica';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 14px;
+  width: 70px;
+  color: #FFFF00;
+}
+.level {
+  color: white;
+  position: absolute;
+  top: 15px;
+  right: 50px;
+}
+.starBgInf > .bgInf > p {
+  position: absolute;
+  top: 56px;
+  width: 160px;
+  left: 60px;
+  font-family: 'Exo 2';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 12px;
+  color: #FFFFFF;
+}
+.avatar {
+  position: relative;
+  z-index: 2;
+  min-width: 140px;
+  min-height: 128px;
+  background: url("../imgs/avatar3.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  left: -52px;
+}
+.ava {
+  position: relative;
+  z-index: 999!important;
+  min-width: 130px;
+  min-height: 120px;
+  top: 4px;
+  left: 4px;
+}
+.ava > img {
+  position: absolute;
+  z-index: -999;
+  top: 4px;
+  left: 6px;
+  width: 100px;
+  height: 112px;
+}
+.avaImg {
+  z-index: -999!important;
+}
+.nameAvatar {
+  font-family: 'Helvetica';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 12px;
+  color: #FFFF00;
+  position: absolute;
+  bottom: 4px;
+  z-index: -222;
+  left: 20px;
+  background: linear-gradient(45deg, #383838 0%, #141414 100%);
+  padding: 4px;
+  padding-bottom: 8px;
+  transform: skewX(-10deg);
+  border-top: 2px solid #4F4F4F;
+  border-right: 2px solid #4F4F4F;
+}
+.starButtons {
+  position: relative;
+  height: 128px;
+  width: 120px;
+  left: -76px;
+}
+.starButtons > div > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Exo 2';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+
+  color: #000000;
+}
+.starButtons > div {
+  transition-duration: 300ms;
+}
+.starButtons > div:hover {
+  cursor: pointer;
+  opacity: 0.9;
+}
+.starButtons > .starClose:hover > div {
+  box-shadow: 0 0 40px #FA7D2C;
+}
+.starButtons > .starDivein:hover > div {
+  box-shadow: 0 0 40px #40F059;
+}
+.starClose {
+  position: relative;
+  width: 93px;
+  height: 63px;
+  background: url("../imgs/close.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.starClose > div {
+  width: 85px;
+  height: 55px;
+  background: url("../imgs/bgClose.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+  left: 5px;
+  top: 4px;
+}
+.hiddenAvatar {
+  animation: hiddenAvatar 0.8s linear;
+}
+@keyframes hiddenAvatar {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    left: -100px
+  }
+  100% {
+    visibility: hidden;
+  }
+}
+.showedAvatar {
+  animation: showedAvatar 0.5s linear;
+}
+@keyframes showedAvatar {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+    left: 0px;
+  }
+  100% {
+    visibility: visible;
+  }
+}
+.starDivein {
+  position: relative;
+  width: 93px;
+  height: 63px;
+  background: url("../imgs/divein.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.starDivein > div {
+  width: 85px;
+  height: 55px;
+  background: url("../imgs/bgDivein.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+  left: 5px;
+  top: 4px;
+}
