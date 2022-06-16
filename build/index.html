@@ -30,7 +30,11 @@
 
         /* 
             data: { 
-                eventName
+                eventName: 'showStarPreviewGui',
+                name: string
+                description: string
+                level: number
+                race: Robots | 'Humans' | 'Simbionts' | 'Lizards' | 'Insects'
                 pos2d: { x, y }
             }
         */
@@ -63,8 +67,8 @@
 
         
         function showAvatar(x, y) {
-            document.querySelector('#showedAvatar').style.left = `${x - 65}px`;
-            document.querySelector('#showedAvatar').style.top = `${y - 600 - 100}px`;
+            document.querySelector('#showedAvatar').style.left = `${x}px`;
+            document.querySelector('#showedAvatar').style.top = `${y}px`;
             document.querySelector('#showedAvatar').classList.add('showedAvatar');
             document.querySelector('#showedAvatar').classList.remove('hiddenAvatar');
             document.querySelector('#showedAvatar').style.visibility = 'visible';
