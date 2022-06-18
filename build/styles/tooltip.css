@@ -1,6 +1,6 @@
 .fade-enter-active,
 .fade-leave-active {
-  transition: ease-in-out all 200ms;
+  transition: ease-in-out opacity 200ms;
 }
 
 .fade-enter-from,

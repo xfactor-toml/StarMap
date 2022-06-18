@@ -34,29 +34,45 @@ function getTooltipComponent() {
         default: 1
       }
     },
+    data: () => ({
+      intersection: { x: false, y: false }
+    }),
     computed: {
-      reflected() {
-        return true;
-      },
       tooltipStyle() {
         return {
           top: `${this.position.y}px`,
           left: `${this.position.x}px`,
-          transform: `scale(${this.scale})`
+          transform: `
+            scale(${this.scale})
+            translateX(${this.intersection.x ? '-100%' : '0'})
+            translateY(${this.intersection.y ? '-100%' : '0'})
+          `
         };
       },
       tooltipClasses() {
         return {
           tooltip: true,
-          'is-reflect': this.reflected,
+          'is-reflect': this.intersection.x,
           [`is-${this.race.toLowerCase()}`]: true
         };
       }
     },
     methods: {
+      recalcIntersection() {
+        const { width, height, top, left } = this.$el.getBoundingClientRect()
+        const { innerWidth, innerHeight } = window
+
+        this.intersection = {
+          x: (width + left) > innerWidth,
+          y: (height + top) > innerHeight
+        }
+      },
       hide() {
         this.$emit('hide');
       }
+    },
+    mounted() {
+      this.recalcIntersection()
     },
     template: `
       <div
@@ -128,7 +144,6 @@ function createGui() {
           :level="tooltipData.level"
           :race="tooltipData.race"
           :position="tooltipData.pos2d"
-          :width="tooltipData.width"
           :scale="tooltipData.scale"
           @hide="hideTooltip"
         />
