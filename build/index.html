@@ -1,143 +1,81 @@
 <!DOCTYPE html>
 
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="utf-8" />
     <meta http-equiv="pragma" content="no-cache" />
-    <meta name="viewport"
-        content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"
+    />
     <!-- Allow fullscreen app install in Android and IOS respectively -->
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
 
     <title>Galaxy - GUI</title>
 
-    <link rel="stylesheet" type="text/css" href="./styles/main.css">
+    <link rel="stylesheet" type="text/css" href="./styles/main.css" />
+    <link rel="stylesheet" type="text/css" href="./styles/tooltip.css" />
 
-    <link rel="stylesheet" href="./public/css/styles.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-        href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-        rel="stylesheet">
+      href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
 
     <script src="js/stats.min.js"></script>
+    <script src="js/vue.global.prod.min.js"></script>
+    <!-- <script src="js/vue.global.min.js"></script> -->
+    <script src="js/gui.js"></script>
     <script src="./game.bundle.js"></script>
+  </head>
 
-    <script>
-
-        /* 
-            data: { 
-                eventName: 'showStarPreviewGui',
-                name: string
-                description: string
-                level: number
-                race: Robots | 'Humans' | 'Simbionts' | 'Lizards' | 'Insects'
-                pos2d: { x, y }
-            }
-        */
-        window.addEventListener('gameEvent', function (e) {
-            
-            let data = e.detail;
-            
-            switch (data.eventName) {
-
-                case 'showStarPreviewGui':
-                    //console.log(`Event: showStarPreviewGui:`);
-                    console.log(data);
-
-                    let race = data.race;
-                    let level = data.level;
-                    showAvatar(data.pos2d.x, data.pos2d.y);
-                    
-                    break;
-
-                case 'hideStarPreviewGui':
-                    console.log(`Event: hideStarPreviewGui...`);
-
-                    break;
-
-                default:
-                    break;
-
-            }
-        }.bind(this));
-
-        
-        function showAvatar(x, y) {
-            document.querySelector('#showedAvatar').style.left = `${x}px`;
-            document.querySelector('#showedAvatar').style.top = `${y}px`;
-            document.querySelector('#showedAvatar').classList.add('showedAvatar');
-            document.querySelector('#showedAvatar').classList.remove('hiddenAvatar');
-            document.querySelector('#showedAvatar').style.visibility = 'visible';
-            setTimeout(() => {
-                document.querySelector('#showedAvatar').style.opacity = '1';
-            }, 300)
-        }
-
-        function hiddenAvatar() {
-            document.querySelector('#showedAvatar').classList.remove('showedAvatar');
-            document.querySelector('#showedAvatar').classList.add('hiddenAvatar');
-            setTimeout(() => { 
-                document.querySelector('#showedAvatar').style.opacity = '0';
-                document.querySelector('#showedAvatar').style.visibility = 'hidden';
-            }, 500);
-        }
-
-
-    </script>
-
-</head>
-
-<body>
-
-    <div class="minInformation" id="showedAvatar">
-        <div class="star">
-            <div style="background: url('./public/imgs/avatarStar.png'); background-repeat: no-repeat; background-position: center center;"
-                class="avatarStar">
-    
-            </div>
-        </div>
-        <div class="starBgInf">
-            <div class="bgInf">
-                <h2>PELLENTESQUE ACCUMSAN</h2>
-                <span class="level">Lv.1</span>
-                <p>Vehicula lacinia mus dapibus consequat mattis est nulla cubilia mi etiam, euismod elit blandit cursus
-                    dignissim laoreet pulvinar </p>
-            </div>
-        </div>
-        <div class="avatar">
-            <div class="ava">
-                <img src="public/imgs/ava.png" class="avaImg">
-                <p class="nameAvatar">ROBOTS</p>
-            </div>
-        </div>
-        <div class="starButtons">
-            <div class="starClose" onclick="hiddenAvatar();">
-                <div>
-                    close
-                </div>
-            </div>
-            <div class="starDivein" onclick="hiddenAvatar();">
-                <div>
-                    dive in
-                </div>
-            </div>
-        </div>
-    
-    </div>
-
+  <body>
     <div id="overlay" class="container-buttons">
-            <button id="startButton">Run the Galaxy</button>
-            <button id="startButtonFull">Run in FullScreen</button>
+      <button id="startButton">Run the Galaxy</button>
+      <button id="startButtonFull">Run in FullScreen</button>
     </div>
-    
+
     <div id="game"></div>
+    <div id="gui"></div>
 
     <noscript>
-        <p>You need javascript enabled in order to use this web application.</p>
+      <p>You need javascript enabled in order to use this web application.</p>
     </noscript>
 
-</body>
+    <script>
+        const GUI = createGui();
+
+        window.addEventListener('gameEvent', function (e) {
+          let data = e.detail;
+
+          /* 
+                data: { 
+                    eventName: 'showStarPreviewGui',
+                    name: string
+                    description: string
+                    level: number
+                    race: Robots | 'Humans' | 'Simbionts' | 'Lizards' | 'Insects'
+                    pos2d: { x, y }
+                }
+          */
+
+          switch (data.eventName) {
+            case 'showStarPreviewGui':
+              GUI.showTooltip(data)
+              break;
+
+            case 'hideStarPreviewGui':
+              GUI.hideTooltip()
+              break;
+          }
+        });
+      </script>
+    </script>
+  </body>
+</html>

@@ -6,7 +6,8 @@
     "scripts": {
         "start": "webpack-dev-server",
         "start:open": "webpack-dev-server --open",
-        "prod": "webpack --mode=production"
+        "prod": "webpack --mode=production",
+        "preview": "npx live-server ./build"
     },
     "author": "Monax",
     "license": "ISC",
