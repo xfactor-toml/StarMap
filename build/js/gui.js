@@ -27,7 +27,7 @@ function getTooltipComponent() {
       },
       raceImageUrl: {
         type: String,
-        default: 'img/ava.png'
+        default: 'public/imgs/ava.png'
       },
       scale: {
         type: Number,
