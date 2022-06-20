@@ -14,24 +14,107 @@
 
     <title>Galaxy</title>
 
-    <link rel="stylesheet" type="text/css" href="./styles/main.css">
+    <link rel="stylesheet" type="text/css" href="./styles/main.css" />
+    <link rel="stylesheet" type="text/css" href="./gui/css/gui.css" />
+    <link rel="stylesheet" type="text/css" href="./gui/css/tooltip.css" />
+    <link rel="stylesheet" type="text/css" href="./gui/css/star-panel.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet" />
 
     <script src="js/stats.min.js"></script>
+    <script src="gui/vendor/vue.global.prod.min.js"></script>
+    <script src="gui/gui.js"></script>
     <script src="./game.bundle.js"></script>
 
 </head>
 
 <body>
-    
+
 
     <div id="overlay" class="container-buttons">
-            <button id="startButton">Run the Galaxy</button>
-            <button id="startButtonFull">Run in FullScreen</button>
+        <button id="startButton">Run the Galaxy</button>
+        <button id="startButtonFull">Run in FullScreen</button>
     </div>
-    
+
     <div id="game"></div>
+    <div id="gui"></div>
 
     <noscript>
         <p>You need javascript enabled in order to use this web application.</p>
     </noscript>
+
+    <script>
+        let currentStarId = -1;
+        const GUI = createGui();
+
+        GUI.on('tooltipHide', () => {
+            GUI.hideTooltip();
+        });
+
+        GUI.on('tooltipDiveIn', () => {
+            console.log('dive in');
+            // GUI.off('tooltipDiveIn')
+            GUI.hideTooltip();
+            window.dispatchEvent(new CustomEvent('guiEvent', {
+                detail: {
+                    eventName: 'diveIn',
+                    starId: currentStarId
+                }
+            }));
+        });
+
+        GUI.on('starPanelHide', () => {
+            GUI.hideStarPanel();
+            window.dispatchEvent(new CustomEvent('guiEvent', {
+                detail: {
+                    eventName: 'flyFromStar'
+                }
+            }));
+        });
+
+        GUI.on('starPanelPlay', () => {
+            console.log('star panel play');
+        });
+
+        // GUI.once('tooltipDiveIn', () => {
+        //     console.log('dive in once');
+        // });
+
+        window.addEventListener('gameEvent', function (e) {
+            let data = e.detail;
+
+            /* 
+                  data: { 
+                    starId: number,
+                      eventName: 'showStarPreviewGui',
+                      name: string
+                      description: string
+                      level: number
+                      race: Robots | 'Humans' | 'Simbionts' | 'Lizards' | 'Insects'
+                      pos2d: { x, y }
+                  }
+            */
+
+            switch (data.eventName) {
+                case 'showStarPreviewGui':
+                    currentStarId = data.starId;
+                    GUI.showTooltip(data);
+                    break;
+
+                case 'hideStarPreviewGui':
+                    GUI.hideTooltip();
+                    break;
+
+                case 'showStarGui':
+                    GUI.showStarPanel(data);
+                    break;
+
+            }
+        });
+    </script>
+
 </body>

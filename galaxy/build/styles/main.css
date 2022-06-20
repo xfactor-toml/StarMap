@@ -7,6 +7,13 @@
 
 html {
     overflow: hidden;
+    box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
 }
 
 body {
@@ -14,6 +21,8 @@ body {
     border: none;
     font-family: 'Exo 2', sans-serif;
     background-color: #000;
+    height: 100%;
+    width: 100%;
 }
 
 a {

@@ -18,15 +18,79 @@ import { FSM } from '../states/FSM';
 import { States } from '../states/States';
 import { SolarSystem } from '../objects/SolarSystem';
 
+const RACES = ['Robots', 'Humans', 'Simbionts', 'Lizards', 'Insects'];
+
 const SOLAR_SYSTEMS_DATA = [
 
     {
-        name: "Star1",
+        name: "Star 1",
+        description: `This is a star of Robots. This is a test description text.`,
+        level: 1,
+        raceId: 0,
+        planetsSlots: 100,
+        energy: 1000,
+        life: 300,
         positionInGalaxy: {
             x: 40, y: 0, z: 100
         },
-        starSize: 100
+        starSize: 40
     },
+
+    {
+        name: "Star 2",
+        description: `This is a star of Humans. This is a test description text.`,
+        level: 2,
+        raceId: 1,
+        planetsSlots: 100,
+        energy: 1000,
+        life: 300,
+        positionInGalaxy: {
+            x: 10, y: 0, z: -100
+        },
+        starSize: 40
+    },
+
+    {
+        name: "Star 3",
+        description: `This is a star of Simbionts. This is a test description text.`,
+        level: 3,
+        raceId: 2,
+        planetsSlots: 100,
+        energy: 1000,
+        life: 300,
+        positionInGalaxy: {
+            x: 100, y: 0, z: -10
+        },
+        starSize: 40
+    },
+
+    {
+        name: "Star 4",
+        description: `This is a star of Lizards. This is a test description text.`,
+        level: 1,
+        raceId: 3,
+        planetsSlots: 100,
+        energy: 1000,
+        life: 300,
+        positionInGalaxy: {
+            x: -80, y: 0, z: -80
+        },
+        starSize: 40
+    },
+
+    {
+        name: "Star 5",
+        description: `This is a star of Insects. This is a test description text.`,
+        level: 2,
+        raceId: 4,
+        planetsSlots: 100,
+        energy: 1000,
+        life: 300,
+        positionInGalaxy: {
+            x: -80, y: 0, z: 70
+        },
+        starSize: 40
+    }
 
 ];
 
@@ -158,7 +222,10 @@ export class Galaxy {
 
     private raycaster: THREE.Raycaster;
     private checkMousePointerTimer = 0;
+
+    private starPointSprites: THREE.Sprite[];
     private starPointHovered: THREE.Sprite;
+    private currentStarId = -1;
 
     private solarSystem: SolarSystem;
 
@@ -241,7 +308,7 @@ export class Galaxy {
         // OUT STARS
         this.createFarStars();
 
-        // PLANETS
+        // BIG STARS
         this.createStarPoints();
 
         // camera controls
@@ -283,6 +350,21 @@ export class Galaxy {
         this.fsm.addState(States.STAR, this, this.onStarEnter, this.onStarUpdate);
         this.fsm.addState(States.FROM_STAR, this, this.onFromStarEnter, this.onFromStarUpdate);
         this.fsm.startState(States.GALAXY);
+
+        window.addEventListener('guiEvent', (e) => {
+            let data = e['detail'];
+
+            switch (data.eventName) {
+                case 'diveIn':
+                    this.fsm.startState(States.TO_STAR, { starId: data.starId });
+                    break;
+                case 'flyFromStar':
+                    if (this.fsm.getCurrentState().name == States.STAR) {
+                        this.fsm.startState(States.FROM_STAR);
+                    }
+                    break;
+            }
+        });
 
     }
 
@@ -365,8 +447,8 @@ export class Galaxy {
         skyFolder.add(Params.skyData, 'galaxiesSizeMax', 100, 8000, 10).onChange(() => { this.createSmallGalaxies(); });
         skyFolder.add(DEBUG_PARAMS, 'recreateSmallGalaxies');
 
-        let starsFolder = gui.addFolder('Stars');
-        starsFolder.add(DEBUG_PARAMS, 'flyFromStar');
+        // let starsFolder = gui.addFolder('Stars');
+        // starsFolder.add(DEBUG_PARAMS, 'flyFromStar');
 
         gui.add(DEBUG_PARAMS, 'saveState');
 
@@ -663,6 +745,7 @@ export class Galaxy {
     private createStarPoints() {
 
         let loader = ThreeLoader.getInstance();
+        this.starPointSprites = [];
 
         for (let i = 0; i < SOLAR_SYSTEMS_DATA.length; i++) {
             const starData = SOLAR_SYSTEMS_DATA[i];
@@ -678,11 +761,13 @@ export class Galaxy {
             let starPointSprite = new THREE.Sprite(previewMaterial);
 
             starPointSprite.scale.set(12, 12, 12);
-            starPointSprite.position.set(starData.positionInGalaxy.x, starData.positionInGalaxy.y, starData.positionInGalaxy.z);
+            let starPos = starData.positionInGalaxy;
+            // let starPos = this.galaxyStarsData[starData.starId].pos;
+            starPointSprite.position.set(starPos.x, starPos.y, starPos.z);
             starPointSprite[`name`] = "starPoint";
             starPointSprite[`starId`] = i;
-            // starPointSprite.renderOrder = 1;
-            this.scene.add(starPointSprite);
+            this.starPointSprites[i] = starPointSprite;
+            this.dummyGalaxy.add(starPointSprite);
 
         }
 
@@ -856,7 +941,6 @@ export class Galaxy {
     }
 
 
-
     private createCameraControls(aParams?: any) {
 
         if (this.orbitControl) return;
@@ -894,7 +978,7 @@ export class Galaxy {
 
         let inMng = InputMng.getInstance();
         this.raycaster.setFromCamera(inMng.normalInputPos, this.camera);
-        const intersects = this.raycaster.intersectObjects(this.scene.children, true);
+        const intersects = this.raycaster.intersectObjects(this.dummyGalaxy.children, true);
         let isHover = false;
 
         for (let i = 0; i < intersects.length; i++) {
@@ -912,19 +996,47 @@ export class Galaxy {
     }
 
     private onInputDown(x: number, y: number) {
-
+        if (!this.starPointHovered) {
+            window.dispatchEvent(new CustomEvent('gameEvent', { detail: { eventName: 'hideStarPreviewGui' } }));
+        }
     }
 
     private onInputUp(x: number, y: number) {
         let inMng = InputMng.getInstance();
-        let dist = MyMath.getVectorLength(inMng.inputDownClientX, inMng.currInputClientY, inMng.currInputClientX, inMng.currInputClientY);
+        let dist = MyMath.getVectorLength(inMng.inputDownClientX, inMng.inputDownClientY, inMng.currInputClientX, inMng.currInputClientY);
         if (dist > 20) return;
         
+        // switch (this.fsm.getCurrentState().name) {
+        //     case States.GALAXY:
+        //         if (this.starPointHovered) {
+        //             let starId = this.starPointHovered[`starId`]!;
+        //             this.fsm.startState(States.TO_STAR, { starId: starId });
+        //         }
+        //         break;
+        // }
+
         switch (this.fsm.getCurrentState().name) {
             case States.GALAXY:
                 if (this.starPointHovered) {
+
                     let starId = this.starPointHovered[`starId`]!;
-                    this.fsm.startState(States.TO_STAR, { starId: starId });
+                    let starData = SOLAR_SYSTEMS_DATA[starId];
+
+                    window.dispatchEvent(new CustomEvent('gameEvent', {
+                        detail: {
+                            starId: starId,
+                            eventName: 'showStarPreviewGui',
+                            name: starData.name,
+                            description: starData.description,
+                            level: starData.level,
+                            race: RACES[starData.raceId],
+                            pos2d: {
+                                x: inMng.currInputClientX,
+                                y: inMng.currInputClientY
+                            }
+                        }
+                    }));
+
                 }
                 break;
         }
@@ -1039,6 +1151,8 @@ export class Galaxy {
 
         const LOOK_DUR = 2;
         const DUR = 3;
+
+        this.currentStarId = aParams.starId;
         
         this.orbitControl.enabled = false;
         document.body.style.cursor = 'default';
@@ -1064,15 +1178,19 @@ export class Galaxy {
         this.scene.add(this.solarSystem);
 
         // hide point sprite
-        gsap.to([this.starPointHovered.material], {
-            opacity: 0,
-            duration: DUR / 2,
-            ease: 'sine.in',
-            onComplete: () => {
-                this.starPointHovered.visible = false;
-            }
-        });
-
+        // let starPointSprite = this.starPointSprites[aParams.starId];
+        for (let i = 0; i < this.starPointSprites.length; i++) {
+            const starPointSprite = this.starPointSprites[i];
+            gsap.to([starPointSprite.material], {
+                opacity: 0,
+                duration: DUR / 10,
+                ease: 'sine.in',
+                onComplete: () => {
+                    starPointSprite.visible = false;
+                }
+            });
+        }
+        
         // hide galaxy plane
         this.galaxySaveAnimData.galaxyPlaneOpacity = this.galaxyPlane.material['opacity'];
         gsap.to(this.galaxyPlane.material, {
@@ -1212,6 +1330,21 @@ export class Galaxy {
 
     private onStarEnter() {
         this.orbitControl.enabled = true;
+
+        let starData = SOLAR_SYSTEMS_DATA[this.currentStarId];
+
+        window.dispatchEvent(new CustomEvent('gameEvent', {
+            detail: {
+                eventName: 'showStarGui',
+                name: starData.name,
+                description: starData.description,
+                level: starData.level,
+                race: RACES[starData.raceId],
+                planetsSlots: starData.planetsSlots,
+                energy: starData.energy,
+                life: starData.life
+            }
+        }));
     }
 
     private onStarUpdate(dt: number) {
@@ -1263,15 +1396,28 @@ export class Galaxy {
         });
 
         // show point sprite
-        gsap.to([this.starPointHovered.material], {
-            opacity: 1,
-            duration: DUR / 2,
-            delay: DUR / 2,
-            ease: 'sine.out',
-            onStart: () => {
-                this.starPointHovered.visible = true;
-            }
-        });
+        // let starSprite = this.starPointSprites[this.currentStarId];
+        // gsap.to([starSprite.material], {
+        //     opacity: 1,
+        //     duration: DUR / 2,
+        //     delay: DUR / 2,
+        //     ease: 'sine.out',
+        //     onStart: () => {
+        //         starSprite.visible = true;
+        //     }
+        // });
+        for (let i = 0; i < this.starPointSprites.length; i++) {
+            const starPointSprite = this.starPointSprites[i];
+            gsap.to([starPointSprite.material], {
+                opacity: 1,
+                duration: DUR * 0.3,
+                delay: DUR * 0.7,
+                ease: 'sine.out',
+                onStart: () => {
+                    starPointSprite.visible = true;
+                }
+            });
+        }
 
         // change galo
         gsap.to([this.galaxyCenterSprite.material], {
