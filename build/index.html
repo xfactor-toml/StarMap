@@ -53,6 +53,27 @@
     <script>
         const GUI = createGui();
 
+        GUI.on('starPanelHide', () => {
+          GUI.hideStarPanel()
+        })
+
+        GUI.on('starPanelPlay', () => {
+          console.log('star panel play')
+        })
+
+        GUI.on('tooltipHide', () => {
+          GUI.hideTooltip()
+        })
+
+        GUI.on('tooltipDiveIn', () => {
+          console.log('dive in')
+          GUI.off('tooltipDiveIn')
+        })
+
+        GUI.once('tooltipDiveIn', () => {
+          console.log('dive in once')
+        })
+
         window.addEventListener('gameEvent', function (e) {
           let data = e.detail;
 

@@ -69,6 +69,9 @@ function getTooltipComponent() {
       },
       hide() {
         this.$emit('hide');
+      },
+      diveIn() {
+        this.$emit('diveIn');
       }
     },
     mounted() {
@@ -104,7 +107,7 @@ function getTooltipComponent() {
             <button
               class="tooltip__button is-dive-in"
               type="button"
-              @click="hide()"
+              @click="diveIn()"
             >Dive in
             </button>
         </div>
@@ -171,9 +174,12 @@ function getStarPanelComponent() {
       }
     },
     methods: {
+      play() {
+        this.$emit('play');
+      },
       hide() {
         this.$emit('hide');
-      }
+      },
     },
     template: `
       <div
@@ -202,6 +208,7 @@ function getStarPanelComponent() {
         <button
           class="star-panel__star-button is-selectable"
           type="button"
+          @click="play()"
         />
         </div>
         <div class="star-panel__race">
@@ -228,7 +235,8 @@ function createGui() {
       tooltipVisible: false,
       tooltipData: null,
       starPanelVisible: false,
-      starPanelData: null
+      starPanelData: null,
+      listeners: {},
     }),
     methods: {
       showTooltip(data) {
@@ -258,6 +266,34 @@ function createGui() {
           this.starPanelData = null;
           this.starPanelVisible = false;
         }
+      },
+      on(eventName, callback) {
+        if (!this.listeners[eventName]) {
+          this.listeners[eventName] = []
+        }
+        
+        this.listeners[eventName].push(callback)
+      },
+      once(eventName, callback) {
+        const listener = (data) => {
+          callback(data)
+          this.off(eventName, listener)
+        }
+        this.on(eventName, listener)
+      },
+      off(eventName, callback) {
+        this.listeners[eventName] = callback
+          ? this.listeners[eventName].filter(listener => listener !== callback)
+          : []
+      },
+      emit(eventName, data) {
+        if (this.listeners[eventName]) {
+          this.listeners[eventName].forEach(listener => {
+            if (typeof listener === 'function') {
+              listener(data)
+            }
+          })
+        }
       }
     },
     template: `
@@ -272,7 +308,8 @@ function createGui() {
           :energy="starPanelData.energy"
           :life="starPanelData.life"
           :scale="starPanelData.scale"
-          @hide="hideStarPanel"
+          @hide="emit('starPanelHide')"
+          @play="emit('starPanelPlay')"
         />
       </transition>
       <transition name="fade">
@@ -284,7 +321,8 @@ function createGui() {
           :race="tooltipData.race"
           :position="tooltipData.pos2d"
           :scale="tooltipData.scale"
-          @hide="hideTooltip"
+          @hide="emit('tooltipHide')"
+          @diveIn="emit('tooltipDiveIn')"
         />
       </transition>
       <button @click="showStarPanel({
