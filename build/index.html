@@ -1,20 +1,16 @@
 <!DOCTYPE html>
 
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8" />
     <meta http-equiv="pragma" content="no-cache" />
-    <meta
-      name="viewport"
-      content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"
-    />
+    <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
     <!-- Allow fullscreen app install in Android and IOS respectively -->
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta
-      name="apple-mobile-web-app-status-bar-style"
-      content="black-translucent"
-    />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
     <title>Galaxy - GUI</title>
 
@@ -26,79 +22,79 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-      rel="stylesheet"
-    />
+        href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet" />
 
     <script src="js/stats.min.js"></script>
     <script src="gui/vendor/vue.global.prod.min.js"></script>
     <!-- <script src="gui/vendor/vue.global.min.js"></script> -->
     <script src="gui/gui.js"></script>
     <script src="./game.bundle.js"></script>
-  </head>
+</head>
 
-  <body>
+<body>
     <div id="overlay" class="container-buttons">
-      <button id="startButton">Run the Galaxy</button>
-      <button id="startButtonFull">Run in FullScreen</button>
+        <button id="startButton">Run the Galaxy</button>
+        <button id="startButtonFull">Run in FullScreen</button>
     </div>
 
     <div id="game"></div>
     <div id="gui"></div>
 
     <noscript>
-      <p>You need javascript enabled in order to use this web application.</p>
+        <p>You need javascript enabled in order to use this web application.</p>
     </noscript>
 
     <script>
         const GUI = createGui();
 
         GUI.on('starPanelHide', () => {
-          GUI.hideStarPanel()
+            GUI.hideStarPanel()
         })
 
         GUI.on('starPanelPlay', () => {
-          console.log('star panel play')
+            console.log('star panel play')
         })
 
         GUI.on('tooltipHide', () => {
-          GUI.hideTooltip()
+            GUI.hideTooltip()
         })
 
         GUI.on('tooltipDiveIn', () => {
-          console.log('dive in')
-          GUI.off('tooltipDiveIn')
+            console.log('dive in')
+            //   GUI.off('tooltipDiveIn')
         })
 
         GUI.once('tooltipDiveIn', () => {
-          console.log('dive in once')
+            console.log('dive in once')
         })
 
         window.addEventListener('gameEvent', function (e) {
-          let data = e.detail;
+            let data = e.detail;
 
-          /* 
-                data: { 
-                    eventName: 'showStarPreviewGui',
-                    name: string
-                    description: string
-                    level: number
-                    race: Robots | 'Humans' | 'Simbionts' | 'Lizards' | 'Insects'
-                    pos2d: { x, y }
-                }
-          */
+            /* 
+                  data: { 
+                      eventName: 'showStarPreviewGui',
+                      name: string
+                      description: string
+                      level: number
+                      race: Robots | 'Humans' | 'Simbionts' | 'Lizards' | 'Insects'
+                      pos2d: { x, y }
+                  }
+            */
 
-          switch (data.eventName) {
-            case 'showStarPreviewGui':
-              GUI.showTooltip(data)
-              break;
+            switch (data.eventName) {
+                case 'showStarPreviewGui':
+                    GUI.showTooltip(data)
+                    break;
 
-            case 'hideStarPreviewGui':
-              GUI.hideTooltip()
-              break;
-          }
+                case 'hideStarPreviewGui':
+                    GUI.hideTooltip()
+                    break;
+            }
         });
-      </script>
     </script>
-  </body>
+    
+</body>
+
 </html>
