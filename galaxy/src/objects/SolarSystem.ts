@@ -1,8 +1,4 @@
 import * as THREE from 'three';
-import { Star } from './Star';
-
-import vsSun from '../shaders/sun1/vs.glsl';
-import fsSun from '../shaders/sun1/fs.glsl';
 import { Star2 } from './Star2';
 
 

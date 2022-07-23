@@ -3,7 +3,8 @@
 // global game params
 export class Params {
     static isDebugMode = false;
-    static domCanvasParent = null;
+    static domCanvasParent: HTMLElement = null;
+    static domGuiParent: HTMLElement = null;
     static assetsPath = './assets/';
 
     // utils

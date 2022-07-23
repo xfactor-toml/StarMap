@@ -7,6 +7,7 @@ type InitParams = {
 };
 
 export class InputMng {
+
     private static instance: InputMng = null;
     private params: InitParams;
 
@@ -20,7 +21,7 @@ export class InputMng {
 
     inputUpClientX = 0;
     inputUpClientY = 0;
-
+    
     normalInputPos = {
         x: 0,
         y: 0
@@ -31,12 +32,21 @@ export class InputMng {
         y: 0
     };
 
+    normalUpDown = {
+        x: 0,
+        y: 0
+    };
+
     keysDown = {};
 
     /**
      * keyCode: string, key: string
      */
     onKeyDownSignal = new Signal();
+
+    /**
+     * keyCode: string, key: string
+     */
     onKeyUpSignal = new Signal();
 
     /**
@@ -53,8 +63,10 @@ export class InputMng {
      * x, y
      */
     onInputUpSignal = new Signal();
+    
 
     constructor(aParams: InitParams) {
+
         if (InputMng.instance) throw new Error("Don't use InputMng.constructor(), it's SINGLETON, use getInstance() method");
 
         this.params = aParams;
@@ -79,10 +91,10 @@ export class InputMng {
             LogMng.debug(`InputMng: init input events...`);
 
                 dom.addEventListener('mousemove', (e: MouseEvent) => {
+                    // LogMng.debug(`mousemove: x: ${e.clientX}, y: ${e.clientY}`);
+
                     this.currInputClientX = e.clientX;
                     this.currInputClientY = e.clientY;
-
-                    // LogMng.debug(`mousemove: x: ${e.clientX}, y: ${e.clientY}`);
 
                     // for 3d
                     this.normalInputPos = {
@@ -97,10 +109,11 @@ export class InputMng {
                 }, true);
 
                 dom.addEventListener("pointerdown", (e) => {
-                    this.inputDownClientX = e.clientX;
-                    this.inputDownClientY = e.clientY;
                     // LogMng.debug(`mousedown: x: ${e.clientX}, y: ${e.clientY}`);
                     
+                    this.inputDownClientX = e.clientX;
+                    this.inputDownClientY = e.clientY;
+
                     // for 3d
                     this.normalInputDown = {
                         x: (e.clientX / dom.clientWidth) * 2 - 1,
@@ -114,8 +127,16 @@ export class InputMng {
                     // LogMng.debug(`mouseup: x: ${e.clientX}, y: ${e.clientY}`);
                     this.inputUpClientX = e.clientX;
                     this.inputUpClientY = e.clientY;
+
+                    // for 3d
+                    this.normalUpDown = {
+                        x: (e.clientX / dom.clientWidth) * 2 - 1,
+                        y: -(e.clientY / dom.clientHeight) * 2 + 1
+                    }
+
                     this.onInputUpSignal.dispatch(e.clientX, e.clientY);
                 }, true);
+            
             // }
             // else {
             //     LogMng.debug(`init mouse events for mobile`);
@@ -152,8 +173,8 @@ export class InputMng {
 
         }
         else {
-            LogMng.warn(`InputMng: undefined input DOM element = ${this.params.inputDomElement}`);
-            console.log('InputMng init params:', this.params);
+            LogMng.warn(`InputMng => undefined input DOM element = ${this.params.inputDomElement}`);
+            console.log('InputMng => init params:', this.params);
         }
 
     }

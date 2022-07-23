@@ -27,7 +27,6 @@ export class GameEngine {
     
     private renderPixelRatio = 1;
 
-    // private backScene: THREE.Scene;
     private scene: THREE.Scene;
     private camera: THREE.PerspectiveCamera;
     private galaxy: Galaxy;
@@ -117,7 +116,7 @@ export class GameEngine {
         GlobalEvents.onWindowResizeSignal.add(this.onWindowResize, this);
 
         if (Config.FULL_SCREEN) {
-
+            
             Params.domCanvasParent.requestFullscreen();
 
             let f1 = (event) => {
@@ -138,17 +137,6 @@ export class GameEngine {
 
         this.animate();
 
-    }
-
-    private onKeyDown(aCode: string, aKey: string) {
-        let keyNum = Number(aKey);
-        // LogMng.debug(`Test: code: ${aCode}; key: ${aKey} pressed...`);
-        switch (keyNum) {
-            case 1:
-                if (InputMng.getInstance().isKeyDown('AltLeft')) {
-                }
-                break;
-        }
     }
 
     private onWindowResize() {
@@ -185,27 +173,8 @@ export class GameEngine {
 
     }
 
-    private openFullscreen() {
-        let elem = Params.domCanvasParent;
-        if (elem.requestFullscreen) {
-            elem.requestFullscreen();
-        }
-        else if (elem.mozRequestFullScreen) { /* Firefox */
-            elem.mozRequestFullScreen();
-        }
-        else if (elem.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
-            elem.webkitRequestFullscreen();
-        }
-        else if (elem.msRequestFullscreen) { /* IE/Edge */
-            elem.msRequestFullscreen();
-        }
-        elem.style.width = '100%';
-        elem.style.height = '100%';
-    }
-
     private render() {
         this.renderer.clear();
-        // this.renderer.render(this.backScene, this.camera);
         this.renderer.render(this.scene, this.camera);
     }
 

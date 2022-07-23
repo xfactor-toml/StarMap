@@ -322,7 +322,7 @@ export class Galaxy {
         // OUT STARS
         this.createFarStars();
 
-        // BIG STARS
+        // BIG STARS (SOLAR SYSTEMS)
         this.createStarPoints();
 
         // camera controls
@@ -368,18 +368,24 @@ export class Galaxy {
         this.fsm.startState(States.INIT);
 
         window.addEventListener('guiEvent', (e) => {
+
             let data = e['detail'];
 
             switch (data.eventName) {
+
                 case 'diveIn':
                     this.fsm.startState(States.TO_STAR, { starId: data.starId });
                     break;
+                
                 case 'flyFromStar':
+                    this.isStarPreviewState = false;
                     if (this.fsm.getCurrentState().name == States.STAR) {
                         this.fsm.startState(States.FROM_STAR);
                     }
                     break;
+                
             }
+
         });
 
     }
@@ -712,7 +718,8 @@ export class Galaxy {
             // radiusMax: Params.skyData.radiusMax
         });
 
-        this.scene.add(this.farStars);
+        // this.scene.add(this.farStars);
+        this.dummyGalaxy.add(this.farStars);
 
     }
 
@@ -804,6 +811,7 @@ export class Galaxy {
             const galaxy = this.createSmallGalaxy(this.farGalaxiesData[i]);
             this.smallGalaxies.push(galaxy);
             this.scene.add(galaxy);
+            // this.dummyGalaxy.add(galaxy);
         }
 
     }
@@ -938,7 +946,6 @@ export class Galaxy {
         return galaxy;
     }
 
-
     private createCameraControls(aParams?: any) {
 
         if (this.orbitControl) return;
@@ -1001,12 +1008,14 @@ export class Galaxy {
     }
 
     private onInputDown(x: number, y: number) {
+
         let inMng = InputMng.getInstance();
         this.checkStarUnderPoint(inMng.normalInputDown);
 
         if (!this.isStarPreviewState && !this.starPointHovered) {
 
-            window.dispatchEvent(new CustomEvent('gameEvent', { detail: { eventName: GameEvents.EVENT_HIDE_STAR_PREVIEW } }));
+            // window.dispatchEvent(new CustomEvent('gameEvent', { detail: { eventName: GameEvents.EVENT_HIDE_STAR_PREVIEW } }));
+            GameEvents.dispatchEvent(GameEvents.EVENT_HIDE_STAR_PREVIEW);
 
             switch (this.fsm.getCurrentState().name) {
                 case States.GALAXY:
@@ -1016,9 +1025,11 @@ export class Galaxy {
             }
 
         }
+
     }
 
     private onInputUp(x: number, y: number) {
+
         let distLimit = DeviceInfo.getInstance().desktop ? 10 : 30;
         let inMng = InputMng.getInstance();
         let dist = MyMath.getVectorLength(inMng.inputDownClientX, inMng.inputDownClientY, x, y);
@@ -1049,20 +1060,31 @@ export class Galaxy {
                     let starId = this.starPointHovered[`starId`]!;
                     let starData = SOLAR_SYSTEMS_DATA[starId];
 
-                    window.dispatchEvent(new CustomEvent('gameEvent', {
-                        detail: {
-                            starId: starId,
-                            eventName: GameEvents.EVENT_SHOW_STAR_PREVIEW,
-                            name: starData.name,
-                            description: starData.description,
-                            level: starData.level,
-                            race: RACES[starData.raceId],
-                            pos2d: {
-                                x: inMng.currInputClientX,
-                                y: inMng.currInputClientY
-                            }
+                    // window.dispatchEvent(new CustomEvent('gameEvent', {
+                    //     detail: {
+                    //         starId: starId,
+                    //         eventName: GameEvents.EVENT_SHOW_STAR_PREVIEW,
+                    //         name: starData.name,
+                    //         description: starData.description,
+                    //         level: starData.level,
+                    //         race: RACES[starData.raceId],
+                    //         pos2d: {
+                    //             x: inMng.currInputClientX,
+                    //             y: inMng.currInputClientY
+                    //         }
+                    //     }
+                    // }));
+                    GameEvents.dispatchEvent(GameEvents.EVENT_SHOW_STAR_PREVIEW, {
+                        starId: starId,
+                        name: starData.name,
+                        description: starData.description,
+                        level: starData.level,
+                        race: RACES[starData.raceId],
+                        pos2d: {
+                            x: inMng.currInputClientX,
+                            y: inMng.currInputClientY
                         }
-                    }));
+                    });
 
                     // window.addEventListener('frontEvent', (e: any) => {
                     //     let data = e.detail;
@@ -1217,6 +1239,7 @@ export class Galaxy {
 
     private onStateGalaxyEnter() {
         this.orbitControl.update();
+        this.orbitControl.autoRotate = true;
         this.orbitControl.enabled = true;
     }
 
@@ -1399,6 +1422,21 @@ export class Galaxy {
             }
         });
 
+        // scale down small galaxies
+        for (let i = 0; i < this.smallGalaxies.length; i++) {
+            const galaxy = this.smallGalaxies[i];
+            gsap.to(galaxy.scale, {
+                x: 0.01,
+                y: 0.01,
+                z: 0.01,
+                duration: DUR * 2 / 3,
+                ease: 'sine.Out',
+                onComplete: () => {
+                    galaxy.visible = false;
+                }
+            });
+        }
+
         // expand solar system
         gsap.to(this.solarSystem.scale, {
             x: 1,
@@ -1447,22 +1485,34 @@ export class Galaxy {
     }
 
     private onStateStarEnter() {
-        this.orbitControl.enabled = true;
+
+        this.orbitControl.autoRotate = false;
+        this.orbitControl.enabled = false;
 
         let starData = SOLAR_SYSTEMS_DATA[this.currentStarId];
 
-        window.dispatchEvent(new CustomEvent('gameEvent', {
-            detail: {
-                eventName: GameEvents.EVENT_SHOW_STAR_GUI,
-                name: starData.name,
-                description: starData.description,
-                level: starData.level,
-                race: RACES[starData.raceId],
-                planetsSlots: starData.planetsSlots,
-                energy: starData.energy,
-                life: starData.life
-            }
-        }));
+        // window.dispatchEvent(new CustomEvent('gameEvent', {
+        //     detail: {
+        //         eventName: GameEvents.EVENT_SHOW_STAR_GUI,
+        //         name: starData.name,
+        //         description: starData.description,
+        //         level: starData.level,
+        //         race: RACES[starData.raceId],
+        //         planetsSlots: starData.planetsSlots,
+        //         energy: starData.energy,
+        //         life: starData.life
+        //     }
+        // }));
+        GameEvents.dispatchEvent(GameEvents.EVENT_SHOW_STAR_GUI, {
+            name: starData.name,
+            description: starData.description,
+            level: starData.level,
+            race: RACES[starData.raceId],
+            planetsSlots: starData.planetsSlots,
+            energy: starData.energy,
+            life: starData.life
+        });
+
     }
 
     private onStateStarUpdate(dt: number) {
@@ -1492,6 +1542,7 @@ export class Galaxy {
         }
 
         if (this.solarSystem) this.solarSystem.update(dt);
+
     }
 
     private onStateFromStarEnter() {
@@ -1596,6 +1647,19 @@ export class Galaxy {
                 this.dummyGalaxy.position.copy(starPos.clone().add(gVec.clone().multiplyScalar(tObj.s)));
             }
         });
+
+        // scale up small galaxies
+        for (let i = 0; i < this.smallGalaxies.length; i++) {
+            const galaxy = this.smallGalaxies[i];
+            galaxy.visible = true;
+            gsap.to(galaxy.scale, {
+                x: 1,
+                y: 1,
+                z: 1,
+                duration: DUR,
+                ease: 'sine.inOut'
+            });
+        }
 
         // hide solar system
         gsap.to(this.solarSystem.scale, {

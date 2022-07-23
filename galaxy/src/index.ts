@@ -15,12 +15,9 @@ window.addEventListener('load', () => {
 
     function startGame() {
         let gameEngine = new GameEngine();
-        window.dispatchEvent(new CustomEvent('gameEvent', {
-            detail: {
-                eventName: GameEvents.EVENT_GAME_CREATED,
-                frontEvents: FrontEvents
-            }
-        }));
+        GameEvents.dispatchEvent(GameEvents.EVENT_GAME_CREATED, {
+            frontEvents: FrontEvents
+        });
     }
 
     function hideButtons() {
