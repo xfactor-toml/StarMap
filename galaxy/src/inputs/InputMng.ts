@@ -12,13 +12,21 @@ export class InputMng {
 
     isTouchDown = false;
 
-    inputDownClientX = 0;
-    inputDownClientY = 0;
-
     currInputClientX = 0;
     currInputClientY = 0;
 
+    inputDownClientX = 0;
+    inputDownClientY = 0;
+
+    inputUpClientX = 0;
+    inputUpClientY = 0;
+
     normalInputPos = {
+        x: 0,
+        y: 0
+    };
+
+    normalInputDown = {
         x: 0,
         y: 0
     };
@@ -92,11 +100,20 @@ export class InputMng {
                     this.inputDownClientX = e.clientX;
                     this.inputDownClientY = e.clientY;
                     // LogMng.debug(`mousedown: x: ${e.clientX}, y: ${e.clientY}`);
+                    
+                    // for 3d
+                    this.normalInputDown = {
+                        x: (e.clientX / dom.clientWidth) * 2 - 1,
+                        y: -(e.clientY / dom.clientHeight) * 2 + 1
+                    }
+
                     this.onInputDownSignal.dispatch(this.inputDownClientX, this.inputDownClientY);
                 }, true);
 
                 dom.addEventListener("pointerup", (e) => {
                     // LogMng.debug(`mouseup: x: ${e.clientX}, y: ${e.clientY}`);
+                    this.inputUpClientX = e.clientX;
+                    this.inputUpClientY = e.clientY;
                     this.onInputUpSignal.dispatch(e.clientX, e.clientY);
                 }, true);
             // }
