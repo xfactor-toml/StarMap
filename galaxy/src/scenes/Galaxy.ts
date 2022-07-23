@@ -17,6 +17,8 @@ import { InputMng } from '../inputs/InputMng';
 import { FSM } from '../states/FSM';
 import { States } from '../states/States';
 import { SolarSystem } from '../objects/SolarSystem';
+import { FrontEvents } from '../events/FrontEvents';
+import { GameEvents } from '../events/GameEvents';
 
 const RACES = ['Robots', 'Humans', 'Simbionts', 'Lizards', 'Insects'];
 
@@ -226,6 +228,8 @@ export class Galaxy {
     private starPointSprites: THREE.Sprite[];
     private starPointHovered: THREE.Sprite;
     private currentStarId = -1;
+
+    private isStarPreviewState = false;
 
     private solarSystem: SolarSystem;
 
@@ -999,8 +1003,18 @@ export class Galaxy {
     private onInputDown(x: number, y: number) {
         let inMng = InputMng.getInstance();
         this.checkStarUnderPoint(inMng.normalInputDown);
-        if (!this.starPointHovered) {
-            window.dispatchEvent(new CustomEvent('gameEvent', { detail: { eventName: 'hideStarPreviewGui' } }));
+
+        if (!this.isStarPreviewState && !this.starPointHovered) {
+
+            window.dispatchEvent(new CustomEvent('gameEvent', { detail: { eventName: GameEvents.EVENT_HIDE_STAR_PREVIEW } }));
+
+            switch (this.fsm.getCurrentState().name) {
+                case States.GALAXY:
+                    if (!this.orbitControl.autoRotate) this.orbitControl.autoRotate = true;
+                    if (!this.orbitControl.enabled) this.orbitControl.enabled = true;
+                    break;
+            }
+
         }
     }
 
@@ -1024,8 +1038,13 @@ export class Galaxy {
         // }
 
         switch (this.fsm.getCurrentState().name) {
+
             case States.GALAXY:
-                if (this.starPointHovered) {
+                if (this.starPointHovered && !this.isStarPreviewState) {
+
+                    this.isStarPreviewState = true;
+                    this.orbitControl.autoRotate = false;
+                    if (this.orbitControl.enabled) this.orbitControl.enabled = false;
 
                     let starId = this.starPointHovered[`starId`]!;
                     let starData = SOLAR_SYSTEMS_DATA[starId];
@@ -1033,7 +1052,7 @@ export class Galaxy {
                     window.dispatchEvent(new CustomEvent('gameEvent', {
                         detail: {
                             starId: starId,
-                            eventName: 'showStarPreviewGui',
+                            eventName: GameEvents.EVENT_SHOW_STAR_PREVIEW,
                             name: starData.name,
                             description: starData.description,
                             level: starData.level,
@@ -1044,6 +1063,34 @@ export class Galaxy {
                             }
                         }
                     }));
+
+                    // window.addEventListener('frontEvent', (e: any) => {
+                    //     let data = e.detail;
+
+                    //     /* 
+                    //           data: { 
+                    //             starId: number,
+                    //               eventName: 'showStarPreviewGui',
+                    //               name: string
+                    //               description: string
+                    //               level: number
+                    //               race: Robots | 'Humans' | 'Simbionts' | 'Lizards' | 'Insects'
+                    //               pos2d: { x, y }
+                    //           }
+                    //     */
+
+                    //     switch (data.eventName) {
+                    //         case 'showStarPreviewGui':
+                                
+                    //             break;
+                    //     }
+                    // });
+                    
+                    FrontEvents.onStarPreviewClosed.addOnce(() => {
+                        this.isStarPreviewState = false;
+                        this.orbitControl.autoRotate = true;
+                        if (this.orbitControl.enabled) this.orbitControl.enabled = true;
+                    }, this);
 
                 }
                 break;
@@ -1111,6 +1158,8 @@ export class Galaxy {
 
     private onStateInitEnter() {
 
+        this.isStarPreviewState = false;
+
         this.orbitControl.enabled = false;
         this.camera.position.set(-90 * 4, 0, 180 * 4);
         this.camera.lookAt(this.cameraTarget);
@@ -1129,7 +1178,7 @@ export class Galaxy {
     }
 
     private onStateInitUpdate(dt: number) {
-        
+
         this.orbitControl.update();
 
         if (this.cameraTarget && this.camera) {
@@ -1404,7 +1453,7 @@ export class Galaxy {
 
         window.dispatchEvent(new CustomEvent('gameEvent', {
             detail: {
-                eventName: 'showStarGui',
+                eventName: GameEvents.EVENT_SHOW_STAR_GUI,
                 name: starData.name,
                 description: starData.description,
                 level: starData.level,

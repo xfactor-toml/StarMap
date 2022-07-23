@@ -3,7 +3,6 @@ import { Signal } from "../events/Signal";
 import { LogMng } from "../utils/LogMng";
 import { Preloader } from "./Preloader";
 import * as MyUtils from "../utils/MyUtils";
-import { GameEngine } from "./GameEngine";
 import { Params } from "../data/Params";
 
 type InitParams = {
@@ -86,8 +85,6 @@ export class GameBoot {
 
         }
 
-        let gameEngine = new GameEngine();
-    
         this.onLoadCompleteSignal.dispatch();
     }
 

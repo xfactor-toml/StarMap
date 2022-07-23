@@ -1,13 +1,10 @@
-import { Signal } from "./Signal";
-
-export const GAME_EVENT_LOAD_PROGRESS = 'GAME_EVENT_LOAD_PROGRESS';
 
 export const GameEvents = {
 
-    // onMain
-
-    // debug
-    // onDebugAxeHelperVisibleChange: new Signal(),
+    EVENT_GAME_CREATED: 'EVENT_GAME_CREATED',
+    EVENT_SHOW_STAR_PREVIEW: 'EVENT_SHOW_STAR_PREVIEW',
+    EVENT_HIDE_STAR_PREVIEW: 'EVENT_HIDE_STAR_PREVIEW',
+    EVENT_SHOW_STAR_GUI: 'EVENT_SHOW_STAR_GUI'
 
 }
 
