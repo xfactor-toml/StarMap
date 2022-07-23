@@ -1129,6 +1129,8 @@ export class Galaxy {
     }
 
     private onStateInitUpdate(dt: number) {
+        
+        this.orbitControl.update();
 
         if (this.cameraTarget && this.camera) {
             this.camera.lookAt(this.cameraTarget);
