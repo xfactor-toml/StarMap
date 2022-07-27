@@ -159,8 +159,10 @@
 }
 
 .tooltip__star-description {
+  height: 70px;
   margin: 0;
   margin-top: 6px;
+  overflow: hidden;
   color: var(--star-description-color);
   font-family: 'Exo 2';
   font-weight: 400;

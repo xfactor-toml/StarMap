@@ -28,6 +28,7 @@
     <script src="js/stats.min.js"></script>
     <script src="gui/vendor/vue.global.prod.min.js"></script>
     <!-- <script src="gui/vendor/vue.global.min.js"></script> -->
+    <script src="gui/vendor/textfit.js"></script>
     <script src="gui/gui.js"></script>
     <script src="./game.bundle.js"></script>
 </head>
@@ -85,7 +86,7 @@
 
             switch (data.eventName) {
                 case 'showStarPreviewGui':
-                    GUI.showTooltip(data)
+                    GUI.showTooltip({ ...data, textAutofit: true })
                     break;
 
                 case 'hideStarPreviewGui':

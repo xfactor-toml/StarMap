@@ -32,6 +32,10 @@ function getTooltipComponent() {
       scale: {
         type: Number,
         default: 1
+      },
+      textAutofit: {
+        type: Boolean,
+        default: false
       }
     },
     data: () => ({
@@ -76,6 +80,14 @@ function getTooltipComponent() {
     },
     mounted() {
       this.recalcIntersection()
+      setTimeout(() => {
+        if (this.textAutofit) {
+          textFit(this.$refs.description, {
+            minFontSize: 10,
+            maxFontSize: 14
+          });
+        }
+      });
     },
     template: `
       <div
@@ -88,7 +100,11 @@ function getTooltipComponent() {
             <h2 class="tooltip__star-name">{{ name }}</h2>
             <span class="tooltip__star-level">Lv.{{ level }}</span>
           </div>
-          <p class="tooltip__star-description">{{ description }}</p>
+          <p
+            ref="description"
+            class="tooltip__star-description"
+          >{{ description }}
+          </p>
         </div>
         <div class="tooltip__race">
           <img
@@ -317,6 +333,7 @@ function createGui() {
           v-if="tooltipVisible"
           :name="tooltipData.name"
           :description="tooltipData.description"
+          :textAutofit="tooltipData.textAutofit"
           :level="tooltipData.level"
           :race="tooltipData.race"
           :position="tooltipData.pos2d"
