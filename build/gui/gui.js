@@ -44,8 +44,8 @@ function getTooltipComponent() {
           left: `${this.position.x}px`,
           transform: `
             scale(${this.scale})
-            translateX(${this.intersection.x ? '-100%' : '0'})
-            translateY(${this.intersection.y ? '-100%' : '0'})
+            translateX(${this.intersection.x ? 'calc(-100% + 70px)' : '-70px'})
+            translateY(${this.intersection.y ? '-50%' : '-70px'})
           `
         };
       },
