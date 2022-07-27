@@ -63,12 +63,11 @@ function getTooltipComponent() {
     },
     methods: {
       recalcIntersection() {
-        const { width, height, top, left } = this.$el.getBoundingClientRect()
         const { innerWidth, innerHeight } = window
 
         this.intersection = {
-          x: (width + left) > innerWidth,
-          y: (height + top) > innerHeight
+          x: this.position.x > innerWidth - this.position.x,
+          y: this.position.y > innerHeight - this.position.y
         }
       },
       hide() {
