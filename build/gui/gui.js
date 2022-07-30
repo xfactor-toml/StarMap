@@ -76,8 +76,9 @@ function getTooltipComponent() {
         const { innerWidth, innerHeight } = window
         const { width } = this.$refs.tooltip.getBoundingClientRect()
 
+        const factor = 1.1
         const area = this.intersection.x ? this.position.x : (innerWidth - this.position.x)
-        const scale = Math.min(area / width, 1) * this.scale
+        const scale = Math.min((area / width) * factor, 1) * this.scale
 
         return scale
       },
