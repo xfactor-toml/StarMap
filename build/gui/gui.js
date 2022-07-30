@@ -39,17 +39,19 @@ function getTooltipComponent() {
       }
     },
     data: () => ({
-      intersection: { x: false, y: false }
+      intersection: { x: false, y: false },
+      computedScale: 1
     }),
     computed: {
       tooltipStyle() {
         return {
           top: `${this.position.y}px`,
           left: `${this.position.x}px`,
+          transformOrigin: `${this.intersection.x ? 'calc(100% - 70px)' : '70px'} center`,
           transform: `
-            scale(${this.scale})
             translateX(${this.intersection.x ? 'calc(-100% + 70px)' : '-70px'})
             translateY(${this.intersection.y ? '-50%' : '-70px'})
+            scale(${this.computedScale})
           `
         };
       },
@@ -65,10 +67,19 @@ function getTooltipComponent() {
       recalcIntersection() {
         const { innerWidth, innerHeight } = window
 
-        this.intersection = {
+       return {
           x: this.position.x > innerWidth - this.position.x,
           y: this.position.y > innerHeight - this.position.y
         }
+      },
+      calcScale() {
+        const { innerWidth, innerHeight } = window
+        const { width } = this.$refs.tooltip.getBoundingClientRect()
+
+        const area = this.intersection.x ? this.position.x : (innerWidth - this.position.x)
+        const scale = Math.min(area / width, 1) * this.scale
+
+        return scale
       },
       hide() {
         this.$emit('hide');
@@ -78,20 +89,23 @@ function getTooltipComponent() {
       }
     },
     mounted() {
-      this.recalcIntersection()
-      setTimeout(() => {
-        if (this.textAutofit) {
-          textFit(this.$refs.description, {
-            minFontSize: 10,
-            maxFontSize: 14
-          });
-        }
-      });
+      this.intersection = this.recalcIntersection()
+      this.computedScale = this.calcScale()
+
+      if (this.textAutofit) {
+        setTimeout(() => {
+            textFit(this.$refs.description, {
+              minFontSize: 10,
+              maxFontSize: 14
+            });
+        });
+      }
     },
     template: `
       <div
         :class="tooltipClasses"
         :style="tooltipStyle"
+        ref="tooltip"
       >
         <div class="tooltip__star"/>
         <div class="tooltip__info">
