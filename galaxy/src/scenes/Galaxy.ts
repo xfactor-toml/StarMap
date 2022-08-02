@@ -139,6 +139,16 @@ type GalaxyParams = {
     scaleMax?: number;
 };
 
+type GalaxyCircleParams = {
+    starsCount: number;
+    minRadius?: number;
+    maxRadius: number;
+    alphaMin?: number;
+    alphaMax?: number;
+    scaleMin?: number;
+    scaleMax?: number;
+};
+
 export type GalaxyStarParams = {
 
     pos: {
@@ -206,12 +216,13 @@ export class Galaxy {
     private galaxyCenterPlane: THREE.Mesh;
 
     private galaxyStarsData: GalaxyStarParams[];
-    // private galaxyStarSprites: THREE.Sprite[];
     private starsParticles: GalaxyStars;
 
     private blinkStarsData: GalaxyStarParams[];
-    // private blinkStars: THREE.Sprite[];
     private blinkStarsParticles: GalaxyStars;
+
+    private solarSystemBlinkStarsData: GalaxyStarParams[];
+    private solarSystemBlinkStarsParticles: GalaxyStars;
 
     private farStars: FarStars;
 
@@ -444,16 +455,16 @@ export class Galaxy {
         skyFolder.add(Params.skyData, 'starsCount', 0, 2000, 10).onChange(() => { this.createFarStars(); });
         skyFolder.add(Params.skyData, 'radiusMin', 0, 500, 5).onChange(() => {
             this.createFarStars();
-            if (DEBUG_PARAMS.showSpheres === true) this.createFarStarsMinSphere();
+            if (DEBUG_PARAMS.showSpheres === true) this.createDebugFarStarsMinSphere();
         });
         skyFolder.add(Params.skyData, 'radiusMax', 10, 2000, 10).onChange(() => {
             this.createFarStars();
-            if (DEBUG_PARAMS.showSpheres === true) this.createFarStarsMaxSphere();
+            if (DEBUG_PARAMS.showSpheres === true) this.createDebugFarStarsMaxSphere();
         });
         skyFolder.add(DEBUG_PARAMS, 'showSpheres').onChange((v: boolean) => {
             if (v) {
-                this.createFarStarsMinSphere();
-                this.createFarStarsMaxSphere();
+                this.createDebugFarStarsMinSphere();
+                this.createDebugFarStarsMaxSphere();
             }
             else {
                 if (debugObjects.farStarsSphereMin) debugObjects.farStarsSphereMin.visible = false;
@@ -522,7 +533,7 @@ export class Galaxy {
             this.galaxyStarsData = aGalaxyStarsData;
         }
         else {
-            this.galaxyStarsData = this.generateGalaxyStars({
+            this.galaxyStarsData = this.generateGalaxyStarsData({
                 starsCount: Params.galaxyData.starsCount,
                 startAngle: Params.galaxyData.startAngle,
                 endAngle: Params.galaxyData.endAngle,
@@ -543,7 +554,7 @@ export class Galaxy {
             this.blinkStarsData = aGalaxyBlinkStarsData;
         }
         else {
-            this.blinkStarsData = this.generateGalaxyStars({
+            this.blinkStarsData = this.generateGalaxyStarsData({
                 starsCount: Params.galaxyData.blinkStarsCount,
                 startAngle: Params.galaxyData.startAngle,
                 endAngle: Params.galaxyData.endAngle,
@@ -573,7 +584,6 @@ export class Galaxy {
             texture: t,
             onWindowResizeSignal: GlobalEvents.onWindowResizeSignal
         });
-
         this.dummyGalaxy.add(this.starsParticles);
 
         // blink particle stars
@@ -582,12 +592,36 @@ export class Galaxy {
             texture: t,
             onWindowResizeSignal: GlobalEvents.onWindowResizeSignal
         });
-
         this.dummyGalaxy.add(this.blinkStarsParticles);
+
+        // create a solar system blink stars data
+        this.solarSystemBlinkStarsData = this.generateCircleGalaxyStarsData({
+            starsCount: 50,
+            minRadius: 30,
+            maxRadius: 100,
+            alphaMin: Params.galaxyData.alphaMin,
+            alphaMax: Params.galaxyData.alphaMax,
+            scaleMin: Params.galaxyData.scaleMin,
+            scaleMax: Params.galaxyData.scaleMax,
+        },
+            STARS_COLORS,
+            {
+                durationMin: Params.galaxyData.blinkDurMin,
+                durationMax: Params.galaxyData.blinkDurMax
+            }
+        );
+
+        // solar system blink particle stars
+        this.solarSystemBlinkStarsParticles = new GalaxyStars({
+            starsData: this.solarSystemBlinkStarsData,
+            texture: t,
+            onWindowResizeSignal: GlobalEvents.onWindowResizeSignal
+        });
+        this.solarSystemBlinkStarsParticles.visible = false;
 
     }
 
-    private generateGalaxyStars(aParams: GalaxyParams, xScale: number, zScale: number, aColorSet: any[], aBlinkData?: any): GalaxyStarParams[] {
+    private generateGalaxyStarsData(aParams: GalaxyParams, xScale: number, zScale: number, aColorSet: any[], aBlinkData?: any): GalaxyStarParams[] {
 
         if (!aParams.startAngle) aParams.startAngle = 0;
         if (!aParams.endAngle) aParams.endAngle = Math.PI;
@@ -678,20 +712,65 @@ export class Galaxy {
         return resData;
     }
 
-    private destroyGalaxyStars() {
-        // if (this.galaxyStarSprites)
-        //     for (let i = this.galaxyStarSprites.length - 1; i >= 0; i--) {
-        //         this.scene.remove(this.galaxyStarSprites[i]);
-        //     }
-        // this.galaxyStarSprites = [];
+    private generateCircleGalaxyStarsData(aParams: GalaxyCircleParams , aColorSet: any[], aBlinkData?: any): GalaxyStarParams[] {
 
-        // if (this.blinkStars)
-        //     for (let i = this.blinkStars.length - 1; i >= 0; i--) {
-        //         let spr = this.blinkStars[i];
-        //         spr['stopBlinkAnimation'] = true;
-        //         this.scene.remove(spr);
-        //     }
-        // this.blinkStars = [];
+        if (!aParams.minRadius) aParams.minRadius = 0;
+        if (!aParams.alphaMin) aParams.alphaMin = 1;
+        if (!aParams.alphaMax) aParams.alphaMax = 1;
+        if (!aParams.scaleMin) aParams.scaleMin = 1;
+        if (!aParams.scaleMax) aParams.scaleMax = 1;
+        
+        let resData: GalaxyStarParams[] = [];
+        const numArms = 5;
+        const armDeltaAngle = 2 * Math.PI / numArms;
+
+        // check
+        if (aParams.minRadius > aParams.maxRadius) aParams.minRadius = aParams.maxRadius;
+
+        for (let i = 0; i < aParams.starsCount; i++) {
+            
+            let pos = new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5);
+            pos.normalize().multiplyScalar(MyMath.randomInRange(aParams.minRadius, aParams.maxRadius));
+
+            let clr = new THREE.Color(1, 1, 1);
+
+            let customStarColor = aColorSet[MyMath.randomIntInRange(0, aColorSet.length - 1)];
+            clr.r = customStarColor[0];
+            clr.g = customStarColor[1];
+            clr.b = customStarColor[2];
+
+            // make result
+            resData[i] = {
+                pos: {
+                    x: pos.x,
+                    y: pos.y,
+                    z: pos.z
+                },
+                color: {
+                    r: clr.r,
+                    g: clr.g,
+                    b: clr.b,
+                    a: MyMath.randomInRange(aParams.alphaMin, aParams.alphaMax)
+                },
+                scale: MyMath.randomInRange(aParams.scaleMin, aParams.scaleMax)
+            };
+
+            if (aBlinkData) {
+                let dur = MyMath.randomInRange(aBlinkData.durationMin, aBlinkData.durationMax);
+                resData[i].blink = {
+                    isFade: Math.random() > 0.5,
+                    duration: dur,
+                    progressTime: MyMath.randomInRange(0, dur),
+                    tweenFunction: MyMath.easeInOutSine
+                }
+            }
+
+        }
+
+        return resData;
+    }
+
+    private destroyGalaxyStars() {
 
         if (this.starsParticles) {
             this.starsParticles.free();
@@ -702,6 +781,7 @@ export class Galaxy {
             this.blinkStarsParticles.free();
             this.blinkStarsParticles = null;
         }
+
     }
 
     private createFarStars() {
@@ -723,7 +803,7 @@ export class Galaxy {
 
     }
 
-    private createFarStarsMinSphere() {
+    private createDebugFarStarsMinSphere() {
         if (debugObjects.farStarsSphereMin) {
             this.scene.remove(debugObjects.farStarsSphereMin);
         }
@@ -735,7 +815,7 @@ export class Galaxy {
         this.scene.add(debugObjects.farStarsSphereMin);
     }
 
-    private createFarStarsMaxSphere() {
+    private createDebugFarStarsMaxSphere() {
         if (debugObjects.farStarsSphereMax) {
             this.scene.remove(debugObjects.farStarsSphereMax);
         }
@@ -1318,6 +1398,25 @@ export class Galaxy {
         this.solarSystem.visible = false;
         this.scene.add(this.solarSystem);
 
+        // this.solarSystemBlinkStarsParticles.position.set(0, 0, 0);
+        this.solarSystemBlinkStarsParticles.position.copy(starPos);
+        this.solarSystemBlinkStarsParticles.scale.set(0.001, 0.001, 0.001);
+        // this.solarSystem.add(this.solarSystemBlinkStarsParticles);
+        this.scene.add(this.solarSystemBlinkStarsParticles);
+        this.solarSystemBlinkStarsParticles.visible = false;
+
+        gsap.to(this.solarSystemBlinkStarsParticles.scale, {
+            x: 0.8,
+            y: 0.8,
+            z: 0.8,
+            // delay: DUR * 1 / 10,
+            duration: DUR * 10 / 10,
+            ease: 'sine.Out',
+            onStart: () => {
+                this.solarSystemBlinkStarsParticles.visible = true;
+            }
+        });
+
         // hide point sprite
         // let starPointSprite = this.starPointSprites[aParams.starId];
         for (let i = 0; i < this.starPointSprites.length; i++) {
@@ -1482,6 +1581,9 @@ export class Galaxy {
         }
 
         if (this.solarSystem) this.solarSystem.update(dt);
+
+        if (this.solarSystemBlinkStarsParticles) this.solarSystemBlinkStarsParticles.update(dt);
+
     }
 
     private onStateStarEnter() {
@@ -1503,6 +1605,11 @@ export class Galaxy {
         //         life: starData.life
         //     }
         // }));
+
+        // debugger;
+
+        let guiScale = Math.min(1, innerWidth / 800); 
+
         GameEvents.dispatchEvent(GameEvents.EVENT_SHOW_STAR_GUI, {
             name: starData.name,
             description: starData.description,
@@ -1510,7 +1617,8 @@ export class Galaxy {
             race: RACES[starData.raceId],
             planetsSlots: starData.planetsSlots,
             energy: starData.energy,
-            life: starData.life
+            life: starData.life,
+            scale: guiScale
         });
 
     }
@@ -1542,6 +1650,8 @@ export class Galaxy {
         }
 
         if (this.solarSystem) this.solarSystem.update(dt);
+
+        if (this.solarSystemBlinkStarsParticles) this.solarSystemBlinkStarsParticles.update(dt);
 
     }
 
@@ -1676,6 +1786,19 @@ export class Galaxy {
             }
         });
 
+        // hide star blink stars
+        gsap.to(this.solarSystemBlinkStarsParticles.scale, {
+            x: 0.001,
+            y: 0.001,
+            z: 0.001,
+            // delay: DUR * 1 / 10,
+            duration: DUR,
+            ease: 'sine.in',
+            onComplete: () => {
+                this.solarSystemBlinkStarsParticles.visible = false;
+            }
+        });
+
         // move camera
         gsap.to(this.camera.position, {
             x: this.galaxySaveAnimData.cameraPosition.x,
@@ -1716,6 +1839,9 @@ export class Galaxy {
         }
 
         if (this.solarSystem) this.solarSystem.update(dt);
+
+        if (this.solarSystemBlinkStarsParticles) this.solarSystemBlinkStarsParticles.update(dt);
+
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1726,7 +1852,10 @@ export class Galaxy {
      * @param dt in sec
      */
     update(dt: number) {
+
         this.fsm.update(dt);
+
+
     }
 
 }

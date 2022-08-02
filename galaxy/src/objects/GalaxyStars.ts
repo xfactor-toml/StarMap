@@ -34,17 +34,17 @@ export type GalaxyStarsParams = {
 };
 
 export class GalaxyStars extends THREE.Group implements IBaseClass {
+
     private params: GalaxyStarsParams;
     private uniforms: any;
     private geometry: THREE.BufferGeometry;
     private material: THREE.ShaderMaterial;
     private stars: THREE.Points;
-    private _azimutAngle = 0;
-    private _polarAngle = 0;
-    private _prevCamAzimutAngle = 0;
-    private _prevCamPolarAngle = 0;
+    // private _azimutAngle = 0;
+    // private _polarAngle = 0;
 
     constructor(aParams: GalaxyStarsParams) {
+
         super();
         this.params = aParams;
         
@@ -120,13 +120,13 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
         };
     }
 
-    public set azimutAngle(v: number) {
-        this._azimutAngle = v;
-    }
+    // public set azimutAngle(v: number) {
+    //     this._azimutAngle = v;
+    // }
 
-    public set polarAngle(v: number) {
-        this._polarAngle = v;
-    }
+    // public set polarAngle(v: number) {
+    //     this._polarAngle = v;
+    // }
 
     updateUniformValues() {
         this.material.uniforms.radiusMin.value = Params.skyData.radiusMin;
@@ -155,8 +155,6 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
         for (let i = 0; i < starsData.length; i++) {
             const sd = starsData[i];
             if (sd.blink) {
-
-                // debugger;
 
                 let b = sd.blink;
                 b.progressTime += dt;

@@ -27,25 +27,31 @@ function getTooltipComponent() {
             },
             raceImageUrl: {
                 type: String,
-                default: './gui/img/tooltip/ava.png'
+                default: '/gui/img/tooltip/ava.png'
             },
             scale: {
                 type: Number,
                 default: 1
+            },
+            textAutofit: {
+                type: Boolean,
+                default: false
             }
         },
         data: () => ({
-            intersection: { x: false, y: false }
+            intersection: { x: false, y: false },
+            computedScale: 1
         }),
         computed: {
             tooltipStyle() {
                 return {
-                    top: `${this.position.y}px`, // - 70
-                    left: `${this.position.x}px`, // - 70
+                    top: `${this.position.y}px`,
+                    left: `${this.position.x}px`,
+                    transformOrigin: `${this.intersection.x ? 'calc(100% - 70px)' : '70px'} center`,
                     transform: `
-                        scale(${this.scale})
-                        translateX(${this.intersection.x ? '-100%' : '0'})
-                        translateY(${this.intersection.y ? '-100%' : '0'})
+                        translateX(${this.intersection.x ? 'calc(-100% + 70px)' : '-70px'})
+                        translateY(${this.intersection.y ? '-50%' : '-70px'})
+                        scale(${this.computedScale})
                     `
                 };
             },
@@ -59,13 +65,22 @@ function getTooltipComponent() {
         },
         methods: {
             recalcIntersection() {
-                const { width, height, top, left } = this.$el.getBoundingClientRect()
                 const { innerWidth, innerHeight } = window
 
-                this.intersection = {
-                    x: (width + left) > innerWidth,
-                    y: (height + top) > innerHeight
+                return {
+                    x: this.position.x > innerWidth - this.position.x,
+                    y: this.position.y > innerHeight - this.position.y
                 }
+            },
+            calcScale() {
+                const { innerWidth, innerHeight } = window
+                const { width } = this.$refs.tooltip.getBoundingClientRect()
+
+                const factor = 1.1
+                const area = this.intersection.x ? this.position.x : (innerWidth - this.position.x)
+                const scale = Math.min((area / width) * factor, 1) * this.scale
+
+                return scale
             },
             hide() {
                 this.$emit('hide');
@@ -75,12 +90,23 @@ function getTooltipComponent() {
             }
         },
         mounted() {
-            this.recalcIntersection()
+            this.intersection = this.recalcIntersection()
+            this.computedScale = this.calcScale()
+
+            if (this.textAutofit) {
+                setTimeout(() => {
+                    textFit(this.$refs.description, {
+                        minFontSize: 10,
+                        maxFontSize: 14
+                    });
+                });
+            }
         },
         template: `
       <div
         :class="tooltipClasses"
         :style="tooltipStyle"
+        ref="tooltip"
       >
         <div class="tooltip__star"/>
         <div class="tooltip__info">
@@ -88,7 +114,11 @@ function getTooltipComponent() {
             <h2 class="tooltip__star-name">{{ name }}</h2>
             <span class="tooltip__star-level">Lv.{{ level }}</span>
           </div>
-          <p class="tooltip__star-description">{{ description }}</p>
+          <p
+            ref="description"
+            class="tooltip__star-description"
+          >{{ description }}
+          </p>
         </div>
         <div class="tooltip__race">
           <img
@@ -153,7 +183,7 @@ function getStarPanelComponent() {
             },
             raceImageUrl: {
                 type: String,
-                default: './gui/img/star-panel/race-insects.png'
+                default: '/gui/img/star-panel/race-insects.png'
             },
             scale: {
                 type: Number,
@@ -317,6 +347,7 @@ function createGui() {
           v-if="tooltipVisible"
           :name="tooltipData.name"
           :description="tooltipData.description"
+          :textAutofit="tooltipData.textAutofit"
           :level="tooltipData.level"
           :race="tooltipData.race"
           :position="tooltipData.pos2d"
@@ -325,19 +356,6 @@ function createGui() {
           @diveIn="emit('tooltipDiveIn')"
         />
       </transition>
-      <!--
-      <button @click="showStarPanel({
-          name: 'Test star',
-          description: 'This is test star. Test star is amazing! Get it lick! Mmmm! Its tastet like crasy!',
-          level: 1,
-          race: ['Robots', 'Humans', 'Simbionts', 'Lizards', 'Insects'][~~(Math.random() * 4)], 
-          planetsSlots: 100,
-          energy: 1000,
-          life: 300,
-        })"
-      >{{ starPanelVisible ? 'Hide' : 'Show' }} star panel
-      </button>
-      !>
     `
     });
 

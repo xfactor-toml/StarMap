@@ -98,10 +98,12 @@
 .star-panel__info-row {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   height: 76px;
-  padding: 16px 26px;
+  padding: 14px 26px 16px;
   padding-right: 80px;
   position: relative;
   background-repeat: no-repeat;
@@ -115,7 +117,6 @@
 }
 
 .star-panel__info-row.is-heading {
-  flex-direction: column;
   padding-left: 36px;
   left: 10px;
   background-image: var(--info-row-1);
@@ -140,27 +141,28 @@
 .star-panel__info-key,
 .star-panel__info-value {
   color: var(--info-key-color);
-  font-family: 'Helvetica';
+  font-family: 'Exo 2';
   font-weight: 400;
-  font-size: 18px;
+  font-style: italic;
+  font-size: 16px;
   line-height: 1.1;
   text-transform: uppercase;
 }
 
 .star-panel__info-key {
-  margin-right: 2px;
   white-space: nowrap;
 }
 
 .star-panel__info-value {
+  margin-top: 4px;
   color: var(--info-value-color);
+  font-weight: 600;
   text-transform: none;
 }
 
 .star-panel__info-value.is-level {
-  margin-left: 0;
-  font-size: 21px;
-  font-family: 'Exo 2';
+  font-weight: 300;
+  font-style: normal;
 }
 
 .star-panel__star {
@@ -249,15 +251,16 @@
 .star-panel__race-name {
   width: 118px;
   height: 12px;
-  margin-top: -14px;
+  margin-top: -16px;
   margin-left: 110px;
   padding: 0 2px;
   overflow: hidden;
   position: relative;
   z-index: var(--race-layer);
   color: var(--race-name-color);
-  font-family: 'Helvetica';
+  font-family: 'Exo 2';
   font-weight: 400;
+  font-style: italic;
   font-size: 12px;
   line-height: 1.1;
   text-align: center;
@@ -268,7 +271,7 @@
 .star-panel__race-description {
   width: 166px;
   height: 62px;
-  margin-top: 16px;
+  margin-top: 20px;
   margin-left: 75px;
   overflow: hidden;
   position: relative;

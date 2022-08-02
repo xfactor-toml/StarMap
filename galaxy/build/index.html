@@ -27,6 +27,7 @@
 
     <script src="js/stats.min.js"></script>
     <script src="gui/vendor/vue.global.prod.min.js"></script>
+    <script src="gui/vendor/textfit.js"></script>
     <script src="gui/gui.js"></script>
     <script src="./game.bundle.js"></script>
 
@@ -101,7 +102,8 @@
 
                 case 'EVENT_SHOW_STAR_PREVIEW':
                     currentStarId = data.starId;
-                    GUI.showTooltip(data);
+                    // GUI.showTooltip(data);
+                    GUI.showTooltip({ ...data, textAutofit: true })
                     break;
 
                 case 'EVENT_HIDE_STAR_PREVIEW':

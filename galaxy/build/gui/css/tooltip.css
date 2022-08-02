@@ -142,9 +142,10 @@
 .tooltip__star-name {
   margin: 0;
   color: var(--name-color);
-  font-family: 'Helvetica';
+  font-family: 'Exo 2';
   font-weight: 400;
-  font-size: 12px;
+  font-style: italic;
+  font-size: 13px;
   line-height: 1.1;
   text-transform: uppercase;
 }
@@ -159,8 +160,10 @@
 }
 
 .tooltip__star-description {
+  height: 70px;
   margin: 0;
   margin-top: 6px;
+  overflow: hidden;
   color: var(--star-description-color);
   font-family: 'Exo 2';
   font-weight: 400;
@@ -207,9 +210,10 @@
   bottom: 6px;
   z-index: var(--main-layer);
   color: var(--name-color);
-  font-family: 'Helvetica';
+  font-family: 'Exo 2';
   font-weight: 400;
-  font-size: 12px;
+  font-style: italic;
+  font-size: 13px;
   line-height: 1;
   text-transform: uppercase;
 }
