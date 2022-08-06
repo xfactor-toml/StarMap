@@ -1,108 +1,108 @@
 function getTooltipComponent() {
-  return {
-    props: {
-      name: {
-        type: String,
-        default: ''
-      },
-      description: {
-        type: String,
-        default: ''
-      },
-      level: {
-        type: Number,
-        default: 1
-      },
-      race: {
-        type: String,
-        validation: type =>
-          ['Robots', 'Humans', 'Simbionts', 'Lizards', 'Insects'].includes(
-            type
-          ),
-        default: 'Robots'
-      },
-      position: {
-        type: Object,
-        default: { x: 0, y: 0 }
-      },
-      raceImageUrl: {
-        type: String,
-        default: '/gui/img/tooltip/ava.png'
-      },
-      scale: {
-        type: Number,
-        default: 1
-      },
-      textAutofit: {
-        type: Boolean,
-        default: false
-      }
-    },
-    data: () => ({
-      intersection: { x: false, y: false },
-      computedScale: 1
-    }),
-    computed: {
-      tooltipStyle() {
-        return {
-          top: `${this.position.y}px`,
-          left: `${this.position.x}px`,
-          transformOrigin: `${this.intersection.x ? 'calc(100% - 70px)' : '70px'} center`,
-          transform: `
-            translateX(${this.intersection.x ? 'calc(-100% + 70px)' : '-70px'})
-            translateY(${this.intersection.y ? '-50%' : '-70px'})
-            scale(${this.computedScale})
-          `
-        };
-      },
-      tooltipClasses() {
-        return {
-          tooltip: true,
-          'is-reflect': this.intersection.x,
-          [`is-${this.race.toLowerCase()}`]: true
-        };
-      }
-    },
-    methods: {
-      recalcIntersection() {
-        const { innerWidth, innerHeight } = window
+    return {
+        props: {
+            name: {
+                type: String,
+                default: ''
+            },
+            description: {
+                type: String,
+                default: ''
+            },
+            level: {
+                type: Number,
+                default: 1
+            },
+            race: {
+                type: String,
+                validation: type =>
+                    ['Robots', 'Humans', 'Simbionts', 'Lizards', 'Insects'].includes(
+                        type
+                    ),
+                default: 'Robots'
+            },
+            position: {
+                type: Object,
+                default: { x: 0, y: 0 }
+            },
+            raceImageUrl: {
+                type: String,
+                default: '/gui/img/tooltip/ava.png'
+            },
+            scale: {
+                type: Number,
+                default: 1
+            },
+            textAutofit: {
+                type: Boolean,
+                default: false
+            }
+        },
+        data: () => ({
+            intersection: { x: false, y: false },
+            computedScale: 1
+        }),
+        computed: {
+            tooltipStyle() {
+                return {
+                    top: `${this.position.y}px`,
+                    left: `${this.position.x}px`,
+                    transformOrigin: `${this.intersection.x ? 'calc(100% - 70px)' : '70px'} center`,
+                    transform: `
+                        translateX(${this.intersection.x ? 'calc(-100% + 70px)' : '-70px'})
+                        translateY(${this.intersection.y ? '-50%' : '-70px'})
+                        scale(${this.computedScale})
+                    `
+                };
+            },
+            tooltipClasses() {
+                return {
+                    tooltip: true,
+                    'is-reflect': this.intersection.x,
+                    [`is-${this.race.toLowerCase()}`]: true
+                };
+            }
+        },
+        methods: {
+            recalcIntersection() {
+                const { innerWidth, innerHeight } = window
 
-       return {
-          x: this.position.x > innerWidth - this.position.x,
-          y: this.position.y > innerHeight - this.position.y
-        }
-      },
-      calcScale() {
-        const { innerWidth, innerHeight } = window
-        const { width } = this.$refs.tooltip.getBoundingClientRect()
+                return {
+                    x: this.position.x > innerWidth - this.position.x,
+                    y: this.position.y > innerHeight - this.position.y
+                }
+            },
+            calcScale() {
+                const { innerWidth, innerHeight } = window
+                const { width } = this.$refs.tooltip.getBoundingClientRect()
 
-        const factor = 1.1
-        const area = this.intersection.x ? this.position.x : (innerWidth - this.position.x)
-        const scale = Math.min((area / width) * factor, 1) * this.scale
+                const factor = 1.1
+                const area = this.intersection.x ? this.position.x : (innerWidth - this.position.x)
+                const scale = Math.min((area / width) * factor, 1) * this.scale
 
-        return scale
-      },
-      hide() {
-        this.$emit('hide');
-      },
-      diveIn() {
-        this.$emit('diveIn');
-      }
-    },
-    mounted() {
-      this.intersection = this.recalcIntersection()
-      this.computedScale = this.calcScale()
+                return scale
+            },
+            hide() {
+                this.$emit('hide');
+            },
+            diveIn() {
+                this.$emit('diveIn');
+            }
+        },
+        mounted() {
+            this.intersection = this.recalcIntersection()
+            this.computedScale = this.calcScale()
 
-      if (this.textAutofit) {
-        setTimeout(() => {
-            textFit(this.$refs.description, {
-              minFontSize: 10,
-              maxFontSize: 14
-            });
-        });
-      }
-    },
-    template: `
+            if (this.textAutofit) {
+                setTimeout(() => {
+                    textFit(this.$refs.description, {
+                        minFontSize: 10,
+                        maxFontSize: 14
+                    });
+                });
+            }
+        },
+        template: `
       <div
         :class="tooltipClasses"
         :style="tooltipStyle"
@@ -143,75 +143,75 @@ function getTooltipComponent() {
         </div>
       </div>
     `
-  };
+    };
 }
 
 function getStarPanelComponent() {
-  return {
-    props: {
-      name: {
-        type: String,
-        default: ''
-      },
-      description: {
-        type: String,
-        default: ''
-      },
-      level: {
-        type: Number,
-        default: 1
-      },
-      planetSlots: {
-        type: Number,
-        default: 0
-      },
-      energy: {
-        type: Number,
-        default: 0
-      },
-      life: {
-        type: Number,
-        default: 0
-      },
-      race: {
-        type: String,
-        validation: type =>
-          ['Robots', 'Humans', 'Simbionts', 'Lizards', 'Insects'].includes(
-            type
-          ),
-        default: 'Robots'
-      },
-      raceImageUrl: {
-        type: String,
-        default: '/gui/img/star-panel/race-insects.png'
-      },
-      scale: {
-        type: Number,
-        default: 1
-      }
-    },
-    computed: {
-      panelStyle() {
-        return {
-          transform: `scale(${this.scale})`
-        };
-      },
-      panelClasses() {
-        return {
-          'star-panel': true,
-          [`is-${this.race.toLowerCase()}`]: true
-        };
-      }
-    },
-    methods: {
-      play() {
-        this.$emit('play');
-      },
-      hide() {
-        this.$emit('hide');
-      },
-    },
-    template: `
+    return {
+        props: {
+            name: {
+                type: String,
+                default: ''
+            },
+            description: {
+                type: String,
+                default: ''
+            },
+            level: {
+                type: Number,
+                default: 1
+            },
+            planetSlots: {
+                type: Number,
+                default: 0
+            },
+            energy: {
+                type: Number,
+                default: 0
+            },
+            life: {
+                type: Number,
+                default: 0
+            },
+            race: {
+                type: String,
+                validation: type =>
+                    ['Robots', 'Humans', 'Simbionts', 'Lizards', 'Insects'].includes(
+                        type
+                    ),
+                default: 'Robots'
+            },
+            raceImageUrl: {
+                type: String,
+                default: '/gui/img/star-panel/race-insects.png'
+            },
+            scale: {
+                type: Number,
+                default: 1
+            }
+        },
+        computed: {
+            panelStyle() {
+                return {
+                    transform: `scale(${this.scale})`
+                };
+            },
+            panelClasses() {
+                return {
+                    'star-panel': true,
+                    [`is-${this.race.toLowerCase()}`]: true
+                };
+            }
+        },
+        methods: {
+            play() {
+                this.$emit('play');
+            },
+            hide() {
+                this.$emit('hide');
+            },
+        },
+        template: `
       <div
         :class="panelClasses"
         :style="panelStyle"
@@ -256,77 +256,77 @@ function getStarPanelComponent() {
         </div>
       </div>
     `
-  };
+    };
 }
 
 function createGui() {
-  const gui = Vue.createApp({
-    data: () => ({
-      tooltipVisible: false,
-      tooltipData: null,
-      starPanelVisible: false,
-      starPanelData: null,
-      listeners: {},
-    }),
-    methods: {
-      showTooltip(data) {
-        if (this.tooltipData && this.tooltipData.name === data.name) {
-          this.hideTooltip();
-        } else {
-          this.tooltipData = data;
-          this.tooltipVisible = true;
-        }
-      },
-      hideTooltip() {
-        if (this.tooltipVisible) {
-          this.tooltipData = null;
-          this.tooltipVisible = false;
-        }
-      },
-      showStarPanel(data) {
-        if (this.starPanelData && this.starPanelData.name === data.name) {
-          this.hideStarPanel();
-        } else {
-          this.starPanelData = data;
-          this.starPanelVisible = true;
-        }
-      },
-      hideStarPanel() {
-        if (this.starPanelVisible) {
-          this.starPanelData = null;
-          this.starPanelVisible = false;
-        }
-      },
-      on(eventName, callback) {
-        if (!this.listeners[eventName]) {
-          this.listeners[eventName] = []
-        }
-        
-        this.listeners[eventName].push(callback)
-      },
-      once(eventName, callback) {
-        const listener = (data) => {
-          callback(data)
-          this.off(eventName, listener)
-        }
-        this.on(eventName, listener)
-      },
-      off(eventName, callback) {
-        this.listeners[eventName] = callback
-          ? this.listeners[eventName].filter(listener => listener !== callback)
-          : []
-      },
-      emit(eventName, data) {
-        if (this.listeners[eventName]) {
-          this.listeners[eventName].forEach(listener => {
-            if (typeof listener === 'function') {
-              listener(data)
+    const gui = Vue.createApp({
+        data: () => ({
+            tooltipVisible: false,
+            tooltipData: null,
+            starPanelVisible: false,
+            starPanelData: null,
+            listeners: {},
+        }),
+        methods: {
+            showTooltip(data) {
+                if (this.tooltipData && this.tooltipData.name === data.name) {
+                    this.hideTooltip();
+                } else {
+                    this.tooltipData = data;
+                    this.tooltipVisible = true;
+                }
+            },
+            hideTooltip() {
+                if (this.tooltipVisible) {
+                    this.tooltipData = null;
+                    this.tooltipVisible = false;
+                }
+            },
+            showStarPanel(data) {
+                if (this.starPanelData && this.starPanelData.name === data.name) {
+                    this.hideStarPanel();
+                } else {
+                    this.starPanelData = data;
+                    this.starPanelVisible = true;
+                }
+            },
+            hideStarPanel() {
+                if (this.starPanelVisible) {
+                    this.starPanelData = null;
+                    this.starPanelVisible = false;
+                }
+            },
+            on(eventName, callback) {
+                if (!this.listeners[eventName]) {
+                    this.listeners[eventName] = []
+                }
+
+                this.listeners[eventName].push(callback)
+            },
+            once(eventName, callback) {
+                const listener = (data) => {
+                    callback(data)
+                    this.off(eventName, listener)
+                }
+                this.on(eventName, listener)
+            },
+            off(eventName, callback) {
+                this.listeners[eventName] = callback
+                    ? this.listeners[eventName].filter(listener => listener !== callback)
+                    : []
+            },
+            emit(eventName, data) {
+                if (this.listeners[eventName]) {
+                    this.listeners[eventName].forEach(listener => {
+                        if (typeof listener === 'function') {
+                            listener(data)
+                        }
+                    })
+                }
             }
-          })
-        }
-      }
-    },
-    template: `
+        },
+        template: `
       <transition name="fade">
         <star-panel
           v-if="starPanelVisible"
@@ -356,22 +356,11 @@ function createGui() {
           @diveIn="emit('tooltipDiveIn')"
         />
       </transition>
-      <button @click="showStarPanel({
-          name: 'Test star',
-          description: 'This is test star. Test star is amazing! Get it lick! Mmmm! Its tastet like crasy!',
-          level: 1,
-          race: ['Robots', 'Humans', 'Simbionts', 'Lizards', 'Insects'][~~(Math.random() * 4)], 
-          planetsSlots: 100,
-          energy: 1000,
-          life: 300,
-        })"
-      >{{ starPanelVisible ? 'Hide' : 'Show' }} star panel
-      </button>
     `
-  });
+    });
 
-  gui.component('tooltip', getTooltipComponent());
-  gui.component('star-panel', getStarPanelComponent());
+    gui.component('tooltip', getTooltipComponent());
+    gui.component('star-panel', getStarPanelComponent());
 
-  return gui.mount('#gui');
+    return gui.mount('#gui');
 }
