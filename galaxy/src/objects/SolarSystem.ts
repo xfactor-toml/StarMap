@@ -1,32 +1,26 @@
 import * as THREE from 'three';
-import { Star2 } from './Star2';
+import { BigStar, BigStarParams } from './BigStar';
 
 
 export type SolarSystemParams = {
-    camera: THREE.PerspectiveCamera;
-    starSize: number;
+    starParams: BigStarParams;
 };
 
 export class SolarSystem extends THREE.Group {
+    private _camera: THREE.Camera;
     private params: SolarSystemParams;
-    private star: Star2;
+    private star: BigStar;
         
-    constructor(aParams: SolarSystemParams) {
+    constructor(aCamera: THREE.Camera, aParams: SolarSystemParams) {
         super();
+        this._camera = aCamera;
         this.params = aParams;
         this.createStar();
     }
-
+    
     private createStar() {
-        
-        this.star = new Star2({
-            solarSystem: this,
-            camera: this.params.camera,
-            starSize: this.params.starSize
-        });
-
+        this.star = new BigStar(this.position, this._camera, this.params.starParams);
         this.add(this.star);
-
     }
 
     free() {

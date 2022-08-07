@@ -61,7 +61,7 @@ function getTooltipComponent() {
                     'is-reflect': this.intersection.x,
                     [`is-${this.race.toLowerCase()}`]: true
                 };
-            }
+            },
         },
         methods: {
             recalcIntersection() {
@@ -324,6 +324,15 @@ function createGui() {
                         }
                     })
                 }
+            },
+            getRaceId(raceName) {
+                return {
+                    Humans: 'human',
+                    Simbionts: 'simbionts',
+                    Lizards: 'lizards',
+                    Insects: 'insects',
+                    Robots: 'robots',
+                }[raceName] || ''
             }
         },
         template: `
@@ -338,6 +347,7 @@ function createGui() {
           :energy="starPanelData.energy"
           :life="starPanelData.life"
           :scale="starPanelData.scale"
+          :raceImageUrl="'./gui/img/star-panel/race-' + getRaceId(starPanelData.race) + '.png'"
           @hide="emit('starPanelHide')"
           @play="emit('starPanelPlay')"
         />
@@ -352,6 +362,7 @@ function createGui() {
           :race="tooltipData.race"
           :position="tooltipData.pos2d"
           :scale="tooltipData.scale"
+          :raceImageUrl="'./gui/img/tooltip/race-' + getRaceId(tooltipData.race) + '.png'"
           @hide="emit('tooltipHide')"
           @diveIn="emit('tooltipDiveIn')"
         />

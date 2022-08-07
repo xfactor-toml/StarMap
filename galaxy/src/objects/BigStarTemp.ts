@@ -1,17 +1,17 @@
 import * as THREE from "three";
 
-export type StarParams = {
+type StarTempParams = {
     camera: THREE.PerspectiveCamera;
     starSize: number;
 };
 
-export class Star extends THREE.Group {
-    private params: StarParams;
+export class BigStarTemp extends THREE.Group {
+    private params: StarTempParams;
     private light: THREE.PointLight;
     // private mesh: THREE.Mesh;
     private uniforms: any;
 
-    constructor(aParams: StarParams) {
+    constructor(aParams: StarTempParams) {
 
         super();
 

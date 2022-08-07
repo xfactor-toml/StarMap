@@ -17,6 +17,7 @@ export class GameBoot {
 
     constructor() {
         Params.domCanvasParent = document.getElementById('game');
+        Params.domTouchParent = document.getElementById('touch');
         Params.domGuiParent = document.getElementById('gui');
     }
 

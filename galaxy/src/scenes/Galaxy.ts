@@ -19,10 +19,22 @@ import { States } from '../states/States';
 import { SolarSystem } from '../objects/SolarSystem';
 import { FrontEvents } from '../events/FrontEvents';
 import { GameEvents } from '../events/GameEvents';
+import { BigStarParams } from '../objects/BigStar';
+import { SmallFlySystem } from '../objects/smallFly/SmallFlySystem';
 
 const RACES = ['Robots', 'Humans', 'Simbionts', 'Lizards', 'Insects'];
 
-const SOLAR_SYSTEMS_DATA = [
+const SOLAR_SYSTEMS_DATA: {
+    name: string;
+    description: string;
+    level: number;
+    raceId: number;
+    planetsSlots: number;
+    energy: number;
+    life: number;
+    positionInGalaxy: { x, y, z },
+    starParams: BigStarParams
+}[] = [
 
     {
         name: "Star 1",
@@ -35,7 +47,16 @@ const SOLAR_SYSTEMS_DATA = [
         positionInGalaxy: {
             x: 40, y: 0, z: 100
         },
-        starSize: 40
+        starParams: {
+            starSize: 40,
+            sunClr1: { r: 0., g: 0.7, b: 0.96 },
+            sunClr2: { r: 0., g: 0., b: 0.8 },
+            sunClr3: { r: 0., g: 0., b: 1. },
+            sunClr4: { r: 0., g: 0.68, b: 1. },
+            sunClr5: { r: 0.68, g: 0.92, b: 1. },
+            sunCoronaClr1: { r: 0.1, g: 0.4, b: 1.0 },
+            sunCoronaClr2: { r: 0., g: 0., b: .7 },
+        }
     },
 
     {
@@ -49,7 +70,16 @@ const SOLAR_SYSTEMS_DATA = [
         positionInGalaxy: {
             x: 10, y: 0, z: -100
         },
-        starSize: 40
+        starParams: {
+            starSize: 40,
+            sunClr1: { r: 0.96, g: 0.7, b: 0. },
+            sunClr2: { r: 0.8, g: 0., b: 0. },
+            sunClr3: { r: 1., g: 0., b: 0. },
+            sunClr4: { r: 1., g: 0.68, b: 0. },
+            sunClr5: { r: 1., g: 0.92, b: .54 },
+            sunCoronaClr1: { r: 1.0, g: 0.4, b: .0 },
+            sunCoronaClr2: { r: 1., g: 0., b: .0 },
+        }
     },
 
     {
@@ -63,7 +93,16 @@ const SOLAR_SYSTEMS_DATA = [
         positionInGalaxy: {
             x: 100, y: 0, z: -10
         },
-        starSize: 40
+        starParams: {
+            starSize: 40,
+            sunClr1: { r: 0.17, g: 0.09, b: 0.42 },
+            sunClr2: { r: .0, g: .0, b: .06 },
+            sunClr3: { r: .0, g: .0, b: .08 },
+            sunClr4: { r: 1., g: 1., b: 1. },
+            sunClr5: { r: .81, g: 0.67, b: 1. },
+            sunCoronaClr1: { r: .58, g: 0.53, b: 1. },
+            sunCoronaClr2: { r: .08, g: .04, b: .75 },
+        }
     },
 
     {
@@ -77,7 +116,16 @@ const SOLAR_SYSTEMS_DATA = [
         positionInGalaxy: {
             x: -80, y: 0, z: -80
         },
-        starSize: 40
+        starParams: {
+            starSize: 40,
+            sunClr1: { r: 1., g: 0.5, b: 0. },
+            sunClr2: { r: 1., g: 0.5, b: 0. },
+            sunClr3: { r: 1., g: 0.5, b: 0. },
+            sunClr4: { r: 1., g: .7, b: 0. },
+            sunClr5: { r: 1., g: 0.5, b: .35 },
+            sunCoronaClr1: { r: 1., g: 0.9, b: .43 },
+            sunCoronaClr2: { r: 1., g: .66, b: .1 },
+        }
     },
 
     {
@@ -91,7 +139,16 @@ const SOLAR_SYSTEMS_DATA = [
         positionInGalaxy: {
             x: -80, y: 0, z: 70
         },
-        starSize: 40
+        starParams: {
+            starSize: 40,
+            sunClr1: { r: 0.35, g: 0.09, b: 0.95 },
+            sunClr2: { r: 0.18, g: 0.04, b: 1. },
+            sunClr3: { r: .34, g: 0.1, b: 1. },
+            sunClr4: { r: 1., g: 1., b: 1. },
+            sunClr5: { r: .62, g: 0.5, b: 1. },
+            sunCoronaClr1: { r: .6, g: 0.3, b: 1. },
+            sunCoronaClr2: { r: .16, g: .04, b: 1.0 },
+        }
     }
 
 ];
@@ -246,6 +303,8 @@ export class Galaxy {
 
     private galaxySaveAnimData: any = {};
 
+    private smallFlySystem: SmallFlySystem;
+
 
     constructor(aParams: any) {
         this.scene = aParams.scene;
@@ -335,6 +394,14 @@ export class Galaxy {
 
         // BIG STARS (SOLAR SYSTEMS)
         this.createStarPoints();
+
+        // fly system
+        let starsPos: THREE.Vector3[] = [];
+        for (let i = 0; i < SOLAR_SYSTEMS_DATA.length; i++) {
+            const solSys = SOLAR_SYSTEMS_DATA[i];
+            starsPos.push(new THREE.Vector3(solSys.positionInGalaxy.x, solSys.positionInGalaxy.y, solSys.positionInGalaxy.z));
+        }
+        this.smallFlySystem = new SmallFlySystem(this.dummyGalaxy, starsPos);
 
         // camera controls
         let minCameraDistance = 50;
@@ -596,9 +663,9 @@ export class Galaxy {
 
         // create a solar system blink stars data
         this.solarSystemBlinkStarsData = this.generateCircleGalaxyStarsData({
-            starsCount: 50,
+            starsCount: 120,
             minRadius: 30,
-            maxRadius: 100,
+            maxRadius: 80,
             alphaMin: Params.galaxyData.alphaMin,
             alphaMax: Params.galaxyData.alphaMax,
             scaleMin: Params.galaxyData.scaleMin,
@@ -961,7 +1028,6 @@ export class Galaxy {
             let rotationSpeed = MyMath.randomInRange(0.01, 0.03);
 
 
-
             const galaxyData = {
                 textureName: tName,
                 pos: {
@@ -1030,7 +1096,9 @@ export class Galaxy {
 
         if (this.orbitControl) return;
         if (!aParams) aParams = {};
-        let domElement = Params.domCanvasParent;
+        // let domElement = Params.domTouchParent;
+        // let domElement = Params.domCanvasParent;
+        let domElement = Params.domRenderer;
         this.orbitControl = new OrbitControls(this.camera, domElement);
         // if (!aParams.noTarget) this.orbitControl.target = new THREE.Vector3();
         this.orbitControl.enabled = aParams.enabled;
@@ -1100,6 +1168,7 @@ export class Galaxy {
             switch (this.fsm.getCurrentState().name) {
                 case States.GALAXY:
                     if (!this.orbitControl.autoRotate) this.orbitControl.autoRotate = true;
+                    this.orbitControl.enableZoom = true;
                     if (!this.orbitControl.enabled) this.orbitControl.enabled = true;
                     break;
             }
@@ -1119,15 +1188,6 @@ export class Galaxy {
 
         if (dist > distLimit) return;
 
-        // switch (this.fsm.getCurrentState().name) {
-        //     case States.GALAXY:
-        //         if (this.starPointHovered) {
-        //             let starId = this.starPointHovered[`starId`]!;
-        //             this.fsm.startState(States.TO_STAR, { starId: starId });
-        //         }
-        //         break;
-        // }
-
         switch (this.fsm.getCurrentState().name) {
 
             case States.GALAXY:
@@ -1140,20 +1200,6 @@ export class Galaxy {
                     let starId = this.starPointHovered[`starId`]!;
                     let starData = SOLAR_SYSTEMS_DATA[starId];
 
-                    // window.dispatchEvent(new CustomEvent('gameEvent', {
-                    //     detail: {
-                    //         starId: starId,
-                    //         eventName: GameEvents.EVENT_SHOW_STAR_PREVIEW,
-                    //         name: starData.name,
-                    //         description: starData.description,
-                    //         level: starData.level,
-                    //         race: RACES[starData.raceId],
-                    //         pos2d: {
-                    //             x: inMng.currInputClientX,
-                    //             y: inMng.currInputClientY
-                    //         }
-                    //     }
-                    // }));
                     GameEvents.dispatchEvent(GameEvents.EVENT_SHOW_STAR_PREVIEW, {
                         starId: starId,
                         name: starData.name,
@@ -1161,37 +1207,16 @@ export class Galaxy {
                         level: starData.level,
                         race: RACES[starData.raceId],
                         pos2d: {
-                            x: inMng.currInputClientX,
-                            y: inMng.currInputClientY
+                            x: inMng.inputDownClientX,
+                            y: inMng.inputDownClientY
                         }
                     });
-
-                    // window.addEventListener('frontEvent', (e: any) => {
-                    //     let data = e.detail;
-
-                    //     /* 
-                    //           data: { 
-                    //             starId: number,
-                    //               eventName: 'showStarPreviewGui',
-                    //               name: string
-                    //               description: string
-                    //               level: number
-                    //               race: Robots | 'Humans' | 'Simbionts' | 'Lizards' | 'Insects'
-                    //               pos2d: { x, y }
-                    //           }
-                    //     */
-
-                    //     switch (data.eventName) {
-                    //         case 'showStarPreviewGui':
-                                
-                    //             break;
-                    //     }
-                    // });
                     
                     FrontEvents.onStarPreviewClosed.addOnce(() => {
                         this.isStarPreviewState = false;
                         this.orbitControl.autoRotate = true;
-                        if (this.orbitControl.enabled) this.orbitControl.enabled = true;
+                        this.orbitControl.enableZoom = true;
+                        if (!this.orbitControl.enabled) this.orbitControl.enabled = true;
                     }, this);
 
                 }
@@ -1252,6 +1277,10 @@ export class Galaxy {
         // });
 
         download(jsonData, 'galaxyState.json', 'text/plain');
+    }
+
+    private guiGetScaleBigStarTooltip(): number {
+        return innerWidth / 800;
     }
 
 
@@ -1320,6 +1349,7 @@ export class Galaxy {
     private onStateGalaxyEnter() {
         this.orbitControl.update();
         this.orbitControl.autoRotate = true;
+        this.orbitControl.enableZoom = true;
         this.orbitControl.enabled = true;
     }
 
@@ -1366,6 +1396,8 @@ export class Galaxy {
             }
         }
 
+        this.smallFlySystem.update(dt);
+
     }
 
     private onStateToStarEnter(aParams: any) {
@@ -1381,10 +1413,12 @@ export class Galaxy {
         let systemData = SOLAR_SYSTEMS_DATA[aParams.starId];
 
         // create Solar System
-        this.solarSystem = new SolarSystem({
-            camera: this.camera,
-            starSize: systemData.starSize
-        });
+        this.solarSystem = new SolarSystem(
+            this.camera,
+            {
+                starParams: systemData.starParams
+            }
+        );
 
         let starPos = new THREE.Vector3(
             systemData.positionInGalaxy.x,
@@ -1417,7 +1451,7 @@ export class Galaxy {
             }
         });
 
-        // hide point sprite
+        // hide point sprites
         // let starPointSprite = this.starPointSprites[aParams.starId];
         for (let i = 0; i < this.starPointSprites.length; i++) {
             const starPointSprite = this.starPointSprites[i];
@@ -1497,8 +1531,9 @@ export class Galaxy {
 
         this.galaxySaveAnimData.cameraPosition = this.camera.position.clone();
 
-        // movce camera
-        let newCameraPos = this.camera.position.clone().sub(starPos).normalize().multiplyScalar(systemData.starSize * 2).add(starPos);
+        // move camera
+        let newCameraPos = this.camera.position.clone().sub(starPos).normalize().
+            multiplyScalar(systemData.starParams.starSize * 1.2 / this.guiGetScaleBigStarTooltip()).add(starPos);
 
         gsap.to(this.camera.position, {
             x: newCameraPos.x,
@@ -1567,7 +1602,7 @@ export class Galaxy {
 
         // this.updateGalaxyCenter();
 
-        if (this.blinkStarsParticles) this.blinkStarsParticles.update(dt);
+        // if (this.blinkStarsParticles) this.blinkStarsParticles.update(dt);
 
         // far stars
         this.farStars.azimutAngle = cameraAzimutAngle;
@@ -1582,14 +1617,15 @@ export class Galaxy {
 
         if (this.solarSystem) this.solarSystem.update(dt);
 
-        if (this.solarSystemBlinkStarsParticles) this.solarSystemBlinkStarsParticles.update(dt);
+        if (this.solarSystemBlinkStarsParticles?.visible) this.solarSystemBlinkStarsParticles.update(dt);
 
     }
 
     private onStateStarEnter() {
 
         this.orbitControl.autoRotate = false;
-        this.orbitControl.enabled = false;
+        this.orbitControl.enableZoom = false;
+        this.orbitControl.enabled = true;
 
         let starData = SOLAR_SYSTEMS_DATA[this.currentStarId];
 
@@ -1606,9 +1642,7 @@ export class Galaxy {
         //     }
         // }));
 
-        // debugger;
-
-        let guiScale = Math.min(1, innerWidth / 800); 
+        let guiScale = Math.min(1, this.guiGetScaleBigStarTooltip()); 
 
         GameEvents.dispatchEvent(GameEvents.EVENT_SHOW_STAR_GUI, {
             name: starData.name,
@@ -1636,7 +1670,7 @@ export class Galaxy {
 
         // this.updateGalaxyCenter();
 
-        if (this.blinkStarsParticles) this.blinkStarsParticles.update(dt);
+        // if (this.blinkStarsParticles) this.blinkStarsParticles.update(dt);
 
         // far stars
         this.farStars.azimutAngle = cameraAzimutAngle;
@@ -1651,7 +1685,7 @@ export class Galaxy {
 
         if (this.solarSystem) this.solarSystem.update(dt);
 
-        if (this.solarSystemBlinkStarsParticles) this.solarSystemBlinkStarsParticles.update(dt);
+        if (this.solarSystemBlinkStarsParticles?.visible) this.solarSystemBlinkStarsParticles.update(dt);
 
     }
 
@@ -1675,22 +1709,12 @@ export class Galaxy {
         });
 
         // show point sprite
-        // let starSprite = this.starPointSprites[this.currentStarId];
-        // gsap.to([starSprite.material], {
-        //     opacity: 1,
-        //     duration: DUR / 2,
-        //     delay: DUR / 2,
-        //     ease: 'sine.out',
-        //     onStart: () => {
-        //         starSprite.visible = true;
-        //     }
-        // });
         for (let i = 0; i < this.starPointSprites.length; i++) {
             const starPointSprite = this.starPointSprites[i];
             gsap.to([starPointSprite.material], {
                 opacity: 1,
-                duration: DUR * 0.3,
-                delay: DUR * 0.7,
+                duration: DUR * 0.1,
+                delay: DUR * 0.9,
                 ease: 'sine.out',
                 onStart: () => {
                     starPointSprite.visible = true;
@@ -1825,7 +1849,7 @@ export class Galaxy {
 
         // this.updateGalaxyCenter();
 
-        if (this.blinkStarsParticles) this.blinkStarsParticles.update(dt);
+        // if (this.blinkStarsParticles) this.blinkStarsParticles.update(dt);
 
         // far stars
         this.farStars.azimutAngle = cameraAzimutAngle;
@@ -1840,7 +1864,7 @@ export class Galaxy {
 
         if (this.solarSystem) this.solarSystem.update(dt);
 
-        if (this.solarSystemBlinkStarsParticles) this.solarSystemBlinkStarsParticles.update(dt);
+        if (this.solarSystemBlinkStarsParticles?.visible) this.solarSystemBlinkStarsParticles.update(dt);
 
     }
 

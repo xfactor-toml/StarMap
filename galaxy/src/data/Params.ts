@@ -4,7 +4,9 @@
 export class Params {
     static isDebugMode = false;
     static domCanvasParent: HTMLElement = null;
+    static domTouchParent: HTMLElement = null;
     static domGuiParent: HTMLElement = null;
+    static domRenderer: HTMLElement = null;
     static assetsPath = './assets/';
 
     // utils

@@ -56,6 +56,7 @@ export class GameEngine {
         this.renderPixelRatio = this.renderer.getPixelRatio();
         LogMng.debug(`Renderer PixelRatio: ${this.renderPixelRatio}`);
         Params.domCanvasParent.appendChild(this.renderer.domElement);
+        Params.domRenderer = this.renderer.domElement;
 
         // SCENES
 
@@ -77,6 +78,7 @@ export class GameEngine {
         
         InputMng.getInstance({
             inputDomElement: Params.domCanvasParent,
+            // inputDomElement: Params.domTouchParent,
             desktop: DeviceInfo.getInstance().desktop
         });
 
