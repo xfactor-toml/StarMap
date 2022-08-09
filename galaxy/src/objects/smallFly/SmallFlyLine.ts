@@ -35,7 +35,7 @@ export class SmallFlyLine {
         this._pos2 = aPos2;
 
         let midPos = this._pos1.clone().add(this._pos2).multiplyScalar(0.5);
-        midPos.y += (Math.random() - 0.5) * 70;
+        midPos.y += (Math.random() - 0.5) * 50;
 
         // create curve
         this._curve = new THREE.QuadraticBezierCurve3(
@@ -46,11 +46,8 @@ export class SmallFlyLine {
 
         this.geom = new THREE.BufferGeometry();
         this.geom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(6 * this._params.lineCnt), 3));
-        // this.geom.setAttribute('velocity', new THREE.BufferAttribute(new Float32Array(2 * this._params.lineCnt), 1));
         this.pos = this.geom.getAttribute('position');
         this.pa = this.pos.array;
-        // this.vel = this.geom.getAttribute('velocity');
-        // this.va = this.vel.array;
         
         for (let i = 0; i < this._params.lineCnt; i++) {
             let x = this._pos1.x;
@@ -64,26 +61,14 @@ export class SmallFlyLine {
             this.pa[6 * i + 3] = x;
             this.pa[6 * i + 4] = y;
             this.pa[6 * i + 5] = z;
-            // spd
-            // this.va[2 * i] = this.va[2 * i + 1] = 0;
         }
 
-        let _mat = new THREE.LineBasicMaterial({ color: 0xffffff });
+        let _mat = new THREE.LineBasicMaterial({
+            color: 0xb2dcff,
+            linewidth: 4
+        });
         this._lines = new THREE.LineSegments(this.geom, _mat);
         this._parent.add(this._lines);
-
-        // debug draw path
-        // const points = this._curve.getPoints(20);
-        // const geometry = new THREE.BufferGeometry().setFromPoints(points);
-        // const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
-        // const curveObject = new THREE.Line(geometry, material);
-        // this._parent.add(curveObject);
-
-        // let geom = new THREE.SphereGeometry(1);
-        // let mat = new THREE.LineBasicMaterial({ color: 0xff0000 });
-        // this._obj = new THREE.Mesh(geom, mat);
-        // this._obj.position.copy(this._pos1);
-        // this._parent.add(this._obj);
         
         this._time = 0;
 
@@ -111,7 +96,7 @@ export class SmallFlyLine {
     
     update(dt: number) {
 
-        const f = 0.01;
+        const f = 0.02;
 
         this._time += dt * this._params.spd;
         if (this._time - this._params.lineCnt * f >= 1) {

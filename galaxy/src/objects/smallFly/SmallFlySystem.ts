@@ -2,7 +2,6 @@ import * as THREE from 'three';
 import { MyMath } from '../../utils/MyMath';
 import { SmallFlyLine } from './SmallFlyLine';
 
-const TIME_SPAWN = 5;
 
 export class SmallFlySystem {
 
@@ -11,6 +10,7 @@ export class SmallFlySystem {
     private _lines: SmallFlyLine[];
 
     private _timerSpawn = 0;
+    private _activeSpawn = true;
 
 
     constructor(aParent: THREE.Object3D, aStarPositions: THREE.Vector3[]) {
@@ -18,14 +18,22 @@ export class SmallFlySystem {
         this._starPositions = aStarPositions;
         this._lines = [];
     }
+    
+    public get activeSpawn(): boolean {
+        return this._activeSpawn;
+    }
+
+    public set activeSpawn(v: boolean) {
+        this._activeSpawn = v;
+    }
 
     private spawn() {
         let starId1 = MyMath.randomIntInRange(0, this._starPositions.length - 1);
         let starId2 = MyMath.randomIntInRange(0, this._starPositions.length - 1);
         while (starId1 == starId2) starId2 = MyMath.randomIntInRange(0, this._starPositions.length - 1);
         let fly = new SmallFlyLine(this._parent, this._starPositions[starId1], this._starPositions[starId2], {
-            spd: MyMath.randomInRange(0.2, 0.5),
-            lineCnt: MyMath.randomIntInRange(4, 10)
+            spd: MyMath.randomInRange(0.3, 0.4) * 5,
+            lineCnt: MyMath.randomIntInRange(10, 15)
         });
         this._lines.push(fly);
     }
@@ -43,8 +51,8 @@ export class SmallFlySystem {
             }
         }
 
-        if (this._timerSpawn <= 0) {
-            this._timerSpawn = MyMath.randomInRange(1, 3);
+        if (this._activeSpawn && this._timerSpawn <= 0) {
+            this._timerSpawn = MyMath.randomInRange(0.2, 2);
             this.spawn();
         }
 

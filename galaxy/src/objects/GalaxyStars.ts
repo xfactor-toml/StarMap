@@ -40,8 +40,7 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
     private geometry: THREE.BufferGeometry;
     private material: THREE.ShaderMaterial;
     private stars: THREE.Points;
-    // private _azimutAngle = 0;
-    // private _polarAngle = 0;
+    private _alphaFactor = 1;
 
     constructor(aParams: GalaxyStarsParams) {
 
@@ -78,6 +77,14 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
 
     }
 
+    get alphaFactor(): number {
+        return this._alphaFactor;
+    }
+
+    set alphaFactor(aVal: number) {
+        this._alphaFactor = aVal;
+    }
+
     private onWindowResize() {
         this.uniforms.pointMultiplier.value = window.innerHeight / (2.0 * Math.tan(.02 * 60.0 * Math.PI / 180));
     }
@@ -106,7 +113,7 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
             colors[cId] = starData.color.r;
             colors[cId + 1] = starData.color.g;
             colors[cId + 2] = starData.color.b;
-            colors[cId + 3] = starData.color.a;
+            colors[cId + 3] = starData.color.a * this._alphaFactor;
 
             // size
             sizes[i] = starData.scale;
@@ -168,7 +175,7 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
                 }
 
                 let clrId = i * 4;
-                clr.array[clrId + 3] = a;
+                clr.array[clrId + 3] = a * this._alphaFactor;
             }
         }
 

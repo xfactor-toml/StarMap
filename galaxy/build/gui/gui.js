@@ -27,7 +27,7 @@ function getTooltipComponent() {
             },
             raceImageUrl: {
                 type: String,
-                default: '/gui/img/tooltip/ava.png'
+                default: './gui/img/tooltip/race-human.png'
             },
             scale: {
                 type: Number,
@@ -183,7 +183,7 @@ function getStarPanelComponent() {
             },
             raceImageUrl: {
                 type: String,
-                default: '/gui/img/star-panel/race-insects.png'
+                default: './gui/img/star-panel/race-insects.png'
             },
             scale: {
                 type: Number,

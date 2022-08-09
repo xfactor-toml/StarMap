@@ -162,25 +162,6 @@ const STARS_COLORS = [
     [1.0, 0.901, 0.890]
 ];
 
-const STARS_COLORS_2 = [
-    // orange
-    // [0.505 * 255, 0.39 * 255, 0.3 * 255],
-    // green
-    // [0.258 * 255, 0.282 * 255, 0.145 * 255],
-    // red
-    // [0.694 * 255, 0.301 * 255, 0.282 * 255],
-    // yellow
-    // [0.745 * 255, 0.635 * 255, 0.360 * 255],
-    // teal
-    [0.431, 0.831, 0.819],
-    [0.431, 0.831, 0.819],
-    // violet
-    [0xb3 / 255, 0x8d / 255, 0xf9 / 255],
-    [0xb3 / 255, 0x8d / 255, 0xf9 / 255],
-    [0xb3 / 255, 0x8d / 255, 0xf9 / 255],
-    [0xb3 / 255, 0x8d / 255, 0xf9 / 255],
-];
-
 type GalaxyParams = {
     starsCount: number;
     startAngle?: number;
@@ -299,6 +280,7 @@ export class Galaxy {
 
     private isStarPreviewState = false;
 
+    private bigStarSprite: THREE.Sprite;
     private solarSystem: SolarSystem;
 
     private galaxySaveAnimData: any = {};
@@ -401,6 +383,10 @@ export class Galaxy {
             const solSys = SOLAR_SYSTEMS_DATA[i];
             starsPos.push(new THREE.Vector3(solSys.positionInGalaxy.x, solSys.positionInGalaxy.y, solSys.positionInGalaxy.z));
         }
+        for (let i = 0; i < this.galaxyStarsData.length; i += 2) {
+            let pos = this.galaxyStarsData[i].pos;
+            starsPos.push(new THREE.Vector3(pos.x, pos.y, pos.z));
+        }
         this.smallFlySystem = new SmallFlySystem(this.dummyGalaxy, starsPos);
 
         // camera controls
@@ -419,8 +405,9 @@ export class Galaxy {
         this.raycaster = new THREE.Raycaster();
 
         // pixi music
-        sound.add('music', './assets/audio/vorpal-12.mp3');
-        sound.play('music');
+        let snd = sound.add('music', './assets/audio/vorpal-12.mp3');
+        snd.loop = true;
+        snd.play();
 
         // helpers
         if (Params.isDebugMode) {
@@ -663,9 +650,9 @@ export class Galaxy {
 
         // create a solar system blink stars data
         this.solarSystemBlinkStarsData = this.generateCircleGalaxyStarsData({
-            starsCount: 120,
-            minRadius: 30,
-            maxRadius: 80,
+            starsCount: 400,
+            minRadius: 80,
+            maxRadius: 100,
             alphaMin: Params.galaxyData.alphaMin,
             alphaMax: Params.galaxyData.alphaMax,
             scaleMin: Params.galaxyData.scaleMin,
@@ -1434,22 +1421,60 @@ export class Galaxy {
 
         // this.solarSystemBlinkStarsParticles.position.set(0, 0, 0);
         this.solarSystemBlinkStarsParticles.position.copy(starPos);
-        this.solarSystemBlinkStarsParticles.scale.set(0.001, 0.001, 0.001);
+        this.solarSystemBlinkStarsParticles.scale.set(0.1, 0.1, 0.1);
         // this.solarSystem.add(this.solarSystemBlinkStarsParticles);
         this.scene.add(this.solarSystemBlinkStarsParticles);
         this.solarSystemBlinkStarsParticles.visible = false;
+        this.solarSystemBlinkStarsParticles.alphaFactor = 0;
 
         gsap.to(this.solarSystemBlinkStarsParticles.scale, {
-            x: 0.8,
-            y: 0.8,
-            z: 0.8,
-            // delay: DUR * 1 / 10,
-            duration: DUR * 10 / 10,
-            ease: 'sine.Out',
+            x: 1,
+            y: 1,
+            z: 1,
+            delay: DUR * 2 / 10,
+            duration: DUR,
+            ease: 'sine.inOut',
             onStart: () => {
                 this.solarSystemBlinkStarsParticles.visible = true;
             }
         });
+        gsap.to(this.solarSystemBlinkStarsParticles, {
+            alphaFactor: 1,
+            delay: DUR * 2 / 10,
+            duration: DUR * 1.,
+            ease: 'sine.inOut'
+        });
+
+        // crete a small sprite of star in the galaxy
+        let sunClr = systemData.starParams.sunClr1;
+        this.bigStarSprite = new THREE.Sprite(new THREE.SpriteMaterial({
+            map: ThreeLoader.getInstance().getTexture('star4_512'),
+            color: new THREE.Color(sunClr.r, sunClr.g, sunClr.b),
+            transparent: true,
+            alphaTest: 0.01,
+            opacity: 1,
+            depthWrite: false,
+            depthTest: true,
+            blending: THREE.AdditiveBlending
+        }));
+        let sc = 20;
+        this.bigStarSprite.scale.set(sc, sc, sc);
+        this.bigStarSprite.position.copy(starPos);
+        this.scene.add(this.bigStarSprite);
+
+        gsap.to([this.bigStarSprite.scale], {
+            x: 100,
+            y: 100,
+            duration: DUR,
+            ease: 'sine.inOut'
+        });
+        gsap.to([this.bigStarSprite.material], {
+            opacity: 0,
+            delay: 3 * DUR / 5,
+            duration: 2 * DUR / 5,
+            ease: 'sine.inOut'
+        });
+
 
         // hide point sprites
         // let starPointSprite = this.starPointSprites[aParams.starId];
@@ -1587,6 +1612,8 @@ export class Galaxy {
             }
         });
 
+        this.smallFlySystem.activeSpawn = false;
+
     }
 
     private onStateToStarUpdate(dt: number) {
@@ -1618,6 +1645,8 @@ export class Galaxy {
         if (this.solarSystem) this.solarSystem.update(dt);
 
         if (this.solarSystemBlinkStarsParticles?.visible) this.solarSystemBlinkStarsParticles.update(dt);
+
+        this.smallFlySystem.update(dt);
 
     }
 
@@ -1687,6 +1716,7 @@ export class Galaxy {
 
         if (this.solarSystemBlinkStarsParticles?.visible) this.solarSystemBlinkStarsParticles.update(dt);
 
+        this.smallFlySystem.update(dt);
     }
 
     private onStateFromStarEnter() {
@@ -1782,7 +1812,26 @@ export class Galaxy {
             }
         });
 
-        // scale up small galaxies
+        // scale small star sprite
+        gsap.to([this.bigStarSprite.material], {
+            opacity: 1,
+            delay: 2 * DUR / 5,
+            duration: 3 * DUR / 5,
+            ease: 'sine.inOut'
+        });
+        gsap.to([this.bigStarSprite.scale], {
+            x: 10,
+            y: 10,
+            // delay: 2 * DUR / 5,
+            duration: DUR * 1.5,
+            ease: 'sine.inOut',
+            onComplete: () => {
+                this.scene.remove(this.bigStarSprite);
+                this.bigStarSprite = null;
+            }
+        });
+
+        // scale down small galaxies
         for (let i = 0; i < this.smallGalaxies.length; i++) {
             const galaxy = this.smallGalaxies[i];
             galaxy.visible = true;
@@ -1812,15 +1861,20 @@ export class Galaxy {
 
         // hide star blink stars
         gsap.to(this.solarSystemBlinkStarsParticles.scale, {
-            x: 0.001,
-            y: 0.001,
-            z: 0.001,
+            x: 0.1,
+            y: 0.1,
+            z: 0.1,
             // delay: DUR * 1 / 10,
-            duration: DUR,
+            duration: DUR * 8 / 10,
             ease: 'sine.in',
             onComplete: () => {
                 this.solarSystemBlinkStarsParticles.visible = false;
             }
+        });
+        gsap.to(this.solarSystemBlinkStarsParticles, {
+            alphaFactor: 0,
+            duration: DUR * 8 / 10,
+            ease: 'sine.in'
         });
 
         // move camera
@@ -1835,6 +1889,7 @@ export class Galaxy {
             }
         });
 
+        this.smallFlySystem.activeSpawn = true;
     }
     
     private onStateFromStarUpdate(dt: number) {
@@ -1866,6 +1921,7 @@ export class Galaxy {
 
         if (this.solarSystemBlinkStarsParticles?.visible) this.solarSystemBlinkStarsParticles.update(dt);
 
+        this.smallFlySystem.update(dt);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////

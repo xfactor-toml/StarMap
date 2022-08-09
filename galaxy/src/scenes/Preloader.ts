@@ -47,6 +47,9 @@ export class Preloader {
         this.loader.texture('starPoint', `./assets/star.svg`);
         this.loader.texture('starInducePoint', `./assets/star_induce.svg`);
 
+        // big stars sprites
+        // this.loader.texture('bigStarSprite4', `./assets/sprites/stars/star_04.png`);
+
         // skybox
 
         let path = assetsPath + 'skybox/skybox5/';
@@ -64,7 +67,6 @@ export class Preloader {
 
 
         // main sprite
-        path = assetsPath + 'galaxies/';
         this.loader.texture('galaxySprite', `./assets/galaxySprite.webp`);
 
         // small galaxy sprites
