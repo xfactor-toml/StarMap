@@ -287,12 +287,18 @@ export class Galaxy {
 
     private smallFlySystem: SmallFlySystem;
 
+    private _starAlphaFactor = 1;
+
 
     constructor(aParams: any) {
         this.scene = aParams.scene;
         this.camera = aParams.camera;
         this.cameraTarget = new THREE.Vector3();
         this.orbitCenter = new THREE.Vector3();
+
+        if (!DeviceInfo.getInstance().iOS) {
+            this._starAlphaFactor = 0.7;
+        }
     }
 
     public set centerVisible(v: boolean) {
@@ -638,6 +644,7 @@ export class Galaxy {
             texture: t,
             onWindowResizeSignal: GlobalEvents.onWindowResizeSignal
         });
+        // this.starsParticles.alphaFactor = 0.5;
         this.dummyGalaxy.add(this.starsParticles);
 
         // blink particle stars
@@ -1224,6 +1231,8 @@ export class Galaxy {
                 anFactor = scMin + (1 - scMin) * (1 - (Math.abs(cameraPolarAngle - Math.PI) / (Math.PI / 2)));
             }
             this.galaxyCenterSprite.scale.y = Config.GALAXY_CENTER_SCALE * anFactor;
+
+            // LogMng.debug(`galaxyCenterSprite.scale.y: ${this.galaxyCenterSprite.scale.y}`);
         }
 
         if (this.galaxyCenterSprite2) {
@@ -1235,6 +1244,8 @@ export class Galaxy {
                 anFactor = scMin + (1 - scMin) * (1 - (Math.abs(cameraPolarAngle - Math.PI) / (Math.PI / 2)));
             }
             this.galaxyCenterSprite2.scale.y = Config.GALAXY_CENTER_SCALE_2 * anFactor;
+
+            // LogMng.debug(`galaxyCenterSprite2.scale.y: ${this.galaxyCenterSprite2.scale.y}`);
         }
     }
 
@@ -1270,6 +1281,67 @@ export class Galaxy {
         return innerWidth / 800;
     }
 
+    private updateGalaxyPlane(dt: number) {
+        let cameraAzimutAngle = this.orbitControl.getAzimuthalAngle();
+        let cameraPolarAngle = this.orbitControl.getPolarAngle();
+
+        // opacity of the main galaxy plane
+        let galaxyOpacity = 1;
+
+        if (cameraPolarAngle < Math.PI / 2) {
+            // top
+            galaxyOpacity = 0.1 + (1 - (cameraPolarAngle / (Math.PI / 2))) * 0.9;
+        }
+        else {
+            // bot
+            galaxyOpacity = 0.1 + (1 - (Math.abs(cameraPolarAngle - Math.PI) / (Math.PI / 2))) * 0.9;
+        }
+
+        this.galaxyPlane.material['opacity'] = galaxyOpacity;
+    }
+
+    private updateGalaxyStars(dt: number) {
+
+        let cameraPolarAngle = this.orbitControl.getPolarAngle();
+
+        // opacity of the main galaxy plane
+        let starsOpacity = 1;
+
+        if (cameraPolarAngle < Math.PI / 2) {
+            // top
+            let an = Math.PI / 2 - cameraPolarAngle;
+            an = Math.min(1, an * 4);
+            starsOpacity = 0.3 + an * 0.7;
+
+        } else {
+            // bot
+            let an = (cameraPolarAngle - Math.PI / 2) / (Math.PI / 2);
+            an = Math.min(1, an * 4);
+            starsOpacity = 0.3 + an * 0.7;
+        }
+
+        this.starsParticles.alphaFactor = starsOpacity * this._starAlphaFactor;
+        this.starsParticles.update(dt);
+
+        // this.blinkStarsParticles.alphaFactor = starsOpacity;
+        this.blinkStarsParticles.update(dt);
+
+    }
+
+    private updateFarStars(dt: number) {
+        let cameraAzimutAngle = this.orbitControl.getAzimuthalAngle();
+        let cameraPolarAngle = this.orbitControl.getPolarAngle();
+        this.farStars.azimutAngle = cameraAzimutAngle;
+        this.farStars.polarAngle = cameraPolarAngle;
+        this.farStars.update(dt);
+    }
+
+    private updateSmallGalaxies(dt: number) {
+        for (let i = 0; i < this.smallGalaxies.length; i++) {
+            const g = this.smallGalaxies[i];
+            if (g) g.rotateZ(g['rotSpeed'] * dt);
+        }
+    }
 
     // STATES
     ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1303,32 +1375,11 @@ export class Galaxy {
             this.camera.lookAt(this.cameraTarget);
         }
 
-        let cameraAzimutAngle = this.orbitControl.getAzimuthalAngle();
-        let cameraPolarAngle = this.orbitControl.getPolarAngle();
-
-        // opacity of the main galaxy plane
-        if (this.galaxyPlane) {
-            if (cameraPolarAngle < Math.PI / 2) {
-                this.galaxyPlane.material['opacity'] = 0.1 + (1 - (cameraPolarAngle / (Math.PI / 2))) * 0.9;
-            } else {
-                this.galaxyPlane.material['opacity'] = 0.1 + (1 - (Math.abs(cameraPolarAngle - Math.PI) / (Math.PI / 2))) * 0.9;
-            }
-        }
-
+        this.updateGalaxyPlane(dt);
         this.updateGalaxyCenterSprite();
-
-        if (this.blinkStarsParticles) this.blinkStarsParticles.update(dt);
-
-        // far stars
-        this.farStars.azimutAngle = cameraAzimutAngle;
-        this.farStars.polarAngle = cameraPolarAngle;
-        this.farStars.update(dt);
-
-        // small galaxies
-        for (let i = 0; i < this.smallGalaxies.length; i++) {
-            const g = this.smallGalaxies[i];
-            if (g) g.rotateZ(g['rotSpeed'] * dt);
-        }
+        this.updateGalaxyStars(dt);
+        this.updateFarStars(dt);
+        this.updateSmallGalaxies(dt);
 
     }
 
@@ -1348,32 +1399,13 @@ export class Galaxy {
             this.camera.lookAt(this.cameraTarget);
         }
 
-        let cameraAzimutAngle = this.orbitControl.getAzimuthalAngle();
-        let cameraPolarAngle = this.orbitControl.getPolarAngle();
-        
-        // opacity of the main galaxy plane
-        if (this.galaxyPlane) {
-            if (cameraPolarAngle < Math.PI / 2) {
-                this.galaxyPlane.material['opacity'] = 0.1 + (1 - (cameraPolarAngle / (Math.PI / 2))) * 0.9;
-            } else {
-                this.galaxyPlane.material['opacity'] = 0.1 + (1 - (Math.abs(cameraPolarAngle - Math.PI) / (Math.PI / 2))) * 0.9;
-            }
-        }
-
+        this.updateGalaxyPlane(dt);
         this.updateGalaxyCenterSprite();
+        this.updateGalaxyStars(dt);
+        this.updateFarStars(dt);
+        this.updateSmallGalaxies(dt);
 
-        if (this.blinkStarsParticles) this.blinkStarsParticles.update(dt);
-
-        // far stars
-        this.farStars.azimutAngle = cameraAzimutAngle;
-        this.farStars.polarAngle = cameraPolarAngle;
-        this.farStars.update(dt);
-
-        // small galaxies
-        for (let i = 0; i < this.smallGalaxies.length; i++) {
-            const g = this.smallGalaxies[i];
-            if (g) g.rotateZ(g['rotSpeed'] * dt);
-        }
+        this.smallFlySystem.update(dt);
 
         if (DeviceInfo.getInstance().desktop) {
             this.checkMousePointerTimer -= dt;
@@ -1382,8 +1414,6 @@ export class Galaxy {
                 this.updateInputMove();
             }
         }
-
-        this.smallFlySystem.update(dt);
 
     }
 
@@ -1624,23 +1654,8 @@ export class Galaxy {
             this.camera.lookAt(this.cameraTarget);
         }
 
-        let cameraAzimutAngle = this.orbitControl.getAzimuthalAngle();
-        let cameraPolarAngle = this.orbitControl.getPolarAngle();
-
-        // this.updateGalaxyCenter();
-
-        // if (this.blinkStarsParticles) this.blinkStarsParticles.update(dt);
-
-        // far stars
-        this.farStars.azimutAngle = cameraAzimutAngle;
-        this.farStars.polarAngle = cameraPolarAngle;
-        this.farStars.update(dt);
-
-        // small galaxies
-        for (let i = 0; i < this.smallGalaxies.length; i++) {
-            const g = this.smallGalaxies[i];
-            if (g) g.rotateZ(g['rotSpeed'] * dt);
-        }
+        this.updateFarStars(dt);
+        this.updateSmallGalaxies(dt);
 
         if (this.solarSystem) this.solarSystem.update(dt);
 
@@ -1694,23 +1709,7 @@ export class Galaxy {
             this.camera.lookAt(this.cameraTarget);
         }
 
-        let cameraAzimutAngle = this.orbitControl.getAzimuthalAngle();
-        let cameraPolarAngle = this.orbitControl.getPolarAngle();
-
-        // this.updateGalaxyCenter();
-
-        // if (this.blinkStarsParticles) this.blinkStarsParticles.update(dt);
-
-        // far stars
-        this.farStars.azimutAngle = cameraAzimutAngle;
-        this.farStars.polarAngle = cameraPolarAngle;
-        this.farStars.update(dt);
-
-        // small galaxies
-        for (let i = 0; i < this.smallGalaxies.length; i++) {
-            const g = this.smallGalaxies[i];
-            if (g) g.rotateZ(g['rotSpeed'] * dt);
-        }
+        this.updateSmallGalaxies(dt);
 
         if (this.solarSystem) this.solarSystem.update(dt);
 
@@ -1899,23 +1898,8 @@ export class Galaxy {
             this.camera.lookAt(this.cameraTarget);
         }
 
-        let cameraAzimutAngle = this.orbitControl.getAzimuthalAngle();
-        let cameraPolarAngle = this.orbitControl.getPolarAngle();
-
-        // this.updateGalaxyCenter();
-
-        // if (this.blinkStarsParticles) this.blinkStarsParticles.update(dt);
-
-        // far stars
-        this.farStars.azimutAngle = cameraAzimutAngle;
-        this.farStars.polarAngle = cameraPolarAngle;
-        this.farStars.update(dt);
-
-        // small galaxies
-        for (let i = 0; i < this.smallGalaxies.length; i++) {
-            const g = this.smallGalaxies[i];
-            if (g) g.rotateZ(g['rotSpeed'] * dt);
-        }
+        this.updateFarStars(dt);
+        this.updateSmallGalaxies(dt);
 
         if (this.solarSystem) this.solarSystem.update(dt);
 

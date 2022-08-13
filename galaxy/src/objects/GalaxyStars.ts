@@ -3,6 +3,7 @@ import { IBaseClass } from "../interfaces/IBaseClass";
 import { Params } from "../data/Params";
 import { Signal } from "../events/Signal";
 import { GalaxyStarParams } from "../scenes/Galaxy";
+import { LogMng } from "../utils/LogMng";
 
 const _vShader = `
     attribute vec4 clr;
@@ -57,9 +58,10 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
             fragmentShader: _fShader,
             uniforms: this.uniforms,
             blending: THREE.AdditiveBlending,
-            depthTest: true,
+            // depthTest: true,
             depthWrite: false,
             transparent: true,
+            alphaTest: 0.01,
             vertexColors: true
         });
         
@@ -161,22 +163,28 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
 
         for (let i = 0; i < starsData.length; i++) {
             const sd = starsData[i];
+            let a = 1;
+
             if (sd.blink) {
 
                 let b = sd.blink;
                 b.progressTime += dt;
                 let t = Math.min(1, b.progressTime / b.duration);
 
-                let a = b.isFade ? 1 - b.tweenFunction(t) : b.tweenFunction(t);
+                a = b.isFade ? 1 - b.tweenFunction(t) : b.tweenFunction(t);
 
                 if (b.progressTime >= b.duration) {
                     b.isFade = !b.isFade;
                     b.progressTime = 0;
                 }
 
-                let clrId = i * 4;
-                clr.array[clrId + 3] = a * this._alphaFactor;
+                
             }
+
+            let clrId = i * 4;
+            clr.array[clrId + 3] = a * this._alphaFactor;
+            // LogMng.debug(`clr a: ${clr.array[clrId + 3]}`);
+
         }
 
         // this.geometry.setAttribute('clr', colors);
