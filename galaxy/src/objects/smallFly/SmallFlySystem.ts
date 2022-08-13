@@ -30,10 +30,18 @@ export class SmallFlySystem {
     private spawn() {
         let starId1 = MyMath.randomIntInRange(0, this._starPositions.length - 1);
         let starId2 = MyMath.randomIntInRange(0, this._starPositions.length - 1);
-        while (starId1 == starId2) starId2 = MyMath.randomIntInRange(0, this._starPositions.length - 1);
-        let fly = new SmallFlyLine(this._parent, this._starPositions[starId1], this._starPositions[starId2], {
-            spd: MyMath.randomInRange(0.3, 0.4) * 5,
-            lineCnt: MyMath.randomIntInRange(10, 15)
+        let pos1 = this._starPositions[starId1];
+        let pos2 = this._starPositions[starId2];
+        let dist = pos1.distanceTo(pos2);
+
+        while (starId1 == starId2 || dist < 120) {
+            starId2 = MyMath.randomIntInRange(0, this._starPositions.length - 1);
+            pos2 = this._starPositions[starId2];
+            dist = pos1.distanceTo(pos2);
+        }
+        let fly = new SmallFlyLine(this._parent, pos1, pos2, {
+            spd: MyMath.randomInRange(0.3, 0.4) * 5 / 10,
+            pointsCnt: MyMath.randomIntInRange(14, 16)
         });
         this._lines.push(fly);
     }

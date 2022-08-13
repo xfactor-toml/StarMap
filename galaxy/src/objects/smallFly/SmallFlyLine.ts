@@ -1,10 +1,21 @@
 import * as THREE from 'three';
 import { MyMath } from '../../utils/MyMath';
 
+const START_COLOR = {
+    r: 1,
+    g: 1,
+    b: 1
+};
+
+const FINAL_COLOR = {
+    r: 0.4,
+    g: 0.6,
+    b: 1
+};
 
 type FlyLineParams = {
     spd: number;
-    lineCnt: number;
+    pointsCnt: number;
     color?: string;
 };
 
@@ -15,11 +26,9 @@ export class SmallFlyLine {
     private _pos1: THREE.Vector3;
     private _pos2: THREE.Vector3;
     private _curve: THREE.QuadraticBezierCurve3;
-    // private _obj: THREE.Mesh;
 
-    private geom: THREE.BufferGeometry;
-    private pos: any;
-    private pa: any;
+    private _geometry: THREE.BufferGeometry;
+    private _posAttr: any;
     private _lines: THREE.LineSegments;
 
     private _isComplete = false;
@@ -44,30 +53,53 @@ export class SmallFlyLine {
             this._pos2
         );
 
-        this.geom = new THREE.BufferGeometry();
-        this.geom.setAttribute('position', new THREE.BufferAttribute(new Float32Array(6 * this._params.lineCnt), 3));
-        this.pos = this.geom.getAttribute('position');
-        this.pa = this.pos.array;
-        
-        for (let i = 0; i < this._params.lineCnt; i++) {
+        const positions = [];
+        const colors = [];
+
+        for (let i = 0; i < this._params.pointsCnt; i++) {
+
             let x = this._pos1.x;
             let y = this._pos1.y;
             let z = this._pos1.z;
-            // line start
-            this.pa[6 * i] = x;
-            this.pa[6 * i + 1] = y;
-            this.pa[6 * i + 2] = z;
-            // line end
-            this.pa[6 * i + 3] = x;
-            this.pa[6 * i + 4] = y;
-            this.pa[6 * i + 5] = z;
+
+            // positions
+
+            positions.push(x, y, z);
+            positions.push(x, y, z);
+
+            // colors
+
+            let t = i / (this._params.pointsCnt - 1);
+            let clr = {
+                r: START_COLOR.r + t * (FINAL_COLOR.r - START_COLOR.r),
+                g: START_COLOR.g + t * (FINAL_COLOR.g - START_COLOR.g),
+                b: START_COLOR.b + t * (FINAL_COLOR.b - START_COLOR.b)
+            };
+            colors.push(clr.r);
+            colors.push(clr.g);
+            colors.push(clr.b);
+            colors.push(1 - t);
+
+            colors.push(clr.r);
+            colors.push(clr.g);
+            colors.push(clr.b);
+            colors.push(1 - t);
+
         }
 
+        this._geometry = new THREE.BufferGeometry();
+        this._geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+        this._geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 4));
+
+        this._posAttr = this._geometry.getAttribute('position');
+
         let _mat = new THREE.LineBasicMaterial({
-            color: 0xb2dcff,
-            linewidth: 4
+            // color: 0xb2dcff,
+            linewidth: 4,
+            vertexColors: true,
+            transparent: true
         });
-        this._lines = new THREE.LineSegments(this.geom, _mat);
+        this._lines = new THREE.LineSegments(this._geometry, _mat);
         this._parent.add(this._lines);
         
         this._time = 0;
@@ -79,13 +111,9 @@ export class SmallFlyLine {
     }
 
     free() {
-        // this._parent.remove(this._obj);
-        // this._obj = null;
         this._parent.remove(this._lines);
         this._lines = null;
-        this.geom = null;
-        this.pos = null;
-        this.pa = null;
+        this._geometry = null;
 
         this._curve = null;
         this._pos1 = null;
@@ -99,14 +127,15 @@ export class SmallFlyLine {
         const f = 0.02;
 
         this._time += dt * this._params.spd;
-        if (this._time - this._params.lineCnt * f >= 1) {
+        if (this._time - this._params.pointsCnt * f >= 1) {
             this._time = 1;
             this._isComplete = true;
         }
 
         // this._obj.position.copy(this._curve.getPoint(this._time));
-
-        for (let i = 0; i < this._params.lineCnt; i++) {
+        let pa: number[] = this._geometry.getAttribute('position').array as any;
+        
+        for (let i = 0; i < this._params.pointsCnt; i++) {
             let t1 = this._time - i * f;
             if (t1 < 0) t1 = 0;
             if (t1 > 1) t1 = 1;
@@ -118,18 +147,16 @@ export class SmallFlyLine {
             let pos2 = this._curve.getPoint(t2);
 
             // line start
-            this.pa[6 * i + 0] = pos1.x;
-            this.pa[6 * i + 1] = pos1.y;
-            this.pa[6 * i + 2] = pos1.z;
+            pa[6 * i + 0] = pos1.x;
+            pa[6 * i + 1] = pos1.y;
+            pa[6 * i + 2] = pos1.z;
             // line end
-            this.pa[6 * i + 3] = pos2.x;
-            this.pa[6 * i + 4] = pos2.y;
-            this.pa[6 * i + 5] = pos2.z;
-            // spd
-            // this.va[2 * i] = this.va[2 * i + 1] = 0;
+            pa[6 * i + 3] = pos2.x;
+            pa[6 * i + 4] = pos2.y;
+            pa[6 * i + 5] = pos2.z;
         }
 
-        this.pos.needsUpdate = true;
+        this._posAttr.needsUpdate = true;
 
     }
 

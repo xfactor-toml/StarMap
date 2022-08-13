@@ -94,7 +94,7 @@ const SOLAR_SYSTEMS_DATA: {
             x: 100, y: 0, z: -10
         },
         starParams: {
-            starSize: 40,
+            starSize: 20,
             sunClr1: { r: 0.17, g: 0.09, b: 0.42 },
             sunClr2: { r: .0, g: .0, b: .06 },
             sunClr3: { r: .0, g: .0, b: .08 },
@@ -411,7 +411,7 @@ export class Galaxy {
 
         // helpers
         if (Params.isDebugMode) {
-            this.axiesHelper = new THREE.AxesHelper(200);
+            this.axiesHelper = new THREE.AxesHelper(150);
             this.scene.add(this.axiesHelper);
         }
 
@@ -1440,8 +1440,8 @@ export class Galaxy {
         });
         gsap.to(this.solarSystemBlinkStarsParticles, {
             alphaFactor: 1,
-            delay: DUR * 2 / 10,
-            duration: DUR * 1.,
+            delay: DUR * 6 / 10,
+            duration: DUR * .8,
             ease: 'sine.inOut'
         });
 
@@ -1860,20 +1860,20 @@ export class Galaxy {
         });
 
         // hide star blink stars
-        gsap.to(this.solarSystemBlinkStarsParticles.scale, {
-            x: 0.1,
-            y: 0.1,
-            z: 0.1,
-            // delay: DUR * 1 / 10,
-            duration: DUR * 8 / 10,
-            ease: 'sine.in',
-            onComplete: () => {
-                this.solarSystemBlinkStarsParticles.visible = false;
-            }
-        });
+        // gsap.to(this.solarSystemBlinkStarsParticles.scale, {
+        //     x: 0.1,
+        //     y: 0.1,
+        //     z: 0.1,
+        //     // delay: DUR * 1 / 10,
+        //     duration: DUR * 8 / 10,
+        //     ease: 'sine.in',
+        //     onComplete: () => {
+        //         this.solarSystemBlinkStarsParticles.visible = false;
+        //     }
+        // });
         gsap.to(this.solarSystemBlinkStarsParticles, {
             alphaFactor: 0,
-            duration: DUR * 8 / 10,
+            duration: DUR * 4 / 10,
             ease: 'sine.in'
         });
 
