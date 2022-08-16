@@ -72,6 +72,10 @@
                 console.log('star panel play');
             });
 
+            GUI.on('overlayClick', () => {
+                GUI.emit('starPanelHide');
+            });
+
             // GUI.once('tooltipDiveIn', () => {
             //     console.log('dive in once');
             // });
