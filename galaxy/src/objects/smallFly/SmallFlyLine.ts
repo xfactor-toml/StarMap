@@ -97,7 +97,8 @@ export class SmallFlyLine {
             // color: 0xb2dcff,
             linewidth: 4,
             vertexColors: true,
-            transparent: true
+            transparent: true,
+            depthWrite: false
         });
         this._lines = new THREE.LineSegments(this._geometry, _mat);
         this._parent.add(this._lines);

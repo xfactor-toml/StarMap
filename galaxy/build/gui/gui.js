@@ -27,7 +27,7 @@ function getTooltipComponent() {
             },
             raceImageUrl: {
                 type: String,
-                default: './gui/img/tooltip/race-human.png'
+                default: './gui/img/tooltip/ava.png'
             },
             scale: {
                 type: Number,
@@ -212,50 +212,50 @@ function getStarPanelComponent() {
             },
         },
         template: `
-      <div
-        :class="panelClasses"
-        :style="panelStyle"
-      >
-        <div class="star-panel__info">
-          <div class="star-panel__info-row is-heading">
-            <div class="star-panel__info-key is-selectable">{{ name }}</div>
-            <div class="star-panel__info-value is-selectable is-level">Lv.{{ level }}</div>
-          </div>
-          <div class="star-panel__info-row is-slots">
-            <div class="star-panel__info-key is-selectable">Planet slots</div>
-            <div class="star-panel__info-value is-selectable">{{ planetSlots }}</div>
-          </div>
-          <div class="star-panel__info-row is-energy">
-            <div class="star-panel__info-key is-selectable">Energy</div>
-            <div class="star-panel__info-value is-selectable">{{ energy }}</div>
-          </div>
-          <div class="star-panel__info-row is-life">
-            <div class="star-panel__info-key is-selectable">Life</div>
-            <div class="star-panel__info-value is-selectable">{{ life }}</div>
-          </div>
-        </div>
-        <div class="star-panel__star">
-        <button
-          class="star-panel__star-button is-selectable"
-          type="button"
-          @click="play()"
-        />
-        </div>
-        <div class="star-panel__race">
-          <button
-            class="star-panel__close-button is-selectable"
-            type="button"
-            @click="hide()"
-          />
-          <img
-            class="star-panel__race-image"
-            :src="raceImageUrl"
-          >
-          <p class="star-panel__race-name is-selectable">{{ race }}</p>
-          <p class="star-panel__race-description is-selectable">{{ description }}</p>
-        </div>
-      </div>
-    `
+            <div
+                :class="panelClasses"
+                :style="panelStyle"
+            >
+                <div class="star-panel__info">
+                <div class="star-panel__info-row is-heading">
+                    <div class="star-panel__info-key is-selectable">{{ name }}</div>
+                    <div class="star-panel__info-value is-selectable is-level">Lv.{{ level }}</div>
+                </div>
+                <div class="star-panel__info-row is-slots">
+                    <div class="star-panel__info-key is-selectable">Planet slots</div>
+                    <div class="star-panel__info-value is-selectable">{{ planetSlots }}</div>
+                </div>
+                <div class="star-panel__info-row is-energy">
+                    <div class="star-panel__info-key is-selectable">Energy</div>
+                    <div class="star-panel__info-value is-selectable">{{ energy }}</div>
+                </div>
+                <div class="star-panel__info-row is-life">
+                    <div class="star-panel__info-key is-selectable">Life</div>
+                    <div class="star-panel__info-value is-selectable">{{ life }}</div>
+                </div>
+                </div>
+                <div class="star-panel__star">
+                <button
+                class="star-panel__star-button is-selectable"
+                type="button"
+                @click="play()"
+                />
+                </div>
+                <div class="star-panel__race">
+                <button
+                    class="star-panel__close-button is-selectable"
+                    type="button"
+                    @click="hide()"
+                />
+                <img
+                    class="star-panel__race-image"
+                    :src="raceImageUrl"
+                >
+                <p class="star-panel__race-name is-selectable">{{ race }}</p>
+                <p class="star-panel__race-description is-selectable">{{ description }}</p>
+                </div>
+            </div>
+        `
     };
 }
 
@@ -266,6 +266,7 @@ function createGui() {
             tooltipData: null,
             starPanelVisible: false,
             starPanelData: null,
+            overlayVisible: false,
             listeners: {},
         }),
         methods: {
@@ -275,12 +276,14 @@ function createGui() {
                 } else {
                     this.tooltipData = data;
                     this.tooltipVisible = true;
+                    this.showOverlay();
                 }
             },
             hideTooltip() {
                 if (this.tooltipVisible) {
                     this.tooltipData = null;
                     this.tooltipVisible = false;
+                    this.hideOverlay();
                 }
             },
             showStarPanel(data) {
@@ -296,6 +299,12 @@ function createGui() {
                     this.starPanelData = null;
                     this.starPanelVisible = false;
                 }
+            },
+            showOverlay() {
+                this.overlayVisible = true
+            },
+            hideOverlay() {
+                this.overlayVisible = false
             },
             on(eventName, callback) {
                 if (!this.listeners[eventName]) {
@@ -326,48 +335,55 @@ function createGui() {
                 }
             },
             getRaceId(raceName) {
-                return {
-                    Humans: 'human',
-                    Simbionts: 'simbionts',
-                    Lizards: 'lizards',
-                    Insects: 'insects',
-                    Robots: 'robots',
-                }[raceName] || ''
+              return {
+                  Humans: 'human',
+                  Simbionts: 'simbionts',
+                  Lizards: 'lizards',
+                  Insects: 'insects',
+                  Robots: 'robots',
+              }[raceName] || ''
             }
         },
         template: `
-      <transition name="fade">
-        <star-panel
-          v-if="starPanelVisible"
-          :name="starPanelData.name"
-          :description="starPanelData.description"
-          :level="starPanelData.level"
-          :race="starPanelData.race"
-          :planetsSlots="starPanelData.planetsSlots"
-          :energy="starPanelData.energy"
-          :life="starPanelData.life"
-          :scale="starPanelData.scale"
-          :raceImageUrl="'./gui/img/star-panel/race-' + getRaceId(starPanelData.race) + '.png'"
-          @hide="emit('starPanelHide')"
-          @play="emit('starPanelPlay')"
-        />
-      </transition>
-      <transition name="fade">
-        <tooltip
-          v-if="tooltipVisible"
-          :name="tooltipData.name"
-          :description="tooltipData.description"
-          :textAutofit="tooltipData.textAutofit"
-          :level="tooltipData.level"
-          :race="tooltipData.race"
-          :position="tooltipData.pos2d"
-          :scale="tooltipData.scale"
-          :raceImageUrl="'./gui/img/tooltip/race-' + getRaceId(tooltipData.race) + '.png'"
-          @hide="emit('tooltipHide')"
-          @diveIn="emit('tooltipDiveIn')"
-        />
-      </transition>
-    `
+            <transition name="fade">
+                <div 
+                    v-if="overlayVisible"
+                    class="gui-overlay"
+                    @click="emit('overlayClick')"
+                />
+            </transition>
+            <transition name="fade">
+                <star-panel
+                    v-if="starPanelVisible"
+                    :name="starPanelData.name"
+                    :description="starPanelData.description"
+                    :level="starPanelData.level"
+                    :race="starPanelData.race"
+                    :planetsSlots="starPanelData.planetsSlots"
+                    :energy="starPanelData.energy"
+                    :life="starPanelData.life"
+                    :scale="starPanelData.scale"
+                    :raceImageUrl="'./gui/img/star-panel/race-' + getRaceId(starPanelData.race) + '.png'"
+                    @hide="emit('starPanelHide')"
+                    @play="emit('starPanelPlay')"
+                />
+            </transition>
+            <transition name="fade">
+                <tooltip
+                    v-if="tooltipVisible"
+                    :name="tooltipData.name"
+                    :description="tooltipData.description"
+                    :textAutofit="tooltipData.textAutofit"
+                    :level="tooltipData.level"
+                    :race="tooltipData.race"
+                    :position="tooltipData.pos2d"
+                    :scale="tooltipData.scale"
+                    :raceImageUrl="'./gui/img/tooltip/race-' + getRaceId(tooltipData.race) + '.png'"
+                    @hide="emit('tooltipHide')"
+                    @diveIn="emit('tooltipDiveIn')"
+                />
+            </transition>
+        `
     });
 
     gui.component('tooltip', getTooltipComponent());

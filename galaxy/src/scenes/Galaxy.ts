@@ -21,6 +21,7 @@ import { FrontEvents } from '../events/FrontEvents';
 import { GameEvents } from '../events/GameEvents';
 import { BigStarParams } from '../objects/BigStar';
 import { SmallFlySystem } from '../objects/smallFly/SmallFlySystem';
+import { MyOrbitControls } from '../mythree/MyOrbitControls';
 
 const RACES = ['Robots', 'Humans', 'Simbionts', 'Lizards', 'Insects'];
 
@@ -267,7 +268,7 @@ export class Galaxy {
     private farGalaxiesData: FarGalaxyParams[];
     private smallGalaxies: THREE.Mesh[];
 
-    private orbitControl: OrbitControls;
+    private orbitControl: MyOrbitControls;
 
     private axiesHelper: THREE.AxesHelper;
 
@@ -310,18 +311,6 @@ export class Galaxy {
 
         this.dummyGalaxy = new THREE.Group();
         this.scene.add(this.dummyGalaxy);
-
-        // camera star animation
-        // this.camera.position.set(-90, 60, 180);
-        // this.camera.position.set(-90 * 10000, 60 * 6000, 180 * 10000);
-        // gsap.to(this.camera.position, {
-        //     x: -90,
-        //     y: 60,
-        //     z: 180,
-        //     duration: 2,
-        //     delay: 0.1,
-        //     ease: 'sine.Out'
-        // });
 
         this.createSkybox();
 
@@ -540,9 +529,6 @@ export class Galaxy {
         skyFolder.add(Params.skyData, 'galaxiesSizeMax', 100, 8000, 10).onChange(() => { this.createSmallGalaxies(); });
         skyFolder.add(DEBUG_PARAMS, 'recreateSmallGalaxies');
 
-        // let starsFolder = gui.addFolder('Stars');
-        // starsFolder.add(DEBUG_PARAMS, 'flyFromStar');
-
         gui.add(DEBUG_PARAMS, 'saveState');
 
         this.axiesHelper.visible = DEBUG_PARAMS.axiesHelper;
@@ -550,7 +536,6 @@ export class Galaxy {
             this.axiesHelper.visible = v;
         });
 
-        // galaxyFolder.open();
     }
 
     private createGalaxyPlane(): THREE.Mesh {
@@ -658,8 +643,8 @@ export class Galaxy {
         // create a solar system blink stars data
         this.solarSystemBlinkStarsData = this.generateCircleGalaxyStarsData({
             starsCount: 400,
-            minRadius: 80,
-            maxRadius: 100,
+            minRadius: 180,
+            maxRadius: 200,
             alphaMin: Params.galaxyData.alphaMin,
             alphaMax: Params.galaxyData.alphaMax,
             scaleMin: Params.galaxyData.scaleMin,
@@ -1093,12 +1078,12 @@ export class Galaxy {
         // let domElement = Params.domTouchParent;
         // let domElement = Params.domCanvasParent;
         let domElement = Params.domRenderer;
-        this.orbitControl = new OrbitControls(this.camera, domElement);
+        this.orbitControl = new MyOrbitControls(this.camera, domElement);
         // if (!aParams.noTarget) this.orbitControl.target = new THREE.Vector3();
         this.orbitControl.enabled = aParams.enabled;
         this.orbitControl.rotateSpeed = .5;
         this.orbitControl.enableDamping = true;
-        this.orbitControl.dampingFactor = 0.025;
+        this.orbitControl.dampingFactor = Config.CAM_DAMPING_FACTOR;
         this.orbitControl.zoomSpeed = aParams.zoomSpeed || 1;
         this.orbitControl.enablePan = aParams.enablePan == true;
         // this.camOrbitCtrl.keys = {};
@@ -1189,6 +1174,7 @@ export class Galaxy {
 
                     this.isStarPreviewState = true;
                     this.orbitControl.autoRotate = false;
+                    this.orbitControl.setSphericalDelta(0, 0);
                     if (this.orbitControl.enabled) this.orbitControl.enabled = false;
 
                     let starId = this.starPointHovered[`starId`]!;
@@ -1215,6 +1201,7 @@ export class Galaxy {
 
                 }
                 break;
+            
         }
 
     }

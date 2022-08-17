@@ -13,16 +13,6 @@
   --race-name-color: #ffff00;
   --race-description-color: #fff;
 
-  --info-row-1: url('../img/star-panel/info-row-1-insects.png');
-  --info-row-2: url('../img/star-panel/info-row-2-insects.png');
-  --info-row-3: url('../img/star-panel/info-row-3-insects.png');
-  --info-row-4: url('../img/star-panel/info-row-4-insects.png');
-  --star-ring: url('../img/star-panel/ring-insects.svg');
-  --star-circle-top: url('../img/star-panel/circle-top-insects.svg');
-  --star-button: url('../img/star-panel/ring-button-insects.svg');
-  --race-bg: url('../img/star-panel/race-bg-insects.svg');
-  --close-button: url('../img/star-panel/close-button-insects.svg');
-
   display: flex;
   align-items: center;
   width: var(--panel-width);
@@ -37,55 +27,6 @@
   pointer-events: all;
 }
 
-.star-panel.is-robots {
-  --info-row-1: url('../img/star-panel/info-row-1-robots.png');
-  --info-row-2: url('../img/star-panel/info-row-2-robots.png');
-  --info-row-3: url('../img/star-panel/info-row-3-robots.png');
-  --info-row-4: url('../img/star-panel/info-row-4-robots.png');
-  --star-ring: url('../img/star-panel/ring-robots.svg');
-  --star-circle-top: url('../img/star-panel/circle-top-robots.svg');
-  --star-button: url('../img/star-panel/ring-button-robots.svg');
-  --race-bg: url('../img/star-panel/race-bg-robots.svg');
-  --close-button: url('../img/star-panel/close-button-robots.svg');
-}
-
-.star-panel.is-humans {
-  --info-row-1: url('../img/star-panel/info-row-1-humans.png');
-  --info-row-2: url('../img/star-panel/info-row-2-humans.png');
-  --info-row-3: url('../img/star-panel/info-row-3-humans.png');
-  --info-row-4: url('../img/star-panel/info-row-4-humans.png');
-  --star-ring: url('../img/star-panel/ring-humans.svg');
-  --star-circle-top: url('../img/star-panel/circle-top-humans.svg');
-  --star-button: url('../img/star-panel/ring-button-humans.svg');
-  --race-bg: url('../img/star-panel/race-bg-humans.svg');
-  --close-button: url('../img/star-panel/close-button-humans.svg');
-}
-
-.star-panel.is-simbionts {
-  --info-row-1: url('../img/star-panel/info-row-1-simbionts.png');
-  --info-row-2: url('../img/star-panel/info-row-2-simbionts.png');
-  --info-row-3: url('../img/star-panel/info-row-3-simbionts.png');
-  --info-row-4: url('../img/star-panel/info-row-4-simbionts.png');
-  --star-ring: url('../img/star-panel/ring-simbionts.svg');
-  --star-circle-top: url('../img/star-panel/circle-top-simbionts.svg');
-  --star-button: url('../img/star-panel/ring-button-simbionts.svg');
-  --race-bg: url('../img/star-panel/race-bg-simbionts.svg');
-  --close-button: url('../img/star-panel/close-button-simbionts.svg');
-}
-
-.star-panel.is-lizards {
-  --info-row-1: url('../img/star-panel/info-row-1-lizards.png');
-  --info-row-2: url('../img/star-panel/info-row-2-lizards.png');
-  --info-row-3: url('../img/star-panel/info-row-3-lizards.png');
-  --info-row-4: url('../img/star-panel/info-row-4-lizards.png');
-  --star-ring: url('../img/star-panel/ring-lizards.svg');
-  --star-circle-top: url('../img/star-panel/circle-top-lizards.svg');
-  --star-button: url('../img/star-panel/ring-button-lizards.svg');
-  --race-bg: url('../img/star-panel/race-bg-lizards.svg');
-  --close-button: url('../img/star-panel/close-button-lizards.svg');
-  --info-key-color: #1A1A1A;
-  --info-value-color: #1A1A1A;
-}
 
 .star-panel__info {
   width: 290px;
@@ -119,23 +60,23 @@
 .star-panel__info-row.is-heading {
   padding-left: 36px;
   left: 10px;
-  background-image: var(--info-row-1);
+  background-image: url('../img/star-panel/info-row-1-insects.png');
 }
 
 .star-panel__info-row.is-slots {
   left: 2px;
-  background-image: var(--info-row-2);
+  background-image: url('../img/star-panel/info-row-2-insects.png');
 }
 
 .star-panel__info-row.is-energy {
   left: 3px;
-  background-image: var(--info-row-3);
+  background-image: url('../img/star-panel/info-row-3-insects.png');
 }
 
 .star-panel__info-row.is-life {
   padding-left: 32px;
   left: 12px;
-  background-image: var(--info-row-4);
+  background-image: url('../img/star-panel/info-row-4-insects.png');
 }
 
 .star-panel__info-key,
@@ -170,7 +111,7 @@
   height: 380px;
   position: relative;
   z-index: var(--star-layer);
-  background-image: var(--star-ring);
+  background-image: url('../img/star-panel/ring-insects.svg');
   background-repeat: no-repeat;
   background-position: 50% 50%;
   background-size: 100%;
@@ -184,7 +125,7 @@
   position: absolute;
   top: -26px;
   left: calc(50% - 32px);
-  background-image: var(--star-circle-top);
+  background-image: url('../img/star-panel/circle-top-insects.svg');
   background-repeat: no-repeat;
   background-position: 50% 50%;
   background-size: 100%;
@@ -198,7 +139,7 @@
   left: calc(50% - 38px);
   bottom: -35px;
   background-color: transparent;
-  background-image: var(--star-button);
+  background-image: url('../img/star-panel/ring-button-insects.svg');
   background-repeat: no-repeat;
   background-position: 50% 50%;
   background-size: 100%;
@@ -233,7 +174,7 @@
   left: 0;
   top: 0;
   z-index: var(--main-layer);
-  background-image: var(--race-bg);
+  background-image: url('../img/star-panel/race-bg-insects.svg');
   background-repeat: no-repeat;
   background-position: 50% 50%;
   background-size: contain;
@@ -282,6 +223,7 @@
   line-height: 1.25;
   color: var(--race-description-color);
 }
+
 .star-panel__close-button {
   width: 38px;
   height: 38px;
@@ -291,7 +233,7 @@
   top: -14px;
   z-index: var(--race-layer);
   background-color: transparent;
-  background-image: var(--close-button);
+  background-image: url('../img/star-panel/close-button-insects.svg');
   background-repeat: no-repeat;
   background-position: 50% 50%;
   background-size: 100%;
@@ -306,4 +248,157 @@
 
 .star-panel__close-button:active {
   transform: scale(1);
+}
+
+/* ROBOTS */
+.star-panel.is-robots .star-panel__info-row.is-heading {
+  background-image: url('../img/star-panel/info-row-1-robots.png');
+}
+
+.star-panel.is-robots .star-panel__info-row.is-slots {
+  background-image: url('../img/star-panel/info-row-2-robots.png');
+}
+
+.star-panel.is-robots .star-panel__info-row.is-energy {
+  background-image: url('../img/star-panel/info-row-3-robots.png');
+}
+
+.star-panel.is-robots .star-panel__info-row.is-life {
+  background-image: url('../img/star-panel/info-row-4-robots.png');
+}
+
+.star-panel.is-robots .star-panel__star {
+  background-image: url('../img/star-panel/ring-robots.svg');
+}
+
+.star-panel.is-robots .star-panel__star::after {
+  background-image: url('../img/star-panel/circle-top-robots.svg');
+}
+
+.star-panel.is-robots .star-panel__star-button {
+  background-image: url('../img/star-panel/ring-button-robots.svg');
+}
+
+.star-panel.is-robots .star-panel__race::before {
+  background-image: url('../img/star-panel/race-bg-robots.svg');
+}
+
+.star-panel.is-robots .star-panel__close-button {
+  background-image: url('../img/star-panel/close-button-robots.svg');
+}
+
+/* HUMANS */
+.star-panel.is-humans .star-panel__info-row.is-heading {
+  background-image: url('../img/star-panel/info-row-1-humans.png');
+}
+
+.star-panel.is-humans .star-panel__info-row.is-slots {
+  background-image: url('../img/star-panel/info-row-2-humans.png');
+}
+
+.star-panel.is-humans .star-panel__info-row.is-energy {
+  background-image: url('../img/star-panel/info-row-3-humans.png');
+}
+
+.star-panel.is-humans .star-panel__info-row.is-life {
+  background-image: url('../img/star-panel/info-row-4-humans.png');
+}
+
+.star-panel.is-humans .star-panel__star {
+  background-image: url('../img/star-panel/ring-humans.svg');
+}
+
+.star-panel.is-humans .star-panel__star::after {
+  background-image: url('../img/star-panel/circle-top-humans.svg');
+}
+
+.star-panel.is-humans .star-panel__star-button {
+  background-image: url('../img/star-panel/ring-button-humans.svg');
+}
+
+.star-panel.is-humans .star-panel__race::before {
+  background-image: url('../img/star-panel/race-bg-humans.svg');
+}
+
+.star-panel.is-humans .star-panel__close-button {
+  background-image: url('../img/star-panel/close-button-humans.svg');
+}
+
+/* Simbionts */
+.star-panel.is-simbionts .star-panel__info-row.is-heading {
+  background-image: url('../img/star-panel/info-row-1-simbionts.png');
+}
+
+.star-panel.is-simbionts .star-panel__info-row.is-slots {
+  background-image: url('../img/star-panel/info-row-2-simbionts.png');
+}
+
+.star-panel.is-simbionts .star-panel__info-row.is-energy {
+  background-image: url('../img/star-panel/info-row-3-simbionts.png');
+}
+
+.star-panel.is-simbionts .star-panel__info-row.is-life {
+  background-image: url('../img/star-panel/info-row-4-simbionts.png');
+}
+
+.star-panel.is-simbionts .star-panel__star {
+  background-image: url('../img/star-panel/ring-simbionts.svg');
+}
+
+.star-panel.is-simbionts .star-panel__star::after {
+  background-image: url('../img/star-panel/circle-top-simbionts.svg');
+}
+
+.star-panel.is-simbionts .star-panel__star-button {
+  background-image: url('../img/star-panel/ring-button-simbionts.svg');
+}
+
+.star-panel.is-simbionts .star-panel__race::before {
+  background-image: url('../img/star-panel/race-bg-simbionts.svg');
+}
+
+.star-panel.is-simbionts .star-panel__close-button {
+  background-image: url('../img/star-panel/close-button-simbionts.svg');
+}
+
+/* LIZARDS */
+.star-panel.is-lizards {
+  --info-key-color: #1A1A1A;
+  --info-value-color: #1A1A1A;
+}
+
+.star-panel.is-lizards .star-panel__info-row.is-heading {
+  background-image: url('../img/star-panel/info-row-1-lizards.png');
+}
+
+.star-panel.is-lizards .star-panel__info-row.is-slots {
+  background-image: url('../img/star-panel/info-row-2-lizards.png');
+}
+
+.star-panel.is-lizards .star-panel__info-row.is-energy {
+  background-image: url('../img/star-panel/info-row-3-lizards.png');
+}
+
+.star-panel.is-lizards .star-panel__info-row.is-life {
+  background-image: url('../img/star-panel/info-row-4-lizards.png');
+}
+
+.star-panel.is-lizards .star-panel__star {
+  background-image: url('../img/star-panel/ring-lizards.svg');
+}
+
+.star-panel.is-lizards .star-panel__star::after {
+  background-image: url('../img/star-panel/circle-top-lizards.svg');
+}
+
+.star-panel.is-lizards .star-panel__star-button {
+  background-image: url('../img/star-panel/ring-button-lizards.svg');
+}
+
+.star-panel.is-lizards .star-panel__race::before {
+  background-image: url('../img/star-panel/race-bg-lizards.svg');
+}
+
+.star-panel.is-lizards .star-panel__close-button {
+  background-image: url('../img/star-panel/close-button-lizards.svg');
 }

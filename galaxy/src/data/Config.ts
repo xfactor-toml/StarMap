@@ -15,6 +15,7 @@ export const Config = {
         near: 0.5,
         far: 15000
     },
+    CAM_DAMPING_FACTOR: 0.025,
 
     // SKY_BOX_SIZE: 8000,
 

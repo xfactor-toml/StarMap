@@ -1,9 +1,4 @@
 .tooltip {
-  --star-bg: url('../img/tooltip/starBg.png');
-  --star-image: url('../img/tooltip/avatarStar.png');
-  --info-border: url('../img/tooltip/starBgInf.png');
-  --info-bg: url('../img/tooltip/bgInf.png');
-  --race-image: url('../img/tooltip/avatar.png');
   --name-color: #ffff00;
   --star-level-color: #fff;
   --star-description-color: #fff;
@@ -30,32 +25,57 @@
 }
 
 .tooltip.is-humans {
-  --star-bg: url('../img/tooltip/starBg2.png');
-  --star-image: url('../img/tooltip/avatarStar2.png');
-  --info-border: url('../img/tooltip/starBgInf2.png');
-  --info-bg: url('../img/tooltip/bgInf2.png');
-  --race-image: url('../img/tooltip/avatar2.png');
   --race-name-bg: linear-gradient(45deg, #f0af29 0%, #b61b00 100%);
   --race-name-border-color: #e79822;
 }
 
+.tooltip.is-humans .tooltip__star {
+  background-image: url('../img/tooltip/starBg2.png');
+}
+
+.tooltip.is-humans .tooltip__star::before {
+  background-image: url('../img/tooltip/avatarStar2.png');
+}
+
+.tooltip.is-humans .tooltip__info::before {
+  background-image: url('../img/tooltip/bgInf2.png');
+}
+
+.tooltip.is-humans .tooltip__info::after {
+  background-image: url('../img/tooltip/starBgInf2.png');
+}
+
+.tooltip.is-humans .tooltip__race::before {
+  background-image: url('../img/tooltip/avatar2.png');
+}
+
 .tooltip.is-simbionts {
-  --star-bg: url('../img/tooltip/starBg3.png');
-  --star-image: url('../img/tooltip/avatarStar3.png');
-  --info-border: url('../img/tooltip/starBgInf3.png');
-  --info-bg: url('../img/tooltip/bgInf3.png');
-  --race-image: url('../img/tooltip/avatar3.png');
   --race-name-bg: linear-gradient(45deg, #383838 0%, #141414 100%);
   --race-name-border-color: #4f4f4f;
   --info-width: 254px;
 }
 
+.tooltip.is-simbionts .tooltip__star {
+  background-image: url('../img/tooltip/starBg3.png');
+}
+
+.tooltip.is-simbionts .tooltip__star::before {
+  background-image: url('../img/tooltip/avatarStar3.png');
+}
+
+.tooltip.is-simbionts .tooltip__info::before {
+  background-image: url('../img/tooltip/bgInf3.png');
+}
+
+.tooltip.is-simbionts .tooltip__info::after {
+  background-image: url('../img/tooltip/starBgInf3.png');
+}
+
+.tooltip.is-simbionts .tooltip__race::before {
+  background-image: url('../img/tooltip/avatar3.png');
+}
+
 .tooltip.is-lizards {
-  --star-bg: url('../img/tooltip/starBg4.png');
-  --star-image: url('../img/tooltip/avatarStar4.png');
-  --info-border: url('../img/tooltip/starBgInf4.png');
-  --info-bg: url('../img/tooltip/bgInf4.png');
-  --race-image: url('../img/tooltip/avatar4.png');
   --race-name-bg: linear-gradient(45deg, #fcee21 0%, #39b54a 100%);
   --race-name-border-color: #e3e626;
   --name-color: #000;
@@ -63,15 +83,50 @@
   --star-description-color: #000;
 }
 
+.tooltip.is-lizards .tooltip__star {
+  background-image: url('../img/tooltip/starBg4.png');
+}
+
+.tooltip.is-lizards .tooltip__star::before {
+  background-image: url('../img/tooltip/avatarStar4.png');
+}
+
+.tooltip.is-lizards .tooltip__info::before {
+  background-image: url('../img/tooltip/bgInf4.png');
+}
+
+.tooltip.is-lizards .tooltip__info::after {
+  background-image: url('../img/tooltip/starBgInf4.png');
+}
+
+.tooltip.is-lizards .tooltip__race::before {
+  background-image: url('../img/tooltip/avatar4.png');
+}
+
 .tooltip.is-insects {
-  --star-bg: url('../img/tooltip/starBg5.png');
-  --star-image: url('../img/tooltip/avatarStar5.png');
-  --info-border: url('../img/tooltip/starBgInf5.png');
-  --info-bg: url('../img/tooltip/bgInf5.png');
-  --race-image: url('../img/tooltip/avatar5.png');
   --race-name-bg: linear-gradient(0deg, #9512d9 0%, #3d217f 100%);
   --race-name-border-color: #ac15fb;
   --info-width: 246px;
+}
+
+.tooltip.is-insects .tooltip__star {
+  background-image: url('../img/tooltip/starBg5.png');
+}
+
+.tooltip.is-insects .tooltip__star::before {
+  background-image: url('../img/tooltip/avatarStar5.png');
+}
+
+.tooltip.is-insects .tooltip__info::before {
+  background-image: url('../img/tooltip/bgInf5.png');
+}
+
+.tooltip.is-insects .tooltip__info::after {
+  background-image: url('../img/tooltip/starBgInf5.png');
+}
+
+.tooltip.is-insects .tooltip__race::before {
+  background-image: url('../img/tooltip/avatar5.png');
 }
 
 .tooltip__star {
@@ -79,7 +134,7 @@
   height: 100%;
   position: relative;
   z-index: var(--star-layer);
-  background-image: var(--star-bg);
+  background-image: url('../img/tooltip/starBg.png');
   background-repeat: no-repeat;
   background-size: contain;
 }
@@ -89,7 +144,7 @@
   display: block;
   width: 100%;
   height: 100%;
-  background-image: var(--star-image);
+  background-image: url('../img/tooltip/avatarStar.png');
   background-repeat: no-repeat;
   background-position: 50% 50%;
 }
@@ -115,7 +170,6 @@
   top: 0;
   left: 0;
   z-index: var(--under-layer);
-  background-image: var(--info-bg);
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -125,11 +179,12 @@
   height: calc(100% - 4px);
   left: 2px;
   top: 2px;
+  background-image: url('../img/tooltip/bgInf.png');
 }
 
 .tooltip__info::after {
   z-index: var(--main-layer);
-  background-image: var(--info-border);
+  background-image: url('../img/tooltip/starBgInf.png');
   background-size: contain;
 }
 
@@ -190,7 +245,7 @@
   position: absolute;
   left: 0;
   top: 0;
-  background-image: var(--race-image);
+  background-image: url('../img/tooltip/avatar.png');
   background-repeat: no-repeat;
   background-size: contain;
 }

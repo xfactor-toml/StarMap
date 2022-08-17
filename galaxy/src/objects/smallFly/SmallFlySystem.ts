@@ -40,7 +40,7 @@ export class SmallFlySystem {
             dist = pos1.distanceTo(pos2);
         }
         let fly = new SmallFlyLine(this._parent, pos1, pos2, {
-            spd: MyMath.randomInRange(0.3, 0.4) * 5 / 10,
+            spd: MyMath.randomInRange(0.3, 0.4) * 2.5,
             pointsCnt: MyMath.randomIntInRange(14, 16)
         });
         this._lines.push(fly);
