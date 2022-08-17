@@ -292,14 +292,12 @@ function createGui() {
                 } else {
                     this.starPanelData = data;
                     this.starPanelVisible = true;
-                    this.showOverlay();
                 }
             },
             hideStarPanel() {
                 if (this.starPanelVisible) {
                     this.starPanelData = null;
                     this.starPanelVisible = false;
-                    this.hideOverlay();
                 }
             },
             showOverlay() {
