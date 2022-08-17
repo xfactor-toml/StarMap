@@ -48,8 +48,6 @@
             });
 
             GUI.on('tooltipDiveIn', () => {
-                console.log('dive in');
-                // GUI.off('tooltipDiveIn')
                 GUI.hideTooltip();
                 window.dispatchEvent(new CustomEvent('guiEvent', {
                     detail: {
