@@ -27,7 +27,7 @@ function getTooltipComponent() {
             },
             raceImageUrl: {
                 type: String,
-                default: '/gui/img/tooltip/ava.png'
+                default: './gui/img/tooltip/ava.png'
             },
             scale: {
                 type: Number,
@@ -183,7 +183,7 @@ function getStarPanelComponent() {
             },
             raceImageUrl: {
                 type: String,
-                default: '/gui/img/star-panel/race-insects.png'
+                default: './gui/img/star-panel/race-insects.png'
             },
             scale: {
                 type: Number,
@@ -336,11 +336,11 @@ function createGui() {
             },
             getRaceId(raceName) {
               return {
-                Humans: 1,
-                Simbionts: 2,
-                Lizards: 3,
-                Insects: 4,
-                Robots: 5,
+                  Humans: 'human',
+                  Simbionts: 'simbionts',
+                  Lizards: 'lizards',
+                  Insects: 'insects',
+                  Robots: 'robots',
               }[raceName] || ''
             }
         },
