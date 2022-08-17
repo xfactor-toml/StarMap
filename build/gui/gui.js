@@ -276,12 +276,14 @@ function createGui() {
                 } else {
                     this.tooltipData = data;
                     this.tooltipVisible = true;
+                    this.showOverlay();
                 }
             },
             hideTooltip() {
                 if (this.tooltipVisible) {
                     this.tooltipData = null;
                     this.tooltipVisible = false;
+                    this.hideOverlay();
                 }
             },
             showStarPanel(data) {
