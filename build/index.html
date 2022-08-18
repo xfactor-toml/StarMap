@@ -74,6 +74,22 @@
                 GUI.emit('tooltipHide');
             });
 
+            GUI.on('tooltipHideHover', () => {
+                console.log('tooltipHideHover');
+            });
+
+            GUI.on('tooltipDiveInHover', () => {
+                console.log('tooltipDiveInHover');
+            });
+
+            GUI.on('starPanelHideHover', () => {
+                console.log('starPanelHideHover');
+            });
+
+            GUI.on('starPanelPlayHover', () => {
+                console.log('starPanelPlayHover');
+            });
+
             // GUI.once('tooltipDiveIn', () => {
             //     console.log('dive in once');
             // });
