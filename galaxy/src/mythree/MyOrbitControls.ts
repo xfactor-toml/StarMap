@@ -1048,9 +1048,9 @@ export class MyOrbitControls extends EventDispatcher {
     }
 
     isRotate(): boolean {
-        return state == STATE.ROTATE;
+        return state == STATE.ROTATE || state == STATE.TOUCH_ROTATE;
     }
-
+    
     //
     // public methods
     //

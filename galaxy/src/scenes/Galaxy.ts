@@ -1620,7 +1620,7 @@ export class Galaxy {
 
         // move camera
         let asRat = innerWidth / innerHeight;
-        let starDist = asRat > 1 ? innerHeight / 100 : innerHeight / 11;
+        let starDist = innerHeight / (18 * asRat);
         let newCameraPos = this.camera.position.clone().sub(starPos).normalize().
             multiplyScalar(starDist).add(starPos);
         
