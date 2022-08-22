@@ -5,7 +5,6 @@ import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
 import { ThreeLoader } from '../loaders/ThreeLoader';
 import { MyMath } from '../utils/MyMath';
 import { LogMng } from '../utils/LogMng';
-import { sound } from '@pixi/sound';
 import gsap from 'gsap';
 import { Params } from '../data/Params';
 import { Config } from '../data/Config';
@@ -22,6 +21,8 @@ import { GameEvents } from '../events/GameEvents';
 import { BigStarParams } from '../objects/BigStar';
 import { SmallFlySystem } from '../objects/smallFly/SmallFlySystem';
 import { MyOrbitControls } from '../mythree/MyOrbitControls';
+import { AudioMng } from '../audio/AudioMng';
+import { AudioData } from '../audio/AudioData';
 
 const RACES = ['Robots', 'Humans', 'Simbionts', 'Lizards', 'Insects'];
 
@@ -290,6 +291,11 @@ export class Galaxy {
 
     private _starAlphaFactor = 1;
 
+    // rot sound
+    private rotSndStartTimer = 0;
+    private prevCameraAzimutAngle = 0;
+    private prevCamPolarAngle = 0;
+
 
     constructor(aParams: any) {
         this.scene = aParams.scene;
@@ -298,7 +304,7 @@ export class Galaxy {
         this.orbitCenter = new THREE.Vector3();
 
         if (!DeviceInfo.getInstance().iOS) {
-            this._starAlphaFactor = 0.7;
+            this._starAlphaFactor = 0.6;
         }
     }
 
@@ -399,10 +405,10 @@ export class Galaxy {
 
         this.raycaster = new THREE.Raycaster();
 
-        // pixi music
-        let snd = sound.add('music', './assets/audio/vorpal-12.mp3');
-        snd.loop = true;
-        snd.play();
+        // start music
+        let music = AudioMng.getInstance().getSound(AudioData.MUSIC_MAIN);
+        music.loop = true;
+        music.play();
 
         // helpers
         if (Params.isDebugMode) {
@@ -422,31 +428,31 @@ export class Galaxy {
         this.fsm = new FSM();
         this.fsm.addState(States.INIT, this, this.onStateInitEnter, this.onStateInitUpdate);
         this.fsm.addState(States.GALAXY, this, this.onStateGalaxyEnter, this.onStateGalaxyUpdate);
-        this.fsm.addState(States.TO_STAR, this, this.onStateToStarEnter, this.onStateToStarUpdate);
+        this.fsm.addState(States.TO_STAR, this, this.onStateToStarEnter, this.onStateToStarUpdate, this.onStateToStarExit);
         this.fsm.addState(States.STAR, this, this.onStateStarEnter, this.onStateStarUpdate);
         this.fsm.addState(States.FROM_STAR, this, this.onStateFromStarEnter, this.onStateFromStarUpdate);
         this.fsm.startState(States.INIT);
 
-        window.addEventListener('guiEvent', (e) => {
+        // front events
 
-            let data = e['detail'];
+        FrontEvents.diveIn.add((aData: { starId : number}) => {
+            this.fsm.startState(States.TO_STAR, { starId: aData.starId });
+        }, this);
 
-            switch (data.eventName) {
-
-                case 'diveIn':
-                    this.fsm.startState(States.TO_STAR, { starId: data.starId });
-                    break;
-                
-                case 'flyFromStar':
-                    this.isStarPreviewState = false;
-                    if (this.fsm.getCurrentState().name == States.STAR) {
-                        this.fsm.startState(States.FROM_STAR);
-                    }
-                    break;
-                
+        FrontEvents.flyFromStar.add(() => {
+            this.isStarPreviewState = false;
+            if (this.fsm.getCurrentState().name == States.STAR) {
+                this.fsm.startState(States.FROM_STAR);
             }
+        }, this);
 
-        });
+        FrontEvents.onHover.add(() => {
+            AudioMng.getInstance().playSound(AudioData.SFX_HOVER);
+        }, this);
+
+        FrontEvents.onClick.add(() => {
+            AudioMng.getInstance().playSound(AudioData.SFX_CLICK);
+        }, this);
 
     }
 
@@ -492,6 +498,8 @@ export class Galaxy {
         galaxyFolder.add(Params.galaxyData, 'scaleMax', 0.5, 4, 0.1).onChange(() => { this.createGalaxyStars(); });
         //galaxyFolder.add(Params.galaxyData, 'k', 0, 1, 0.02).onChange(() => { this.createGalaxyStars(); });
         // galaxyFolder.add(Params.galaxyData, 'isNewMethod').onChange(() => { this.createGalaxyStars(); });
+        galaxyFolder.add(this, '_starAlphaFactor', 0.1, 1, 0.01).onChange(() => {  });
+        // this._starAlphaFactor = 0.5;
 
         galaxyFolder.add(DEBUG_PARAMS, 'center visible', true).onChange((value) => {
             this.centerVisible = value;
@@ -1102,10 +1110,10 @@ export class Galaxy {
 
         this.orbitControl.target = this.orbitCenter;
         this.orbitControl.update();
-        this.orbitControl.addEventListener('change', () => {
-        });
-        this.orbitControl.addEventListener('end', () => {
-        });
+        // this.orbitControl.addEventListener('change', () => {
+        // });
+        // this.orbitControl.addEventListener('end', () => {
+        // });
 
     }
 
@@ -1172,6 +1180,8 @@ export class Galaxy {
             case States.GALAXY:
                 if (this.starPointHovered && !this.isStarPreviewState) {
 
+                    AudioMng.getInstance().playSound(AudioData.SFX_CLICK);
+
                     this.isStarPreviewState = true;
                     this.orbitControl.autoRotate = false;
                     this.orbitControl.setSphericalDelta(0, 0);
@@ -1192,7 +1202,7 @@ export class Galaxy {
                         }
                     });
                     
-                    FrontEvents.onStarPreviewClosed.addOnce(() => {
+                    FrontEvents.starPreviewClose.addOnce(() => {
                         this.isStarPreviewState = false;
                         this.orbitControl.autoRotate = true;
                         this.orbitControl.enableZoom = true;
@@ -1265,7 +1275,7 @@ export class Galaxy {
     }
 
     private guiGetScaleBigStarTooltip(): number {
-        return innerWidth / 800;
+        return Math.min(innerWidth / 800, innerHeight / 840);
     }
 
     private updateGalaxyPlane(dt: number) {
@@ -1330,6 +1340,39 @@ export class Galaxy {
         }
     }
 
+    private updateRotationSound(dt: number) {
+        const minDelta = 0.001;
+        let cameraAzimutAngle = this.orbitControl.getAzimuthalAngle();
+        let cameraPolarAngle = this.orbitControl.getPolarAngle();
+        let azDelta = Math.abs(this.orbitControl.getAzimuthalAngle() - this.prevCameraAzimutAngle);
+        let polDelta = Math.abs(this.orbitControl.getPolarAngle() - this.prevCamPolarAngle);
+
+        let isRotate = this.orbitControl.isRotate() && (azDelta > minDelta || polDelta > minDelta);
+        
+        if (isRotate) {
+            // this.rotSndStartTimer -= dt;
+            if (this.rotSndStartTimer < 0) {
+                let snd = AudioMng.getInstance().getSound(AudioData.SFX_CAM_ROTATE);
+                if (!snd.isPlaying) {
+                    snd.loop = true;
+                    snd.play();
+                }
+            }
+
+        }
+        else {
+            this.rotSndStartTimer = 0.02;
+            let snd = AudioMng.getInstance().getSound(AudioData.SFX_CAM_ROTATE);
+            if (snd.isPlaying) {
+                snd.stop();
+            }
+        }
+
+        this.rotSndStartTimer -= dt;
+        this.prevCameraAzimutAngle = cameraAzimutAngle;
+        this.prevCamPolarAngle = cameraPolarAngle;
+    }
+
     // STATES
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1370,14 +1413,16 @@ export class Galaxy {
 
     }
 
-
     private onStateGalaxyEnter() {
+        this.prevCameraAzimutAngle = this.orbitControl.getAzimuthalAngle();
+        this.prevCamPolarAngle = this.orbitControl.getPolarAngle();
         this.orbitControl.update();
         this.orbitControl.autoRotate = true;
         this.orbitControl.enableZoom = true;
         this.orbitControl.enabled = true;
-    }
 
+    }
+    
     private onStateGalaxyUpdate(dt: number) {
 
         this.orbitControl.update();
@@ -1391,6 +1436,7 @@ export class Galaxy {
         this.updateGalaxyStars(dt);
         this.updateFarStars(dt);
         this.updateSmallGalaxies(dt);
+        this.updateRotationSound(dt);
 
         this.smallFlySystem.update(dt);
 
@@ -1494,7 +1540,6 @@ export class Galaxy {
 
 
         // hide point sprites
-        // let starPointSprite = this.starPointSprites[aParams.starId];
         for (let i = 0; i < this.starPointSprites.length; i++) {
             const starPointSprite = this.starPointSprites[i];
             gsap.to([starPointSprite.material], {
@@ -1564,7 +1609,7 @@ export class Galaxy {
             x: systemData.positionInGalaxy.x,
             y: systemData.positionInGalaxy.y,
             z: systemData.positionInGalaxy.z,
-            duration: DUR,
+            duration: DUR / 2,
             ease: 'sine.inOut',
             onUpdate: () => {
                 this.orbitCenter.copy(this.cameraTarget);
@@ -1574,9 +1619,11 @@ export class Galaxy {
         this.galaxySaveAnimData.cameraPosition = this.camera.position.clone();
 
         // move camera
+        let asRat = innerWidth / innerHeight;
+        let starDist = asRat > 1 ? innerHeight / 100 : innerHeight / 11;
         let newCameraPos = this.camera.position.clone().sub(starPos).normalize().
-            multiplyScalar(systemData.starParams.starSize * 1.2 / this.guiGetScaleBigStarTooltip()).add(starPos);
-
+            multiplyScalar(starDist).add(starPos);
+        
         gsap.to(this.camera.position, {
             x: newCameraPos.x,
             y: newCameraPos.y,
@@ -1631,6 +1678,14 @@ export class Galaxy {
 
         this.smallFlySystem.activeSpawn = false;
 
+        AudioMng.getInstance().playSound(AudioData.SFX_DIVE_IN);
+
+        setTimeout(() => {
+            let starSnd = AudioMng.getInstance().getSound(AudioData.SFX_STAR_FIRE);
+            starSnd.loop = true;
+            starSnd.play();
+        }, 1000 * DUR / 2);
+
     }
 
     private onStateToStarUpdate(dt: number) {
@@ -1650,6 +1705,10 @@ export class Galaxy {
 
         this.smallFlySystem.update(dt);
 
+    }
+
+    private onStateToStarExit() {
+        
     }
 
     private onStateStarEnter() {
@@ -1673,7 +1732,8 @@ export class Galaxy {
         //     }
         // }));
 
-        let guiScale = Math.min(1, this.guiGetScaleBigStarTooltip()); 
+        // let guiScale = Math.min(1, this.guiGetScaleBigStarTooltip());
+        let guiScale = this.guiGetScaleBigStarTooltip(); 
 
         GameEvents.dispatchEvent(GameEvents.EVENT_SHOW_STAR_GUI, {
             name: starData.name,
@@ -1876,6 +1936,13 @@ export class Galaxy {
         });
 
         this.smallFlySystem.activeSpawn = true;
+
+        AudioMng.getInstance().playSound(AudioData.SFX_DIVE_OUT);
+        
+        setTimeout(() => {
+            AudioMng.getInstance().getSound(AudioData.SFX_STAR_FIRE).stop();
+        }, 1000 * DUR / 3);
+
     }
     
     private onStateFromStarUpdate(dt: number) {

@@ -3,6 +3,8 @@ import { Signal } from '../events/Signal';
 import { LogMng } from '../utils/LogMng';
 import { Config } from '../data/Config';
 import { Params } from '../data/Params';
+import { AudioMng } from '../audio/AudioMng';
+import { AudioData } from '../audio/AudioData';
 
 export class Preloader {
     private loader: ThreeLoader;
@@ -91,13 +93,10 @@ export class Preloader {
         path = assetsPath;
         this.loader.json('galaxyState', `${path}galaxyState.json`);
 
-        // path = assetsPath + 'audio/';
-        // loader.sound('sndMain', `${path}vorpal-12.mp3`);
-
         // this.loader.texture('cloud', assetsPath + 'cloud.png');
 
-        
-
+        let am = AudioMng.getInstance({});
+        am.init(AudioData.SOUNDS);
 
     }
 

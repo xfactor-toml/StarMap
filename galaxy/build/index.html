@@ -43,27 +43,32 @@
             GUI = createGui();
 
             GUI.on('tooltipHide', () => {
+                frontEvents.onClick.dispatch();
                 GUI.hideTooltip();
-                frontEvents.onStarPreviewClosed.dispatch();
+                frontEvents.starPreviewClose.dispatch();
             });
 
             GUI.on('tooltipDiveIn', () => {
+                frontEvents.onClick.dispatch();
                 GUI.hideTooltip();
-                window.dispatchEvent(new CustomEvent('guiEvent', {
-                    detail: {
-                        eventName: 'diveIn',
-                        starId: currentStarId
-                    }
-                }));
+                frontEvents.diveIn.dispatch({ starId: currentStarId });
+                // window.dispatchEvent(new CustomEvent('guiEvent', {
+                //     detail: {
+                //         eventName: 'diveIn',
+                //         starId: currentStarId
+                //     }
+                // }));
             });
 
             GUI.on('starPanelHide', () => {
+                frontEvents.onClick.dispatch();
                 GUI.hideStarPanel();
-                window.dispatchEvent(new CustomEvent('guiEvent', {
-                    detail: {
-                        eventName: 'flyFromStar'
-                    }
-                }));
+                frontEvents.flyFromStar.dispatch();
+                // window.dispatchEvent(new CustomEvent('guiEvent', {
+                //     detail: {
+                //         eventName: 'flyFromStar'
+                //     }
+                // }));
             });
 
             GUI.on('starPanelPlay', () => {
@@ -71,7 +76,24 @@
             });
 
             GUI.on('overlayClick', () => {
+                frontEvents.onClick.dispatch();
                 GUI.emit('tooltipHide');
+            });
+
+            GUI.on('tooltipHideHover', () => {
+                frontEvents.onHover.dispatch();
+            });
+
+            GUI.on('tooltipDiveInHover', () => {
+                frontEvents.onHover.dispatch();
+            });
+
+            GUI.on('starPanelHideHover', () => {
+                frontEvents.onHover.dispatch();
+            });
+
+            GUI.on('starPanelPlayHover', () => {
+                frontEvents.onHover.dispatch();
             });
 
             // GUI.once('tooltipDiveIn', () => {

@@ -85,9 +85,15 @@ function getTooltipComponent() {
             hide() {
                 this.$emit('hide');
             },
+            hideButtonHover() {
+                this.$emit('hideButtonHover');
+            },
             diveIn() {
                 this.$emit('diveIn');
-            }
+            },
+            diveInButtonHover() {
+                this.$emit('diveInButtonHover');
+            },
         },
         mounted() {
             this.intersection = this.recalcIntersection()
@@ -132,12 +138,14 @@ function getTooltipComponent() {
               class="tooltip__button is-close"
               type="button"
               @click="hide()"
+              @mouseenter="hideButtonHover()"
             >Close
             </button>
             <button
               class="tooltip__button is-dive-in"
               type="button"
               @click="diveIn()"
+              @mouseenter="diveInButtonHover()"
             >Dive in
             </button>
         </div>
@@ -207,8 +215,14 @@ function getStarPanelComponent() {
             play() {
                 this.$emit('play');
             },
+            playButtonHover() {
+                this.$emit('playButtonHover');
+            },
             hide() {
                 this.$emit('hide');
+            },
+            hideButtonHover() {
+                this.$emit('hideButtonHover');
             },
         },
         template: `
@@ -239,6 +253,7 @@ function getStarPanelComponent() {
                 class="star-panel__star-button is-selectable"
                 type="button"
                 @click="play()"
+                @mouseenter="playButtonHover()"
                 />
                 </div>
                 <div class="star-panel__race">
@@ -246,6 +261,7 @@ function getStarPanelComponent() {
                     class="star-panel__close-button is-selectable"
                     type="button"
                     @click="hide()"
+                    @mouseenter="hideButtonHover()"
                 />
                 <img
                     class="star-panel__race-image"
@@ -365,7 +381,9 @@ function createGui() {
                     :scale="starPanelData.scale"
                     :raceImageUrl="'./gui/img/star-panel/race-' + getRaceId(starPanelData.race) + '.png'"
                     @hide="emit('starPanelHide')"
+                    @hideButtonHover="emit('starPanelHideHover')"
                     @play="emit('starPanelPlay')"
+                    @playButtonHover="emit('starPanelPlayHover')"
                 />
             </transition>
             <transition name="fade">
@@ -380,7 +398,9 @@ function createGui() {
                     :scale="tooltipData.scale"
                     :raceImageUrl="'./gui/img/tooltip/race-' + getRaceId(tooltipData.race) + '.png'"
                     @hide="emit('tooltipHide')"
+                    @hideButtonHover="emit('tooltipHideHover')"
                     @diveIn="emit('tooltipDiveIn')"
+                    @diveInButtonHover="emit('tooltipDiveInHover')"
                 />
             </transition>
         `

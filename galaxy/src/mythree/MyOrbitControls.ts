@@ -1035,17 +1035,6 @@ export class MyOrbitControls extends EventDispatcher {
 
         scope = this;
 
-        const STATE = {
-            NONE: - 1,
-            ROTATE: 0,
-            DOLLY: 1,
-            PAN: 2,
-            TOUCH_ROTATE: 3,
-            TOUCH_PAN: 4,
-            TOUCH_DOLLY_PAN: 5,
-            TOUCH_DOLLY_ROTATE: 6
-        };
-        
         scope.domElement.addEventListener('contextmenu', onContextMenu);
 
         scope.domElement.addEventListener('pointerdown', onPointerDown);
@@ -1056,6 +1045,10 @@ export class MyOrbitControls extends EventDispatcher {
 
         this.update();
 
+    }
+
+    isRotate(): boolean {
+        return state == STATE.ROTATE;
     }
 
     //
