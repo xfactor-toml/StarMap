@@ -351,13 +351,13 @@ function createGui() {
                 }
             },
             getRaceId(raceName) {
-                return {
-                    Humans: 'human',
-                    Simbionts: 'simbionts',
-                    Lizards: 'lizards',
-                    Insects: 'insects',
-                    Robots: 'robots',
-                }[raceName] || ''
+              return {
+                  Humans: 'human',
+                  Simbionts: 'simbionts',
+                  Lizards: 'lizards',
+                  Insects: 'insects',
+                  Robots: 'robots',
+              }[raceName] || ''
             }
         },
         template: `
