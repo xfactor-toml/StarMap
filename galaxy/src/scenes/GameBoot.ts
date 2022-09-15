@@ -4,6 +4,7 @@ import { LogMng } from "../utils/LogMng";
 import { Preloader } from "./Preloader";
 import * as MyUtils from "../utils/MyUtils";
 import { Params } from "../data/Params";
+import { AudioMng } from "../audio/AudioMng";
 
 type InitParams = {
 
@@ -71,8 +72,6 @@ export class GameBoot {
                 }
             }
         }
-
-
     }
 
     private onLoadProgress(aPercent: number) {

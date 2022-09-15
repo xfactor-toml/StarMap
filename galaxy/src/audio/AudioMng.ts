@@ -11,8 +11,11 @@ export class AudioMng {
     private _params: InitParams;
     private _sounds: { [key: string]: Sound };
 
+    musicVolume = 1;
+    sfxVolume = 1;
+
     constructor(aParams: InitParams) {
-        if (AudioMng._instance) throw new Error("Don't use InputMng.constructor(), it's SINGLETON, use getInstance() method");
+        if (AudioMng._instance) throw new Error("Don't use AudioMng.constructor(), it's SINGLETON, use getInstance() method");
         this._params = aParams;
     }
 
@@ -43,8 +46,17 @@ export class AudioMng {
         return this._sounds[aAlias];
     }
 
-    playSound(aAlias: string) {
-        this._sounds[aAlias].play();
+    playMusic(aAlias: string, aLoop = true, aVolume?) {
+        let snd = this._sounds[aAlias];
+        snd.volume = aVolume || this.musicVolume;
+        snd.loop = aLoop;
+        snd.play();
+    }
+
+    playSfx(aAlias: string, aVolume?) {
+        let snd = this._sounds[aAlias];
+        snd.volume = aVolume || this.sfxVolume;
+        snd.play();
     }
 
 }

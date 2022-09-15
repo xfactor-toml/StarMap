@@ -5,6 +5,7 @@ import { Config } from '../data/Config';
 import { Params } from '../data/Params';
 import { AudioMng } from '../audio/AudioMng';
 import { AudioData } from '../audio/AudioData';
+import { GameEvents } from '../events/GameEvents';
 
 export class Preloader {
     private loader: ThreeLoader;
@@ -96,6 +97,9 @@ export class Preloader {
         // this.loader.texture('cloud', assetsPath + 'cloud.png');
 
         let am = AudioMng.getInstance({});
+        // storage data
+        am.musicVolume = Number(localStorage.getItem(`musicVolume`) || 1);
+        am.sfxVolume = Number(localStorage.getItem(`sfxVolume`) || 1);
         am.init(AudioData.SOUNDS);
 
     }
@@ -108,6 +112,7 @@ export class Preloader {
                 console.log('loading: ', this.currLoadPerc);
             }
         }
+        GameEvents.dispatchEvent(GameEvents.EVENT_LOADING, { percent: aPerc });
     }
 
     private onLoadComplete() {

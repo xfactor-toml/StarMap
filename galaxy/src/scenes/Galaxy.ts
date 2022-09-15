@@ -406,9 +406,7 @@ export class Galaxy {
         this.raycaster = new THREE.Raycaster();
 
         // start music
-        let music = AudioMng.getInstance().getSound(AudioData.MUSIC_MAIN);
-        music.loop = true;
-        music.play();
+        AudioMng.getInstance().playMusic(AudioData.MUSIC_MAIN);
 
         // helpers
         if (Params.isDebugMode) {
@@ -435,6 +433,19 @@ export class Galaxy {
 
         // front events
 
+        FrontEvents.setMusicVolume.add((aData: { v: number }) => {
+            let am = AudioMng.getInstance();
+            let music = am.getSound(AudioData.MUSIC_MAIN);
+            am.musicVolume = music.volume = aData.v;
+            localStorage.setItem(`musicVolume`, String(am.musicVolume));
+        }, this);
+        
+        FrontEvents.setSFXVolume.add((aData: { v: number }) => {
+            let am = AudioMng.getInstance();
+            am.sfxVolume = aData.v;
+            localStorage.setItem(`sfxVolume`, String(am.sfxVolume));
+        }, this);
+
         FrontEvents.diveIn.add((aData: { starId : number}) => {
             this.fsm.startState(States.TO_STAR, { starId: aData.starId });
         }, this);
@@ -447,11 +458,11 @@ export class Galaxy {
         }, this);
 
         FrontEvents.onHover.add(() => {
-            AudioMng.getInstance().playSound(AudioData.SFX_HOVER);
+            AudioMng.getInstance().playSfx(AudioData.SFX_HOVER);
         }, this);
 
         FrontEvents.onClick.add(() => {
-            AudioMng.getInstance().playSound(AudioData.SFX_CLICK);
+            AudioMng.getInstance().playSfx(AudioData.SFX_CLICK);
         }, this);
 
     }
@@ -1180,7 +1191,7 @@ export class Galaxy {
             case States.GALAXY:
                 if (this.starPointHovered && !this.isStarPreviewState) {
 
-                    AudioMng.getInstance().playSound(AudioData.SFX_CLICK);
+                    AudioMng.getInstance().playSfx(AudioData.SFX_CLICK);
 
                     this.isStarPreviewState = true;
                     this.orbitControl.autoRotate = false;
@@ -1355,6 +1366,7 @@ export class Galaxy {
                 let snd = AudioMng.getInstance().getSound(AudioData.SFX_CAM_ROTATE);
                 if (!snd.isPlaying) {
                     snd.loop = true;
+                    snd.volume = AudioMng.getInstance().sfxVolume;
                     snd.play();
                 }
             }
@@ -1678,11 +1690,12 @@ export class Galaxy {
 
         this.smallFlySystem.activeSpawn = false;
 
-        AudioMng.getInstance().playSound(AudioData.SFX_DIVE_IN);
+        AudioMng.getInstance().playSfx(AudioData.SFX_DIVE_IN);
 
         setTimeout(() => {
             let starSnd = AudioMng.getInstance().getSound(AudioData.SFX_STAR_FIRE);
             starSnd.loop = true;
+            starSnd.volume = AudioMng.getInstance().sfxVolume;
             starSnd.play();
         }, 1000 * DUR / 2);
 
@@ -1757,6 +1770,7 @@ export class Galaxy {
         }
 
         this.updateSmallGalaxies(dt);
+        this.updateRotationSound(dt);
 
         if (this.solarSystem) this.solarSystem.update(dt);
 
@@ -1937,7 +1951,7 @@ export class Galaxy {
 
         this.smallFlySystem.activeSpawn = true;
 
-        AudioMng.getInstance().playSound(AudioData.SFX_DIVE_OUT);
+        AudioMng.getInstance().playSfx(AudioData.SFX_DIVE_OUT);
         
         setTimeout(() => {
             AudioMng.getInstance().getSound(AudioData.SFX_STAR_FIRE).stop();

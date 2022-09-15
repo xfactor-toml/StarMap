@@ -109,7 +109,7 @@
 
             /* 
                 data: { 
-                starId: number,
+                    starId: number,
                     eventName: 'showStarPreviewGui',
                     name: string
                     description: string
@@ -121,22 +121,39 @@
 
             switch (data.eventName) {
 
-                case 'EVENT_GAME_CREATED':
+                case 'GAME_LOADING':
+                    let percent = data.percent; // 0..100
+                    // console.log(`GAME_LOADING: ${percent}`);
+                    break;
+                    
+                case 'GAME_CREATED':
                     frontEvents = e.detail.frontEvents;
+
+                    // start game window mode
+                    frontEvents.startGameWindow.dispatch();
+
+                    // start game fullscreen mode
+                    frontEvents.startGameFull.dispatch();
+
+                    // settings events
+                    // frontEvents.setMusicVolume.dispatch({v: 1}); // 0..1
+                    // frontEvents.setSFXVolume.dispatch({v: 1}); // 0..1
+                    // frontEvents.setFullscreenMode.dispatch({isFullScreen: 1}); // 0 | 1
+
                     initGui();
                     break;
 
-                case 'EVENT_SHOW_STAR_PREVIEW':
+                case 'SHOW_STAR_PREVIEW':
                     currentStarId = data.starId;
                     // GUI.showTooltip(data);
                     GUI.showTooltip({ ...data, textAutofit: true })
                     break;
 
-                case 'EVENT_HIDE_STAR_PREVIEW':
+                case 'HIDE_STAR_PREVIEW':
                     GUI.hideTooltip();
                     break;
 
-                case 'EVENT_SHOW_STAR_GUI':
+                case 'SHOW_STAR_GUI':
                     GUI.showStarPanel(data);
                     break;
 

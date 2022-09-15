@@ -49,6 +49,10 @@ export class Params {
     static isCameraAutoRotate = false;
     static cameraAutoRotateSpeed = -0.05;
 
+    // audio
+    // static musicVolume = 1;
+    // static sfxVolume = 1;
+
     // debug
     static debugAxeHelperOn = false;
     
