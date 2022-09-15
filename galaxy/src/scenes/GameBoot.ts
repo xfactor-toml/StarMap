@@ -5,6 +5,9 @@ import { Preloader } from "./Preloader";
 import * as MyUtils from "../utils/MyUtils";
 import { Params } from "../data/Params";
 import { AudioMng } from "../audio/AudioMng";
+import { GameEngine } from "./GameEngine";
+import { GameEvents } from "../events/GameEvents";
+import { FrontEvents } from "../events/FrontEvents";
 
 type InitParams = {
 
@@ -13,8 +16,7 @@ type InitParams = {
 export class GameBoot {
     private inited = false;
     private preloader: Preloader;
-    onLoadProgressSignal = new Signal();
-    onLoadCompleteSignal = new Signal();
+    isLoaded = false;
 
     constructor() {
         Params.domCanvasParent = document.getElementById('game');
@@ -46,13 +48,13 @@ export class GameBoot {
 
         // preloader
         this.preloader = new Preloader();
-        this.preloader.onLoadProgressSignal.add((aPercent: number) => {
-            this.onLoadProgress(aPercent);
-        }, this);
-        this.preloader.onLoadCompleteSignal.addOnce(() => {
-            this.onLoadComplete();
-        }, this);
+        this.preloader.onLoadCompleteSignal.addOnce(this.onLoadComplete, this);
         this.preloader.loadDefault();
+
+        FrontEvents.startGame.add((aFullscreen = false) => {
+            Config.INIT_FULL_SCREEN = aFullscreen;
+            this.startGame();
+        }, this);
 
     }
 
@@ -75,18 +77,28 @@ export class GameBoot {
     }
 
     private onLoadProgress(aPercent: number) {
-        this.onLoadProgressSignal.dispatch(aPercent);
-        LogMng.debug(`loading: ${aPercent}`);
+        // LogMng.debug(`loading: ${aPercent}`);
     }
 
     private onLoadComplete() {
-        try {
-            document.getElementById('loader').style.display = 'none';
-        } catch (error) {
 
-        }
+        // try {
+        //     document.getElementById('loader').style.display = 'none';
+        // } catch (error) {
 
-        this.onLoadCompleteSignal.dispatch();
+        // }
+
+        this.isLoaded = true;
+        // // if (isPlayClicked) startGame();
+
     }
+
+    
+    
+    startGame() {
+        let gameEngine = new GameEngine();
+        GameEvents.dispatchEvent(GameEvents.EVENT_GAME_CREATED);
+    }
+
 
 }

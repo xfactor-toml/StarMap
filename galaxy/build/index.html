@@ -36,7 +36,6 @@
     <script>
 
         let frontEvents;
-
         let currentStarId = -1;
         let GUI;
 
@@ -125,15 +124,16 @@
                     let percent = data.percent; // 0..100
                     // console.log(`GAME_LOADING: ${percent}`);
                     break;
+
+                case 'GAME_LOADED':
+                    frontEvents = e.detail.frontEvents;
+                    // start game window mode
+                    // frontEvents.startGame.dispatch(false);
+                    // start game fullscreen mode
+                    // frontEvents.startGame.dispatch(true);
+                    break;
                     
                 case 'GAME_CREATED':
-                    frontEvents = e.detail.frontEvents;
-
-                    // start game window mode
-                    frontEvents.startGameWindow.dispatch();
-
-                    // start game fullscreen mode
-                    frontEvents.startGameFull.dispatch();
 
                     // settings events
                     // frontEvents.setMusicVolume.dispatch({v: 1}); // 0..1
@@ -142,6 +142,10 @@
 
                     initGui();
                     break;
+
+                case 'GAME_FULLSCREEN':
+                    let isFS = e.detail.v;
+                    break; 
 
                 case 'SHOW_STAR_PREVIEW':
                     currentStarId = data.starId;

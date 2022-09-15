@@ -10,15 +10,8 @@ window.addEventListener('load', () => {
     const startButton = document.getElementById('startButton');
     const startButtonFull = document.getElementById('startButtonFull');
 
-    let isGameLoaded = false;
-    let isPlayClicked = false;
-
-    function startGame() {
-        let gameEngine = new GameEngine();
-        GameEvents.dispatchEvent(GameEvents.EVENT_GAME_CREATED, {
-            frontEvents: FrontEvents
-        });
-    }
+    // let isGameLoaded = false;
+    // let isPlayClicked = false;
 
     function hideButtons() {
         const buttonBlock = document.getElementById('overlay');
@@ -26,27 +19,23 @@ window.addEventListener('load', () => {
     }
 
     let boot = new GameBoot();
-
-    boot.onLoadCompleteSignal.addOnce(() => {
-        isGameLoaded = true;
-        if (isPlayClicked) startGame();
-    }, this);
-
     boot.init();
 
     // Button Events
 
     startButton.addEventListener('click', async () => {
-        isPlayClicked = true;
+        // isPlayClicked = true;
         hideButtons();
-        if (isGameLoaded) startGame();
+        // if (isGameLoaded) startGame();
+        if (boot.isLoaded) FrontEvents.startGame.dispatch(false);
     });
 
     startButtonFull.addEventListener('click', async () => {
-        Config.FULL_SCREEN = true;
-        isPlayClicked = true;
+        // Config.FULL_SCREEN = true;
+        // isPlayClicked = true;
         hideButtons();
-        if (isGameLoaded) startGame();
+        // if (isGameLoaded) startGame();
+        if (boot.isLoaded) FrontEvents.startGame.dispatch(true);
     });
 
     // Global Events

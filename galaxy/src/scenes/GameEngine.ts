@@ -1,12 +1,11 @@
 import * as THREE from "three";
 
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
+import { SSAARenderPass } from "three/examples/jsm/postprocessing/SSAARenderPass";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
+import { FXAAShader } from "three/examples/jsm/shaders/FXAAShader";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass";
 import { SMAAPass } from "three/examples/jsm/postprocessing/SMAAPass";
-import { FXAAShader } from "three/examples/jsm/shaders/FXAAShader";
-import { SSAARenderPass } from "three/examples/jsm/postprocessing/SSAARenderPass";
-// import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
 
 import * as datGui from "dat.gui";
 import { InputMng } from "../inputs/InputMng";
@@ -16,6 +15,8 @@ import { LogMng } from "../utils/LogMng";
 import { Params } from "../data/Params";
 import { GlobalEvents } from "../events/GlobalEvents";
 import { Galaxy } from "./Galaxy";
+import { FrontEvents } from "../events/FrontEvents";
+import { GameEvents } from "../events/GameEvents";
 
 
 export class GameEngine {
@@ -117,24 +118,44 @@ export class GameEngine {
         // global events
         GlobalEvents.onWindowResizeSignal.add(this.onWindowResize, this);
 
-        if (Config.FULL_SCREEN) {
+        if (Config.INIT_FULL_SCREEN) {
             
             Params.domCanvasParent.requestFullscreen();
 
-            let f1 = (event) => {
-                Params.domCanvasParent.removeEventListener('click', f1);
-                (event as any).target.requestFullscreen();
-            }
+            // let f1 = (event) => {
+            //     Params.domCanvasParent.removeEventListener('click', f1);
+            //     (event as any).target.requestFullscreen();
+            // }
 
-            let f2 = (event) => {
-                Params.domCanvasParent.removeEventListener('touchstart', f2);
-                (event as any).target.requestFullscreen();
-            }
+            // let f2 = (event) => {
+            //     Params.domCanvasParent.removeEventListener('touchstart', f2);
+            //     (event as any).target.requestFullscreen();
+            // }
 
-            if (DeviceInfo.getInstance().iOS) {
+            // if (DeviceInfo.getInstance().iOS) {
                 // (Params.domCanvasParent as HTMLElement).addEventListener('touchstart', f2);
-            }
+            // }
             
+        }
+
+        FrontEvents.toggleFullscreen.add(() => {
+            let elem = Params.domCanvasParent;
+            if (!document.fullscreenElement) {
+                elem.requestFullscreen();
+                GameEvents.dispatchEvent(GameEvents.EVENT_GAME_FULSCREEN, { v: true });
+            }
+            else {
+                document.exitFullscreen();
+                GameEvents.dispatchEvent(GameEvents.EVENT_GAME_FULSCREEN, { v: false });
+            }
+        }, this);
+
+        if (Params.datGui) {
+            Params.datGui.add({
+                fullscreen: () => {
+                    FrontEvents.toggleFullscreen.dispatch();
+                }
+            }, `fullscreen`);
         }
 
         this.animate();

@@ -2,7 +2,7 @@
 
 export const Config = {
 
-    FULL_SCREEN: false,
+    INIT_FULL_SCREEN: false,
 
     USE_DEVICE_PIXEL_RATIO: true,
     BG_COLOR: 0x333333,

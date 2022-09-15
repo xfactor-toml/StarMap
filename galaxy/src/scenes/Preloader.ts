@@ -6,6 +6,7 @@ import { Params } from '../data/Params';
 import { AudioMng } from '../audio/AudioMng';
 import { AudioData } from '../audio/AudioData';
 import { GameEvents } from '../events/GameEvents';
+import { FrontEvents } from '../events/FrontEvents';
 
 export class Preloader {
     private loader: ThreeLoader;
@@ -112,12 +113,15 @@ export class Preloader {
                 console.log('loading: ', this.currLoadPerc);
             }
         }
+
         GameEvents.dispatchEvent(GameEvents.EVENT_LOADING, { percent: aPerc });
     }
 
     private onLoadComplete() {
         this._isLoadingInProcess = false;
         this.onLoadCompleteSignal.dispatch();
+
+        GameEvents.dispatchEvent(GameEvents.EVENT_LOADED, { frontEvents: FrontEvents });
     }
 
 }
