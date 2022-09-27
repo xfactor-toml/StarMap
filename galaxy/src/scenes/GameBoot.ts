@@ -4,10 +4,11 @@ import { LogMng } from "../utils/LogMng";
 import { Preloader } from "./Preloader";
 import * as MyUtils from "../utils/MyUtils";
 import { Params } from "../data/Params";
-import { AudioMng } from "../audio/AudioMng";
 import { GameEngine } from "./GameEngine";
 import { GameEvents } from "../events/GameEvents";
 import { FrontEvents } from "../events/FrontEvents";
+import { AudioMng } from "../audio/AudioMng";
+import { AudioData } from "../audio/AudioData";
 
 type InitParams = {
 
@@ -81,20 +82,25 @@ export class GameBoot {
     }
 
     private onLoadComplete() {
-
-        // try {
-        //     document.getElementById('loader').style.display = 'none';
-        // } catch (error) {
-
-        // }
-
+        this.initEvents();
         this.isLoaded = true;
-        // // if (isPlayClicked) startGame();
-
     }
 
-    
-    
+    private initEvents() {
+        FrontEvents.playInitScreenSfx.addOnce(() => {
+            let am = AudioMng.getInstance();
+            am.playSfx(AudioData.SFX_INIT);
+        }, this);
+
+        FrontEvents.onHover.add(() => {
+            AudioMng.getInstance().playSfx(AudioData.SFX_HOVER);
+        }, this);
+
+        FrontEvents.onClick.add(() => {
+            AudioMng.getInstance().playSfx(AudioData.SFX_CLICK);
+        }, this);
+    }
+        
     startGame() {
         let gameEngine = new GameEngine();
         GameEvents.dispatchEvent(GameEvents.EVENT_GAME_CREATED);

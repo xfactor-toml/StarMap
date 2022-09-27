@@ -1,4 +1,6 @@
 
+const SFX_INIT = 'SFX_INIT';
+const SFX_INIT_FLY = 'SFX_INIT_FLY';
 const SFX_CLICK = 'SFX_CLICK';
 const SFX_HOVER = 'SFX_HOVER';
 const SFX_CAM_ROTATE = 'SFX_CAM_ROTATE';
@@ -10,6 +12,8 @@ const MUSIC_MAIN = 'mainMusic';
 
 export const AudioData = {
 
+    SFX_INIT: SFX_INIT,
+    SFX_INIT_FLY: SFX_INIT_FLY,
     SFX_CLICK: SFX_CLICK,
     SFX_HOVER: SFX_HOVER,
     SFX_CAM_ROTATE: SFX_CAM_ROTATE,
@@ -20,6 +24,14 @@ export const AudioData = {
     MUSIC_MAIN: MUSIC_MAIN,
 
     SOUNDS: [
+        {
+            alias: SFX_INIT,
+            file: './assets/audio/init.mp3'
+        },
+        {
+            alias: SFX_INIT_FLY,
+            file: './assets/audio/initFly.mp3'
+        },
         { 
             alias: SFX_CLICK,
             file: './assets/audio/mouseClick.mp3'

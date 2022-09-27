@@ -10,7 +10,6 @@ import { Params } from '../data/Params';
 import { Config } from '../data/Config';
 import { FarStars } from '../objects/FarStars';
 import { GalaxyStars } from '../objects/GalaxyStars';
-import { GlobalEvents } from '../events/GlobalEvents';
 import { DeviceInfo } from '../utils/DeviceInfo';
 import { InputMng } from '../inputs/InputMng';
 import { FSM } from '../states/FSM';
@@ -315,6 +314,8 @@ export class Galaxy {
 
     init() {
 
+        AudioMng.getInstance().playSfx(AudioData.SFX_INIT_FLY);
+
         this.dummyGalaxy = new THREE.Group();
         this.scene.add(this.dummyGalaxy);
 
@@ -399,8 +400,7 @@ export class Galaxy {
             minDist: minCameraDistance,
             maxDist: maxCameraDistance,
             stopAngleTop: 10,
-            stopAngleBot: 170,
-            // pos: { x: 0, y: 0, z: 0 }
+            stopAngleBot: 170
         });
 
         this.raycaster = new THREE.Raycaster();
@@ -413,10 +413,6 @@ export class Galaxy {
             this.axiesHelper = new THREE.AxesHelper(150);
             this.scene.add(this.axiesHelper);
         }
-
-        // document.addEventListener('pointermove', onMouseMove);
-        // document.addEventListener('click', onMouseClick);
-        // document.addEventListener('keydown', onKeyPress);
 
         // inputs
         let inputMng = InputMng.getInstance();
@@ -455,14 +451,6 @@ export class Galaxy {
             if (this.fsm.getCurrentState().name == States.STAR) {
                 this.fsm.startState(States.FROM_STAR);
             }
-        }, this);
-
-        FrontEvents.onHover.add(() => {
-            AudioMng.getInstance().playSfx(AudioData.SFX_HOVER);
-        }, this);
-
-        FrontEvents.onClick.add(() => {
-            AudioMng.getInstance().playSfx(AudioData.SFX_CLICK);
         }, this);
 
     }
@@ -646,7 +634,7 @@ export class Galaxy {
         this.starsParticles = new GalaxyStars({
             starsData: this.galaxyStarsData,
             texture: t,
-            onWindowResizeSignal: GlobalEvents.onWindowResizeSignal
+            onWindowResizeSignal: FrontEvents.onWindowResizeSignal
         });
         // this.starsParticles.alphaFactor = 0.5;
         this.dummyGalaxy.add(this.starsParticles);
@@ -655,7 +643,7 @@ export class Galaxy {
         this.blinkStarsParticles = new GalaxyStars({
             starsData: this.blinkStarsData,
             texture: t,
-            onWindowResizeSignal: GlobalEvents.onWindowResizeSignal
+            onWindowResizeSignal: FrontEvents.onWindowResizeSignal
         });
         this.dummyGalaxy.add(this.blinkStarsParticles);
 
@@ -680,7 +668,7 @@ export class Galaxy {
         this.solarSystemBlinkStarsParticles = new GalaxyStars({
             starsData: this.solarSystemBlinkStarsData,
             texture: t,
-            onWindowResizeSignal: GlobalEvents.onWindowResizeSignal
+            onWindowResizeSignal: FrontEvents.onWindowResizeSignal
         });
         this.solarSystemBlinkStarsParticles.visible = false;
 
@@ -904,9 +892,9 @@ export class Galaxy {
             let previewMaterial = new THREE.SpriteMaterial({
                 map: previewTexture,
                 transparent: true,
-                opacity: 1,
+                opacity: 0.5,
                 depthWrite: false,
-                blending: THREE.AdditiveBlending
+                // blending: THREE.AdditiveBlending
             });
             let starPointSprite = new THREE.Sprite(previewMaterial);
 
@@ -1289,49 +1277,32 @@ export class Galaxy {
         return Math.min(innerWidth / 800, innerHeight / 840);
     }
 
+    /**
+     * Absolute polar angle relative to the main galaxy plain
+     * @returns 
+     */
+    private getAbsPolarAngle(): number {
+        const cameraPolarAngle = this.orbitControl.getPolarAngle();
+        // angle from main plane
+        const an = cameraPolarAngle < Math.PI / 2 ?
+            cameraPolarAngle :
+            Math.abs(cameraPolarAngle - Math.PI);
+        return an;
+    }
+
     private updateGalaxyPlane(dt: number) {
-        let cameraAzimutAngle = this.orbitControl.getAzimuthalAngle();
-        let cameraPolarAngle = this.orbitControl.getPolarAngle();
-
-        // opacity of the main galaxy plane
-        let galaxyOpacity = 1;
-
-        if (cameraPolarAngle < Math.PI / 2) {
-            // top
-            galaxyOpacity = 0.1 + (1 - (cameraPolarAngle / (Math.PI / 2))) * 0.9;
-        }
-        else {
-            // bot
-            galaxyOpacity = 0.1 + (1 - (Math.abs(cameraPolarAngle - Math.PI) / (Math.PI / 2))) * 0.9;
-        }
-
+        const an = this.getAbsPolarAngle();
+        const MIN_ALPHA = 0.0;
+        let galaxyOpacity = MIN_ALPHA + (1 - (an / (Math.PI / 2))) * (1 - MIN_ALPHA);
         this.galaxyPlane.material['opacity'] = galaxyOpacity;
     }
 
     private updateGalaxyStars(dt: number) {
-
-        let cameraPolarAngle = this.orbitControl.getPolarAngle();
-
-        // opacity of the main galaxy plane
-        let starsOpacity = 1;
-
-        if (cameraPolarAngle < Math.PI / 2) {
-            // top
-            let an = Math.PI / 2 - cameraPolarAngle;
-            an = Math.min(1, an * 4);
-            starsOpacity = 0.3 + an * 0.7;
-
-        } else {
-            // bot
-            let an = (cameraPolarAngle - Math.PI / 2) / (Math.PI / 2);
-            an = Math.min(1, an * 4);
-            starsOpacity = 0.3 + an * 0.7;
-        }
-
+        const an = this.getAbsPolarAngle();
+        const MIN_ALPHA = 0.3;
+        let starsOpacity = MIN_ALPHA + (1 - (an / (Math.PI / 2))) * (1 - MIN_ALPHA);
         this.starsParticles.alphaFactor = starsOpacity * this._starAlphaFactor;
         this.starsParticles.update(dt);
-
-        // this.blinkStarsParticles.alphaFactor = starsOpacity;
         this.blinkStarsParticles.update(dt);
 
     }
@@ -1361,13 +1332,18 @@ export class Galaxy {
         let isRotate = this.orbitControl.isRotate() && (azDelta > minDelta || polDelta > minDelta);
         
         if (isRotate) {
+            
             // this.rotSndStartTimer -= dt;
             if (this.rotSndStartTimer < 0) {
                 let snd = AudioMng.getInstance().getSound(AudioData.SFX_CAM_ROTATE);
                 if (!snd.isPlaying) {
                     snd.loop = true;
                     snd.volume = AudioMng.getInstance().sfxVolume;
-                    snd.play();
+                    try {
+                        snd.play();
+                    } catch (error) {
+                        
+                    }
                 }
             }
 
@@ -1664,7 +1640,7 @@ export class Galaxy {
                 x: 0.01,
                 y: 0.01,
                 z: 0.01,
-                duration: DUR * 2 / 3,
+                duration: DUR * 1 / 3,
                 ease: 'sine.Out',
                 onComplete: () => {
                     galaxy.visible = false;
@@ -1899,7 +1875,8 @@ export class Galaxy {
                 x: 1,
                 y: 1,
                 z: 1,
-                duration: DUR,
+                duration: DUR * 1 / 3,
+                delay: DUR * 2 / 3,
                 ease: 'sine.inOut'
             });
         }

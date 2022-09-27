@@ -1,186 +1,42 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
-<head>
-    <meta charset="utf-8" />
+  <head>
+    <meta charset="UTF-8" />
     <meta http-equiv="pragma" content="no-cache" />
-    <meta name="viewport"
-        content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"
+    />
     <!-- Allow fullscreen app install in Android and IOS respectively -->
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-
-    <title>Galaxy</title>
-    
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vorpal - Starmap</title>
     <link rel="icon" href="./favicon.ico" type="image/x-icon">
-
-    <link rel="stylesheet" type="text/css" href="./styles/main.css" />
-    <link rel="stylesheet" type="text/css" href="./gui/css/gui.css" />
-    <link rel="stylesheet" type="text/css" href="./gui/css/tooltip.css" />
-    <link rel="stylesheet" type="text/css" href="./gui/css/star-panel.css" />
-
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-        href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-        rel="stylesheet" />
-
-    <script src="js/stats.min.js"></script>
-    <script src="gui/vendor/vue.global.prod.min.js"></script>
-    <script src="gui/vendor/textfit.js"></script>
-    <script src="gui/gui.js"></script>
-    <script src="./game.bundle.js"></script>
-
-    <script>
-
-        let frontEvents;
-        let currentStarId = -1;
-        let GUI;
-
-        function initGui() {
-
-            GUI = createGui();
-
-            GUI.on('tooltipHide', () => {
-                frontEvents.onClick.dispatch();
-                GUI.hideTooltip();
-                frontEvents.starPreviewClose.dispatch();
-            });
-
-            GUI.on('tooltipDiveIn', () => {
-                frontEvents.onClick.dispatch();
-                GUI.hideTooltip();
-                frontEvents.diveIn.dispatch({ starId: currentStarId });
-                // window.dispatchEvent(new CustomEvent('guiEvent', {
-                //     detail: {
-                //         eventName: 'diveIn',
-                //         starId: currentStarId
-                //     }
-                // }));
-            });
-
-            GUI.on('starPanelHide', () => {
-                frontEvents.onClick.dispatch();
-                GUI.hideStarPanel();
-                frontEvents.flyFromStar.dispatch();
-                // window.dispatchEvent(new CustomEvent('guiEvent', {
-                //     detail: {
-                //         eventName: 'flyFromStar'
-                //     }
-                // }));
-            });
-
-            GUI.on('starPanelPlay', () => {
-                console.log('star panel play');
-            });
-
-            GUI.on('overlayClick', () => {
-                frontEvents.onClick.dispatch();
-                GUI.emit('tooltipHide');
-            });
-
-            GUI.on('tooltipHideHover', () => {
-                frontEvents.onHover.dispatch();
-            });
-
-            GUI.on('tooltipDiveInHover', () => {
-                frontEvents.onHover.dispatch();
-            });
-
-            GUI.on('starPanelHideHover', () => {
-                frontEvents.onHover.dispatch();
-            });
-
-            GUI.on('starPanelPlayHover', () => {
-                frontEvents.onHover.dispatch();
-            });
-
-            // GUI.once('tooltipDiveIn', () => {
-            //     console.log('dive in once');
-            // });
-        }
-
-        window.addEventListener('gameEvent', (e) => {
-
-            let data = e.detail;
-
-            /* 
-                data: { 
-                    starId: number,
-                    eventName: 'showStarPreviewGui',
-                    name: string
-                    description: string
-                    level: number
-                    race: Robots | 'Humans' | 'Simbionts' | 'Lizards' | 'Insects'
-                    pos2d: { x, y }
-                }
-            */
-
-            switch (data.eventName) {
-
-                case 'GAME_LOADING':
-                    let percent = data.percent; // 0..100
-                    // console.log(`GAME_LOADING: ${percent}`);
-                    break;
-
-                case 'GAME_LOADED':
-                    frontEvents = e.detail.frontEvents;
-                    // start game window mode
-                    // frontEvents.startGame.dispatch(false);
-                    // start game fullscreen mode
-                    // frontEvents.startGame.dispatch(true);
-                    break;
-                    
-                case 'GAME_CREATED':
-
-                    // settings events
-                    // frontEvents.setMusicVolume.dispatch({v: 1}); // 0..1
-                    // frontEvents.setSFXVolume.dispatch({v: 1}); // 0..1
-                    // frontEvents.setFullscreenMode.dispatch({isFullScreen: 1}); // 0 | 1
-
-                    initGui();
-                    break;
-
-                case 'GAME_FULLSCREEN':
-                    let isFS = e.detail.v;
-                    break; 
-
-                case 'SHOW_STAR_PREVIEW':
-                    currentStarId = data.starId;
-                    // GUI.showTooltip(data);
-                    GUI.showTooltip({ ...data, textAutofit: true })
-                    break;
-
-                case 'HIDE_STAR_PREVIEW':
-                    GUI.hideTooltip();
-                    break;
-
-                case 'SHOW_STAR_GUI':
-                    GUI.showStarPanel(data);
-                    break;
-
-            }
-        });
-
-    </script>
-
-</head>
-
-<body>
-
-    <div id="overlay" class="container-buttons">
-        <button id="startButton">Run the Galaxy</button>
-        <button id="startButtonFull">Run in FullScreen</button>
-    </div>
-
-    <div id='game'>
-        <div id='gui'></div>
+      href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background-color: #040310;
+      }
+    </style>
+    <script type="module" crossorigin src="./gui/index.js"></script>
+    <link rel="stylesheet" href="./gui/index.css">
+  </head>
+  <body>
+    <div id="game">
+      <div id="gui"></div>
     </div>
     
-    <noscript>
-        <p>You need javascript enabled in order to use this web application.</p>
-    </noscript>
-
-</body>
+    <script src="./js/stats.min.js"></script>
+    <script src="./game.bundle.js"></script>
+  </body>
+</html>

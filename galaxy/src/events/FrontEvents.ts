@@ -2,10 +2,14 @@ import { Signal } from "./Signal";
 
 export const FrontEvents = {
 
+    onWindowResizeSignal: new Signal(),
+    
     /**
      * { aFullscreen: boolean }
      */
     startGame: new Signal(),
+
+    playInitScreenSfx: new Signal(),
 
     setMusicVolume: new Signal(),
     setSFXVolume: new Signal(),

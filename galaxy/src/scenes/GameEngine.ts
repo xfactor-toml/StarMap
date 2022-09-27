@@ -13,7 +13,6 @@ import { DeviceInfo } from "../utils/DeviceInfo";
 import { Config } from "../data/Config";
 import { LogMng } from "../utils/LogMng";
 import { Params } from "../data/Params";
-import { GlobalEvents } from "../events/GlobalEvents";
 import { Galaxy } from "./Galaxy";
 import { FrontEvents } from "../events/FrontEvents";
 import { GameEvents } from "../events/GameEvents";
@@ -116,7 +115,7 @@ export class GameEngine {
         }
 
         // global events
-        GlobalEvents.onWindowResizeSignal.add(this.onWindowResize, this);
+        FrontEvents.onWindowResizeSignal.add(this.onWindowResize, this);
 
         if (Config.INIT_FULL_SCREEN) {
             
