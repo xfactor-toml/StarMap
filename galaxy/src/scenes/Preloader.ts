@@ -93,6 +93,7 @@ export class Preloader {
         this._loader.texture('sun_01', `${path}Sun_01.png`);
         this._loader.texture('sun_02', `${path}Sun_02.png`);
         this._loader.texture('sun_romb', `${path}Galaxy_512.png`);
+        this._loader.texture('sun_surf', `${path}surfTexture.jpg`);
 
         // ready system state
         path = assetsPath;

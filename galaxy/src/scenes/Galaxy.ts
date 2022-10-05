@@ -1,10 +1,6 @@
 import * as THREE from 'three';
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
-import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
 import { ThreeLoader } from '../loaders/ThreeLoader';
 import { MyMath } from '../utils/MyMath';
-import { LogMng } from '../utils/LogMng';
 import gsap from 'gsap';
 import { Params } from '../data/Params';
 import { Config } from '../data/Config';
@@ -57,6 +53,9 @@ const SOLAR_SYSTEMS_DATA: {
             sunClr5: { r: 0.68, g: 0.92, b: 1. },
             sunCoronaClr1: { r: 0.1, g: 0.4, b: 1.0 },
             sunCoronaClr2: { r: 0., g: 0., b: .7 },
+
+            sun2Color: { r: 0.61, g: 0.70, b: 1. },
+            sun2CoronaColor: { r: 0.12, g: 0.34, b: 1.0 },
         }
     },
 
@@ -80,6 +79,9 @@ const SOLAR_SYSTEMS_DATA: {
             sunClr5: { r: 1., g: 0.92, b: .54 },
             sunCoronaClr1: { r: 1.0, g: 0.4, b: .0 },
             sunCoronaClr2: { r: 1., g: 0., b: .0 },
+
+            sun2Color: { r: 0.96, g: 0.7, b: 0. },
+            sun2CoronaColor: { r: 1.0, g: 0.4, b: .0 },
         }
     },
 
@@ -103,6 +105,9 @@ const SOLAR_SYSTEMS_DATA: {
             sunClr5: { r: .81, g: 0.67, b: 1. },
             sunCoronaClr1: { r: .58, g: 0.53, b: 1. },
             sunCoronaClr2: { r: .08, g: .04, b: .75 },
+
+            sun2Color: { r: 0.25, g: 0.26, b: 0.86 },
+            sun2CoronaColor: { r: .33, g: 0.26, b: .83 },
         }
     },
 
@@ -126,6 +131,9 @@ const SOLAR_SYSTEMS_DATA: {
             sunClr5: { r: 1., g: 0.5, b: .35 },
             sunCoronaClr1: { r: 1., g: 0.9, b: .43 },
             sunCoronaClr2: { r: 1., g: .66, b: .1 },
+
+            sun2Color: { r: 1., g: 0.77, b: 0.47 },
+            sun2CoronaColor: { r: .37, g: 0.37, b: .0 },
         }
     },
 
@@ -149,6 +157,9 @@ const SOLAR_SYSTEMS_DATA: {
             sunClr5: { r: .62, g: 0.5, b: 1. },
             sunCoronaClr1: { r: .6, g: 0.3, b: 1. },
             sunCoronaClr2: { r: .16, g: .04, b: 1.0 },
+
+            sun2Color: { r: 0.65, g: 0.54, b: 1. },
+            sun2CoronaColor: { r: .6, g: 0.3, b: 1. },
         }
     }
 
@@ -420,12 +431,12 @@ export class Galaxy {
         inputMng.onInputUpSignal.add(this.onInputUp, this);
 
         this.fsm = new FSM();
-        this.fsm.addState(States.INIT, this, this.onStateInitEnter, this.onStateInitUpdate);
-        this.fsm.addState(States.GALAXY, this, this.onStateGalaxyEnter, this.onStateGalaxyUpdate);
-        this.fsm.addState(States.TO_STAR, this, this.onStateToStarEnter, this.onStateToStarUpdate, this.onStateToStarExit);
-        this.fsm.addState(States.STAR, this, this.onStateStarEnter, this.onStateStarUpdate);
-        this.fsm.addState(States.FROM_STAR, this, this.onStateFromStarEnter, this.onStateFromStarUpdate);
-        this.fsm.startState(States.INIT);
+        this.fsm.addState(States.init, this, this.onStateInitEnter, this.onStateInitUpdate);
+        this.fsm.addState(States.galaxy, this, this.onStateGalaxyEnter, this.onStateGalaxyUpdate);
+        this.fsm.addState(States.toStar, this, this.onStateToStarEnter, this.onStateToStarUpdate, this.onStateToStarExit);
+        this.fsm.addState(States.star, this, this.onStateStarEnter, this.onStateStarUpdate);
+        this.fsm.addState(States.fromStar, this, this.onStateFromStarEnter, this.onStateFromStarUpdate);
+        this.fsm.startState(States.init);
 
         // front events
 
@@ -443,13 +454,13 @@ export class Galaxy {
         }, this);
 
         FrontEvents.diveIn.add((aData: { starId : number}) => {
-            this.fsm.startState(States.TO_STAR, { starId: aData.starId });
+            this.fsm.startState(States.toStar, { starId: aData.starId });
         }, this);
 
         FrontEvents.flyFromStar.add(() => {
             this.isStarPreviewState = false;
-            if (this.fsm.getCurrentState().name == States.STAR) {
-                this.fsm.startState(States.FROM_STAR);
+            if (this.fsm.getCurrentState().name == States.star) {
+                this.fsm.startState(States.fromStar);
             }
         }, this);
 
@@ -469,8 +480,8 @@ export class Galaxy {
                 this.saveState();
             },
             'flyFromStar': () => {
-                if (this.fsm.getCurrentState().name == States.STAR) {
-                    this.fsm.startState(States.FROM_STAR);
+                if (this.fsm.getCurrentState().name == States.star) {
+                    this.fsm.startState(States.fromStar);
                 }
             },
             showSpheres: false,
@@ -892,7 +903,7 @@ export class Galaxy {
             let previewMaterial = new THREE.SpriteMaterial({
                 map: previewTexture,
                 transparent: true,
-                opacity: 0.5,
+                opacity: 0.9,
                 depthWrite: false,
                 // blending: THREE.AdditiveBlending
             });
@@ -902,7 +913,7 @@ export class Galaxy {
             let starPos = starData.positionInGalaxy;
             // let starPos = this.galaxyStarsData[starData.starId].pos;
             starPointSprite.position.set(starPos.x, starPos.y, starPos.z);
-            starPointSprite[`name`] = "starPoint";
+            starPointSprite[`name`] = 'starPoint';
             starPointSprite[`starId`] = i;
             this.starPointSprites[i] = starPointSprite;
             this.dummyGalaxy.add(starPointSprite);
@@ -1082,22 +1093,17 @@ export class Galaxy {
 
         if (this.orbitControl) return;
         if (!aParams) aParams = {};
-        // let domElement = Params.domTouchParent;
-        // let domElement = Params.domCanvasParent;
         let domElement = Params.domRenderer;
         this.orbitControl = new MyOrbitControls(this.camera, domElement);
-        // if (!aParams.noTarget) this.orbitControl.target = new THREE.Vector3();
         this.orbitControl.enabled = aParams.enabled;
         this.orbitControl.rotateSpeed = .5;
         this.orbitControl.enableDamping = true;
         this.orbitControl.dampingFactor = Config.CAM_DAMPING_FACTOR;
         this.orbitControl.zoomSpeed = aParams.zoomSpeed || 1;
         this.orbitControl.enablePan = aParams.enablePan == true;
-        // this.camOrbitCtrl.keys = {};
         this.orbitControl.minDistance = aParams.minDist || 1;
         this.orbitControl.maxDistance = aParams.maxDist || 100;
-        this.orbitControl.minPolarAngle = MyMath.toRadian(aParams.stopAngleTop || 0); // Math.PI / 2.5;
-        // camOrbit.maxPolarAngle = Math.PI - an;
+        this.orbitControl.minPolarAngle = MyMath.toRadian(aParams.stopAngleTop || 0);
         this.orbitControl.maxPolarAngle = MyMath.toRadian(aParams.stopAngleBot || 0);
         // if (aParams.pos) {
         //     this.orbitControl.target.x = aParams.pos.x || 0;
@@ -1125,7 +1131,13 @@ export class Galaxy {
         for (let i = 0; i < intersects.length; i++) {
             const obj = intersects[i].object;
             if (obj[`name`] == 'starPoint') {
-                this.starPointHovered = obj as THREE.Sprite;
+                let newSpritePoint = obj as THREE.Sprite;
+                if (newSpritePoint != this.starPointHovered) {
+                    this.starPointHovered = newSpritePoint;
+                    if (!this.isStarPreviewState) {
+                        AudioMng.getInstance().playSfx(AudioData.SFX_HOVER);
+                    }
+                }
                 isHover = true;
                 break;
             }
@@ -1152,7 +1164,7 @@ export class Galaxy {
             GameEvents.dispatchEvent(GameEvents.EVENT_HIDE_STAR_PREVIEW);
 
             switch (this.fsm.getCurrentState().name) {
-                case States.GALAXY:
+                case States.galaxy:
                     if (!this.orbitControl.autoRotate) this.orbitControl.autoRotate = true;
                     this.orbitControl.enableZoom = true;
                     if (!this.orbitControl.enabled) this.orbitControl.enabled = true;
@@ -1176,7 +1188,7 @@ export class Galaxy {
 
         switch (this.fsm.getCurrentState().name) {
 
-            case States.GALAXY:
+            case States.galaxy:
                 if (this.starPointHovered && !this.isStarPreviewState) {
 
                     AudioMng.getInstance().playSfx(AudioData.SFX_CLICK);
@@ -1379,7 +1391,7 @@ export class Galaxy {
             // delay: 0.1,
             ease: 'sine.inOut',
             onComplete: () => {
-                this.fsm.startState(States.GALAXY)
+                this.fsm.startState(States.galaxy)
             }
         });
 
@@ -1557,11 +1569,7 @@ export class Galaxy {
         gsap.to([this.galaxyCenterSprite.material, this.galaxyCenterSprite2.material], {
             opacity: 0.2,
             duration: DUR,
-            ease: 'sine.in',
-            onComplete: () => {
-                // this.galaxyCenterSprite.visible = false;
-                // this.galaxyCenterSprite2.visible = false;
-            }
+            ease: 'sine.in'
         });
         this.galaxySaveAnimData.galaxyCenter1Scale = this.galaxyCenterSprite.scale.clone();
         this.galaxySaveAnimData.galaxyCenter2Scale = this.galaxyCenterSprite2.scale.clone();
@@ -1660,7 +1668,7 @@ export class Galaxy {
                 this.solarSystem.visible = true;
             },
             onComplete: () => {
-                this.fsm.startState(States.STAR);
+                this.fsm.startState(States.star);
             }
         });
 
@@ -1858,7 +1866,6 @@ export class Galaxy {
         gsap.to([this.bigStarSprite.scale], {
             x: 10,
             y: 10,
-            // delay: 2 * DUR / 5,
             duration: DUR * 1.5,
             ease: 'sine.inOut',
             onComplete: () => {
@@ -1897,17 +1904,6 @@ export class Galaxy {
         });
 
         // hide star blink stars
-        // gsap.to(this.solarSystemBlinkStarsParticles.scale, {
-        //     x: 0.1,
-        //     y: 0.1,
-        //     z: 0.1,
-        //     // delay: DUR * 1 / 10,
-        //     duration: DUR * 8 / 10,
-        //     ease: 'sine.in',
-        //     onComplete: () => {
-        //         this.solarSystemBlinkStarsParticles.visible = false;
-        //     }
-        // });
         gsap.to(this.solarSystemBlinkStarsParticles, {
             alphaFactor: 0,
             duration: DUR * 4 / 10,
@@ -1922,7 +1918,7 @@ export class Galaxy {
             duration: DUR,
             ease: 'sine.inOut',
             onComplete: () => {
-                this.fsm.startState(States.GALAXY);
+                this.fsm.startState(States.galaxy);
             }
         });
 

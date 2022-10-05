@@ -15,8 +15,8 @@ import {
 //    Zoom - middle mouse, or mousewheel / touch: two-finger spread or squish
 //    Pan - right mouse, or left mouse + ctrl/meta/shiftKey, or arrow keys / touch: two-finger move
 
-const _changeEvent = { type: 'change' };
 const _startEvent = { type: 'start' };
+const _changeEvent = { type: 'change' };
 const _endEvent = { type: 'end' };
 
 let scope;

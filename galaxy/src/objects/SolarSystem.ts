@@ -1,5 +1,8 @@
 import * as THREE from 'three';
+import { Config } from '../data/Config';
+import { Params } from '../data/Params';
 import { BigStar, BigStarParams } from './BigStar';
+import { BigStar2 } from './BigStar2';
 
 
 export type SolarSystemParams = {
@@ -9,7 +12,7 @@ export type SolarSystemParams = {
 export class SolarSystem extends THREE.Group {
     private _camera: THREE.Camera;
     private params: SolarSystemParams;
-    private star: BigStar;
+    private star: BigStar2;
         
     constructor(aCamera: THREE.Camera, aParams: SolarSystemParams) {
         super();
@@ -19,7 +22,10 @@ export class SolarSystem extends THREE.Group {
     }
     
     private createStar() {
-        this.star = new BigStar(this.position, this._camera, this.params.starParams);
+        this.star = new BigStar2(this.position, this._camera, this.params.starParams);
+        if (Params.isDebugMode) {
+            this.star.createDebugGui(Params.datGui);
+        }
         this.add(this.star);
     }
 

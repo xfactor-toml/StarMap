@@ -13,6 +13,8 @@ export type BigStarParams = {
     sunClr5?: { r, g, b };
     sunCoronaClr1?: { r, g, b };
     sunCoronaClr2?: { r, g, b };
+    sun2Color?: { r, g, b };
+    sun2CoronaColor?: { r, g, b };
 };
 
 export class BigStar extends THREE.Group {

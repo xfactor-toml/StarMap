@@ -93,6 +93,7 @@ export class GameBoot {
         }, this);
 
         FrontEvents.onHover.add(() => {
+            // LogMng.debug('onHover...');
             AudioMng.getInstance().playSfx(AudioData.SFX_HOVER);
         }, this);
 
