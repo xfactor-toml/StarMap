@@ -85,6 +85,7 @@ const SOLAR_SYSTEMS_DATA: {
         }
     },
 
+    // simbionts
     {
         name: "Star 3",
         description: `This is a star of Simbionts. This is a test description text.`,
@@ -106,11 +107,12 @@ const SOLAR_SYSTEMS_DATA: {
             sunCoronaClr1: { r: .58, g: 0.53, b: 1. },
             sunCoronaClr2: { r: .08, g: .04, b: .75 },
 
-            sun2Color: { r: 0.25, g: 0.26, b: 0.86 },
+            sun2Color: { r: 0.13, g: 0.08, b: 0.38 },
             sun2CoronaColor: { r: .33, g: 0.26, b: .83 },
         }
     },
 
+    // lizards
     {
         name: "Star 4",
         description: `This is a star of Lizards. This is a test description text.`,
@@ -137,6 +139,7 @@ const SOLAR_SYSTEMS_DATA: {
         }
     },
 
+    // insects
     {
         name: "Star 5",
         description: `This is a star of Insects. This is a test description text.`,

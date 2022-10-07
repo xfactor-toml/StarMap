@@ -23,6 +23,7 @@ export class BigStar2 extends THREE.Group {
     // debug
     private _gui: datGui.GUI;
     private _guiFolder: datGui.GUI;
+    private _guiControllers: datGui.GUIController[];
 
     constructor(aParentPos: THREE.Vector3, aCamera: THREE.Camera, aParams: BigStar2Params) {
 
@@ -73,10 +74,6 @@ export class BigStar2 extends THREE.Group {
 
     createDebugGui(aGui: datGui.GUI) {
 
-        let gui = this._gui = aGui;
-
-        this._guiFolder = gui.addFolder('Star');
-
         const GUI_PARAMS = {
             // coronaColor: MyMath.rgbToHex(this._uniforms.coronaColor.value.x * 255, this._uniforms.coronaColor.value.y * 255, this._uniforms.coronaColor.value.z * 255),
             coronaColor: {
@@ -95,7 +92,12 @@ export class BigStar2 extends THREE.Group {
             coronaResolution: this._uniforms.coronaResolution.value,
         }
 
-        gui.addColor(GUI_PARAMS, 'centerColor').onChange((v) => {
+        let gui = this._gui = aGui;
+
+        this._guiFolder = gui.addFolder('Star');
+        this._guiControllers = [];
+
+        let ctrl = gui.addColor(GUI_PARAMS, 'centerColor').onChange((v) => {
             // let rgb = MyMath.hexToRGB(v);
             let rgb = v;
             this._uniforms.centerColor.value.x = rgb.r / 255;
@@ -103,8 +105,9 @@ export class BigStar2 extends THREE.Group {
             this._uniforms.centerColor.value.z = rgb.b / 255;
             console.log('centerColor:', this._uniforms.centerColor.value);
         });
+        this._guiControllers.push(ctrl);
         
-        gui.addColor(GUI_PARAMS, 'coronaColor').onChange((v) => {
+        ctrl = gui.addColor(GUI_PARAMS, 'coronaColor').onChange((v) => {
             // let rgb = MyMath.hexToRGB(v);
             let rgb = v;
             this._uniforms.coronaColor.value.x = rgb.r / 255;
@@ -113,35 +116,46 @@ export class BigStar2 extends THREE.Group {
             console.log('coronaColor:', this._uniforms.coronaColor.value);
             
         });
-        
-        gui.add(GUI_PARAMS, 'coronaNoiseParam1', 1, 6, 0.01).onChange(() => {
+        this._guiControllers.push(ctrl);
+
+        ctrl = gui.add(GUI_PARAMS, 'coronaNoiseParam1', 1, 6, 0.01).onChange(() => {
             this._uniforms.coronaNoiseParam1.value = GUI_PARAMS.coronaNoiseParam1;
         });
-        gui.add(GUI_PARAMS, 'coronaNoiseParam2', 0.5, 6, 0.01).onChange(() => {
+        this._guiControllers.push(ctrl);
+
+        ctrl = gui.add(GUI_PARAMS, 'coronaNoiseParam2', 0.5, 6, 0.01).onChange(() => {
             this._uniforms.coronaNoiseParam2.value = GUI_PARAMS.coronaNoiseParam2;
         });
-        gui.add(GUI_PARAMS, 'coronaResolution', 1, 100, 1).onChange(() => {
+        this._guiControllers.push(ctrl);
+
+        ctrl = gui.add(GUI_PARAMS, 'coronaResolution', 1, 100, 1).onChange(() => {
             this._uniforms.coronaResolution.value = GUI_PARAMS.coronaResolution;
         });
+        this._guiControllers.push(ctrl);
 
     }
 
     free() {
-        if (this._gui) this._gui.removeFolder(this._guiFolder);
+        if (this._gui) {
+            for (let i = 0; i < this._guiControllers.length; i++) {
+                const gctrl = this._guiControllers[i];
+                this._gui.remove(gctrl);
+            }
+            this._gui.removeFolder(this._guiFolder);
+        }
 
     }
 
     update(dt: number) {
 
-        // this.uf.iTime.value = Params.clock.getElapsedTime();
         this._uniforms.iTime.value += dt;
 
         let camera = this._camera;
         if (camera) {
             this._mesh.quaternion.copy(camera.quaternion);
-            let p = camera.position.clone().sub(this._parentPos).normalize();
-            this._uniforms.mx.value = Math.atan2(p.z, p.x);
-            this._uniforms.my.value = Math.atan2(Math.sqrt(p.x * p.x + p.z * p.z), p.y);
+            // let p = camera.position.clone().sub(this._parentPos).normalize();
+            // this._uniforms.mx.value = Math.atan2(p.z, p.x);
+            // this._uniforms.my.value = Math.atan2(Math.sqrt(p.x * p.x + p.z * p.z), p.y);
         }
     }
 

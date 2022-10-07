@@ -84,7 +84,7 @@ export class Preloader {
         }
 
         path = assetsPath + 'particles/';
-        // loader.texture('circle_01', `${path}circle_01.png`);
+        // loader.texture('circle_01', `${path}circle_01.png`);  
         // this.loader.texture('star3', `${path}Star_3_256.png`);
         this._loader.texture('star4', `${path}Star_4_256.png`);
         this._loader.texture('star4_512', `${path}Star_4_512.png`);

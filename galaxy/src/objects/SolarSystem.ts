@@ -31,6 +31,7 @@ export class SolarSystem extends THREE.Group {
 
     free() {
         this.remove(this.star);
+        this.star.free();
         this.star = null;
         this.params = null;
     }
