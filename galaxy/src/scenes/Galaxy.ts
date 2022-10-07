@@ -2,8 +2,7 @@ import * as THREE from 'three';
 import { ThreeLoader } from '../loaders/ThreeLoader';
 import { MyMath } from '../utils/MyMath';
 import gsap from 'gsap';
-import { Params } from '../data/Params';
-import { Config } from '../data/Config';
+import { Settings } from '../data/Settings';
 import { FarStars } from '../objects/FarStars';
 import { GalaxyStars } from '../objects/GalaxyStars';
 import { DeviceInfo } from '../utils/DeviceInfo';
@@ -345,7 +344,7 @@ export class Galaxy {
         this.galaxyCenterSprite = new THREE.Sprite(
             new THREE.SpriteMaterial({
                 map: ThreeLoader.getInstance().getTexture('sun_01'),
-                color: Config.GALAXY_CENTER_COLOR,
+                color: Settings.GALAXY_CENTER_COLOR,
                 transparent: true,
                 alphaTest: 0.01,
                 opacity: 1,
@@ -353,14 +352,14 @@ export class Galaxy {
                 blending: THREE.AdditiveBlending
             })
         );
-        this.galaxyCenterSprite.scale.set(Config.GALAXY_CENTER_SCALE, Config.GALAXY_CENTER_SCALE, Config.GALAXY_CENTER_SCALE);
+        this.galaxyCenterSprite.scale.set(Settings.GALAXY_CENTER_SCALE, Settings.GALAXY_CENTER_SCALE, Settings.GALAXY_CENTER_SCALE);
         this.galaxyCenterSprite.renderOrder = 999;
         this.dummyGalaxy.add(this.galaxyCenterSprite);
 
         this.galaxyCenterSprite2 = new THREE.Sprite(
             new THREE.SpriteMaterial({
                 map: ThreeLoader.getInstance().getTexture('sun_romb'),
-                color: Config.GALAXY_CENTER_COLOR,
+                color: Settings.GALAXY_CENTER_COLOR,
                 transparent: true,
                 alphaTest: 0.01,
                 opacity: 1,
@@ -368,14 +367,14 @@ export class Galaxy {
                 blending: THREE.AdditiveBlending
             })
         );
-        this.galaxyCenterSprite2.scale.set(Config.GALAXY_CENTER_SCALE_2, Config.GALAXY_CENTER_SCALE_2, Config.GALAXY_CENTER_SCALE_2);
+        this.galaxyCenterSprite2.scale.set(Settings.GALAXY_CENTER_SCALE_2, Settings.GALAXY_CENTER_SCALE_2, Settings.GALAXY_CENTER_SCALE_2);
         this.galaxyCenterSprite2.renderOrder = 999;
         this.dummyGalaxy.add(this.galaxyCenterSprite2);
 
         let planeGeom = new THREE.PlaneBufferGeometry(1, 1);
         let planeMat = new THREE.MeshBasicMaterial({
             map: ThreeLoader.getInstance().getTexture('sun_romb'),
-            color: Config.GALAXY_CENTER_COLOR,
+            color: Settings.GALAXY_CENTER_COLOR,
             transparent: true,
             opacity: 0,
             depthWrite: false,
@@ -423,7 +422,7 @@ export class Galaxy {
         AudioMng.getInstance().playMusic(AudioData.MUSIC_MAIN);
 
         // helpers
-        if (Params.isDebugMode) {
+        if (Settings.isDebugMode) {
             this.axiesHelper = new THREE.AxesHelper(150);
             this.scene.add(this.axiesHelper);
         }
@@ -491,24 +490,24 @@ export class Galaxy {
             axiesHelper: false
         };
 
-        const gui = Params.datGui;
+        const gui = Settings.datGui;
 
         let galaxyFolder = gui.addFolder('Galaxy');
 
-        galaxyFolder.add(Params.galaxyData, 'starsCount', 0, 10000, 100).onChange(() => { this.createGalaxyStars(); });
-        galaxyFolder.add(Params.galaxyData, 'blinkStarsCount', 0, 5000, 100).onChange(() => { this.createGalaxyStars(); });
-        galaxyFolder.add(Params.galaxyData, 'blinkDurMin', 0.1, 10, 0.1).onChange(() => { this.createGalaxyStars(); });
-        galaxyFolder.add(Params.galaxyData, 'blinkDurMax', 1, 20, 0.1).onChange(() => { this.createGalaxyStars(); });
-        galaxyFolder.add(Params.galaxyData, 'startAngle', 0, 2, 0.1).onChange(() => { this.createGalaxyStars(); });
-        galaxyFolder.add(Params.galaxyData, 'endAngle', 0, Math.PI * 2, 0.1).onChange(() => { this.createGalaxyStars(); });
-        galaxyFolder.add(Params.galaxyData, 'startOffsetXY', 0, 3, 0.1).onChange(() => { this.createGalaxyStars(); });
-        galaxyFolder.add(Params.galaxyData, 'endOffsetXY', 0, 3, 0.1).onChange(() => { this.createGalaxyStars(); });
-        galaxyFolder.add(Params.galaxyData, 'startOffsetH', 0, 10, 0.1).onChange(() => { this.createGalaxyStars(); });
-        galaxyFolder.add(Params.galaxyData, 'endOffsetH', 0, 10, 0.1).onChange(() => { this.createGalaxyStars(); });
-        galaxyFolder.add(Params.galaxyData, 'alphaMin', 0, 1, 0.02).onChange(() => { this.createGalaxyStars(); });
-        galaxyFolder.add(Params.galaxyData, 'alphaMax', 0, 1, 0.02).onChange(() => { this.createGalaxyStars(); });
-        galaxyFolder.add(Params.galaxyData, 'scaleMin', 0.5, 4, 0.1).onChange(() => { this.createGalaxyStars(); });
-        galaxyFolder.add(Params.galaxyData, 'scaleMax', 0.5, 4, 0.1).onChange(() => { this.createGalaxyStars(); });
+        galaxyFolder.add(Settings.galaxyData, 'starsCount', 0, 10000, 100).onChange(() => { this.createGalaxyStars(); });
+        galaxyFolder.add(Settings.galaxyData, 'blinkStarsCount', 0, 5000, 100).onChange(() => { this.createGalaxyStars(); });
+        galaxyFolder.add(Settings.galaxyData, 'blinkDurMin', 0.1, 10, 0.1).onChange(() => { this.createGalaxyStars(); });
+        galaxyFolder.add(Settings.galaxyData, 'blinkDurMax', 1, 20, 0.1).onChange(() => { this.createGalaxyStars(); });
+        galaxyFolder.add(Settings.galaxyData, 'startAngle', 0, 2, 0.1).onChange(() => { this.createGalaxyStars(); });
+        galaxyFolder.add(Settings.galaxyData, 'endAngle', 0, Math.PI * 2, 0.1).onChange(() => { this.createGalaxyStars(); });
+        galaxyFolder.add(Settings.galaxyData, 'startOffsetXY', 0, 3, 0.1).onChange(() => { this.createGalaxyStars(); });
+        galaxyFolder.add(Settings.galaxyData, 'endOffsetXY', 0, 3, 0.1).onChange(() => { this.createGalaxyStars(); });
+        galaxyFolder.add(Settings.galaxyData, 'startOffsetH', 0, 10, 0.1).onChange(() => { this.createGalaxyStars(); });
+        galaxyFolder.add(Settings.galaxyData, 'endOffsetH', 0, 10, 0.1).onChange(() => { this.createGalaxyStars(); });
+        galaxyFolder.add(Settings.galaxyData, 'alphaMin', 0, 1, 0.02).onChange(() => { this.createGalaxyStars(); });
+        galaxyFolder.add(Settings.galaxyData, 'alphaMax', 0, 1, 0.02).onChange(() => { this.createGalaxyStars(); });
+        galaxyFolder.add(Settings.galaxyData, 'scaleMin', 0.5, 4, 0.1).onChange(() => { this.createGalaxyStars(); });
+        galaxyFolder.add(Settings.galaxyData, 'scaleMax', 0.5, 4, 0.1).onChange(() => { this.createGalaxyStars(); });
         //galaxyFolder.add(Params.galaxyData, 'k', 0, 1, 0.02).onChange(() => { this.createGalaxyStars(); });
         // galaxyFolder.add(Params.galaxyData, 'isNewMethod').onChange(() => { this.createGalaxyStars(); });
         galaxyFolder.add(this, '_starAlphaFactor', 0.1, 1, 0.01).onChange(() => {  });
@@ -522,12 +521,12 @@ export class Galaxy {
 
         let skyFolder = gui.addFolder('Sky');
 
-        skyFolder.add(Params.skyData, 'starsCount', 0, 2000, 10).onChange(() => { this.createFarStars(); });
-        skyFolder.add(Params.skyData, 'radiusMin', 0, 500, 5).onChange(() => {
+        skyFolder.add(Settings.skyData, 'starsCount', 0, 2000, 10).onChange(() => { this.createFarStars(); });
+        skyFolder.add(Settings.skyData, 'radiusMin', 0, 500, 5).onChange(() => {
             this.createFarStars();
             if (DEBUG_PARAMS.showSpheres === true) this.createDebugFarStarsMinSphere();
         });
-        skyFolder.add(Params.skyData, 'radiusMax', 10, 2000, 10).onChange(() => {
+        skyFolder.add(Settings.skyData, 'radiusMax', 10, 2000, 10).onChange(() => {
             this.createFarStars();
             if (DEBUG_PARAMS.showSpheres === true) this.createDebugFarStarsMaxSphere();
         });
@@ -541,13 +540,13 @@ export class Galaxy {
                 if (debugObjects.farStarsSphereMax) debugObjects.farStarsSphereMax.visible = false;
             }
         });
-        skyFolder.add(Params.skyData, 'scaleMin', 0.1, 10, 0.1).onChange(() => { if (this.farStars) this.farStars.updateUniformValues(); });
-        skyFolder.add(Params.skyData, 'scaleMax', 1, 50, 1).onChange(() => { if (this.farStars) this.farStars.updateUniformValues(); });
-        skyFolder.add(Params.skyData, 'starSize', 0.1, 10, 0.1).onChange(() => { if (this.farStars) this.farStars.updateUniformValues(); });
-        skyFolder.add(Params.skyData, 'starAlpha', 0, 1, 0.1).onChange(() => { if (this.farStars) this.farStars.updateUniformValues(); });
-        skyFolder.add(Params.skyData, 'galaxiesCount', 0, 100, 1).onChange(() => { this.createSmallGalaxies(); });
-        skyFolder.add(Params.skyData, 'galaxiesSizeMin', 100, 5000, 10).onChange(() => { this.createSmallGalaxies(); });
-        skyFolder.add(Params.skyData, 'galaxiesSizeMax', 100, 8000, 10).onChange(() => { this.createSmallGalaxies(); });
+        skyFolder.add(Settings.skyData, 'scaleMin', 0.1, 10, 0.1).onChange(() => { if (this.farStars) this.farStars.updateUniformValues(); });
+        skyFolder.add(Settings.skyData, 'scaleMax', 1, 50, 1).onChange(() => { if (this.farStars) this.farStars.updateUniformValues(); });
+        skyFolder.add(Settings.skyData, 'starSize', 0.1, 10, 0.1).onChange(() => { if (this.farStars) this.farStars.updateUniformValues(); });
+        skyFolder.add(Settings.skyData, 'starAlpha', 0, 1, 0.1).onChange(() => { if (this.farStars) this.farStars.updateUniformValues(); });
+        skyFolder.add(Settings.skyData, 'galaxiesCount', 0, 100, 1).onChange(() => { this.createSmallGalaxies(); });
+        skyFolder.add(Settings.skyData, 'galaxiesSizeMin', 100, 5000, 10).onChange(() => { this.createSmallGalaxies(); });
+        skyFolder.add(Settings.skyData, 'galaxiesSizeMax', 100, 8000, 10).onChange(() => { this.createSmallGalaxies(); });
         skyFolder.add(DEBUG_PARAMS, 'recreateSmallGalaxies');
 
         gui.add(DEBUG_PARAMS, 'saveState');
@@ -600,18 +599,18 @@ export class Galaxy {
         }
         else {
             this.galaxyStarsData = this.generateGalaxyStarsData({
-                starsCount: Params.galaxyData.starsCount,
-                startAngle: Params.galaxyData.startAngle,
-                endAngle: Params.galaxyData.endAngle,
-                startOffsetXY: Params.galaxyData.startOffsetXY,
-                endOffsetXY: Params.galaxyData.endOffsetXY,
-                startOffsetH: Params.galaxyData.startOffsetH,
-                endOffsetH: Params.galaxyData.endOffsetH,
-                k: Params.galaxyData.k,
-                alphaMin: Params.galaxyData.alphaMin,
-                alphaMax: Params.galaxyData.alphaMax,
-                scaleMin: Params.galaxyData.scaleMin,
-                scaleMax: Params.galaxyData.scaleMax
+                starsCount: Settings.galaxyData.starsCount,
+                startAngle: Settings.galaxyData.startAngle,
+                endAngle: Settings.galaxyData.endAngle,
+                startOffsetXY: Settings.galaxyData.startOffsetXY,
+                endOffsetXY: Settings.galaxyData.endOffsetXY,
+                startOffsetH: Settings.galaxyData.startOffsetH,
+                endOffsetH: Settings.galaxyData.endOffsetH,
+                k: Settings.galaxyData.k,
+                alphaMin: Settings.galaxyData.alphaMin,
+                alphaMax: Settings.galaxyData.alphaMax,
+                scaleMin: Settings.galaxyData.scaleMin,
+                scaleMax: Settings.galaxyData.scaleMax
             }, 145, 145, STARS_COLORS);
         }
 
@@ -621,24 +620,24 @@ export class Galaxy {
         }
         else {
             this.blinkStarsData = this.generateGalaxyStarsData({
-                starsCount: Params.galaxyData.blinkStarsCount,
-                startAngle: Params.galaxyData.startAngle,
-                endAngle: Params.galaxyData.endAngle,
-                startOffsetXY: Params.galaxyData.startOffsetXY,
-                endOffsetXY: Params.galaxyData.endOffsetXY,
-                startOffsetH: Params.galaxyData.startOffsetH,
-                endOffsetH: Params.galaxyData.endOffsetH,
-                k: Params.galaxyData.k,
-                alphaMin: Params.galaxyData.alphaMin,
-                alphaMax: Params.galaxyData.alphaMax,
-                scaleMin: Params.galaxyData.scaleMin,
-                scaleMax: Params.galaxyData.scaleMax,
+                starsCount: Settings.galaxyData.blinkStarsCount,
+                startAngle: Settings.galaxyData.startAngle,
+                endAngle: Settings.galaxyData.endAngle,
+                startOffsetXY: Settings.galaxyData.startOffsetXY,
+                endOffsetXY: Settings.galaxyData.endOffsetXY,
+                startOffsetH: Settings.galaxyData.startOffsetH,
+                endOffsetH: Settings.galaxyData.endOffsetH,
+                k: Settings.galaxyData.k,
+                alphaMin: Settings.galaxyData.alphaMin,
+                alphaMax: Settings.galaxyData.alphaMax,
+                scaleMin: Settings.galaxyData.scaleMin,
+                scaleMax: Settings.galaxyData.scaleMax,
             },
                 145, 145,
                 STARS_COLORS,
                 {
-                    durationMin: Params.galaxyData.blinkDurMin,
-                    durationMax: Params.galaxyData.blinkDurMax
+                    durationMin: Settings.galaxyData.blinkDurMin,
+                    durationMax: Settings.galaxyData.blinkDurMax
                 }
             );
         }
@@ -666,15 +665,15 @@ export class Galaxy {
             starsCount: 400,
             minRadius: 180,
             maxRadius: 200,
-            alphaMin: Params.galaxyData.alphaMin,
-            alphaMax: Params.galaxyData.alphaMax,
-            scaleMin: Params.galaxyData.scaleMin,
-            scaleMax: Params.galaxyData.scaleMax,
+            alphaMin: Settings.galaxyData.alphaMin,
+            alphaMax: Settings.galaxyData.alphaMax,
+            scaleMin: Settings.galaxyData.scaleMin,
+            scaleMax: Settings.galaxyData.scaleMax,
         },
             STARS_COLORS,
             {
-                durationMin: Params.galaxyData.blinkDurMin,
-                durationMax: Params.galaxyData.blinkDurMax
+                durationMin: Settings.galaxyData.blinkDurMin,
+                durationMax: Settings.galaxyData.blinkDurMax
             }
         );
 
@@ -860,7 +859,7 @@ export class Galaxy {
         }
 
         this.farStars = new FarStars({
-            starsCount: Params.skyData.starsCount,
+            starsCount: Settings.skyData.starsCount,
             // radiusMin: Params.skyData.radiusMin,
             // radiusMax: Params.skyData.radiusMax
         });
@@ -874,7 +873,7 @@ export class Galaxy {
         if (debugObjects.farStarsSphereMin) {
             this.scene.remove(debugObjects.farStarsSphereMin);
         }
-        let geom = new THREE.SphereGeometry(Params.skyData.radiusMin, 10, 10);
+        let geom = new THREE.SphereGeometry(Settings.skyData.radiusMin, 10, 10);
         let mat = new THREE.MeshNormalMaterial({
             wireframe: true
         });
@@ -886,7 +885,7 @@ export class Galaxy {
         if (debugObjects.farStarsSphereMax) {
             this.scene.remove(debugObjects.farStarsSphereMax);
         }
-        let geom = new THREE.SphereGeometry(Params.skyData.radiusMax, 20, 20);
+        let geom = new THREE.SphereGeometry(Settings.skyData.radiusMax, 20, 20);
         let mat = new THREE.MeshNormalMaterial({
             wireframe: true
         });
@@ -974,15 +973,15 @@ export class Galaxy {
 
     private generateFarGalaxiesData(): FarGalaxyParams[] {
 
-        const radius = MyMath.randomInRange(Config.FAR_GALAXIES_RADIUS_MIN, Config.FAR_GALAXIES_RADIUS_MAX);
+        const radius = MyMath.randomInRange(Settings.FAR_GALAXIES_RADIUS_MIN, Settings.FAR_GALAXIES_RADIUS_MAX);
 
         let res = [];
         let positions: THREE.Vector3[] = [];
 
-        let ids = Array.from(Array(Config.SMALL_GALAXIES_SPRITE_COUNT - 1).keys());
+        let ids = Array.from(Array(Settings.SMALL_GALAXIES_SPRITE_COUNT - 1).keys());
         MyMath.shuffleArray(ids, 4);
 
-        let galaxyCnt = Params.skyData.galaxiesCount;
+        let galaxyCnt = Settings.skyData.galaxiesCount;
         let k = 0;
 
         for (let i = 0; i < galaxyCnt; i++) {
@@ -991,7 +990,7 @@ export class Galaxy {
             let tNum = ids[k] + 1;
             k++;
             let tName = `galaxy_${tNum.toString().padStart(2, '0')}`;
-            let size = MyMath.randomInRange(Params.skyData.galaxiesSizeMin, Params.skyData.galaxiesSizeMax);
+            let size = MyMath.randomInRange(Settings.skyData.galaxiesSizeMin, Settings.skyData.galaxiesSizeMax);
             let alpha = MyMath.randomInRange(0.5, 0.6);
 
             let pos = new THREE.Vector3();
@@ -1096,12 +1095,12 @@ export class Galaxy {
 
         if (this.orbitControl) return;
         if (!aParams) aParams = {};
-        let domElement = Params.domRenderer;
+        let domElement = Settings.domRenderer;
         this.orbitControl = new MyOrbitControls(this.camera, domElement);
         this.orbitControl.enabled = aParams.enabled;
         this.orbitControl.rotateSpeed = .5;
         this.orbitControl.enableDamping = true;
-        this.orbitControl.dampingFactor = Config.CAM_DAMPING_FACTOR;
+        this.orbitControl.dampingFactor = Settings.CAM_DAMPING_FACTOR;
         this.orbitControl.zoomSpeed = aParams.zoomSpeed || 1;
         this.orbitControl.enablePan = aParams.enablePan == true;
         this.orbitControl.minDistance = aParams.minDist || 1;
@@ -1241,7 +1240,7 @@ export class Galaxy {
             if (cameraPolarAngle > Math.PI / 2) {
                 anFactor = scMin + (1 - scMin) * (1 - (Math.abs(cameraPolarAngle - Math.PI) / (Math.PI / 2)));
             }
-            this.galaxyCenterSprite.scale.y = Config.GALAXY_CENTER_SCALE * anFactor;
+            this.galaxyCenterSprite.scale.y = Settings.GALAXY_CENTER_SCALE * anFactor;
 
             // LogMng.debug(`galaxyCenterSprite.scale.y: ${this.galaxyCenterSprite.scale.y}`);
         }
@@ -1254,7 +1253,7 @@ export class Galaxy {
             if (cameraPolarAngle > Math.PI / 2) {
                 anFactor = scMin + (1 - scMin) * (1 - (Math.abs(cameraPolarAngle - Math.PI) / (Math.PI / 2)));
             }
-            this.galaxyCenterSprite2.scale.y = Config.GALAXY_CENTER_SCALE_2 * anFactor;
+            this.galaxyCenterSprite2.scale.y = Settings.GALAXY_CENTER_SCALE_2 * anFactor;
 
             // LogMng.debug(`galaxyCenterSprite2.scale.y: ${this.galaxyCenterSprite2.scale.y}`);
         }
@@ -1577,8 +1576,8 @@ export class Galaxy {
         this.galaxySaveAnimData.galaxyCenter1Scale = this.galaxyCenterSprite.scale.clone();
         this.galaxySaveAnimData.galaxyCenter2Scale = this.galaxyCenterSprite2.scale.clone();
         gsap.to([this.galaxyCenterSprite.scale, this.galaxyCenterSprite2.scale], {
-            x: Config.GALAXY_CENTER_SCALE * 0.5,
-            y: Config.GALAXY_CENTER_SCALE * 0.1,
+            x: Settings.GALAXY_CENTER_SCALE * 0.5,
+            y: Settings.GALAXY_CENTER_SCALE * 0.1,
             duration: DUR,
             ease: 'sine.in'
         });
@@ -1594,8 +1593,8 @@ export class Galaxy {
             }
         });
         gsap.to([this.galaxyCenterPlane.scale], {
-            x: Config.GALAXY_CENTER_SCALE * 1.5,
-            y: Config.GALAXY_CENTER_SCALE * 0.1,
+            x: Settings.GALAXY_CENTER_SCALE * 1.5,
+            y: Settings.GALAXY_CENTER_SCALE * 0.1,
             duration: DUR,
             ease: 'sine.in',
             onStart: () => {

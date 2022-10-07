@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { IBaseClass } from "../interfaces/IBaseClass";
-import { Params } from "../data/Params";
+import { Settings } from "../data/Settings";
 import { Signal } from "../events/Signal";
 import { GalaxyStarParams } from "../scenes/Galaxy";
 import { LogMng } from "../utils/LogMng";
@@ -138,12 +138,12 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
     // }
 
     updateUniformValues() {
-        this.material.uniforms.radiusMin.value = Params.skyData.radiusMin;
-        this.material.uniforms.radiusMax.value = Params.skyData.radiusMax;
-        this.material.uniforms.scaleMin.value = Params.skyData.scaleMin;
-        this.material.uniforms.scaleMax.value = Params.skyData.scaleMax;
-        this.material.uniforms.starSize.value = Params.skyData.starSize;
-        this.material.uniforms.starAlpha.value = Params.skyData.starAlpha;
+        this.material.uniforms.radiusMin.value = Settings.skyData.radiusMin;
+        this.material.uniforms.radiusMax.value = Settings.skyData.radiusMax;
+        this.material.uniforms.scaleMin.value = Settings.skyData.scaleMin;
+        this.material.uniforms.scaleMax.value = Settings.skyData.scaleMax;
+        this.material.uniforms.starSize.value = Settings.skyData.starSize;
+        this.material.uniforms.starAlpha.value = Settings.skyData.starAlpha;
     }
     
     free() {

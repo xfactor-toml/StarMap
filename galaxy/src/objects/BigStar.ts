@@ -2,7 +2,7 @@ import * as THREE from "three";
 
 import vsSun from '../shaders/sun1/vs.glsl';
 import fsSun from '../shaders/sun1/fs.glsl';
-import { Params } from "../data/Params";
+import { Settings } from "../data/Settings";
 
 export type BigStarParams = {
     starSize: number;
@@ -89,8 +89,8 @@ export class BigStar extends THREE.Group {
         };
 
         // GUI settings
-        if (false && Params.datGui) {
-            let gui = Params.datGui;
+        if (false && Settings.datGui) {
+            let gui = Settings.datGui;
             let f = gui.addFolder('Big Star');
             let clr1 = gui.addFolder('clr 1');
             let clr2 = gui.addFolder('clr 2');

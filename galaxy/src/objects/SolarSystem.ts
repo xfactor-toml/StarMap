@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { Config } from '../data/Config';
-import { Params } from '../data/Params';
+import { Settings } from '../data/Settings';
 import { BigStar, BigStarParams } from './BigStar';
 import { BigStar2 } from './BigStar2';
 
@@ -23,8 +22,8 @@ export class SolarSystem extends THREE.Group {
     
     private createStar() {
         this.star = new BigStar2(this.position, this._camera, this.params.starParams);
-        if (Params.isDebugMode) {
-            this.star.createDebugGui(Params.datGui);
+        if (Settings.isDebugMode) {
+            this.star.createDebugGui(Settings.datGui);
         }
         this.add(this.star);
     }

@@ -1,14 +1,13 @@
 import { ThreeLoader } from '../loaders/ThreeLoader';
 import { Signal } from '../events/Signal';
 import { LogMng } from '../utils/LogMng';
-import { Config } from '../data/Config';
-import { Params } from '../data/Params';
+import { Settings } from '../data/Settings';
 import { AudioMng } from '../audio/AudioMng';
 import { AudioData } from '../audio/AudioData';
 import { GameEvents } from '../events/GameEvents';
 import { FrontEvents } from '../events/FrontEvents';
 
-export class Preloader {
+export class GamePreloader {
 
     private _loader: ThreeLoader;
     private _currLoadPerc = 0;
@@ -22,7 +21,7 @@ export class Preloader {
     constructor() {
 
         this._loader = ThreeLoader.getInstance({
-            isDebugMode: Params.isDebugMode
+            isDebugMode: Settings.isDebugMode
         });
 
     }
@@ -53,7 +52,7 @@ export class Preloader {
 
     private addCommonAssetsToLoader() {
 
-        let assetsPath = Params.assetsPath;
+        let assetsPath = Settings.assetsPath;
 
         // star point sprite
         this._loader.texture('starPoint', `./assets/starPoint.svg`);
@@ -78,7 +77,7 @@ export class Preloader {
 
         // small galaxy sprites
         path = assetsPath + 'galaxies/';
-        for (let i = 0; i < Config.SMALL_GALAXIES_SPRITE_COUNT; i++) {
+        for (let i = 0; i < Settings.SMALL_GALAXIES_SPRITE_COUNT; i++) {
             let gName = `galaxy_${(i + 1).toString().padStart(2, '0')}`;
             this._loader.texture(gName, path + `${gName}.png`);
         }
@@ -115,7 +114,7 @@ export class Preloader {
         if (aPerc - this._currLoadPerc > 10) {
             this._currLoadPerc = aPerc;
             this.onLoadProgressSignal.dispatch(this._currLoadPerc);
-            if (Params.isDebugMode) {
+            if (Settings.isDebugMode) {
                 console.log('loading: ', this._currLoadPerc);
             }
         }

@@ -10,19 +10,18 @@ import { SMAAPass } from "three/examples/jsm/postprocessing/SMAAPass";
 import * as datGui from "dat.gui";
 import { InputMng } from "../inputs/InputMng";
 import { DeviceInfo } from "../utils/DeviceInfo";
-import { Config } from "../data/Config";
 import { LogMng } from "../utils/LogMng";
-import { Params } from "../data/Params";
+import { Settings } from "../data/Settings";
 import { Galaxy } from "./Galaxy";
 import { FrontEvents } from "../events/FrontEvents";
 import { GameEvents } from "../events/GameEvents";
 
 
-export class GameEngine {
+export class GameRender {
+    
     private renderer: THREE.WebGLRenderer;
     private fxaaPass: ShaderPass;
     private smaaPass: SMAAPass;
-    // private bloomPass: UnrealBloomPass;
     private composer: EffectComposer;
     
     private renderPixelRatio = 1;
@@ -41,22 +40,22 @@ export class GameEngine {
         let w = innerWidth;
         let h = innerHeight;
 
-        const clearColor = new THREE.Color(Config.BG_COLOR);
+        const clearColor = new THREE.Color(Settings.BG_COLOR);
 
         this.renderer = new THREE.WebGLRenderer({
             antialias: false
         });
         this.renderer.autoClear = false;
         this.renderer.getContext().getExtension('OES_standard_derivatives');
-        if (Config.USE_DEVICE_PIXEL_RATIO) {
+        if (Settings.USE_DEVICE_PIXEL_RATIO) {
             this.renderer.setPixelRatio(Math.min(2, window.devicePixelRatio));
         }
         this.renderer.setSize(w, h);
         this.renderer.setClearColor(clearColor);
         this.renderPixelRatio = this.renderer.getPixelRatio();
         LogMng.debug(`Renderer PixelRatio: ${this.renderPixelRatio}`);
-        Params.domCanvasParent.appendChild(this.renderer.domElement);
-        Params.domRenderer = this.renderer.domElement;
+        Settings.domCanvasParent.appendChild(this.renderer.domElement);
+        Settings.domRenderer = this.renderer.domElement;
 
         // SCENES
 
@@ -68,8 +67,8 @@ export class GameEngine {
         this.camera = new THREE.PerspectiveCamera(
             45,
             innerWidth / innerHeight,
-            Config.CAMERA.near,
-            Config.CAMERA.far);
+            Settings.CAMERA.near,
+            Settings.CAMERA.far);
         this.camera.position.set(10, 0, 10);
         this.camera.lookAt(new THREE.Vector3(0, 0, 0));
         // this.scene.add(this.camera);
@@ -77,15 +76,15 @@ export class GameEngine {
         // INPUTS
         
         InputMng.getInstance({
-            inputDomElement: Params.domCanvasParent,
+            inputDomElement: Settings.domCanvasParent,
             // inputDomElement: Params.domTouchParent,
             desktop: DeviceInfo.getInstance().desktop
         });
 
         // DEBUG GUI INIT
 
-        if (Params.isDebugMode) {
-            Params.datGui = new datGui.GUI();
+        if (Settings.isDebugMode) {
+            Settings.datGui = new datGui.GUI();
         }
 
         // SCENES
@@ -99,7 +98,7 @@ export class GameEngine {
 
         // DEBUG GUI
 
-        if (Params.isDebugMode) {
+        if (Settings.isDebugMode) {
             this.galaxy.initDebugGui();
         }
 
@@ -108,7 +107,7 @@ export class GameEngine {
         this.clock = new THREE.Clock();
 
         // stats
-        if (Params.isDebugMode) {
+        if (Settings.isDebugMode) {
             this.stats = new Stats();
             this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
             document.body.appendChild(this.stats.dom);
@@ -117,28 +116,12 @@ export class GameEngine {
         // global events
         FrontEvents.onWindowResizeSignal.add(this.onWindowResize, this);
 
-        if (Config.INIT_FULL_SCREEN) {
-            
-            Params.domCanvasParent.requestFullscreen();
-
-            // let f1 = (event) => {
-            //     Params.domCanvasParent.removeEventListener('click', f1);
-            //     (event as any).target.requestFullscreen();
-            // }
-
-            // let f2 = (event) => {
-            //     Params.domCanvasParent.removeEventListener('touchstart', f2);
-            //     (event as any).target.requestFullscreen();
-            // }
-
-            // if (DeviceInfo.getInstance().iOS) {
-                // (Params.domCanvasParent as HTMLElement).addEventListener('touchstart', f2);
-            // }
-            
+        if (Settings.INIT_FULL_SCREEN) {
+            Settings.domCanvasParent.requestFullscreen();
         }
 
         FrontEvents.toggleFullscreen.add(() => {
-            let elem = Params.domCanvasParent;
+            let elem = Settings.domCanvasParent;
             if (!document.fullscreenElement) {
                 elem.requestFullscreen();
                 GameEvents.dispatchEvent(GameEvents.EVENT_GAME_FULSCREEN, { v: true });
@@ -149,8 +132,8 @@ export class GameEngine {
             }
         }, this);
 
-        if (Params.datGui) {
-            Params.datGui.add({
+        if (Settings.datGui) {
+            Settings.datGui.add({
                 fullscreen: () => {
                     FrontEvents.toggleFullscreen.dispatch();
                 }
@@ -177,7 +160,7 @@ export class GameEngine {
         this.camera.aspect = w / h;
         this.camera.updateProjectionMatrix();
         
-        switch (Config.AA_TYPE) {
+        switch (Settings.AA_TYPE) {
             case 1:
                 if (this.fxaaPass) {
                     this.fxaaPass.material.uniforms['resolution'].value.x = 1 / (w * this.renderPixelRatio);
@@ -202,7 +185,7 @@ export class GameEngine {
 
     private update(dt: number) {
 
-        // hangar update
+        // galaxy update
         if (this.galaxy) this.galaxy.update(dt);
 
     }
@@ -210,10 +193,10 @@ export class GameEngine {
     private animate() {
         let dtSec = this.clock.getDelta();
 
-        if (Params.isDebugMode) this.stats.begin();
+        if (Settings.isDebugMode) this.stats.begin();
         this.update(dtSec);
         this.render();
-        if (Params.isDebugMode) this.stats.end();
+        if (Settings.isDebugMode) this.stats.end();
         
         requestAnimationFrame(() => this.animate());
     }

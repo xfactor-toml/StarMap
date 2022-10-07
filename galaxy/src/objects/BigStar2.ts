@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { Params } from "../data/Params";
+import { Settings } from "../data/Settings";
 import { ThreeLoader } from "../loaders/ThreeLoader";
 import vsSun from '../shaders/sunTextured/vert.glsl';
 import fsSun from '../shaders/sunTextured/frag.glsl';

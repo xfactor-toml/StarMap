@@ -1,10 +1,9 @@
-import { Config } from "../data/Config";
 import { Signal } from "../events/Signal";
 import { LogMng } from "../utils/LogMng";
-import { Preloader } from "./Preloader";
+import { GamePreloader } from "./GamePreloader";
 import * as MyUtils from "../utils/MyUtils";
-import { Params } from "../data/Params";
-import { GameEngine } from "./GameEngine";
+import { Settings } from "../data/Settings";
+import { GameRender } from "./GameRender";
 import { GameEvents } from "../events/GameEvents";
 import { FrontEvents } from "../events/FrontEvents";
 import { AudioMng } from "../audio/AudioMng";
@@ -16,13 +15,13 @@ type InitParams = {
 
 export class GameBoot {
     private inited = false;
-    private preloader: Preloader;
+    private preloader: GamePreloader;
     isLoaded = false;
 
     constructor() {
-        Params.domCanvasParent = document.getElementById('game');
-        Params.domTouchParent = document.getElementById('touch');
-        Params.domGuiParent = document.getElementById('gui');
+        Settings.domCanvasParent = document.getElementById('game');
+        Settings.domTouchParent = document.getElementById('touch');
+        Settings.domGuiParent = document.getElementById('gui');
     }
 
     init(aParams?: InitParams) {
@@ -33,29 +32,21 @@ export class GameBoot {
         this.inited = true;
 
         // Boot
-        let anc = window.location.hash.replace("#", "");
-        Params.isDebugMode = (anc === "debug");
+        Settings.isDebugMode = window.location.hash === '#debug';
 
         // LogMng settings
-        if (!Params.isDebugMode) LogMng.setMode(LogMng.MODE_RELEASE);
+        if (!Settings.isDebugMode) LogMng.setMode(LogMng.MODE_RELEASE);
         LogMng.system('LogMng mode: ' + LogMng.getMode());
 
-        if (Params.isDebugMode) {
+        if (Settings.isDebugMode) {
             console.log('GameStarter.init(): init params: ', aParams);
         }
         
         // GET Params
         this.readGETParams();
 
-        // preloader
-        this.preloader = new Preloader();
-        this.preloader.onLoadCompleteSignal.addOnce(this.onLoadComplete, this);
-        this.preloader.loadDefault();
-
-        FrontEvents.startGame.add((aFullscreen = false) => {
-            Config.INIT_FULL_SCREEN = aFullscreen;
-            this.startGame();
-        }, this);
+        // Preloader
+        this.startPreloader();
 
     }
 
@@ -75,6 +66,17 @@ export class GameBoot {
                 }
             }
         }
+    }
+
+    private startPreloader() {
+        this.preloader = new GamePreloader();
+        this.preloader.onLoadCompleteSignal.addOnce(this.onLoadComplete, this);
+        this.preloader.loadDefault();
+
+        FrontEvents.startGame.add((aFullscreen = false) => {
+            Settings.INIT_FULL_SCREEN = aFullscreen;
+            this.startGame();
+        }, this);
     }
 
     private onLoadProgress(aPercent: number) {
@@ -103,7 +105,7 @@ export class GameBoot {
     }
         
     startGame() {
-        let gameEngine = new GameEngine();
+        let gameEngine = new GameRender();
         GameEvents.dispatchEvent(GameEvents.EVENT_GAME_CREATED);
     }
 

@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { IBaseClass } from "../interfaces/IBaseClass";
 import { MyMath } from "../utils/MyMath";
-import { Params } from "../data/Params";
+import { Settings } from "../data/Settings";
 
 import vsFarStars from '../shaders/farStars/vs.glsl';
 import fsFarStars from '../shaders/farStars/fs.glsl';
@@ -28,19 +28,19 @@ export class FarStars extends THREE.Group implements IBaseClass {
         // this.geometry = new THREE.Geometry();
         // this.geometry.vertices = this.generatePositions(this.params.starsCount, this.params.radiusMin, this.params.radiusMax);
         this.geometry = new THREE.BufferGeometry();
-        let vertices = this.generatePositionsFloat32Array(this.params.starsCount, Params.skyData.radiusMin, Params.skyData.radiusMax);
+        let vertices = this.generatePositionsFloat32Array(this.params.starsCount, Settings.skyData.radiusMin, Settings.skyData.radiusMax);
         this.geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
 
         this.material = new THREE.ShaderMaterial({
             vertexShader: vsFarStars,
             fragmentShader: fsFarStars,
             uniforms: {
-                radiusMin: { value: Params.skyData.radiusMin },
-                radiusMax: { value: Params.skyData.radiusMax },
-                scaleMin: { value: Params.skyData.scaleMin },
-                scaleMax: { value: Params.skyData.scaleMax },
-                starSize: { value: Params.skyData.starSize },
-                starAlpha: { value: Params.skyData.starAlpha },
+                radiusMin: { value: Settings.skyData.radiusMin },
+                radiusMax: { value: Settings.skyData.radiusMax },
+                scaleMin: { value: Settings.skyData.scaleMin },
+                scaleMax: { value: Settings.skyData.scaleMax },
+                starSize: { value: Settings.skyData.starSize },
+                starAlpha: { value: Settings.skyData.starAlpha },
                 cameraMovmentPower: { value: [0.0, 0.0] },
             },
             transparent: true,
@@ -143,12 +143,12 @@ export class FarStars extends THREE.Group implements IBaseClass {
     }
 
     updateUniformValues() {
-        this.material.uniforms.radiusMin.value = Params.skyData.radiusMin;
-        this.material.uniforms.radiusMax.value = Params.skyData.radiusMax;
-        this.material.uniforms.scaleMin.value = Params.skyData.scaleMin;
-        this.material.uniforms.scaleMax.value = Params.skyData.scaleMax;
-        this.material.uniforms.starSize.value = Params.skyData.starSize;
-        this.material.uniforms.starAlpha.value = Params.skyData.starAlpha;
+        this.material.uniforms.radiusMin.value = Settings.skyData.radiusMin;
+        this.material.uniforms.radiusMax.value = Settings.skyData.radiusMax;
+        this.material.uniforms.scaleMin.value = Settings.skyData.scaleMin;
+        this.material.uniforms.scaleMax.value = Settings.skyData.scaleMax;
+        this.material.uniforms.starSize.value = Settings.skyData.starSize;
+        this.material.uniforms.starAlpha.value = Settings.skyData.starAlpha;
     }
     
     free() {
