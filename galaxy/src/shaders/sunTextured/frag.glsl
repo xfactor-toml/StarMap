@@ -114,15 +114,10 @@ vec4 mainImage( vec4 fragColor, vec2 fragCoord )
     float mouseX = mx;
     float mouseY = my;
 
-	// float brightness = freqs[1] * 0.25 + freqs[2] * 0.25;
 	float brightness = 0.;
 	float radius = 0.24; // + brightness * 0.2;
 	float invRadius = 1.0 / radius;
 	
-	// vec3 orange = vec3( 0.8, 0.65, 0.3 );
-	// vec3 coronaColor = vec3( 0.8, 0.65, 0.3 );
-	// vec3 coronaColor = vec3( 0.3, 0.6, 0.9 );
-	// vec3 glowColor = vec3( 0.8, 0.35, 0.1 );
 	vec3 glowColor = vec3( 0.1, 0.35, 0.8 );
 	float time = iTime * 0.1;
 	float aspect = 1.;
@@ -187,19 +182,7 @@ vec4 mainImage( vec4 fragColor, vec2 fragCoord )
         resultFragColor.rgb += max(starSphere, .96) * fVal1 * .95;
         resultFragColor.rgb += starSphere; 
 
-        // resultFragColor.x *= centerColor.x;
-        // resultFragColor.y *= centerColor.y;
-        // resultFragColor.z *= centerColor.z;
-
-        // resultFragColor.x *= color.x;
-        // resultFragColor.y *= color.y;
-        // resultFragColor.z *= color.z;
-
         float maxRBG = max(resultFragColor.x, max(resultFragColor.y, resultFragColor.z));
-
-        // resultFragColor.x = maxRBG * color.x;
-        // resultFragColor.y = maxRBG * color.y;
-        // resultFragColor.z = maxRBG * color.z;
 
         resultFragColor.x = maxRBG * centerColor.x;
         resultFragColor.y = maxRBG * centerColor.y;
@@ -218,18 +201,17 @@ vec4 mainImage( vec4 fragColor, vec2 fragCoord )
     //v *= mix(vec3(0.8),vec3(1.,1.,0.)+2.5,dia);
     resultFragColor.rgb += vec3(v * .01) * (1. - dia);  
     
-	//float starGlow = min( max( 1.0 - dist * ( clamp((1.-GLOW_INTENSITY),-1.,1.5)  - brightness ), 0.0 ), 1. );
-	// float starGlow = min( max( 1.0 - dist * ( clamp((1. - GLOW_INTENSITY), -1., 1.5) - brightness ), 0.0 ), .0 );
-
-	// resultFragColor.rgb	+= vec3( f * ( 0.55 + brightness * 0.5 ) * coronaColor ) + corona * coronaColor; // + starGlow * glowColor;
 	resultFragColor.rgb	+= vec3( f * coronaColor ) + corona * coronaColor; // + starGlow * glowColor;
 
-    // resultFragColor.a = max(resultFragColor.x, max(resultFragColor.y, resultFragColor.z));
 	if (dist > radius) {
         resultFragColor.a = (resultFragColor.x + resultFragColor.y + resultFragColor.z) / 3.;
     }
 
     return resultFragColor;
+
+    // test
+    // return vec4(0.2, 0.2, 0.2, 1.);
+
 }
 
 void main(void)

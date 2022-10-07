@@ -17,6 +17,7 @@ import { SmallFlySystem } from '../objects/smallFly/SmallFlySystem';
 import { MyOrbitControls } from '../mythree/MyOrbitControls';
 import { AudioMng } from '../audio/AudioMng';
 import { AudioData } from '../audio/AudioData';
+import { StarPoint } from '../objects/StarPoint';
 
 const RACES = ['Robots', 'Humans', 'Simbionts', 'Lizards', 'Insects'];
 
@@ -288,7 +289,7 @@ export class Galaxy {
     private raycaster: THREE.Raycaster;
     private checkMousePointerTimer = 0;
 
-    private starPointSprites: THREE.Sprite[];
+    private starPointSprites: StarPoint[];
     private starPointHovered: THREE.Sprite;
     private currentStarId = -1;
 
@@ -353,7 +354,7 @@ export class Galaxy {
             })
         );
         this.galaxyCenterSprite.scale.set(Settings.GALAXY_CENTER_SCALE, Settings.GALAXY_CENTER_SCALE, Settings.GALAXY_CENTER_SCALE);
-        this.galaxyCenterSprite.renderOrder = 999;
+        // this.galaxyCenterSprite.renderOrder = 999;
         this.dummyGalaxy.add(this.galaxyCenterSprite);
 
         this.galaxyCenterSprite2 = new THREE.Sprite(
@@ -361,14 +362,14 @@ export class Galaxy {
                 map: ThreeLoader.getInstance().getTexture('sun_romb'),
                 color: Settings.GALAXY_CENTER_COLOR,
                 transparent: true,
-                alphaTest: 0.01,
+                // alphaTest: 0.01,
                 opacity: 1,
                 depthWrite: false,
                 blending: THREE.AdditiveBlending
             })
         );
         this.galaxyCenterSprite2.scale.set(Settings.GALAXY_CENTER_SCALE_2, Settings.GALAXY_CENTER_SCALE_2, Settings.GALAXY_CENTER_SCALE_2);
-        this.galaxyCenterSprite2.renderOrder = 999;
+        // this.galaxyCenterSprite2.renderOrder = 999;
         this.dummyGalaxy.add(this.galaxyCenterSprite2);
 
         let planeGeom = new THREE.PlaneBufferGeometry(1, 1);
@@ -378,7 +379,7 @@ export class Galaxy {
             transparent: true,
             opacity: 0,
             depthWrite: false,
-            // blending: THREE.AdditiveBlending
+            blending: THREE.AdditiveBlending
         });
         this.galaxyCenterPlane = new THREE.Mesh(planeGeom, planeMat);
         this.galaxyCenterPlane.visible = false;
@@ -895,29 +896,30 @@ export class Galaxy {
 
     private createStarPoints() {
 
-        let loader = ThreeLoader.getInstance();
+        // let loader = ThreeLoader.getInstance();
         this.starPointSprites = [];
 
         for (let i = 0; i < SOLAR_SYSTEMS_DATA.length; i++) {
             const starData = SOLAR_SYSTEMS_DATA[i];
 
-            let previewTexture = loader.getTexture('starPoint');
-            let previewMaterial = new THREE.SpriteMaterial({
-                map: previewTexture,
-                transparent: true,
-                opacity: 0.9,
-                depthWrite: false,
-                // blending: THREE.AdditiveBlending
+            // let previewTexture = loader.getTexture('starPoint');
+            // let previewMaterial = new THREE.SpriteMaterial({
+            //     map: previewTexture,
+            //     transparent: true,
+            //     opacity: 0.9,
+            //     depthWrite: false,
+            //     // blending: THREE.AdditiveBlending
+            // });
+            
+            let starPointSprite = new StarPoint({
+                name: 'starPoint',
+                starId: i,
+                baseScale: 12
             });
-            let starPointSprite = new THREE.Sprite(previewMaterial);
 
-            starPointSprite.scale.set(12, 12, 12);
             let starPos = starData.positionInGalaxy;
-            // let starPos = this.galaxyStarsData[starData.starId].pos;
             starPointSprite.position.set(starPos.x, starPos.y, starPos.z);
-            starPointSprite[`name`] = 'starPoint';
-            starPointSprite[`starId`] = i;
-            this.starPointSprites[i] = starPointSprite;
+            this.starPointSprites.push(starPointSprite);
             this.dummyGalaxy.add(starPointSprite);
 
         }
@@ -1543,15 +1545,7 @@ export class Galaxy {
 
         // hide point sprites
         for (let i = 0; i < this.starPointSprites.length; i++) {
-            const starPointSprite = this.starPointSprites[i];
-            gsap.to([starPointSprite.material], {
-                opacity: 0,
-                duration: DUR / 10,
-                ease: 'sine.in',
-                onComplete: () => {
-                    starPointSprite.visible = false;
-                }
-            });
+            this.starPointSprites[i].hide(DUR / 10);
         }
         
         // hide galaxy plane
@@ -1784,18 +1778,9 @@ export class Galaxy {
             }
         });
 
-        // show point sprite
+        // show star point sprite
         for (let i = 0; i < this.starPointSprites.length; i++) {
-            const starPointSprite = this.starPointSprites[i];
-            gsap.to([starPointSprite.material], {
-                opacity: 1,
-                duration: DUR * 0.1,
-                delay: DUR * 0.9,
-                ease: 'sine.out',
-                onStart: () => {
-                    starPointSprite.visible = true;
-                }
-            });
+            this.starPointSprites[i].show(DUR * 0.1, DUR * 0.9);
         }
 
         // change galo
@@ -1861,13 +1846,13 @@ export class Galaxy {
         // scale small star sprite
         gsap.to([this.bigStarSprite.material], {
             opacity: 1,
-            delay: 2 * DUR / 5,
-            duration: 3 * DUR / 5,
+            delay: 2 / 5 * DUR,
+            duration: 3 / 5 * DUR,
             ease: 'sine.inOut'
         });
         gsap.to([this.bigStarSprite.scale], {
-            x: 10,
-            y: 10,
+            x: 2,
+            y: 2,
             duration: DUR * 1.5,
             ease: 'sine.inOut',
             onComplete: () => {

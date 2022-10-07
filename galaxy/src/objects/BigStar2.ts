@@ -1,10 +1,8 @@
 import * as THREE from "three";
-import { Settings } from "../data/Settings";
 import { ThreeLoader } from "../loaders/ThreeLoader";
+import * as datGui from "dat.gui";
 import vsSun from '../shaders/sunTextured/vert.glsl';
 import fsSun from '../shaders/sunTextured/frag.glsl';
-import * as datGui from "dat.gui";
-import { MyMath } from "../utils/MyMath";
 
 export type BigStar2Params = {
     starSize: number;
@@ -60,7 +58,8 @@ export class BigStar2 extends THREE.Group {
             fragmentShader: fsSun,
             uniforms: this._uniforms,
             transparent: true,
-            depthWrite: false
+            depthWrite: false,
+            // blending: THREE.NormalBlending
         });
 
         let size = this._params.starSize || 1;
