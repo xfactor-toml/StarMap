@@ -190,7 +190,7 @@ vec4 mainImage( vec4 fragColor, vec2 fragCoord )
 	}
     else {
         // test
-        resultFragColor = vec4(0.2, 0.2, 0.5, .3);
+        // resultFragColor = vec4(0.2, 0.2, 0.5, .3);
     }
     
     vec3 ro = vec3(-mouseX, -mouseY, -5.4);

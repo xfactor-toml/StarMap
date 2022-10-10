@@ -19,6 +19,7 @@ import { AudioMng } from '../audio/AudioMng';
 import { AudioData } from '../audio/AudioData';
 import { StarPoint } from '../objects/StarPoint';
 import { LogMng } from '../utils/LogMng';
+import { GameUtils } from '../math/GameUtils';
 
 const RACES = ['Robots', 'Humans', 'Simbionts', 'Lizards', 'Insects'];
 
@@ -34,6 +35,7 @@ const SOLAR_SYSTEMS_DATA: {
     starParams: BigStarParams
 }[] = [
 
+    // robots
     {
         name: "Star 1",
         description: `This is a star of Robots. This is a test description text.`,
@@ -46,7 +48,7 @@ const SOLAR_SYSTEMS_DATA: {
             x: 40, y: 0, z: 100
         },
         starParams: {
-            starSize: 40,
+            starSize: 30,
             sunClr1: { r: 0., g: 0.7, b: 0.96 },
             sunClr2: { r: 0., g: 0., b: 0.8 },
             sunClr3: { r: 0., g: 0., b: 1. },
@@ -60,6 +62,7 @@ const SOLAR_SYSTEMS_DATA: {
         }
     },
 
+    // humans
     {
         name: "Star 2",
         description: `This is a star of Humans. This is a test description text.`,
@@ -72,7 +75,7 @@ const SOLAR_SYSTEMS_DATA: {
             x: 10, y: 0, z: -100
         },
         starParams: {
-            starSize: 40,
+            starSize: 34,
             sunClr1: { r: 0.96, g: 0.7, b: 0. },
             sunClr2: { r: 0.8, g: 0., b: 0. },
             sunClr3: { r: 1., g: 0., b: 0. },
@@ -126,7 +129,7 @@ const SOLAR_SYSTEMS_DATA: {
             x: -80, y: 0, z: -80
         },
         starParams: {
-            starSize: 40,
+            starSize: 30,
             sunClr1: { r: 1., g: 0.5, b: 0. },
             sunClr2: { r: 1., g: 0.5, b: 0. },
             sunClr3: { r: 1., g: 0.5, b: 0. },
@@ -153,7 +156,7 @@ const SOLAR_SYSTEMS_DATA: {
             x: -80, y: 0, z: 70
         },
         starParams: {
-            starSize: 40,
+            starSize: 35,
             sunClr1: { r: 0.35, g: 0.09, b: 0.95 },
             sunClr2: { r: 0.18, g: 0.04, b: 1. },
             sunClr3: { r: .34, g: 0.1, b: 1. },
@@ -256,6 +259,7 @@ export class Galaxy {
 
     private fsm: FSM;
 
+    private render: THREE.WebGLRenderer;
     private scene: THREE.Scene;
     private camera: THREE.PerspectiveCamera;
 
@@ -312,6 +316,7 @@ export class Galaxy {
 
 
     constructor(aParams: any) {
+        this.render = aParams.render;
         this.scene = aParams.scene;
         this.camera = aParams.camera;
         this.cameraTarget = new THREE.Vector3();
@@ -915,7 +920,8 @@ export class Galaxy {
             let starPointSprite = new StarPoint({
                 name: 'starPoint',
                 starId: i,
-                baseScale: 12
+                baseScale: 12,
+                camera: this.camera
             });
 
             let starPos = starData.positionInGalaxy;
@@ -1291,15 +1297,14 @@ export class Galaxy {
     }
 
     private guiGetScaleBigStarTooltipByWidth(): number {
-        return innerWidth / 800;
+        return GameUtils.getClientWidth() / 800;
     }
 
     private guiGetScaleBigStarTooltipByHeight(): number {
-        return innerHeight / 800;
+        return GameUtils.getClientHeight() / 800;
     }
 
     private guiGetScaleBigStarTooltip(): number {
-        // return Math.min(innerWidth / 800, innerHeight / 840);
         return Math.min(this.guiGetScaleBigStarTooltipByWidth(), this.guiGetScaleBigStarTooltipByHeight());
     }
 
@@ -1308,7 +1313,7 @@ export class Galaxy {
         const FOV = aCamera.fov;
         let yFovRadiant = FOV * Math.PI / 180;
         // Calculate X-FOV Radiant
-        let xFovRadiant = 2 * Math.atan(Math.tan(yFovRadiant / 2) * (innerWidth / innerHeight));
+        let xFovRadiant = 2 * Math.atan(Math.tan(yFovRadiant / 2) * (GameUtils.getClientWidth() / GameUtils.getClientHeight()));
         // Convert back to angle
         let xFovAngle = xFovRadiant * 180 / Math.PI;
         return xFovAngle;
@@ -1402,6 +1407,13 @@ export class Galaxy {
         this.prevCamPolarAngle = cameraPolarAngle;
     }
 
+    private updateStarPoints() {
+        for (let i = 0; i < this.starPointSprites.length; i++) {
+            const point = this.starPointSprites[i];
+            point.update();
+        }
+    }
+
     // STATES
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1439,6 +1451,7 @@ export class Galaxy {
         this.updateGalaxyStars(dt);
         this.updateFarStars(dt);
         this.updateSmallGalaxies(dt);
+        this.updateStarPoints();
 
     }
 
@@ -1466,6 +1479,7 @@ export class Galaxy {
         this.updateFarStars(dt);
         this.updateSmallGalaxies(dt);
         this.updateRotationSound(dt);
+        this.updateStarPoints();
 
         this.smallFlySystem.update(dt);
 
@@ -1499,8 +1513,6 @@ export class Galaxy {
 
         // create Solar System
 
-        let distance = 30;
-        let aspect = innerWidth / innerHeight;
         let starScale = 1;
 
         this.solarSystem = new SolarSystem(
@@ -1641,6 +1653,27 @@ export class Galaxy {
         this.galaxySaveAnimData.cameraPosition = this.camera.position.clone();
 
         // move camera
+
+        let distance = 30;
+        // let aspect = window.visualViewport.width / window.visualViewport.height;
+        // let factor = DeviceInfo.getInstance().desktop ? 1 : 1.1;
+        // let inh = window.innerHeight;
+        // let outh = window.outerHeight;
+        // let rSize = new THREE.Vector2();
+        // rSize = this.render.getSize(rSize);
+        // let rh = rSize.y;
+        // alert(`inner height: ${inh}`);
+        // alert(`outer height: ${outh}`);
+        // alert(`rh: ${rh}`);
+
+        let h = GameUtils.getClientHeight();
+        if (!DeviceInfo.getInstance().desktop) {
+            if (!document.fullscreenElement) {
+                h = window.innerHeight + 104;
+            }
+        } 
+        
+        let aspect = GameUtils.getClientWidth() / h;
         let guiScaleByW = this.guiGetScaleBigStarTooltipByWidth();
         let d = innerHeight / (20 * aspect);
         let starDist = d * (0.6 / guiScaleByW);

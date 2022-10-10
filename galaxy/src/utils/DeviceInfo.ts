@@ -50,5 +50,4 @@ export class DeviceInfo {
         return window.devicePixelRatio || 1;
     }
 
-
 }

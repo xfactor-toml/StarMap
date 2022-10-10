@@ -15,6 +15,7 @@ import { Settings } from "../data/Settings";
 import { Galaxy } from "./Galaxy";
 import { FrontEvents } from "../events/FrontEvents";
 import { GameEvents } from "../events/GameEvents";
+import { GameUtils } from "../math/GameUtils";
 
 
 export class GameRender {
@@ -37,8 +38,8 @@ export class GameRender {
 
         // RENDER
 
-        let w = innerWidth;
-        let h = innerHeight;
+        let w = GameUtils.getClientWidth();
+        let h = GameUtils.getClientHeight();
 
         const clearColor = new THREE.Color(Settings.BG_COLOR);
 
@@ -66,7 +67,7 @@ export class GameRender {
 
         this.camera = new THREE.PerspectiveCamera(
             45,
-            innerWidth / innerHeight,
+            GameUtils.getClientAspectRatio(),
             Settings.CAMERA.near,
             Settings.CAMERA.far);
         this.camera.position.set(10, 0, 10);
@@ -91,6 +92,7 @@ export class GameRender {
 
         this.galaxy = new Galaxy({
             // backScene: this.backScene,
+            render: this.renderer,
             scene: this.scene,
             camera: this.camera
         });
@@ -148,8 +150,8 @@ export class GameRender {
 
         if (!this.renderer || !this.camera) return;
 
-        let w = innerWidth;
-        let h = innerHeight;
+        let w = GameUtils.getClientWidth();
+        let h = GameUtils.getClientHeight();
 
         this.renderer.setSize(w, h);
 
