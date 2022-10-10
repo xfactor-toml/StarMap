@@ -10,22 +10,33 @@ export type SolarSystemParams = {
 
 export class SolarSystem extends THREE.Group {
     private _camera: THREE.Camera;
+    private _starScale: number;
     private params: SolarSystemParams;
     private star: BigStar2;
         
-    constructor(aCamera: THREE.Camera, aParams: SolarSystemParams) {
+    constructor(aCamera: THREE.Camera, aStarScale: number, aParams: SolarSystemParams) {
         super();
         this._camera = aCamera;
+        this._starScale = aStarScale;
         this.params = aParams;
         this.createStar();
     }
     
     private createStar() {
-        this.star = new BigStar2(this.position, this._camera, this.params.starParams);
+        this.star = new BigStar2(this.position, this._camera, this._starScale, this.params.starParams);
         if (Settings.isDebugMode) {
             this.star.createDebugGui(Settings.datGui);
         }
         this.add(this.star);
+    }
+    
+    public get starScale(): number {
+        return this._starScale;
+    }
+
+    public set starScale(v: number) {
+        this._starScale = v;
+        if (this.star) this.star.starScale = v;
     }
 
     free() {

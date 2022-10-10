@@ -18,6 +18,7 @@ import { MyOrbitControls } from '../mythree/MyOrbitControls';
 import { AudioMng } from '../audio/AudioMng';
 import { AudioData } from '../audio/AudioData';
 import { StarPoint } from '../objects/StarPoint';
+import { LogMng } from '../utils/LogMng';
 
 const RACES = ['Robots', 'Humans', 'Simbionts', 'Lizards', 'Insects'];
 
@@ -436,7 +437,7 @@ export class Galaxy {
         this.fsm = new FSM();
         this.fsm.addState(States.init, this, this.onStateInitEnter, this.onStateInitUpdate);
         this.fsm.addState(States.galaxy, this, this.onStateGalaxyEnter, this.onStateGalaxyUpdate);
-        this.fsm.addState(States.toStar, this, this.onStateToStarEnter, this.onStateToStarUpdate, this.onStateToStarExit);
+        this.fsm.addState(States.toStar, this, this.onStateToStarEnter, this.onStateToStarUpdate);
         this.fsm.addState(States.star, this, this.onStateStarEnter, this.onStateStarUpdate);
         this.fsm.addState(States.fromStar, this, this.onStateFromStarEnter, this.onStateFromStarUpdate);
         this.fsm.startState(States.init);
@@ -1289,10 +1290,34 @@ export class Galaxy {
         download(jsonData, 'galaxyState.json', 'text/plain');
     }
 
-    private guiGetScaleBigStarTooltip(): number {
-        return Math.min(innerWidth / 800, innerHeight / 840);
+    private guiGetScaleBigStarTooltipByWidth(): number {
+        return innerWidth / 800;
     }
 
+    private guiGetScaleBigStarTooltipByHeight(): number {
+        return innerHeight / 800;
+    }
+
+    private guiGetScaleBigStarTooltip(): number {
+        // return Math.min(innerWidth / 800, innerHeight / 840);
+        return Math.min(this.guiGetScaleBigStarTooltipByWidth(), this.guiGetScaleBigStarTooltipByHeight());
+    }
+
+    private getXFOV(aCamera: THREE.PerspectiveCamera) {
+        // Convert angle to radiant
+        const FOV = aCamera.fov;
+        let yFovRadiant = FOV * Math.PI / 180;
+        // Calculate X-FOV Radiant
+        let xFovRadiant = 2 * Math.atan(Math.tan(yFovRadiant / 2) * (innerWidth / innerHeight));
+        // Convert back to angle
+        let xFovAngle = xFovRadiant * 180 / Math.PI;
+        return xFovAngle;
+    }
+
+    private getYFOV(aCamera: THREE.PerspectiveCamera) {
+        return aCamera.fov;
+    }
+        
     /**
      * Absolute polar angle relative to the main galaxy plain
      * @returns 
@@ -1466,22 +1491,27 @@ export class Galaxy {
 
         let systemData = SOLAR_SYSTEMS_DATA[aParams.starId];
 
-        // create Solar System
-        this.solarSystem = new SolarSystem(
-            this.camera,
-            {
-                starParams: systemData.starParams
-            }
-        );
-
         let starPos = new THREE.Vector3(
             systemData.positionInGalaxy.x,
             systemData.positionInGalaxy.y,
             systemData.positionInGalaxy.z
         );
 
-        this.solarSystem.position.copy(starPos);
+        // create Solar System
 
+        let distance = 30;
+        let aspect = innerWidth / innerHeight;
+        let starScale = 1;
+
+        this.solarSystem = new SolarSystem(
+            this.camera,
+            starScale,
+            {
+                starParams: systemData.starParams
+            }
+        );
+
+        this.solarSystem.position.copy(starPos);
         this.solarSystem.scale.set(0, 0, 0);
         this.solarSystem.visible = false;
         this.scene.add(this.solarSystem);
@@ -1611,8 +1641,15 @@ export class Galaxy {
         this.galaxySaveAnimData.cameraPosition = this.camera.position.clone();
 
         // move camera
-        let asRat = innerWidth / innerHeight;
-        let starDist = innerHeight / (18 * asRat);
+        let guiScaleByW = this.guiGetScaleBigStarTooltipByWidth();
+        let d = innerHeight / (20 * aspect);
+        let starDist = d * (0.6 / guiScaleByW);
+
+        // LogMng.debug(`guiScaleByWidth: ${guiScaleByW}`);
+        // LogMng.debug(`asRat: ${aspect}`);
+        // LogMng.debug(`d: ${d}`);
+        // LogMng.debug(`-----> starDist: ${starDist}`);
+
         let newCameraPos = this.camera.position.clone().sub(starPos).normalize().
             multiplyScalar(starDist).add(starPos);
         
@@ -1700,10 +1737,6 @@ export class Galaxy {
 
     }
 
-    private onStateToStarExit() {
-        
-    }
-
     private onStateStarEnter() {
 
         this.orbitControl.autoRotate = false;
@@ -1712,20 +1745,6 @@ export class Galaxy {
 
         let starData = SOLAR_SYSTEMS_DATA[this.currentStarId];
 
-        // window.dispatchEvent(new CustomEvent('gameEvent', {
-        //     detail: {
-        //         eventName: GameEvents.EVENT_SHOW_STAR_GUI,
-        //         name: starData.name,
-        //         description: starData.description,
-        //         level: starData.level,
-        //         race: RACES[starData.raceId],
-        //         planetsSlots: starData.planetsSlots,
-        //         energy: starData.energy,
-        //         life: starData.life
-        //     }
-        // }));
-
-        // let guiScale = Math.min(1, this.guiGetScaleBigStarTooltip());
         let guiScale = this.guiGetScaleBigStarTooltip(); 
 
         GameEvents.dispatchEvent(GameEvents.EVENT_SHOW_STAR_GUI, {

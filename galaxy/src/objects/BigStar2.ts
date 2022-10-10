@@ -14,6 +14,7 @@ export class BigStar2 extends THREE.Group {
 
     private _parentPos: THREE.Vector3;
     private _camera: THREE.Camera;
+    private _starScale: number;
     private _params: BigStar2Params;
     private _light: THREE.PointLight;
     private _mesh: THREE.Mesh;
@@ -23,12 +24,13 @@ export class BigStar2 extends THREE.Group {
     private _guiFolder: datGui.GUI;
     private _guiControllers: datGui.GUIController[];
 
-    constructor(aParentPos: THREE.Vector3, aCamera: THREE.Camera, aParams: BigStar2Params) {
+    constructor(aParentPos: THREE.Vector3, aCamera: THREE.Camera, aStarScale: number, aParams: BigStar2Params) {
 
         super();
 
         this._parentPos = aParentPos;
         this._camera = aCamera;
+        this._starScale = aStarScale;
         this._params = aParams;
 
         if (!this._params.sun2Color) this._params.sun2Color = { r: .9, g: .6, b: .3 };
@@ -62,13 +64,19 @@ export class BigStar2 extends THREE.Group {
             // blending: THREE.NormalBlending
         });
 
-        let size = this._params.starSize || 1;
-
+        let size = (this._params.starSize || 1) * this._starScale;
         let geom = new THREE.PlaneGeometry(size, size);
-
         this._mesh = new THREE.Mesh(geom, shaderMaterial);
-        
         this.add(this._mesh);
+    }
+
+    public get starScale(): number {
+        return this._starScale;
+    }
+
+    public set starScale(v: number) {
+        this._starScale = v;
+        if (this._mesh) this._mesh.scale.set(v, v, 1);
     }
 
     createDebugGui(aGui: datGui.GUI) {

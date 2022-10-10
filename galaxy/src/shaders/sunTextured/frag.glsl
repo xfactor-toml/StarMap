@@ -188,6 +188,10 @@ vec4 mainImage( vec4 fragColor, vec2 fragCoord )
         resultFragColor.y = maxRBG * centerColor.y;
         resultFragColor.z = maxRBG * centerColor.z;
 	}
+    else {
+        // test
+        resultFragColor = vec4(0.2, 0.2, 0.5, .3);
+    }
     
     vec3 ro = vec3(-mouseX, -mouseY, -5.4);
     vec3 rd = GetRayDir(uv, ro);
@@ -210,7 +214,7 @@ vec4 mainImage( vec4 fragColor, vec2 fragCoord )
     return resultFragColor;
 
     // test
-    // return vec4(0.2, 0.2, 0.2, 1.);
+    // return vec4(0.2, 0.2, 0.5, .3);
 
 }
 
