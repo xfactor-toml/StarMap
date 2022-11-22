@@ -156,7 +156,7 @@ const SOLAR_SYSTEMS_DATA: {
             x: -80, y: 0, z: 70
         },
         starParams: {
-            starSize: 35,
+            starSize: 40,
             sunClr1: { r: 0.35, g: 0.09, b: 0.95 },
             sunClr2: { r: 0.18, g: 0.04, b: 1. },
             sunClr3: { r: .34, g: 0.1, b: 1. },
@@ -415,6 +415,7 @@ export class Galaxy {
         let minCameraDistance = 50;
         let maxCameraDistance = 500;
         if (!DeviceInfo.getInstance().desktop) maxCameraDistance = 1000;
+        
         this.createCameraControls({
             enabled: false,
             minDist: minCameraDistance,

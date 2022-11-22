@@ -4,6 +4,7 @@ import { LogMng } from "../utils/LogMng";
 type InitParams = {
     inputDomElement: HTMLElement;
     desktop: boolean;
+    isRightClickProcessing: boolean;
 };
 
 export class InputMng {
@@ -21,7 +22,7 @@ export class InputMng {
 
     inputUpClientX = 0;
     inputUpClientY = 0;
-    
+
     normalInputPos = {
         x: 0,
         y: 0
@@ -57,17 +58,20 @@ export class InputMng {
     /**
      * x, y
      */
+    onInputUpSignal = new Signal();
+
+    /**
+     * x, y
+     */
     onInputMoveSignal = new Signal();
 
     /**
      * x, y
      */
-    onInputUpSignal = new Signal();
+    onContextMenuSignal = new Signal();
+
     
-
-    constructor(aParams: InitParams) {
-
-        if (InputMng.instance) throw new Error("Don't use InputMng.constructor(), it's SINGLETON, use getInstance() method");
+    private constructor(aParams: InitParams) {
 
         this.params = aParams;
 
@@ -87,56 +91,68 @@ export class InputMng {
         let dom = this.params.inputDomElement;
 
         if (dom) {
+
             // if (this.params.desktop) {
             LogMng.debug(`InputMng: init input events...`);
 
-                dom.addEventListener('mousemove', (e: MouseEvent) => {
-                    // LogMng.debug(`mousemove: x: ${e.clientX}, y: ${e.clientY}`);
+            dom.addEventListener('mousemove', (e: MouseEvent) => {
 
-                    this.currInputClientX = e.clientX;
-                    this.currInputClientY = e.clientY;
+                // LogMng.debug(`mousemove: x: ${e.clientX}, y: ${e.clientY}`);
 
-                    // for 3d
-                    this.normalInputPos = {
-                        x: (e.clientX / dom.clientWidth) * 2 - 1,
-                        y: -(e.clientY / dom.clientHeight) * 2 + 1
-                    }
+                this.currInputClientX = e.clientX;
+                this.currInputClientY = e.clientY;
 
-                    if (this.params.desktop) {
-                        this.onInputMoveSignal.dispatch(this.currInputClientX, this.currInputClientY);
-                    }
-                    
-                }, true);
+                // for 3d
+                this.normalInputPos = {
+                    x: (e.clientX / dom.clientWidth) * 2 - 1,
+                    y: -(e.clientY / dom.clientHeight) * 2 + 1
+                }
 
-                dom.addEventListener("pointerdown", (e) => {
-                    // LogMng.debug(`mousedown: x: ${e.clientX}, y: ${e.clientY}`);
-                    
-                    this.inputDownClientX = e.clientX;
-                    this.inputDownClientY = e.clientY;
+                if (this.params.desktop) {
+                    this.onInputMoveSignal.dispatch(this.currInputClientX, this.currInputClientY);
+                }
 
-                    // for 3d
-                    this.normalInputDown = {
-                        x: (e.clientX / dom.clientWidth) * 2 - 1,
-                        y: -(e.clientY / dom.clientHeight) * 2 + 1
-                    }
+            }, true);
 
-                    this.onInputDownSignal.dispatch(this.inputDownClientX, this.inputDownClientY);
-                }, true);
+            dom.addEventListener('pointerdown', (e: PointerEvent) => {
 
-                dom.addEventListener("pointerup", (e) => {
-                    // LogMng.debug(`mouseup: x: ${e.clientX}, y: ${e.clientY}`);
-                    this.inputUpClientX = e.clientX;
-                    this.inputUpClientY = e.clientY;
+                // e.button: 0 - left, 1 - middle, 2 - right
 
-                    // for 3d
-                    this.normalUpDown = {
-                        x: (e.clientX / dom.clientWidth) * 2 - 1,
-                        y: -(e.clientY / dom.clientHeight) * 2 + 1
-                    }
+                // LogMng.debug(`mousedown: x: ${e.clientX}, y: ${e.clientY}`);
+                // LogMng.debug(`pointerdown: button == ${e.button}`);
 
-                    this.onInputUpSignal.dispatch(e.clientX, e.clientY);
-                }, true);
-            
+                if (this.params.desktop && e.button != 0) return;
+
+                this.inputDownClientX = e.clientX;
+                this.inputDownClientY = e.clientY;
+
+                // for 3d
+                this.normalInputDown = {
+                    x: (e.clientX / dom.clientWidth) * 2 - 1,
+                    y: -(e.clientY / dom.clientHeight) * 2 + 1
+                }
+
+                this.onInputDownSignal.dispatch(this.inputDownClientX, this.inputDownClientY);
+            }, true);
+
+            dom.addEventListener("pointerup", (e: PointerEvent) => {
+
+                // LogMng.debug(`mouseup: x: ${e.clientX}, y: ${e.clientY}`);
+
+                if (this.params.desktop && e.button != 0) return;
+
+                this.inputUpClientX = e.clientX;
+                this.inputUpClientY = e.clientY;
+
+                // for 3d
+                this.normalUpDown = {
+                    x: (e.clientX / dom.clientWidth) * 2 - 1,
+                    y: -(e.clientY / dom.clientHeight) * 2 + 1
+                }
+
+                this.onInputUpSignal.dispatch(e.clientX, e.clientY);
+            }, true);
+
             // }
             // else {
             //     LogMng.debug(`init mouse events for mobile`);
@@ -171,6 +187,13 @@ export class InputMng {
             //     }, false);
             // }
 
+            if (this.params.desktop && aParams.isRightClickProcessing) {
+                window.oncontextmenu = () => {
+                    this.onContextMenuSignal.dispatch(this.currInputClientX, this.currInputClientY);
+                    return false; // cancel default menu
+                };
+            }
+
         }
         else {
             LogMng.warn(`InputMng => undefined input DOM element = ${this.params.inputDomElement}`);
@@ -182,6 +205,7 @@ export class InputMng {
     static getInstance(aParams?: InitParams): InputMng {
         if (!InputMng.instance) {
             if (aParams) {
+                if (InputMng.instance) throw new Error("Reinicialization of InputMng, use single inicialization point");
                 InputMng.instance = new InputMng(aParams);
             }
             else {

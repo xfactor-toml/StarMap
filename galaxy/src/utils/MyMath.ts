@@ -15,20 +15,21 @@ export class RectABCD {
 
 export class MyMath {
 
-    public static randomInRange(aMin: number, aMax: number, auto = false): number {
-        if (auto && aMin > aMax) {
-            var tmp = aMin;
-            aMin = aMax;
-            aMax = tmp;
+    public static randomInRange(aMin: number, aMax: number): number {
+        if (aMin > aMax) {
+            throw new Error("MyMath.randomInRange(): Min > Max!");
         }
         return Math.random() * Math.abs(aMax - aMin) + aMin;
     }
 
     public static randomIntInRange(aMin: number, aMax: number): number {
+        if (aMin > aMax) {
+            throw new Error("MyMath.randomIntInRange(): Min > Max!");
+        }
         return Math.round(MyMath.randomInRange(aMin, aMax));
     }
 
-    public static shuffleArray(mas: any[], factor = 4) {
+    public static shuffleArray(mas: any[], factor = 2) {
         for (let i = 0; i < mas.length * factor; i++) {
             const id1 = this.randomIntInRange(0, mas.length - 1);
             const id2 = this.randomIntInRange(0, mas.length - 1);
