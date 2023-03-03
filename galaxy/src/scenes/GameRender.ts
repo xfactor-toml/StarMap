@@ -79,7 +79,8 @@ export class GameRender {
         InputMng.getInstance({
             inputDomElement: Settings.domCanvasParent,
             // inputDomElement: Params.domTouchParent,
-            desktop: DeviceInfo.getInstance().desktop
+            desktop: DeviceInfo.getInstance().desktop,
+            isRightClickProcessing: false
         });
 
         // DEBUG GUI INIT
