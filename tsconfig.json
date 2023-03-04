@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es2016",
+        "lib": [
+            "ES2015",
+            "ES2016",
+            "DOM"
+        ],
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "skipLibCheck": true,
+        "moduleResolution": "node",
+        "outDir": "build",
+        // "noImplicitAny": true,
+        "sourceMap": true,
+    },
+    "include": [
+        "src/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "public",
+        "build"
+    ]
+}
