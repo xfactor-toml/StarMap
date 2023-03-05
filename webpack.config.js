@@ -10,8 +10,7 @@ module.exports = {
 
     output: {
         filename: 'game.bundle.js',
-        path: path.resolve(__dirname, 'build'),
-        publicPath: './'
+        path: path.resolve(__dirname, 'build')
     },
 
     resolve: {
