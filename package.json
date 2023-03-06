@@ -1,11 +1,11 @@
 {
     "name": "vorpal-galaxy",
     "version": "1.0.0",
-    "description": "",
-    "main": "./src/script.js",
+    "description": "Vorpal Galaxy",
+    "main": "./src/idnex.ts",
     "scripts": {
-        "start": "webpack serve --progress",
-        "start:open": "webpack serve --progress --open",
+        "start": "webpack serve",
+        "start:open": "webpack serve --open",
         "build": "webpack --progress",
         "build:prod": "webpack --config webpack.config.prod.js --progress"
     },
@@ -20,6 +20,8 @@
         "ts-loader": "^9.4.2",
         "ts-shader-loader": "^2.0.2",
         "tsconfig-paths-webpack-plugin": "^4.0.0",
+        "vue-loader": "^17.0.1",
+        "vue-tsc": "^1.2.0",
         "webpack": "^5.75.0",
         "webpack-cli": "^5.0.1",
         "webpack-dev-server": "^4.11.1",
@@ -29,12 +31,15 @@
         "@pixi/sound": "^4.2.0",
         "@types/dat.gui": "^0.7.7",
         "@types/stats": "^0.16.30",
-        "@types/three": "^0.138.0",
+        "@types/three": "^0.144.0",
         "@types/ua-parser-js": "^0.7.36",
+        "click-outside-vue3": "^4.0.1",
         "dat.gui": "^0.7.9",
         "gsap": "^3.11.4",
         "stats-js": "^1.0.1",
+        "textfit": "^2.4.0",
         "three": "^0.144.0",
-        "ua-parser-js": "^1.0.33"
+        "ua-parser-js": "^1.0.33",
+        "vue": "^3.2.47"
     }
 }

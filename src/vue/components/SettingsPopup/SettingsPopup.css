@@ -1,0 +1,80 @@
+.settings-popup {
+  width: 280px;
+  background-color: #131b36;
+}
+
+.settings-popup::before,
+.settings-popup::after {
+  content: "";
+  width: 114%;
+  height: 80%;
+  position: absolute;
+  left: -7%;
+  top: -16%;
+  background-image: url(../gui/images/settings-edge.svg);
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  background-size: contain;
+  pointer-events: none;
+}
+
+.settings-popup::after {
+  top: auto;
+  bottom: -17%;
+  transform: scaleY(-1);
+}
+
+.settings-popup__list {
+  margin: 0;
+  padding: 0 6px;
+  list-style: none;
+}
+
+.settings-popup__item {
+  display: flex;
+  align-items: center;
+  padding: 8px 6px;
+}
+
+.settings-popup__item + .settings-popup__item {
+  border-top: 1px solid rgba(0, 240, 255, 0.3);
+}
+
+.settings-popup__label {
+  flex-grow: 1;
+  color: #00f0ff;
+  font-family: "Exo 2";
+  font-weight: 300;
+  font-size: 13px;
+  line-height: 1.12;
+  text-transform: uppercase;
+  text-shadow: 0px 0px 20px #000000;
+}
+
+.settings-popup__controls {
+  width: 120px;
+  margin-left: 16px;
+  opacity: 0.4;
+  transition: ease opacity 200ms;
+}
+
+.settings-popup__controls:hover {
+  opacity: 1;
+}
+
+.settings-popup__fullscreen {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  background-image: url(../gui/images/fullscreen-on.svg);
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.settings-popup__fullscreen.is-active {
+  background-image: url(../gui/images/fullscreen-off.svg);
+}

@@ -1,0 +1,64 @@
+.volume-control {
+  display: flex;
+  align-items: center;
+}
+
+.volume-control__indicator {
+  display: block;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  background-color: transparent;
+  color: currentColor;
+  border: none;
+  cursor: pointer;
+}
+
+.volume-control__icon {
+  display: block;
+  width: 24px;
+  height: 24px;
+  background-image: url(../gui/images/volume.svg);
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  background-size: contain;
+  pointer-events: none;
+}
+
+.volume-control__icon.is-mute {
+  background-image: url(../gui/images/volume-mute.svg);
+}
+
+.volume-control__line {
+  margin-left: 6px;
+  width: 86px;
+  height: 4px;
+  position: relative;
+  z-index: 0;
+  background-color: #102b41;
+  cursor: pointer;
+  user-select: none;
+}
+
+.volume-control__level {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0%;
+  height: 100%;
+  background-color: #00f0ff;
+  pointer-events: none;
+}
+
+.volume-control__point {
+  width: 2px;
+  height: 8px;
+  position: absolute;
+  left: 0%;
+  top: 50%;
+  background-color: #00f0ff;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: ease transform 200ms;
+  pointer-events: none;
+}

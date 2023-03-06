@@ -3,34 +3,54 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin').CleanWebpackPlugin;
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const { VueLoaderPlugin } = require('vue-loader')
 
 module.exports = {
     mode: 'development',
     entry: './src/index.ts',
 
     output: {
-        filename: 'game.bundle.js',
+        filename: 'bundle.js',
         path: path.resolve(__dirname, 'build')
     },
 
     resolve: {
-        extensions: ['.tsx', '.ts', '.js', 'd.ts']
+        extensions: ['.tsx', '.ts', '.js', 'd.ts', '.vue']
     },
 
     module: {
         rules: [
             {
                 test: /\.ts$/,
-                use: 'ts-loader',
-                exclude: /node_modules/
+                exclude: /node_modules/,
+                use: [
+                    {
+                        loader: "ts-loader",
+                        options: {
+                            appendTsSuffixTo: [/\.vue$/]
+                        }
+                    }
+                ]
             },
             {
                 test: /\.(glsl|vs|fs)$/,
                 loader: 'ts-shader-loader'
             },
             {
+                test: /\.vue$/,
+                loader: 'vue-loader'
+            },
+            {
                 test: /\.css$/,
-                use: [MiniCssExtractPlugin.loader, "css-loader"]
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    {
+                        loader: "css-loader",
+                        options: {
+                            url: false
+                        }
+                    }
+                ]
             }
         ]
     },
@@ -59,6 +79,7 @@ module.exports = {
         new MiniCssExtractPlugin({
             filename: 'css/style.css',
         }),
+        new VueLoaderPlugin()
     ],
 
     watchOptions: {
@@ -66,7 +87,7 @@ module.exports = {
     },
 
     devServer: {
-        port: 9080,
+        port: 9184,
         static: {
             directory: path.join(__dirname, 'build'),
         },

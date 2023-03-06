@@ -31,7 +31,11 @@ const SOLAR_SYSTEMS_DATA: {
     planetsSlots: number;
     energy: number;
     life: number;
-    positionInGalaxy: { x, y, z },
+    positionInGalaxy: {
+        x: number,
+        y: number,
+        z: number
+    },
     starParams: BigStarParams
 }[] = [
 
@@ -378,7 +382,7 @@ export class Galaxy {
         // this.galaxyCenterSprite2.renderOrder = 999;
         this.dummyGalaxy.add(this.galaxyCenterSprite2);
 
-        let planeGeom = new THREE.PlaneBufferGeometry(1, 1);
+        let planeGeom = new THREE.PlaneGeometry(1, 1);
         let planeMat = new THREE.MeshBasicMaterial({
             map: ThreeLoader.getInstance().getTexture('sun_romb'),
             color: Settings.GALAXY_CENTER_COLOR,

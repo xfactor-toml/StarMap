@@ -1,0 +1,91 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-family: 'Exo 2', sans-serif;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+}
+
+button {
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+a,
+button,
+input,
+select {
+  pointer-events: auto;
+}
+
+#notSupported {
+  width: 50%;
+  margin: auto;
+  background-color: #f00;
+  margin-top: 20px;
+  padding: 10px;
+}
+
+#game {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #040310;
+}
+
+#gui {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+#game > canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.gui-overlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.65);
+  pointer-events: all;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: ease-in-out opacity 200ms;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
