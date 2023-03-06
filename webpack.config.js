@@ -11,20 +11,26 @@ module.exports = {
 
     output: {
         filename: 'bundle.js',
-        path: path.resolve(__dirname, 'build'),
-        publicPath: './'
+        path: path.resolve(__dirname, 'build')
     },
 
     resolve: {
-        extensions: ['.tsx', '.ts', '.js', 'd.ts']
+        extensions: ['.tsx', '.ts', '.js', 'd.ts', '.vue']
     },
 
     module: {
         rules: [
             {
                 test: /\.ts$/,
-                use: 'ts-loader',
-                exclude: /node_modules/
+                exclude: /node_modules/,
+                use: [
+                    {
+                        loader: "ts-loader",
+                        options: {
+                            appendTsSuffixTo: [/\.vue$/]
+                        }
+                    }
+                ]
             },
             {
                 test: /\.(glsl|vs|fs)$/,
@@ -36,7 +42,15 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                use: [MiniCssExtractPlugin.loader, "css-loader"]
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    {
+                        loader: "css-loader",
+                        options: {
+                            url: false
+                        }
+                    }
+                ]
             }
         ]
     },
@@ -47,23 +61,13 @@ module.exports = {
             patterns: [
                 {
                     from: '**/*',
-                    context: path.resolve(__dirname, 'public', 'assets'),
-                    to: './assets'
-                },
-                {
-                    from: '**/*',
-                    context: path.resolve(__dirname, 'public', 'js'),
-                    to: './js'
-                },
-                {
-                    from: '**/*',
-                    context: path.resolve(__dirname, 'public', 'gui'),
-                    to: './gui'
-                },
+                    context: path.resolve(__dirname, 'public'),
+                    to: './'
+                }
             ],
         }),
         new HtmlWebpackPlugin({
-            template: 'public/index.html',
+            template: 'src/index.html',
             filename: 'index.html',
             minify: {
                 collapseWhitespace: true,

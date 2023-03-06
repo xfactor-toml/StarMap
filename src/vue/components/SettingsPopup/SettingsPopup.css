@@ -11,7 +11,7 @@
   position: absolute;
   left: -7%;
   top: -16%;
-  background-image: url(./images/settings-edge.svg);
+  background-image: url(../gui/images/settings-edge.svg);
   background-position: 0 0;
   background-repeat: no-repeat;
   background-size: contain;
@@ -69,12 +69,12 @@
   padding: 0;
   border: none;
   background-color: transparent;
-  background-image: url(./images/fullscreen-on.svg);
+  background-image: url(../gui/images/fullscreen-on.svg);
   background-position: 50% 50%;
   background-repeat: no-repeat;
   background-size: contain;
 }
 
 .settings-popup__fullscreen.is-active {
-  background-image: url(./images/fullscreen-off.svg);
+  background-image: url(../gui/images/fullscreen-off.svg);
 }

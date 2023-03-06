@@ -75,7 +75,7 @@ import {
   StartScreen,
   Tooltip
 } from "./components";
-import { EventEmitterMixin } from "./mixins";
+import { EventEmitterMixin } from "./mixins/event-emitter";
 import { RaceType, GuiElement } from "./types";
 
 export default {

@@ -10,7 +10,7 @@
   height: 100%;
   z-index: 2;
   background-color: #040310;
-  background-image: url(./images/background.jpg);
+  background-image: url(../gui/images/background.jpg);
   background-position: 50% 50%;
   background-repeat: no-repeat;
   background-size: cover;
@@ -19,7 +19,7 @@
 .preloader__logo {
   width: 284px;
   height: 92px;
-  background-image: url(./images/preloader/logo-text.svg);
+  background-image: url(../gui/images/preloader/logo-text.svg);
   background-position: 50% 50%;
   background-repeat: no-repeat;
   background-size: contain;

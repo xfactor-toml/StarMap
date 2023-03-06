@@ -14,7 +14,7 @@
   position: absolute;
   left: 20px;
   top: 20px;
-  background-image: url(./images/preloader/logo-text.svg);
+  background-image: url(../gui/images/preloader/logo-text.svg);
   background-position: 50% 50%;
   background-repeat: no-repeat;
   background-size: contain;
@@ -38,7 +38,7 @@
   top: 0;
   border: none;
   background-color: transparent;
-  background-image: url(./images/settings.svg);
+  background-image: url(../gui/images/settings.svg);
   background-position: 50% 50%;
   background-repeat: no-repeat;
   background-size: contain;

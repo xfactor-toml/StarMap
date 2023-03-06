@@ -31,7 +31,11 @@ const SOLAR_SYSTEMS_DATA: {
     planetsSlots: number;
     energy: number;
     life: number;
-    positionInGalaxy: { x, y, z },
+    positionInGalaxy: {
+        x: number,
+        y: number,
+        z: number
+    },
     starParams: BigStarParams
 }[] = [
 

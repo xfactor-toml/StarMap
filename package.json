@@ -1,11 +1,11 @@
 {
-    "name": "galaxy",
+    "name": "vorpal-galaxy",
     "version": "1.0.0",
-    "description": "",
-    "main": "./src/script.js",
+    "description": "Vorpal Galaxy",
+    "main": "./src/idnex.ts",
     "scripts": {
-        "start": "webpack serve --progress",
-        "start:open": "webpack serve --progress --open",
+        "start": "webpack serve",
+        "start:open": "webpack serve --open",
         "build": "webpack --progress",
         "build:prod": "webpack --config webpack.config.prod.js --progress"
     },
