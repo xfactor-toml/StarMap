@@ -6,7 +6,7 @@ import { GuiInterface } from "./vue/types";
 import { default as App } from "./vue/App.vue";
 import "./css/style.css";
 
-window.addEventListener('load', () => {
+window.addEventListener('DOMContentLoaded', () => {
 
     // Vue
     
