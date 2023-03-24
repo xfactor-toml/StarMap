@@ -20,6 +20,7 @@ import { AudioData } from '../audio/AudioData';
 import { StarPoint } from '../objects/StarPoint';
 import { LogMng } from '../utils/LogMng';
 import { GameUtils } from '../math/GameUtils';
+import { QTDebugRender, QTPoint, QTRect, QuadTree } from '../math/QuadTree';
 
 const RACES = ['Robots', 'Humans', 'Simbionts', 'Lizards', 'Insects'];
 
@@ -317,6 +318,9 @@ export class Galaxy {
     private rotSndStartTimer = 0;
     private prevCameraAzimutAngle = 0;
     private prevCamPolarAngle = 0;
+
+    private quadTree: QuadTree;
+    private qtDebugRender: QTDebugRender;
 
 
     constructor(aParams: any) {
@@ -672,6 +676,23 @@ export class Galaxy {
         });
         this.dummyGalaxy.add(this.blinkStarsParticles);
 
+        // add stars to quadtree
+        if (this.quadTree) this.quadTree.destroy();
+        this.quadTree = new QuadTree(new QTRect(0, 0, 400, 400), 10);
+        for (let i = 0; i < this.galaxyStarsData.length; i++) {
+            const sd = this.galaxyStarsData[i];
+            this.quadTree.addPoint(new QTPoint(sd.pos.x, sd.pos.z, { starData: sd }));
+        }
+        LogMng.debug(`qt:`, this.quadTree);
+
+        if (!this.qtDebugRender) {
+            this.qtDebugRender = new QTDebugRender();
+            this.qtDebugRender.position.y = -20;
+            this.dummyGalaxy.add(this.qtDebugRender);
+        }
+        this.qtDebugRender.quadtree = this.quadTree;
+        this.qtDebugRender.render();
+
         // create a solar system blink stars data
         this.solarSystemBlinkStarsData = this.generateCircleGalaxyStarsData({
             starsCount: 400,
@@ -699,7 +720,8 @@ export class Galaxy {
 
     }
 
-    private generateGalaxyStarsData(aParams: GalaxyParams, xScale: number, zScale: number, aColorSet: any[], aBlinkData?: any): GalaxyStarParams[] {
+    private generateGalaxyStarsData(aParams: GalaxyParams, 
+        xScale: number, zScale: number, aColorSet: any[], aBlinkData?: any): GalaxyStarParams[] {
 
         if (!aParams.startAngle) aParams.startAngle = 0;
         if (!aParams.endAngle) aParams.endAngle = Math.PI;
