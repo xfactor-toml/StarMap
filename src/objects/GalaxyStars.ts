@@ -28,7 +28,7 @@ const _fShader = `
     }
 `;
 
-export type GalaxyStarsParams = {
+type GalaxyStarsParams = {
     starsData: GalaxyStarParams[];
     texture: THREE.Texture;
     onWindowResizeSignal: Signal;

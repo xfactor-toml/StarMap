@@ -1,11 +1,10 @@
 import * as THREE from 'three';
 import { Settings } from '../data/Settings';
-import { BigStar, BigStarParams } from './BigStar';
-import { BigStar2 } from './BigStar2';
+import { BigStar2, BigStar2Params } from './BigStar2';
 
 
 export type SolarSystemParams = {
-    starParams: BigStarParams;
+    starParams: BigStar2Params;
 };
 
 export class SolarSystem extends THREE.Group {

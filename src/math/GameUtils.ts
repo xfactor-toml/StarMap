@@ -1,5 +1,3 @@
-import { Settings } from "../data/Settings";
-import { DeviceInfo } from "../utils/DeviceInfo";
 
 export class GameUtils {
 

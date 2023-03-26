@@ -4,7 +4,7 @@ import vsSun from '../shaders/sun1/vs.glsl';
 import fsSun from '../shaders/sun1/fs.glsl';
 import { Settings } from "../data/Settings";
 
-export type BigStarParams = {
+export type BigStar1Params = {
     starSize: number;
     sunClr1?: { r, g, b };
     sunClr2?: { r, g, b };
@@ -21,12 +21,12 @@ export class BigStar extends THREE.Group {
 
     private _parentPos: THREE.Vector3;
     private _camera: THREE.Camera;
-    private _params: BigStarParams;
+    private _params: BigStar1Params;
     private _light: THREE.PointLight;
     private _mesh: THREE.Mesh;
     private _uniforms: any;
 
-    constructor(aParentPos: THREE.Vector3, aCamera: THREE.Camera, aParams: BigStarParams) {
+    constructor(aParentPos: THREE.Vector3, aCamera: THREE.Camera, aParams: BigStar1Params) {
 
         super();
 

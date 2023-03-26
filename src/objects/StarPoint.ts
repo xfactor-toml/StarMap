@@ -7,6 +7,7 @@ export type StarPointParams = {
     starId: number;
     baseScale: number;
     camera: THREE.PerspectiveCamera;
+    maxAlpha?: number;
 };
 
 export class StarPoint extends THREE.Group {
@@ -26,7 +27,7 @@ export class StarPoint extends THREE.Group {
         let previewMaterial = new THREE.SpriteMaterial({
             map: previewTexture,
             transparent: true,
-            opacity: 0.9,
+            opacity: this._params.maxAlpha || .9,
             depthWrite: false,
             // blending: THREE.AdditiveBlending
         });
@@ -36,11 +37,21 @@ export class StarPoint extends THREE.Group {
         this._starPointSprite.scale.set(1, 1, 1);
         this._starPointSprite[`name`] = 'starPoint';
         this._starPointSprite[`starId`] = this._params.starId;
-        this.updateScale();
+        // this.updateScale();
+        this.updateCameraScale();
         this.add(this._starPointSprite);
 
     }
+    
+    public get params(): StarPointParams {
+        return this._params;
+    }
 
+    public set cameraScale(v: number) {
+        this._cameraScale = v;
+        this.updateScale();
+    }
+    
     private updateScale() {
         let sc = this._params.baseScale * this._cameraScale;
         this._starPointSprite.scale.set(sc, sc, 1);
@@ -69,8 +80,6 @@ export class StarPoint extends THREE.Group {
                 let perc = (dist - minDist) / dtDist;
                 this._cameraScale = minScale + perc * dtScale;
 
-                this.updateScale();
-
                 break;
             
             case 1:
@@ -85,12 +94,6 @@ export class StarPoint extends THREE.Group {
 
     }
     
-    public set cameraScale(v: number) {
-        this._cameraScale = v;
-        this.updateScale();
-    }
-    
-
     show(aDur: number, aDelay: number) {
         const starPointSprite = this._starPointSprite;
         gsap.to([starPointSprite.material], {
@@ -114,6 +117,12 @@ export class StarPoint extends THREE.Group {
                 starPointSprite.visible = false;
             }
         });
+    }
+
+    destroy() {
+        this.clear();
+        this._params = null;
+        this._starPointSprite = null;
     }
 
     update() {

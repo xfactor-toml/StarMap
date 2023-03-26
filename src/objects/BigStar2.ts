@@ -6,6 +6,7 @@ import fsSun from '../shaders/sunTextured/frag.glsl';
 
 export type BigStar2Params = {
     starSize: number;
+    sunClr1: { r, g, b };
     sun2Color?: { r, g, b };
     sun2CoronaColor?: { r, g, b };
 };
