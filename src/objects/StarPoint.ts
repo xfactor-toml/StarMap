@@ -1,13 +1,15 @@
 import * as THREE from "three";
 import { ThreeLoader } from "../loaders/ThreeLoader";
 import gsap from "gsap";
+import { GalaxyStarParams } from "../scenes/Galaxy";
 
 export type StarPointParams = {
-    name: string;
-    starId: number;
+    // name: string;
+    // starId: number;
     baseScale: number;
     camera: THREE.PerspectiveCamera;
     maxAlpha?: number;
+    starParams: GalaxyStarParams;
 };
 
 export class StarPoint extends THREE.Group {
@@ -36,7 +38,7 @@ export class StarPoint extends THREE.Group {
 
         this._starPointSprite.scale.set(1, 1, 1);
         this._starPointSprite[`name`] = 'starPoint';
-        this._starPointSprite[`starId`] = this._params.starId;
+        // this._starPointSprite[`starId`] = this._params.starId;
         // this.updateScale();
         this.updateCameraScale();
         this.add(this._starPointSprite);

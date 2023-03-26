@@ -37,7 +37,7 @@
       :description="elements.starPanel.data.description"
       :level="elements.starPanel.data.level"
       :race="elements.starPanel.data.race"
-      :planetsSlots="elements.starPanel.data.planetsSlots"
+      :planetSlots="elements.starPanel.data.planetSlots"
       :energy="elements.starPanel.data.energy"
       :life="elements.starPanel.data.life"
       :scale="elements.starPanel.data.scale"

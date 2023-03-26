@@ -7,8 +7,7 @@ export class StarPointsMng {
 
     private _parent: THREE.Object3D;
     private _camera: THREE.PerspectiveCamera;
-    // private starPointPool: StarPoint[];
-    private starPoints: StarPoint[];
+    private _starPoints: StarPoint[];
 
     constructor(aParams: {
         parent: THREE.Object3D,
@@ -17,28 +16,25 @@ export class StarPointsMng {
     }) {
         this._parent = aParams.parent;
         this._camera = aParams.camera;
-        // this.starPointPool = [];
-        this.starPoints = [];
+        this._starPoints = [];
     }
 
     updatePoints(aPoints: QTPoint[]) {
 
         let ids = [];
         let pDatas: GalaxyStarParams[] = [];
-        // let newIds = [];
 
         for (let i = 0; i < aPoints.length; i++) {
             const p = aPoints[i];
             let starParams = p.data.starData as GalaxyStarParams;
-            // if (this.starPoints[starParams.id]) continue;
             ids.push(starParams.id);
             pDatas.push(starParams);
         }
 
         // destroy points
-        for (let i = this.starPoints.length - 1; i >= 0; i--) {
-            const p = this.starPoints[i];
-            let idPos = ids.indexOf(p.params.starId);
+        for (let i = this._starPoints.length - 1; i >= 0; i--) {
+            const p = this._starPoints[i];
+            let idPos = ids.indexOf(p.params.starParams.id);
             if (idPos >= 0) {
                 p.update();
                 // stay point, remove id
@@ -47,7 +43,7 @@ export class StarPointsMng {
             }
             else {
                 // destroy
-                this.starPoints.splice(i, 1);
+                this._starPoints.splice(i, 1);
                 this._parent.remove(p);
                 p.destroy();
             }
@@ -55,19 +51,34 @@ export class StarPointsMng {
 
         // add new points
         for (let i = 0; i < ids.length; i++) {
-            let pd = pDatas[i];
+            let starParams = pDatas[i];
             let starPointSprite = new StarPoint({
-                name: 'starPoint',
-                starId: pd.id,
+                // name: 'starPoint',
+                // starId: pd.id,
                 baseScale: 6,
                 camera: this._camera,
-                maxAlpha: .7
+                maxAlpha: .7,
+                starParams: starParams
             });
-            starPointSprite.position.set(pd.pos.x, pd.pos.y, pd.pos.z);
-            this.starPoints.push(starPointSprite);
+            starPointSprite.position.set(starParams.pos.x, starParams.pos.y, starParams.pos.z);
+            this._starPoints.push(starPointSprite);
             this._parent.add(starPointSprite);
         }
 
+    }
+
+    hidePoints(aDur) {
+        for (let i = 0; i < this._starPoints.length; i++) {
+            const p = this._starPoints[i];
+            p.hide(aDur);
+        }
+    }
+
+    showPoints(aDur, aDelay) {
+        for (let i = 0; i < this._starPoints.length; i++) {
+            const p = this._starPoints[i];
+            p.show(aDur, aDelay);
+        }
     }
 
     // update(dt: number) {
