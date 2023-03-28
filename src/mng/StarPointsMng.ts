@@ -27,6 +27,8 @@ export class StarPointsMng {
         for (let i = 0; i < aPoints.length; i++) {
             const p = aPoints[i];
             let starParams = p.data.starData as GalaxyStarParams;
+            let pos = new THREE.Vector3(starParams.pos.x, starParams.pos.y, starParams.pos.z);
+            if (pos.distanceTo(this._camera.position) > 80) continue;
             ids.push(starParams.id);
             pDatas.push(starParams);
         }
@@ -52,15 +54,15 @@ export class StarPointsMng {
         // add new points
         for (let i = 0; i < ids.length; i++) {
             let starParams = pDatas[i];
+            let pos = new THREE.Vector3(starParams.pos.x, starParams.pos.y, starParams.pos.z);
+            // if (pos.distanceTo(this._camera.position) > 60) continue;
             let starPointSprite = new StarPoint({
-                // name: 'starPoint',
-                // starId: pd.id,
                 baseScale: 6,
                 camera: this._camera,
                 maxAlpha: .7,
                 starParams: starParams
             });
-            starPointSprite.position.set(starParams.pos.x, starParams.pos.y, starParams.pos.z);
+            starPointSprite.position.copy(pos);
             this._starPoints.push(starPointSprite);
             this._parent.add(starPointSprite);
         }

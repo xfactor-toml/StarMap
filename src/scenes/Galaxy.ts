@@ -1377,7 +1377,8 @@ export class Galaxy {
         // let cam_y = Math.abs(this.camera.position.y);
         let lookPoint = this.camera.position.clone();
         lookPoint.y = 0;
-        lookPoint.normalize().multiplyScalar(-checkRadius * 2.);
+        let len = lookPoint.length();
+        lookPoint.normalize().multiplyScalar(-len * .5);
         lookPoint.x += this.camera.position.x;
         lookPoint.z += this.camera.position.z;
         
