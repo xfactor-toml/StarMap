@@ -18,7 +18,7 @@ export class Settings {
     // galaxy default data and varaibled
     static galaxyData = {
         starsCount: 3000,
-        blinkStarsCount: 1000,
+        blinkStarsCount: 5000,
         blinkDurMin: 1,
         blinkDurMax: 2,
         startAngle: 0.7,
@@ -77,6 +77,8 @@ export class Settings {
     static GALAXY_CENTER_COLOR = 0xd3ccff;
     static GALAXY_CENTER_SCALE = 150;
     static GALAXY_CENTER_SCALE_2 = 150 * 0.8;
+
+    static STAR_CLICK_POINTS = false;
 
     // audio
     // static musicVolume = 1;

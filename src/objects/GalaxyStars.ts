@@ -4,35 +4,31 @@ import { Settings } from "../data/Settings";
 import { Signal } from "../events/Signal";
 import { GalaxyStarParams } from "../scenes/Galaxy";
 import { LogMng } from "../utils/LogMng";
+import { MyMath } from "../utils/MyMath";
 
-const _vShader = `
-    attribute vec4 clr;
-    attribute float size;
-    uniform float pointMultiplier;
-    varying vec4 vColor;
+import star1Vert from "../shaders/galaxy/star_v.glsl";
+import star1Frag from "../shaders/galaxy/star_f.glsl";
 
-    void main() {
-        vColor = clr;
-        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-        gl_Position = projectionMatrix * mvPosition;
-        gl_PointSize = size * pointMultiplier / gl_Position.w;
-    }
-`;
+import star2Vert from "../shaders/galaxy/star2_v.glsl";
+import star2Frag from "../shaders/galaxy/star2_f.glsl";
 
-const _fShader = `
-    uniform sampler2D diffuseTexture;
-    varying vec4 vColor;
+const SHADER_1 = {
+    vertex: star1Vert,
+    fragment: star1Frag
+}
 
-    void main() {
-        gl_FragColor = texture2D(diffuseTexture, gl_PointCoord) * vColor;
-    }
-`;
+const SHADER_2 = {
+    vertex: star2Vert,
+    fragment: star2Frag
+}
 
 type GalaxyStarsParams = {
     starsData: GalaxyStarParams[];
     texture: THREE.Texture;
     onWindowResizeSignal: Signal;
 };
+
+type Version = '1' | '2';
 
 export class GalaxyStars extends THREE.Group implements IBaseClass {
 
@@ -43,37 +39,16 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
     private stars: THREE.Points;
     private _alphaFactor = 1;
 
+    private _type: Version;
+
     constructor(aParams: GalaxyStarsParams) {
 
         super();
         this.params = aParams;
         
-        this.uniforms = {
-            diffuseTexture: { value: this.params.texture },
-            pointMultiplier: { value: innerHeight / (2.0 * Math.tan(.02 * 60.0 * Math.PI / 180)) }
-        };
-
-        this.material = new THREE.ShaderMaterial({
-            vertexShader: _vShader,
-            fragmentShader: _fShader,
-            uniforms: this.uniforms,
-            blending: THREE.AdditiveBlending,
-            // depthTest: true,
-            depthWrite: false,
-            transparent: true,
-            alphaTest: 0.01,
-            vertexColors: true
-        });
-        
-        let starsData = this.generateStars(this.params.starsData);
-
-        this.geometry = new THREE.BufferGeometry();
-        this.geometry.setAttribute('position', new THREE.Float32BufferAttribute(starsData.positionsXYZ, 3));
-        this.geometry.setAttribute('size', new THREE.Float32BufferAttribute(starsData.sizes, 1));
-        this.geometry.setAttribute('clr', new THREE.Float32BufferAttribute(starsData.colorsRGBA, 4));
-
-        this.stars = new THREE.Points(this.geometry, this.material);
-        this.add(this.stars);
+        // this.init1();
+        // this.init2_saturn();
+        this.init3();
 
         this.params.onWindowResizeSignal.add(this.onWindowResize, this);
 
@@ -85,6 +60,171 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
 
     set alphaFactor(aVal: number) {
         this._alphaFactor = aVal;
+    }
+
+    private init1() {
+        this.uniforms = {
+            diffuseTexture: { value: this.params.texture },
+            pointMultiplier: { value: innerHeight / (2.0 * Math.tan(.02 * 60.0 * Math.PI / 180)) }
+        };
+
+        this.material = new THREE.ShaderMaterial({
+            vertexShader: SHADER_1.vertex,
+            fragmentShader: SHADER_1.fragment,
+            uniforms: this.uniforms,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false,
+            transparent: true,
+            alphaTest: 0.01,
+            vertexColors: true
+        });
+
+        let starsData = this.generateStars(this.params.starsData);
+
+        this.geometry = new THREE.BufferGeometry();
+        this.geometry.setAttribute('position', new THREE.Float32BufferAttribute(starsData.positionsXYZ, 3));
+        this.geometry.setAttribute('size', new THREE.Float32BufferAttribute(starsData.sizes, 1));
+        this.geometry.setAttribute('clr', new THREE.Float32BufferAttribute(starsData.colorsRGBA, 4));
+
+        this.stars = new THREE.Points(this.geometry, this.material);
+        this.add(this.stars);
+
+        this._type = '1';
+    }
+
+    private init2_saturn() {
+
+        let starsData = this.generateStars(this.params.starsData);
+
+        this.uniforms = {
+            time: { value: 0 }
+        }
+
+        let points: THREE.Vector3[] = [];
+
+        for (let i = 0; i < starsData.positionsXYZ.length; i += 3) {
+            const x = starsData.positionsXYZ[i];
+            const y = starsData.positionsXYZ[i + 1];
+            const z = starsData.positionsXYZ[i + 2];
+            points.push(new THREE.Vector3(x, y, z));
+        }
+
+
+        this.geometry = new THREE.BufferGeometry().setFromPoints(points);
+        this.geometry.setAttribute('position', new THREE.Float32BufferAttribute(starsData.positionsXYZ, 3));
+        // this.geometry.setAttribute("sizes", new THREE.Float32BufferAttribute(sizes, 1));
+        this.geometry.setAttribute('sizes', new THREE.Float32BufferAttribute(starsData.sizes, 1));
+        // this.geometry.setAttribute("shift", new THREE.Float32BufferAttribute(shift, 4));
+        this.geometry.setAttribute('clr', new THREE.Float32BufferAttribute(starsData.colorsRGBA, 4));
+
+
+        /* eslint-disable */
+        let m = new THREE.PointsMaterial({
+            size: 0.125,
+            transparent: true,
+            depthTest: false,
+            blending: THREE.AdditiveBlending
+        });
+
+        m.onBeforeCompile = shader => {
+
+            shader.uniforms.time = this.uniforms.time;
+            shader.vertexShader = `
+                uniform float time;
+                attribute float sizes;
+                // attribute vec4 shift;
+                // varying vec3 vColor;
+                attribute vec4 clr;
+                ${shader.vertexShader}
+            `.replace(
+                `gl_PointSize = size;`,
+                `gl_PointSize = size * sizes;`
+            ).replace(
+                `#include <color_vertex>`,
+                `#include <color_vertex>
+                float d = length(abs(position) / vec3(40., 10., 40));
+                d = clamp(d, 0., 1.);
+                // vColor = mix(vec3(227., 155., 0.), vec3(100., 50., 255.), d) / 255.;
+                `
+            ).replace(
+                `#include <begin_vertex>`,
+                `#include <begin_vertex>
+                float t = time;
+                // float moveT = mod(shift.x + shift.z * t, PI2);
+                // float moveS = mod(shift.y + shift.z * t, PI2);
+                // transformed += vec3(cos(moveS) * sin(moveT), cos(moveT), sin(moveS) * sin(moveT)) * shift.w;
+                `
+            );
+
+            shader.fragmentShader = `
+                varying vec3 vColor;
+                attribute vec4 clr;
+                ${shader.fragmentShader}
+          `.replace(
+                `#include <clipping_planes_fragment>`,
+                `
+                #include <clipping_planes_fragment>
+                float d = length(gl_PointCoord.xy - 0.5);
+                //if (d > 0.5) discard;
+                `
+            ).replace(
+                `vec4 diffuseColor = vec4(diffuse, opacity);`,
+                `vec4 diffuseColor = vec4(clr, smoothstep(0.5, 0.1, d) /* * 0.5 + 0.5*/ );`
+                // `gl_FragColor = texture2D(diffuseTexture, gl_PointCoord) * vColor;`
+            );
+
+        };
+        /* eslint-enable */
+
+        // this.material = new THREE.ShaderMaterial({
+        //     vertexShader: _vShader,
+        //     fragmentShader: _fShader,
+        //     uniforms: this.uniforms,
+        //     blending: THREE.AdditiveBlending,
+        //     // depthTest: true,
+        //     depthWrite: false,
+        //     transparent: true,
+        //     alphaTest: 0.01,
+        //     vertexColors: true
+        // });
+
+        this.material = m as any;
+
+        let p = new THREE.Points(this.geometry, m);
+        this.add(p)
+
+        this._type = '2';
+
+    }
+
+    private init3() {
+        this.uniforms = {
+            // diffuseTexture: { value: this.params.texture },
+            pointMultiplier: { value: innerHeight / (2.0 * Math.tan(.02 * 60.0 * Math.PI / 180)) }
+        };
+
+        this.material = new THREE.ShaderMaterial({
+            vertexShader: SHADER_2.vertex,
+            fragmentShader: SHADER_2.fragment,
+            uniforms: this.uniforms,
+            transparent: true,
+            alphaTest: 0.001,
+            depthWrite: false,
+            blending: THREE.AdditiveBlending,
+            vertexColors: true
+        });
+
+        let starsData = this.generateStars(this.params.starsData);
+
+        this.geometry = new THREE.BufferGeometry();
+        this.geometry.setAttribute('position', new THREE.Float32BufferAttribute(starsData.positionsXYZ, 3));
+        this.geometry.setAttribute('size', new THREE.Float32BufferAttribute(starsData.sizes, 1));
+        this.geometry.setAttribute('clr', new THREE.Float32BufferAttribute(starsData.colorsRGBA, 4));
+
+        this.stars = new THREE.Points(this.geometry, this.material);
+        this.add(this.stars);
+
+        this._type = '1';
     }
 
     private onWindowResize() {
@@ -158,7 +298,7 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
     private updateParticles(dt: number) {
 
         let starsData = this.params.starsData;
-        // let colors: Float32Array = this.geometry.attributes['clr'].array as any; // getAttribute('clr').array;
+        let colors: Float32Array = this.geometry.attributes['clr'].array as any; // getAttribute('clr').array;
         let clr: any = this.geometry.attributes['clr']; // getAttribute('clr').array;
 
         for (let i = 0; i < starsData.length; i++) {
@@ -194,7 +334,15 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
 
     update(dt: number) {
 
-        this.updateParticles(dt);
+        switch (this._type) {
+            case '1':
+                this.updateParticles(dt);
+                break;
+        
+            case '2':
+                this.uniforms.time.value += dt;
+                break;
+        }
 
     }
 

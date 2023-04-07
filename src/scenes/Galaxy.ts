@@ -191,7 +191,7 @@ export class Galaxy {
         this.orbitCenter = new THREE.Vector3();
 
         if (!DeviceInfo.getInstance().iOS) {
-            this._starAlphaFactor = 0.6;
+            this._starAlphaFactor = 0.9;
         }
     }
 
@@ -202,6 +202,10 @@ export class Galaxy {
 
     private getStarId(): number {
         return this._starIdCounter++;
+    }
+
+    private resetStarId() {
+        this._starIdCounter = 0;
     }
 
     init() {
@@ -233,7 +237,7 @@ export class Galaxy {
         );
         this.galaxyCenterSprite.scale.set(Settings.GALAXY_CENTER_SCALE, Settings.GALAXY_CENTER_SCALE, Settings.GALAXY_CENTER_SCALE);
         // this.galaxyCenterSprite.renderOrder = 999;
-        this.dummyGalaxy.add(this.galaxyCenterSprite);
+        // this.dummyGalaxy.add(this.galaxyCenterSprite);
 
         this.galaxyCenterSprite2 = new THREE.Sprite(
             new THREE.SpriteMaterial({
@@ -248,7 +252,7 @@ export class Galaxy {
         );
         this.galaxyCenterSprite2.scale.set(Settings.GALAXY_CENTER_SCALE_2, Settings.GALAXY_CENTER_SCALE_2, Settings.GALAXY_CENTER_SCALE_2);
         // this.galaxyCenterSprite2.renderOrder = 999;
-        this.dummyGalaxy.add(this.galaxyCenterSprite2);
+        // this.dummyGalaxy.add(this.galaxyCenterSprite2);
 
         let planeGeom = new THREE.PlaneGeometry(1, 1);
         let planeMat = new THREE.MeshBasicMaterial({
@@ -263,8 +267,8 @@ export class Galaxy {
         this.galaxyCenterPlane.visible = false;
         this.dummyGalaxy.add(this.galaxyCenterPlane);
 
-        // this.createGalaxyStars(true);
-        this.createGalaxyStars();
+        this.createGalaxyStars(true);
+        // this.createGalaxyStars();
 
         this.initQuadTree();
 
@@ -287,7 +291,7 @@ export class Galaxy {
         this.smallFlySystem = new SmallFlySystem(this.dummyGalaxy, starsPos);
 
         // camera controls
-        let minCameraDistance = 50;
+        let minCameraDistance = 10;
         let maxCameraDistance = 500;
         if (!DeviceInfo.getInstance().desktop) maxCameraDistance = 1000;
         
@@ -377,15 +381,15 @@ export class Galaxy {
 
         let galaxyFolder = gui.addFolder('Galaxy');
 
-        galaxyFolder.add(Settings.galaxyData, 'starsCount', 0, 10000, 100).onChange(() => { this.createGalaxyStars(); });
-        galaxyFolder.add(Settings.galaxyData, 'blinkStarsCount', 0, 5000, 100).onChange(() => { this.createGalaxyStars(); });
+        galaxyFolder.add(Settings.galaxyData, 'starsCount', 0, 100000, 100).onChange(() => { this.createGalaxyStars(); });
+        galaxyFolder.add(Settings.galaxyData, 'blinkStarsCount', 0, 50000, 100).onChange(() => { this.createGalaxyStars(); });
         galaxyFolder.add(Settings.galaxyData, 'blinkDurMin', 0.1, 10, 0.1).onChange(() => { this.createGalaxyStars(); });
         galaxyFolder.add(Settings.galaxyData, 'blinkDurMax', 1, 20, 0.1).onChange(() => { this.createGalaxyStars(); });
         galaxyFolder.add(Settings.galaxyData, 'startAngle', 0, 2, 0.1).onChange(() => { this.createGalaxyStars(); });
         galaxyFolder.add(Settings.galaxyData, 'endAngle', 0, Math.PI * 2, 0.1).onChange(() => { this.createGalaxyStars(); });
         galaxyFolder.add(Settings.galaxyData, 'startOffsetXY', 0, 3, 0.1).onChange(() => { this.createGalaxyStars(); });
         galaxyFolder.add(Settings.galaxyData, 'endOffsetXY', 0, 3, 0.1).onChange(() => { this.createGalaxyStars(); });
-        galaxyFolder.add(Settings.galaxyData, 'startOffsetH', 0, 10, 0.1).onChange(() => { this.createGalaxyStars(); });
+        galaxyFolder.add(Settings.galaxyData, 'startOffsetH', 0, 50, 0.1).onChange(() => { this.createGalaxyStars(); });
         galaxyFolder.add(Settings.galaxyData, 'endOffsetH', 0, 10, 0.1).onChange(() => { this.createGalaxyStars(); });
         galaxyFolder.add(Settings.galaxyData, 'alphaMin', 0, 1, 0.02).onChange(() => { this.createGalaxyStars(); });
         galaxyFolder.add(Settings.galaxyData, 'alphaMax', 0, 1, 0.02).onChange(() => { this.createGalaxyStars(); });
@@ -464,15 +468,17 @@ export class Galaxy {
     private createGalaxyStars(aLoadFromFile = false) {
 
         this.destroyGalaxyStars();
+        this.resetStarId();
 
-        let aGalaxyStarsData: any;
-        let aGalaxyBlinkStarsData: any;
+        let aGalaxyStarsData: GalaxyStarParams[];
+        let aGalaxyBlinkStarsData: GalaxyStarParams[];
+
         if (aLoadFromFile) {
             let loader = ThreeLoader.getInstance();
             let loadData = loader.getJSON('galaxyState');
             if (loadData) {
                 aGalaxyStarsData = loadData.galaxyStarsData;
-                aGalaxyBlinkStarsData = loadData.blinkStarsData;
+                aGalaxyBlinkStarsData = loadData.galaxyBlinkStarsData_FAIL;
             }
         }
 
@@ -496,6 +502,8 @@ export class Galaxy {
                 scaleMax: Settings.galaxyData.scaleMax
             }, 145, 145);
         }
+
+        Settings.galaxyData.starsCount = this.galaxyStarsData.length;
 
         // blink stars data generate
         if (aGalaxyBlinkStarsData) {
@@ -524,6 +532,9 @@ export class Galaxy {
                 }
             );
         }
+
+        // debugger;
+        Settings.galaxyData.blinkStarsCount = this.blinkStarsData.length;
 
         // particle stars
         let t = ThreeLoader.getInstance().getTexture('star4');
@@ -647,8 +658,16 @@ export class Galaxy {
             py += randomOffsetY;
 
             // offset h
+            // LogMng.debug(`anglePercent; ${anglePercent}`);
+            let offHParams = {
+                min: aParams.startOffsetH,
+                max: aParams.startOffsetH * (aParams.endOffsetH - aParams.startOffsetH)
+            };
             let offsetH = aParams.startOffsetH + anglePercent * (aParams.endOffsetH - aParams.startOffsetH);
             offsetH = offsetH * MyMath.randomInRange(-1, 1);
+            
+            // let offsetHFactor = MyMath.easeInExpo((offsetH - offHParams.min) / (offHParams.max - offHParams.min));
+            // offsetH = offsetH * MyMath.randomInRange(-1, 1) * offsetHFactor;
 
             // make result
             let starId = this.getStarId();
@@ -785,7 +804,7 @@ export class Galaxy {
 
             // make result
             resData[i] = {
-                id: this.getStarId(),
+                id: 0,
                 pos: {
                     x: pos.x,
                     y: pos.y,
@@ -1235,6 +1254,8 @@ export class Galaxy {
             a.download = fileName;
             a.click();
         }
+
+        // debugger;
         
         let saveData = {
             galaxyStarsData: this.galaxyStarsData,
@@ -1304,7 +1325,7 @@ export class Galaxy {
 
     private updateGalaxyStars(dt: number) {
         const an = this.getAbsPolarAngle();
-        const MIN_ALPHA = 0.3;
+        const MIN_ALPHA = 0.5;
         let starsOpacity = MIN_ALPHA + (1 - (an / (Math.PI / 2))) * (1 - MIN_ALPHA);
         this.starsParticles.alphaFactor = starsOpacity * this._starAlphaFactor;
         this.starsParticles.update(dt);
@@ -1371,6 +1392,8 @@ export class Galaxy {
         //     const point = this.starPointSprites[i];
         //     point.update();
         // }
+
+        if (!Settings.STAR_CLICK_POINTS) return;
 
         // new dynamic points
         const checkRadius = 20;
