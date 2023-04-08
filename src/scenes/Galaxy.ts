@@ -300,7 +300,9 @@ export class Galaxy {
             minDist: minCameraDistance,
             maxDist: maxCameraDistance,
             stopAngleTop: 10,
-            stopAngleBot: 170
+            stopAngleBot: 170,
+            enablePan: true,
+            panRadius: 160
         });
 
         this.raycaster = new THREE.Raycaster();
@@ -555,7 +557,7 @@ export class Galaxy {
         this.dummyGalaxy.add(this.blinkStarsParticles);
 
         // create a solar system blink stars data
-        this.solarSystemBlinkStarsData = this.generateCircleGalaxyStarsData({
+        this.solarSystemBlinkStarsData = this.generateSolarSystemStarsData({
             starsCount: 400,
             minRadius: 180,
             maxRadius: 200,
@@ -775,7 +777,7 @@ export class Galaxy {
         return resData;
     }
 
-    private generateCircleGalaxyStarsData(aParams: GalaxyCircleParams , aColorSet: any[], aBlinkData?: any): GalaxyStarParams[] {
+    private generateSolarSystemStarsData(aParams: GalaxyCircleParams , aColorSet: any[], aBlinkData?: any): GalaxyStarParams[] {
 
         if (!aParams.minRadius) aParams.minRadius = 0;
         if (!aParams.alphaMin) aParams.alphaMin = 1;
@@ -1068,7 +1070,16 @@ export class Galaxy {
         return galaxy;
     }
 
-    private createCameraControls(aParams?: any) {
+    private createCameraControls(aParams?: {
+        enabled?: boolean,
+        zoomSpeed?: number,
+        enablePan?: boolean,
+        panRadius?: number,
+        minDist?: number,
+        maxDist?: number,
+        stopAngleTop?: number,
+        stopAngleBot?: number
+    }) {
 
         if (this.orbitControl) return;
         if (!aParams) aParams = {};
@@ -1094,8 +1105,20 @@ export class Galaxy {
 
         this.orbitControl.target = this.orbitCenter;
         this.orbitControl.update();
-        // this.orbitControl.addEventListener('change', () => {
-        // });
+
+        this.orbitControl.addEventListener('change', (e: THREE.Event) => {
+            if (aParams.enablePan) {
+                let moveRadius = aParams.panRadius || 100;
+                let tp = this.orbitControl.target.clone();
+                tp.y = 0;
+                if (tp.length() > moveRadius) {
+                    tp.normalize().multiplyScalar(moveRadius);
+                }
+                this.orbitControl.target.copy(tp);
+                this.cameraTarget.copy(this.orbitControl.target);
+            }
+        });
+
         // this.orbitControl.addEventListener('end', () => {
         // });
 
