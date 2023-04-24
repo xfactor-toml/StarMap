@@ -1,3 +1,4 @@
+uniform float alphaFactor;
 varying vec4 vColor;
 
 void main() {
@@ -24,7 +25,7 @@ void main() {
 
     // a = min(vColor.a, (clr.x + clr.y + clr.z) / 3.);
     // a *= aFactor;
-    a = vColor.a;
+    a = vColor.a * alphaFactor;
 
     gl_FragColor = vec4(vColor.xyz * clr, a);
 

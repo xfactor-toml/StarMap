@@ -23,9 +23,20 @@ const SHADER_2 = {
 }
 
 type GalaxyStarsParams = {
+    camera: THREE.Camera;
     starsData: GalaxyStarParams[];
     texture: THREE.Texture;
     onWindowResizeSignal: Signal;
+    alpha?: {
+        camDist: {
+            min: number;
+            max: number;
+        },
+        value: {
+            min: number;
+            max: number;
+        }
+    }
 };
 
 type Version = '1' | '2';
@@ -200,7 +211,10 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
     private init3() {
         this.uniforms = {
             // diffuseTexture: { value: this.params.texture },
-            pointMultiplier: { value: innerHeight / (2.0 * Math.tan(.02 * 60.0 * Math.PI / 180)) }
+            pointMultiplier: { value: innerHeight / (2.0 * Math.tan(.02 * 60.0 * Math.PI / 180)) },
+            camPos: { value: [this.params.camera.position.x, this.params.camera.position.y, this.params.camera.position.z] },
+            sizeFactor: { value: 1 },
+            alphaFactor: { value: 1 }
         };
 
         this.material = new THREE.ShaderMaterial({
@@ -298,13 +312,23 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
     private updateParticles(dt: number) {
 
         let starsData = this.params.starsData;
-        let colors: Float32Array = this.geometry.attributes['clr'].array as any; // getAttribute('clr').array;
-        let clr: any = this.geometry.attributes['clr']; // getAttribute('clr').array;
+        // let clr: Float32Array = this.geometry.attributes['clr'].array as any; // getAttribute('clr').array;
+        let clr: any = this.geometry.attributes['clr'];
+        let pos: Float32Array = this.geometry.attributes['position'].array as any; // getAttribute('clr').array;
 
         for (let i = 0; i < starsData.length; i++) {
             const sd = starsData[i];
             let a = 1;
 
+            // debugger;
+            // if (this.params.alpha) {
+            //     let posId = i * 3;
+            //     let posVec = new THREE.Vector3(pos[posId], pos[posId + 1], pos[posId + 2]);
+            //     let camDist = this.params.camera.position.distanceTo(posVec);
+            //     let camFactor = 1 - MyMath.clamp((camDist - this.params.alpha.camDist.min) / (this.params.alpha.camDist.max - this.params.alpha.camDist.min), 0, 1);
+            //     a = this.params.alpha.value.min + camFactor * (this.params.alpha.value.max - this.params.alpha.value.min);
+            // }
+            
             if (sd.blink) {
 
                 let b = sd.blink;
@@ -323,9 +347,22 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
 
             let clrId = i * 4;
             clr.array[clrId + 3] = a * this._alphaFactor;
+            // clr[clrId + 3] = a * this._alphaFactor;
             // LogMng.debug(`clr a: ${clr.array[clrId + 3]}`);
 
         }
+
+        this.uniforms.camPos.value = [this.params.camera.position.x, this.params.camera.position.y, this.params.camera.position.z];
+        
+        // SIZE FACTOR
+        // let camDist = this.params.camera.position.length()
+        // let sizeFactor = 1 - MyMath.clamp((camDist - 50) / (500 - 50), 0, .8);
+        // this.uniforms.sizeFactor.value = sizeFactor;
+
+        // CAM DIST ALPHA FACTOR
+        let camDist = this.params.camera.position.length()
+        let alphaFactor = 1 - MyMath.clamp((camDist - 100) / (500 - 100), 0, 1) * .6;
+        this.uniforms.alphaFactor.value = alphaFactor;
 
         // this.geometry.setAttribute('clr', colors);
         clr.needsUpdate = true;
