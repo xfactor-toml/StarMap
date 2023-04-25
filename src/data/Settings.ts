@@ -16,6 +16,12 @@ export type GalaxyData = {
     alphaMax: number;
     scaleMin: number;
     scaleMax: number;
+    starAlphaFactor: number;
+    cameraDistAlpha: {
+        min: number;
+        max: number;
+        factor: number;
+    }
 }
 
 /**
@@ -49,7 +55,14 @@ export class Settings {
         alphaMin: 1,
         alphaMax: 1,
         scaleMin: 1,
-        scaleMax: 1
+        scaleMax: 1,
+
+        starAlphaFactor: .8,
+        cameraDistAlpha: {
+            min: 100,
+            max: 500,
+            factor: .6
+        }
     };
 
     static skyData = {

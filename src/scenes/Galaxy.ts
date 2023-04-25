@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { ThreeLoader } from '../loaders/ThreeLoader';
+import * as datGui from "dat.gui";
 import { MyMath } from '../utils/MyMath';
 import gsap from 'gsap';
 import { Settings } from '../data/Settings';
@@ -173,8 +174,6 @@ export class Galaxy {
 
     private smallFlySystem: SmallFlySystem;
 
-    private _starAlphaFactor = .8;
-
     // rot sound
     private rotSndStartTimer = 0;
     private prevCameraAzimutAngle = 0;
@@ -182,6 +181,15 @@ export class Galaxy {
 
     private quadTree: QuadTree;
     private qtDebugRender: QTDebugRender;
+
+    private _info: {
+        cameraDistance: number,
+        cameraDistanceStr: string,
+        camDistGui?: datGui.GUIController
+    } = {
+        cameraDistance: 0,
+        cameraDistanceStr: '0'
+    }
 
 
     constructor(aParams: any) {
@@ -192,7 +200,7 @@ export class Galaxy {
         this.orbitCenter = new THREE.Vector3();
 
         if (!DeviceInfo.getInstance().iOS) {
-            this._starAlphaFactor = 0.6;
+            Settings.galaxyData.starAlphaFactor = 0.6;
         }
     }
 
@@ -389,26 +397,33 @@ export class Galaxy {
         galaxyFolder.add(Settings.galaxyData, 'blinkDurMax', 1, 20, 0.1).name('Blink Dur Max').onFinishChange(() => { this.createGalaxyStars(); });
         galaxyFolder.add(Settings.galaxyData, 'startAngle', 0.1, 2, 0.1).name('Angle Start').onFinishChange(() => { this.createGalaxyStars(); });
         galaxyFolder.add(Settings.galaxyData, 'endAngle', 0.2, Math.PI * 2, 0.1).name('Angle End').onFinishChange(() => { this.createGalaxyStars(); });
-        
-        let offsFolder = galaxyFolder.addFolder('Offsets');
+        galaxyFolder.add(Settings.galaxyData, 'scaleMin', 0.5, 4, 0.1).onFinishChange(() => { this.createGalaxyStars(); });
+        galaxyFolder.add(Settings.galaxyData, 'scaleMax', 0.5, 4, 0.1).onFinishChange(() => { this.createGalaxyStars(); });
 
+        let offsFolder = galaxyFolder.addFolder('Offsets');
         offsFolder.add(Settings.galaxyData, 'startOffsetXY', 0, 12, 0.1).name('XY Start').onFinishChange(() => { this.createGalaxyStars(); });
         offsFolder.add(Settings.galaxyData, 'endOffsetXY', 0, 6, 0.1).name('XY End').onFinishChange(() => { this.createGalaxyStars(); });
         offsFolder.add(Settings.galaxyData, 'startOffsetH', 0, 50, 0.1).name('H Start').onFinishChange(() => { this.createGalaxyStars(); });
         offsFolder.add(Settings.galaxyData, 'endOffsetH', 0, 20, 0.1).name('H End').onFinishChange(() => { this.createGalaxyStars(); });
-        galaxyFolder.add(Settings.galaxyData, 'alphaMin', 0, 1, 0.02).onFinishChange(() => { this.createGalaxyStars(); });
-        galaxyFolder.add(Settings.galaxyData, 'alphaMax', 0, 1, 0.02).onFinishChange(() => { this.createGalaxyStars(); });
-        galaxyFolder.add(Settings.galaxyData, 'scaleMin', 0.5, 4, 0.1).onFinishChange(() => { this.createGalaxyStars(); });
-        galaxyFolder.add(Settings.galaxyData, 'scaleMax', 0.5, 4, 0.1).onFinishChange(() => { this.createGalaxyStars(); });
+        
+        let alphaFolder = galaxyFolder.addFolder('Alpha');
+        alphaFolder.add(Settings.galaxyData, 'alphaMin', 0, 1, 0.02).name('Stars Alpha Min').onFinishChange(() => { this.createGalaxyStars(); });
+        alphaFolder.add(Settings.galaxyData, 'alphaMax', 0, 1, 0.02).name('Stars Alpha Max').onFinishChange(() => { this.createGalaxyStars(); });
+        alphaFolder.add(Settings.galaxyData, 'starAlphaFactor', 0.1, 1, 0.01).name('Main Factor').onChange(() => {  });
+        alphaFolder.add(Settings.galaxyData.cameraDistAlpha, 'min', 0, 300, 10).name('Cam Dist Min').onChange(() => {  });
+        alphaFolder.add(Settings.galaxyData.cameraDistAlpha, 'max', 0, 600, 10).name('Cam Dist Max').onChange(() => {  });
+        alphaFolder.add(Settings.galaxyData.cameraDistAlpha, 'factor', 0, 1, .01).name('CamDist Factor').onChange(() => {  });
+        
         // galaxyFolder.add(Settings.galaxyData, 'k', 0, 1, 0.02).onChange(() => { this.createGalaxyStars(); });
         // galaxyFolder.add(Params.galaxyData, 'isNewMethod').onChange(() => { this.createGalaxyStars(); });
-        galaxyFolder.add(this, '_starAlphaFactor', 0.1, 1, 0.01).onChange(() => {  });
         // this._starAlphaFactor = 0.5;
 
         galaxyFolder.add(DEBUG_PARAMS, 'center visible', true).onChange((value) => {
             this.centerVisible = value;
         });
 
+        this._info.camDistGui = galaxyFolder.add(this._info, 'cameraDistanceStr');
+        
         galaxyFolder.add(DEBUG_PARAMS, 'recreate');
 
         let skyFolder = gui.addFolder('Sky');
@@ -482,7 +497,12 @@ export class Galaxy {
             let loader = ThreeLoader.getInstance();
             let loadData = loader.getJSON('galaxyState');
             if (loadData) {
-                if (loadData.galaxyData) Settings.galaxyData = loadData.galaxyData;
+                if (loadData.galaxyData) {
+                    for (const key in loadData.galaxyData) {
+                        const element = loadData.galaxyData[key];
+                        Settings.galaxyData[key] = element;
+                    }
+                }
                 aGalaxyStarsData = loadData.galaxyStarsData;
                 aGalaxyBlinkStarsData = loadData.galaxyBlinkStarsData_FAIL;
             }
@@ -1356,7 +1376,17 @@ export class Galaxy {
         const an = this.getAbsPolarAngle();
         const MIN_ALPHA = 0.5;
         let starsOpacity = MIN_ALPHA + (1 - (an / (Math.PI / 2))) * (1 - MIN_ALPHA);
-        this.starsParticles.alphaFactor = starsOpacity * this._starAlphaFactor;
+
+        // CAM DIST ALPHA FACTOR
+        let CDP = Settings.galaxyData.cameraDistAlpha;
+        let camDist = this.camera.position.length()
+        let camAlphaFactor = 1 - MyMath.clamp((camDist - CDP.min) / (CDP.max - CDP.min), 0, 1) * CDP.factor;
+        
+        // this._info.cameraDistance = camDist;
+        this._info.cameraDistanceStr = String(camDist.toFixed(0));
+        this._info.camDistGui.updateDisplay();
+
+        this.starsParticles.alphaFactor = starsOpacity * Settings.galaxyData.starAlphaFactor * camAlphaFactor;
         this.starsParticles.update(dt);
         this.blinkStarsParticles.update(dt);
 

@@ -43,11 +43,11 @@ type Version = '1' | '2';
 
 export class GalaxyStars extends THREE.Group implements IBaseClass {
 
-    private params: GalaxyStarsParams;
-    private uniforms: any;
-    private geometry: THREE.BufferGeometry;
-    private material: THREE.ShaderMaterial;
-    private stars: THREE.Points;
+    private _params: GalaxyStarsParams;
+    private _uniforms: any;
+    private _geometry: THREE.BufferGeometry;
+    private _material: THREE.ShaderMaterial;
+    private _stars: THREE.Points;
     private _alphaFactor = 1;
 
     private _type: Version;
@@ -55,13 +55,13 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
     constructor(aParams: GalaxyStarsParams) {
 
         super();
-        this.params = aParams;
+        this._params = aParams;
         
         // this.init1();
         // this.init2_saturn();
         this.init3();
 
-        this.params.onWindowResizeSignal.add(this.onWindowResize, this);
+        this._params.onWindowResizeSignal.add(this.onWindowResize, this);
 
     }
 
@@ -74,15 +74,15 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
     }
 
     private init1() {
-        this.uniforms = {
-            diffuseTexture: { value: this.params.texture },
+        this._uniforms = {
+            diffuseTexture: { value: this._params.texture },
             pointMultiplier: { value: innerHeight / (2.0 * Math.tan(.02 * 60.0 * Math.PI / 180)) }
         };
 
-        this.material = new THREE.ShaderMaterial({
+        this._material = new THREE.ShaderMaterial({
             vertexShader: SHADER_1.vertex,
             fragmentShader: SHADER_1.fragment,
-            uniforms: this.uniforms,
+            uniforms: this._uniforms,
             blending: THREE.AdditiveBlending,
             depthWrite: false,
             transparent: true,
@@ -90,24 +90,24 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
             vertexColors: true
         });
 
-        let starsData = this.generateStars(this.params.starsData);
+        let starsData = this.generateStars(this._params.starsData);
 
-        this.geometry = new THREE.BufferGeometry();
-        this.geometry.setAttribute('position', new THREE.Float32BufferAttribute(starsData.positionsXYZ, 3));
-        this.geometry.setAttribute('size', new THREE.Float32BufferAttribute(starsData.sizes, 1));
-        this.geometry.setAttribute('clr', new THREE.Float32BufferAttribute(starsData.colorsRGBA, 4));
+        this._geometry = new THREE.BufferGeometry();
+        this._geometry.setAttribute('position', new THREE.Float32BufferAttribute(starsData.positionsXYZ, 3));
+        this._geometry.setAttribute('size', new THREE.Float32BufferAttribute(starsData.scales, 1));
+        this._geometry.setAttribute('clr', new THREE.Float32BufferAttribute(starsData.colorsRGBA, 4));
 
-        this.stars = new THREE.Points(this.geometry, this.material);
-        this.add(this.stars);
+        this._stars = new THREE.Points(this._geometry, this._material);
+        this.add(this._stars);
 
         this._type = '1';
     }
 
     private init2_saturn() {
 
-        let starsData = this.generateStars(this.params.starsData);
+        let starsData = this.generateStars(this._params.starsData);
 
-        this.uniforms = {
+        this._uniforms = {
             time: { value: 0 }
         }
 
@@ -121,12 +121,12 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
         }
 
 
-        this.geometry = new THREE.BufferGeometry().setFromPoints(points);
-        this.geometry.setAttribute('position', new THREE.Float32BufferAttribute(starsData.positionsXYZ, 3));
+        this._geometry = new THREE.BufferGeometry().setFromPoints(points);
+        this._geometry.setAttribute('position', new THREE.Float32BufferAttribute(starsData.positionsXYZ, 3));
         // this.geometry.setAttribute("sizes", new THREE.Float32BufferAttribute(sizes, 1));
-        this.geometry.setAttribute('sizes', new THREE.Float32BufferAttribute(starsData.sizes, 1));
+        this._geometry.setAttribute('sizes', new THREE.Float32BufferAttribute(starsData.scales, 1));
         // this.geometry.setAttribute("shift", new THREE.Float32BufferAttribute(shift, 4));
-        this.geometry.setAttribute('clr', new THREE.Float32BufferAttribute(starsData.colorsRGBA, 4));
+        this._geometry.setAttribute('clr', new THREE.Float32BufferAttribute(starsData.colorsRGBA, 4));
 
 
         /* eslint-disable */
@@ -139,7 +139,7 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
 
         m.onBeforeCompile = shader => {
 
-            shader.uniforms.time = this.uniforms.time;
+            shader.uniforms.time = this._uniforms.time;
             shader.vertexShader = `
                 uniform float time;
                 attribute float sizes;
@@ -199,9 +199,9 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
         //     vertexColors: true
         // });
 
-        this.material = m as any;
+        this._material = m as any;
 
-        let p = new THREE.Points(this.geometry, m);
+        let p = new THREE.Points(this._geometry, m);
         this.add(p)
 
         this._type = '2';
@@ -209,18 +209,18 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
     }
 
     private init3() {
-        this.uniforms = {
+        this._uniforms = {
             // diffuseTexture: { value: this.params.texture },
             pointMultiplier: { value: innerHeight / (2.0 * Math.tan(.02 * 60.0 * Math.PI / 180)) },
-            camPos: { value: [this.params.camera.position.x, this.params.camera.position.y, this.params.camera.position.z] },
+            camPos: { value: [this._params.camera.position.x, this._params.camera.position.y, this._params.camera.position.z] },
             sizeFactor: { value: 1 },
             alphaFactor: { value: 1 }
         };
 
-        this.material = new THREE.ShaderMaterial({
+        this._material = new THREE.ShaderMaterial({
             vertexShader: SHADER_2.vertex,
             fragmentShader: SHADER_2.fragment,
-            uniforms: this.uniforms,
+            uniforms: this._uniforms,
             transparent: true,
             alphaTest: 0.001,
             depthWrite: false,
@@ -228,32 +228,32 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
             vertexColors: true
         });
 
-        let starsData = this.generateStars(this.params.starsData);
+        let starsData = this.generateStars(this._params.starsData);
 
-        this.geometry = new THREE.BufferGeometry();
-        this.geometry.setAttribute('position', new THREE.Float32BufferAttribute(starsData.positionsXYZ, 3));
-        this.geometry.setAttribute('size', new THREE.Float32BufferAttribute(starsData.sizes, 1));
-        this.geometry.setAttribute('clr', new THREE.Float32BufferAttribute(starsData.colorsRGBA, 4));
+        this._geometry = new THREE.BufferGeometry();
+        this._geometry.setAttribute('position', new THREE.Float32BufferAttribute(starsData.positionsXYZ, 3));
+        this._geometry.setAttribute('size', new THREE.Float32BufferAttribute(starsData.scales, 1));
+        this._geometry.setAttribute('clr', new THREE.Float32BufferAttribute(starsData.colorsRGBA, 4));
 
-        this.stars = new THREE.Points(this.geometry, this.material);
-        this.add(this.stars);
+        this._stars = new THREE.Points(this._geometry, this._material);
+        this.add(this._stars);
 
         this._type = '1';
     }
 
     private onWindowResize() {
-        this.uniforms.pointMultiplier.value = window.innerHeight / (2.0 * Math.tan(.02 * 60.0 * Math.PI / 180));
+        this._uniforms.pointMultiplier.value = window.innerHeight / (2.0 * Math.tan(.02 * 60.0 * Math.PI / 180));
     }
 
     private generateStars(aStarsData: GalaxyStarParams[]): {
         positionsXYZ: Float32Array,
         colorsRGBA: Float32Array,
-        sizes: Float32Array
+        scales: Float32Array
     } {
         const starsCount = aStarsData.length;
         let positions = new Float32Array(starsCount * 3);
         let colors = new Float32Array(starsCount * 4);
-        let sizes = new Float32Array(starsCount);
+        let scales = new Float32Array(starsCount);
 
         for (let i = 0; i < starsCount; i++) {
 
@@ -272,14 +272,14 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
             colors[cId + 3] = starData.color.a * this._alphaFactor;
 
             // size
-            sizes[i] = starData.scale;
+            scales[i] = starData.scale;
 
         }
 
         return {
             positionsXYZ: positions,
             colorsRGBA: colors, 
-            sizes: sizes
+            scales: scales
         };
     }
 
@@ -292,29 +292,29 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
     // }
 
     updateUniformValues() {
-        this.material.uniforms.radiusMin.value = Settings.skyData.radiusMin;
-        this.material.uniforms.radiusMax.value = Settings.skyData.radiusMax;
-        this.material.uniforms.scaleMin.value = Settings.skyData.scaleMin;
-        this.material.uniforms.scaleMax.value = Settings.skyData.scaleMax;
-        this.material.uniforms.starSize.value = Settings.skyData.starSize;
-        this.material.uniforms.starAlpha.value = Settings.skyData.starAlpha;
+        this._material.uniforms.radiusMin.value = Settings.skyData.radiusMin;
+        this._material.uniforms.radiusMax.value = Settings.skyData.radiusMax;
+        this._material.uniforms.scaleMin.value = Settings.skyData.scaleMin;
+        this._material.uniforms.scaleMax.value = Settings.skyData.scaleMax;
+        this._material.uniforms.starSize.value = Settings.skyData.starSize;
+        this._material.uniforms.starAlpha.value = Settings.skyData.starAlpha;
     }
     
     free() {
-        this.remove(this.stars);
+        this.remove(this._stars);
         // this.geometry.vertices = [];
-        this.geometry = null;
-        this.material = null;
-        this.params = null;
-        this.stars = null;
+        this._geometry = null;
+        this._material = null;
+        this._params = null;
+        this._stars = null;
     }
 
     private updateParticles(dt: number) {
 
-        let starsData = this.params.starsData;
+        let starsData = this._params.starsData;
         // let clr: Float32Array = this.geometry.attributes['clr'].array as any; // getAttribute('clr').array;
-        let clr: any = this.geometry.attributes['clr'];
-        let pos: Float32Array = this.geometry.attributes['position'].array as any; // getAttribute('clr').array;
+        let clr: any = this._geometry.attributes['clr'];
+        let pos: Float32Array = this._geometry.attributes['position'].array as any; // getAttribute('clr').array;
 
         for (let i = 0; i < starsData.length; i++) {
             const sd = starsData[i];
@@ -352,7 +352,7 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
 
         }
 
-        this.uniforms.camPos.value = [this.params.camera.position.x, this.params.camera.position.y, this.params.camera.position.z];
+        this._uniforms.camPos.value = [this._params.camera.position.x, this._params.camera.position.y, this._params.camera.position.z];
         
         // SIZE FACTOR
         // let camDist = this.params.camera.position.length()
@@ -360,9 +360,9 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
         // this.uniforms.sizeFactor.value = sizeFactor;
 
         // CAM DIST ALPHA FACTOR
-        let camDist = this.params.camera.position.length()
-        let alphaFactor = 1 - MyMath.clamp((camDist - 100) / (500 - 100), 0, 1) * .6;
-        this.uniforms.alphaFactor.value = alphaFactor;
+        // let camDist = this._params.camera.position.length()
+        // let alphaFactor = 1 - MyMath.clamp((camDist - 100) / (500 - 100), 0, 1) * .6;
+        // this._uniforms.alphaFactor.value = alphaFactor;
 
         // this.geometry.setAttribute('clr', colors);
         clr.needsUpdate = true;
@@ -377,7 +377,7 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
                 break;
         
             case '2':
-                this.uniforms.time.value += dt;
+                this._uniforms.time.value += dt;
                 break;
         }
 
