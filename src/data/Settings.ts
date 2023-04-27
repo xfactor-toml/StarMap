@@ -21,7 +21,8 @@ export type GalaxyData = {
         min: number;
         max: number;
         factor: number;
-    }
+    },
+    camDistMax: number;
 }
 
 /**
@@ -41,16 +42,20 @@ export class Settings {
 
     // galaxy default data and varaibled
     static galaxyData: GalaxyData = {
-        starsCount: 3000,
+
+        starsCount: 21000,
         blinkStarsCount: 5000,
         blinkDurMin: 1,
         blinkDurMax: 2,
         startAngle: 0.7,
         endAngle: 3.6,
-        startOffsetXY: 2.2,
-        endOffsetXY: 0.8,
-        startOffsetH: 4,
+
+        startOffsetXY: 5,
+        endOffsetXY: 0.4,
+
+        startOffsetH: 6,
         endOffsetH: 1,
+
         k: 0.3,
         alphaMin: 1,
         alphaMax: 1,
@@ -62,17 +67,19 @@ export class Settings {
             min: 100,
             max: 500,
             factor: .6
-        }
+        },
+
+        camDistMax: 300
     };
 
     static skyData = {
-        starsCount: 500,
+        starsCount: 2000,
         radiusMin: 30,
         radiusMax: 1000,
-        scaleMin: 3,
-        scaleMax: 30,
+        scaleMin: 8,
+        scaleMax: 10,
         starSize: 1.5,
-        starAlpha: 0.8,
+        starAlpha: 0.5,
 
         galaxiesCount: 5,
         galaxiesSizeMin: 1000,
