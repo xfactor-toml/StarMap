@@ -136,6 +136,7 @@ export class Galaxy {
     private galaxyCenterSprite: THREE.Sprite;
     private galaxyCenterSprite2: THREE.Sprite;
     private galaxyCenterPlane: THREE.Mesh;
+    private _gridPlane: THREE.GridHelper;
 
     private _starIdCounter = 0;
     private galaxyStarsData: GalaxyStarParams[];
@@ -278,6 +279,12 @@ export class Galaxy {
         this.galaxyCenterPlane.visible = false;
         this.dummyGalaxy.add(this.galaxyCenterPlane);
 
+        // GRID
+        this._gridPlane = new THREE.GridHelper(1000, 80, 0xaaaaaa, 0xffffff);
+        (this._gridPlane.material as any).transparent = true;
+        (this._gridPlane.material as any).opacity = .3;
+        this.scene.add(this._gridPlane);
+
         this.createGalaxyStars(true);
         // this.createGalaxyStars();
 
@@ -384,6 +391,7 @@ export class Galaxy {
                 }
             },
             showSpheres: false,
+            gridVisible: true,
             axiesHelper: false
         };
 
@@ -468,6 +476,10 @@ export class Galaxy {
         this.axiesHelper.visible = DEBUG_PARAMS.axiesHelper;
         gui.add(DEBUG_PARAMS, 'axiesHelper').onChange((v: boolean) => {
             this.axiesHelper.visible = v;
+        });
+
+        gui.add(DEBUG_PARAMS, 'gridVisible').onChange((v: boolean) => {
+            this._gridPlane.visible = v;
         });
 
     }
