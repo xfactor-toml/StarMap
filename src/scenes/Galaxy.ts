@@ -673,7 +673,7 @@ export class Galaxy {
             // let angle = Math.pow(Math.random(), 2) * maxAngle;
             // let angle = Math.pow(MyMath.randomInRange(minAngleFactor, 1), 2) * maxAngle;
             let dtAngle = aParams.endAngle - aParams.startAngle;
-            let anglePercent = Math.pow(Math.random(), 2);
+            let anglePercent = Math.pow(Math.random(), 3);
             let angle = aParams.startAngle + anglePercent * dtAngle;
             let r = aParams.k * angle;
 
