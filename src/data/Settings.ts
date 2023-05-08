@@ -22,6 +22,7 @@ export type GalaxyData = {
         max: number;
         factor: number;
     },
+    camDistMin: number;
     camDistMax: number;
 }
 
@@ -69,6 +70,7 @@ export class Settings {
             factor: .6
         },
 
+        camDistMin: 2,
         camDistMax: 300
     };
 
@@ -101,8 +103,8 @@ export class Settings {
     static AA_TYPE = 1; // 0 - none, 1 - FXAA, 2 - SMAA
 
     static CAMERA = {
-        near: 0.5,
-        far: 15000
+        near: 1,
+        far: 20000
     };
     static CAM_DAMPING_FACTOR = 0.025;
 
@@ -116,7 +118,7 @@ export class Settings {
     static GALAXY_CENTER_SCALE = 150;
     static GALAXY_CENTER_SCALE_2 = 150 * 0.8;
 
-    static STAR_CLICK_POINTS = false;
+    static STAR_CLICK_POINTS = true;
 
     // audio
     // static musicVolume = 1;

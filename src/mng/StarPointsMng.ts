@@ -55,6 +55,7 @@ export class StarPointsMng {
         for (let i = 0; i < ids.length; i++) {
             let starParams = pDatas[i];
             let pos = new THREE.Vector3(starParams.pos.x, starParams.pos.y, starParams.pos.z);
+            // test
             // if (pos.distanceTo(this._camera.position) > 60) continue;
             let starPointSprite = new StarPoint({
                 baseScale: 6,
@@ -82,12 +83,5 @@ export class StarPointsMng {
             p.show(aDur, aDelay);
         }
     }
-
-    // update(dt: number) {
-    //     for (let i = this.starPoints.length - 1; i >= 0; i--) {
-    //         const p = this.starPoints[i];
-    //         p.update();
-    //     }
-    // }
 
 }

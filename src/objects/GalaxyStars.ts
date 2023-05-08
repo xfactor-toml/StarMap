@@ -27,6 +27,7 @@ type GalaxyStarsParams = {
     starsData: GalaxyStarParams[];
     texture: THREE.Texture;
     onWindowResizeSignal: Signal;
+    camDistLogic: boolean;
     alpha?: {
         camDist: {
             min: number;
@@ -209,10 +210,19 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
     }
 
     private init3() {
+
+        let camPos = this._params.camera.position;
+        if (!this._params.camDistLogic) {
+            camPos.x = 0;
+            camPos.y = 0;
+            camPos.z = 0;
+        }
+
         this._uniforms = {
             // diffuseTexture: { value: this.params.texture },
             pointMultiplier: { value: innerHeight / (2.0 * Math.tan(.02 * 60.0 * Math.PI / 180)) },
-            camPos: { value: [this._params.camera.position.x, this._params.camera.position.y, this._params.camera.position.z] },
+            isCamDistLogic: { value: this._params.camDistLogic },
+            camPos: { value: [camPos.x, camPos.y, camPos.z] },
             sizeFactor: { value: 1 },
             alphaFactor: { value: 1 }
         };
@@ -352,7 +362,13 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
 
         }
 
-        this._uniforms.camPos.value = [this._params.camera.position.x, this._params.camera.position.y, this._params.camera.position.z];
+        if (this._params.camDistLogic) {
+            let localCamPos = this.worldToLocal(this._params.camera.position.clone());
+            this._uniforms.camPos.value = [localCamPos.x, localCamPos.y, localCamPos.z];
+        }
+        else {
+
+        }
         
         // SIZE FACTOR
         // let camDist = this.params.camera.position.length()

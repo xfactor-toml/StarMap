@@ -199,9 +199,11 @@ export class Galaxy {
         this.cameraTarget = new THREE.Vector3();
         this.orbitCenter = new THREE.Vector3();
 
-        if (!DeviceInfo.getInstance().iOS) {
-            Settings.galaxyData.starAlphaFactor = 0.6;
-        }
+        // if (!DeviceInfo.getInstance().iOS) {
+        //     Settings.galaxyData.starAlphaFactor = 0.6;
+        // }
+        Settings.galaxyData.starAlphaFactor = 1;
+
     }
 
     public set centerVisible(v: boolean) {
@@ -300,13 +302,11 @@ export class Galaxy {
         this.smallFlySystem = new SmallFlySystem(this.dummyGalaxy, starsPos);
 
         // camera controls
-        let maxCameraDistance = 500;
-        if (!DeviceInfo.getInstance().desktop) maxCameraDistance = 1000;
         
         this.createCameraControls({
             enabled: false,
-            minDist: 2,
-            maxDist: maxCameraDistance,
+            minDist: Settings.galaxyData.camDistMin,
+            maxDist: 500,
             stopAngleTop: 10,
             stopAngleBot: 170,
             enablePan: true,
@@ -407,9 +407,9 @@ export class Galaxy {
         offsFolder.add(Settings.galaxyData, 'endOffsetH', 0, 20, 0.1).name('H End').onFinishChange(() => { this.createGalaxyStars(); });
         
         let alphaFolder = galaxyFolder.addFolder('Alpha');
-        alphaFolder.add(Settings.galaxyData, 'alphaMin', 0, 1, 0.02).name('Stars Alpha Min').onFinishChange(() => { this.createGalaxyStars(); });
-        alphaFolder.add(Settings.galaxyData, 'alphaMax', 0, 1, 0.02).name('Stars Alpha Max').onFinishChange(() => { this.createGalaxyStars(); });
-        alphaFolder.add(Settings.galaxyData, 'starAlphaFactor', 0.1, 1, 0.01).name('Main Factor').onChange(() => {  });
+        // alphaFolder.add(Settings.galaxyData, 'alphaMin', 0, 1, 0.02).name('Stars Alpha Min').onFinishChange(() => { this.createGalaxyStars(); });
+        // alphaFolder.add(Settings.galaxyData, 'alphaMax', 0, 1, 0.02).name('Stars Alpha Max').onFinishChange(() => { this.createGalaxyStars(); });
+        // alphaFolder.add(Settings.galaxyData, 'starAlphaFactor', 0.1, 1, 0.01).name('Main Factor').onChange(() => {  });
         alphaFolder.add(Settings.galaxyData.cameraDistAlpha, 'min', 0, 300, 10).name('Cam Dist Min').onChange(() => {  });
         alphaFolder.add(Settings.galaxyData.cameraDistAlpha, 'max', 0, 600, 10).name('Cam Dist Max').onChange(() => {  });
         alphaFolder.add(Settings.galaxyData.cameraDistAlpha, 'factor', 0, 1, .01).name('CamDist Factor').onChange(() => {  });
@@ -417,6 +417,13 @@ export class Galaxy {
         // galaxyFolder.add(Settings.galaxyData, 'k', 0, 1, 0.02).onChange(() => { this.createGalaxyStars(); });
         // galaxyFolder.add(Params.galaxyData, 'isNewMethod').onChange(() => { this.createGalaxyStars(); });
         // this._starAlphaFactor = 0.5;
+
+        galaxyFolder.add(Settings.galaxyData, 'camDistMin', 0, 100, 1).name('CamDist Min').onChange((v: number) => {
+            this.orbitControl.minDistance = v;
+        });
+        galaxyFolder.add(Settings.galaxyData, 'camDistMax', 50, 500, 1).name('CamDist Max').onChange((v: number) => {
+            this.orbitControl.maxDistance = v;
+        });
 
         galaxyFolder.add(DEBUG_PARAMS, 'center visible', true).onChange((value) => {
             this.centerVisible = value;
@@ -568,6 +575,7 @@ export class Galaxy {
             camera: this.camera,
             starsData: this.galaxyStarsData,
             texture: t,
+            camDistLogic: true,
             onWindowResizeSignal: FrontEvents.onWindowResizeSignal,
             alpha: {
                 camDist: {
@@ -588,6 +596,7 @@ export class Galaxy {
             camera: this.camera,
             starsData: this.blinkStarsData,
             texture: t,
+            camDistLogic: true,
             onWindowResizeSignal: FrontEvents.onWindowResizeSignal
         });
         this.dummyGalaxy.add(this.blinkStarsParticles);
@@ -614,6 +623,7 @@ export class Galaxy {
             camera: this.camera,
             starsData: this.solarSystemBlinkStarsData,
             texture: t,
+            camDistLogic: false,
             onWindowResizeSignal: FrontEvents.onWindowResizeSignal
         });
         this.solarSystemBlinkStarsParticles.visible = false;
@@ -627,7 +637,7 @@ export class Galaxy {
             this.quadTree = null;
         }
 
-        this.quadTree = new QuadTree(new QTRect(0, 0, 400, 400), 10);
+        this.quadTree = new QuadTree(new QTRect(0, 0, 400, 400), 30);
 
         // add stars to quadtree
         for (let i = 0; i < this.galaxyStarsData.length; i++) {
@@ -1377,16 +1387,12 @@ export class Galaxy {
         const MIN_ALPHA = 0.5;
         let starsOpacity = MIN_ALPHA + (1 - (an / (Math.PI / 2))) * (1 - MIN_ALPHA);
 
-        // CAM DIST ALPHA FACTOR
-        let CDP = Settings.galaxyData.cameraDistAlpha;
         let camDist = this.camera.position.length()
-        let camAlphaFactor = 1 - MyMath.clamp((camDist - CDP.min) / (CDP.max - CDP.min), 0, 1) * CDP.factor;
-        
-        // this._info.cameraDistance = camDist;
+        this._info.cameraDistance = camDist;
         this._info.cameraDistanceStr = String(camDist.toFixed(0));
         this._info.camDistGui.updateDisplay();
 
-        this.starsParticles.alphaFactor = starsOpacity * Settings.galaxyData.starAlphaFactor * camAlphaFactor;
+        this.starsParticles.alphaFactor = starsOpacity * Settings.galaxyData.starAlphaFactor;
         this.starsParticles.update(dt);
         this.blinkStarsParticles.update(dt);
 
@@ -1455,14 +1461,14 @@ export class Galaxy {
         if (!Settings.STAR_CLICK_POINTS) return;
 
         // new dynamic points
-        const checkRadius = 20;
+        const checkRadius = 40;
         // let cam_y = Math.abs(this.camera.position.y);
         let lookPoint = this.camera.position.clone();
         lookPoint.y = 0;
-        let len = lookPoint.length();
-        lookPoint.normalize().multiplyScalar(-len * .5);
-        lookPoint.x += this.camera.position.x;
-        lookPoint.z += this.camera.position.z;
+        // let len = lookPoint.length();
+        // lookPoint.normalize().multiplyScalar(-len * .5);
+        // lookPoint.x += this.camera.position.x;
+        // lookPoint.z += this.camera.position.z;
         
         let points = this.quadTree.getPointsInCircle(new QTCircle(lookPoint.x, lookPoint.z, checkRadius));
         
@@ -1488,7 +1494,8 @@ export class Galaxy {
             // delay: 0.1,
             ease: 'sine.inOut',
             onComplete: () => {
-                this.fsm.startState(States.galaxy)
+                this.fsm.startState(States.galaxy);
+                this.orbitControl.maxDistance = Settings.galaxyData.camDistMax;
             }
         });
 
@@ -1755,12 +1762,12 @@ export class Galaxy {
         let aspect = GameUtils.getClientWidth() / h;
         let guiScaleByW = this.guiGetScaleBigStarTooltipByWidth();
         let d = innerHeight / (20 * aspect);
-        let starDist = d * (0.6 / guiScaleByW);
+        let starDist = MyMath.clamp(d * (0.6 / guiScaleByW), 40, 50);
 
         // LogMng.debug(`guiScaleByWidth: ${guiScaleByW}`);
         // LogMng.debug(`asRat: ${aspect}`);
         // LogMng.debug(`d: ${d}`);
-        // LogMng.debug(`-----> starDist: ${starDist}`);
+        LogMng.debug(`-----> starDist: ${starDist}`);
 
         let newCameraPos = this.camera.position.clone().sub(starPos).normalize().
             multiplyScalar(starDist).add(starPos);
@@ -1831,7 +1838,7 @@ export class Galaxy {
     }
 
     private onStateToStarUpdate(dt: number) {
-
+        
         this.orbitControl.update();
 
         if (this.cameraTarget && this.camera) {
@@ -1840,11 +1847,11 @@ export class Galaxy {
 
         this.updateFarStars(dt);
         this.updateSmallGalaxies(dt);
-
-        if (this.solarSystem) this.solarSystem.update(dt);
-
+        
+        this.solarSystem?.update(dt);
+        
         if (this.solarSystemBlinkStarsParticles?.visible) this.solarSystemBlinkStarsParticles.update(dt);
-
+        
         this.smallFlySystem.update(dt);
 
     }
