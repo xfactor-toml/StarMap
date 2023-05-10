@@ -7,32 +7,54 @@ export class StarPointsMng {
 
     private _parent: THREE.Object3D;
     private _camera: THREE.PerspectiveCamera;
+    private _poolSize: number;
+    private _dist: number;
     private _starPoints: StarPoint[];
 
     constructor(aParams: {
         parent: THREE.Object3D,
+        camera: THREE.PerspectiveCamera,
         poolSize: number,
-        camera: THREE.PerspectiveCamera
+        dist: number
     }) {
         this._parent = aParams.parent;
         this._camera = aParams.camera;
+        this._poolSize = aParams.poolSize;
+        this._dist = aParams.dist;
         this._starPoints = [];
     }
 
     updatePoints(aPoints: QTPoint[]) {
 
-        let ids = [];
+        let ids: number[] = [];
+        let points: { 
+            id: number,
+            dist: number
+        }[] = [];
         let pDatas: GalaxyStarParams[] = [];
 
         for (let i = 0; i < aPoints.length; i++) {
             const p = aPoints[i];
             let starParams = p.data.starData as GalaxyStarParams;
             let pos = new THREE.Vector3(starParams.pos.x, starParams.pos.y, starParams.pos.z);
-            if (pos.distanceTo(this._camera.position) > 80) continue;
-            ids.push(starParams.id);
+            let dist = pos.distanceTo(this._camera.position);
+            if (dist > this._dist) continue;
+            points.push({
+                id: starParams.id,
+                dist: dist
+            });
             pDatas.push(starParams);
         }
 
+        // sort for nearest
+        points.sort((a, b) => {
+            return a.dist - b.dist;
+        })
+        let iters = Math.min(points.length, this._poolSize);
+        for (let i = 0; i < iters; i++) {
+            ids.push(points[i].id);
+        }
+        
         // destroy points
         for (let i = this._starPoints.length - 1; i >= 0; i--) {
             const p = this._starPoints[i];

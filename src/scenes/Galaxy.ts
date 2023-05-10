@@ -962,8 +962,9 @@ export class Galaxy {
 
         this.starPointsMng = new StarPointsMng({
             parent: this.dummyGalaxy,
+            camera: this.camera,
             poolSize: 100,
-            camera: this.camera
+            dist: 50
         });
         
     }
@@ -1478,9 +1479,9 @@ export class Galaxy {
         let lookPoint = this.camera.position.clone();
         lookPoint.y = 0;
         // let len = lookPoint.length();
-        // lookPoint.normalize().multiplyScalar(-len * .5);
-        // lookPoint.x += this.camera.position.x;
-        // lookPoint.z += this.camera.position.z;
+        lookPoint.normalize().multiplyScalar(-30);
+        lookPoint.x += this.camera.position.x;
+        lookPoint.z += this.camera.position.z;
         
         let points = this.quadTree.getPointsInCircle(new QTCircle(lookPoint.x, lookPoint.z, checkRadius));
         
