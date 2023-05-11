@@ -1,5 +1,5 @@
-import { Signal } from "../events/Signal";
 import { LogMng } from "../utils/LogMng";
+import { Signal } from "../utils/events/Signal";
 
 type InitParams = {
     inputDomElement: HTMLElement;

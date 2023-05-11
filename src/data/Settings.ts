@@ -45,10 +45,10 @@ export class Settings {
     static galaxyData: GalaxyData = {
 
         starsCount: 21000,
-        blinkStarsCount: 5000,
+        blinkStarsCount: 2000,
         blinkDurMin: 1,
         blinkDurMax: 2,
-        startAngle: 0.7,
+        startAngle: 0.1,
         endAngle: 3.6,
 
         startOffsetXY: 5,
@@ -60,8 +60,8 @@ export class Settings {
         k: 0.3,
         alphaMin: 1,
         alphaMax: 1,
-        scaleMin: 1,
-        scaleMax: 1,
+        scaleMin: .5,
+        scaleMax: 1.1,
 
         starAlphaFactor: .8,
         cameraDistAlpha: {
@@ -89,6 +89,7 @@ export class Settings {
     };
 
     // game
+    static loadFromFile = false;
     static isCameraAutoRotate = false;
     static cameraAutoRotateSpeed = -0.05;
 

@@ -4,12 +4,8 @@
       <span v-if="volume === 0" class="volume-control__icon is-mute" />
       <span v-else class="volume-control__icon" />
     </button>
-    <div
-      class="volume-control__line"
-      ref="line"
-      @mousedown="handleMousedown($event), offset($event as any, 'click')"
-      @touchstart="handleMousedown($event as any), offset($event as any, 'click')"
-    >
+    <div class="volume-control__line" ref="line" @mousedown="handleMousedown($event), offset($event as any, 'click')"
+      @touchstart="handleMousedown($event as any), offset($event as any, 'click')">
       <div class="volume-control__level" :style="`width: ${volume}%`" />
       <div class="volume-control__point" :style="`left: ${volume}%`" />
     </div>

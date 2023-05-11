@@ -285,7 +285,7 @@ export class Galaxy {
         (this._gridPlane.material as any).opacity = .3;
         this.scene.add(this._gridPlane);
 
-        this.createGalaxyStars(true);
+        this.createGalaxyStars(Settings.loadFromFile);
         // this.createGalaxyStars();
 
         this.initQuadTree();
@@ -963,8 +963,8 @@ export class Galaxy {
         this.starPointsMng = new StarPointsMng({
             parent: this.dummyGalaxy,
             camera: this.camera,
-            poolSize: 100,
-            dist: 50
+            poolSize: 400,
+            dist: 20
         });
         
     }

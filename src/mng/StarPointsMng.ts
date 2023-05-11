@@ -33,11 +33,26 @@ export class StarPointsMng {
         }[] = [];
         let pDatas: GalaxyStarParams[] = [];
 
+        let camDir = new THREE.Vector3();
+        this._camera.getWorldDirection(camDir);
+        camDir.add(this._camera.position);
+
         for (let i = 0; i < aPoints.length; i++) {
             const p = aPoints[i];
             let starParams = p.data.starData as GalaxyStarParams;
             let pos = new THREE.Vector3(starParams.pos.x, starParams.pos.y, starParams.pos.z);
             let dist = pos.distanceTo(this._camera.position);
+
+            let wPos = pos.clone();
+            this._parent.localToWorld(wPos);
+
+            let pDir = new THREE.Vector3();
+
+            pDir.subVectors(wPos, this._camera.position);
+
+            let dotProduct = camDir.dot(pDir);
+            if (dotProduct >= 0) continue;
+
             if (dist > this._dist) continue;
             points.push({
                 id: starParams.id,
@@ -47,10 +62,11 @@ export class StarPointsMng {
         }
 
         // sort for nearest
-        points.sort((a, b) => {
-            return a.dist - b.dist;
-        })
-        let iters = Math.min(points.length, this._poolSize);
+        // points.sort((a, b) => {
+        //     return a.dist - b.dist;
+        // })
+        // let iters = Math.min(points.length, this._poolSize);
+        let iters = points.length;
         for (let i = 0; i < iters; i++) {
             ids.push(points[i].id);
         }
@@ -58,6 +74,7 @@ export class StarPointsMng {
         // destroy points
         for (let i = this._starPoints.length - 1; i >= 0; i--) {
             const p = this._starPoints[i];
+            if (!p?.params?.starParams) continue;
             let idPos = ids.indexOf(p.params.starParams.id);
             if (idPos >= 0) {
                 p.update();
@@ -68,9 +85,15 @@ export class StarPointsMng {
             else {
                 // destroy
                 this._starPoints.splice(i, 1);
-                this._parent.remove(p);
-                p.destroy();
+                p.hide(.5, 0, {
+                    context: this,
+                    onComplete: () => {
+                        this._parent.remove(p);
+                        p.destroy();
+                    }
+                });
             }
+
         }
 
         // add new points
@@ -83,11 +106,16 @@ export class StarPointsMng {
                 baseScale: 6,
                 camera: this._camera,
                 maxAlpha: .7,
-                starParams: starParams
+                starParams: starParams,
+                scaleFactor: 0
             });
             starPointSprite.position.copy(pos);
+            starPointSprite.show(1);
             this._starPoints.push(starPointSprite);
             this._parent.add(starPointSprite);
+
+            // if (i >= this._poolSize) break;
+
         }
 
     }

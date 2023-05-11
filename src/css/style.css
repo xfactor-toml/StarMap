@@ -61,7 +61,7 @@ select {
   pointer-events: none;
 }
 
-#game > canvas {
+#game>canvas {
   position: absolute;
   left: 0;
   top: 0;

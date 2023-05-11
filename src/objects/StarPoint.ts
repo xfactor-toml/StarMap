@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { ThreeLoader } from "../loaders/ThreeLoader";
 import gsap from "gsap";
 import { GalaxyStarParams } from "../scenes/Galaxy";
+import { Callbacks } from "../utils/events/Callbacks";
 
 export type StarPointParams = {
     // name: string;
@@ -10,6 +11,7 @@ export type StarPointParams = {
     camera: THREE.PerspectiveCamera;
     maxAlpha?: number;
     starParams: GalaxyStarParams;
+    scaleFactor: number;
 };
 
 export class StarPoint extends THREE.Group {
@@ -17,6 +19,7 @@ export class StarPoint extends THREE.Group {
     private _params: StarPointParams;
     private _starPointSprite: THREE.Sprite;
     private _cameraScale = 1;
+    private _scaleFactor = 1;
 
     constructor(aParams: StarPointParams) {
 
@@ -29,7 +32,7 @@ export class StarPoint extends THREE.Group {
         let previewMaterial = new THREE.SpriteMaterial({
             map: previewTexture,
             transparent: true,
-            opacity: this._params.maxAlpha || .9,
+            opacity: 0,
             depthWrite: false,
             // blending: THREE.AdditiveBlending
         });
@@ -48,7 +51,11 @@ export class StarPoint extends THREE.Group {
     public get params(): StarPointParams {
         return this._params;
     }
-
+    
+    public get maxOpacity(): number {
+        return this._params.maxAlpha || .9;
+    }
+    
     public set cameraScale(v: number) {
         this._cameraScale = v;
         this.updateScale();
@@ -96,12 +103,12 @@ export class StarPoint extends THREE.Group {
 
     }
     
-    show(aDur: number, aDelay: number) {
+    show(aDur: number, aDelay?: number) {
         const starPointSprite = this._starPointSprite;
         gsap.to([starPointSprite.material], {
-            opacity: 1,
+            opacity: this.maxOpacity,
             duration: aDur,
-            delay: aDelay,
+            delay: aDelay || 0,
             ease: 'sine.out',
             onStart: () => {
                 starPointSprite.visible = true;
@@ -109,14 +116,16 @@ export class StarPoint extends THREE.Group {
         });
     }
 
-    hide(aDur: number) {
+    hide(aDur: number, aDelay?: number, cb?: Callbacks) {
         const starPointSprite = this._starPointSprite;
         gsap.to([starPointSprite.material], {
             opacity: 0,
             duration: aDur,
+            delay: aDelay || 0,
             ease: 'sine.in',
             onComplete: () => {
                 starPointSprite.visible = false;
+                cb?.onComplete?.call(cb?.context);
             }
         });
     }
