@@ -1,8 +1,8 @@
-uniform float alphaFactor;
+// uniform float alphaFactor;
 uniform bool isCamDistLogic;
 
 varying vec4 vColor;
-varying float distFactor;
+varying float alphaDistFactor;
 
 void main() {
     vec2 uv = gl_PointCoord.xy - .5;
@@ -29,8 +29,8 @@ void main() {
     // a = min(vColor.a, (clr.x + clr.y + clr.z) / 3.);
     // a *= aFactor;
 
-    a = vColor.a * alphaFactor;
-    if (isCamDistLogic) a = vColor.a * alphaFactor * distFactor;
+    a = vColor.a; // * alphaDistFactor;
+    if (isCamDistLogic) a = vColor.a * alphaDistFactor;
 
     gl_FragColor = vec4(vColor.xyz * clr, a);
 

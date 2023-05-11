@@ -72,6 +72,10 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
         this._alphaFactor = aVal;
     }
 
+    private getPoitSizeFactor(): number {
+        return innerHeight / (2.0 * Math.tan(.02 * 60.0 * Math.PI / 180));
+    }
+
     private init1() {
         this._uniforms = {
             diffuseTexture: { value: this._params.texture },
@@ -218,11 +222,12 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
 
         this._uniforms = {
             // diffuseTexture: { value: this.params.texture },
-            pointMultiplier: { value: innerHeight / (2.0 * Math.tan(.02 * 60.0 * Math.PI / 180)) },
+            pointMultiplier: { value: this.getPoitSizeFactor() },
             isCamDistLogic: { value: this._params.camDistLogic },
             camPos: { value: [camPos.x, camPos.y, camPos.z] },
             sizeFactor: { value: 1 },
-            alphaFactor: { value: 1 }
+            // alphaFactor: { value: 1 },
+            scale: { value: 1 }
         };
 
         this._material = new THREE.ShaderMaterial({
@@ -250,7 +255,7 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
     }
 
     private onWindowResize() {
-        this._uniforms.pointMultiplier.value = window.innerHeight / (2.0 * Math.tan(.02 * 60.0 * Math.PI / 180));
+        this._uniforms.pointMultiplier.value = this.getPoitSizeFactor();
     }
 
     private generateStars(aStarsData: GalaxyStarParams[]): {
@@ -361,8 +366,9 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
         }
 
         if (this._params.camDistLogic) {
-            let localCamPos = this.worldToLocal(this._params.camera.position.clone());
-            this._uniforms.camPos.value = [localCamPos.x, localCamPos.y, localCamPos.z];
+            let camPos = this.worldToLocal(this._params.camera.position.clone());
+            // let camPos = this._params.camera.position.clone();
+            this._uniforms.camPos.value = [camPos.x, camPos.y, camPos.z];
         }
         else {
 
@@ -387,6 +393,8 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
 
         switch (this._type) {
             case '1':
+                // this._uniforms.scale.value = this.parent.scale.x;
+                this._uniforms.scale.value = this.parent['currScale'] || 1;
                 this.updateParticles(dt);
                 break;
         

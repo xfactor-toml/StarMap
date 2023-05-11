@@ -1403,7 +1403,7 @@ export class Galaxy {
         let camDist = this.camera.position.length()
         this._info.cameraDistance = camDist;
         this._info.cameraDistanceStr = String(camDist.toFixed(0));
-        this._info.camDistGui.updateDisplay();
+        this._info.camDistGui?.updateDisplay();
 
         this.starsParticles.alphaFactor = starsOpacity * Settings.galaxyData.starAlphaFactor;
         this.starsParticles.update(dt);
@@ -1737,13 +1737,13 @@ export class Galaxy {
             }
         });
 
-        // move camera target to center of Solar System
+        // move camera target to center of Star
         gsap.to(this.cameraTarget, {
             x: starParams.pos.x,
             y: starParams.pos.y,
             z: starParams.pos.z,
-            duration: DUR / 2,
-            ease: 'sine.inOut',
+            duration: DUR / 1.5,
+            ease: 'sine.out',
             onUpdate: () => {
                 this.orbitCenter.copy(this.cameraTarget);
             }
@@ -1801,6 +1801,8 @@ export class Galaxy {
             duration: DUR,
             ease: 'sine.in',
             onUpdate: () => {
+                LogMng.debug(`dummyGalaxy.scale:`, tObj.s);
+                this.dummyGalaxy['currScale'] = tObj.s;
                 this.dummyGalaxy.scale.set(tObj.s, tObj.s, tObj.s);
                 this.dummyGalaxy.position.copy(starPos.clone().add(gVec.clone().multiplyScalar(tObj.s)));
             }
@@ -2003,6 +2005,7 @@ export class Galaxy {
             ease: 'sine.inOut',
             onUpdate: () => {
                 this.dummyGalaxy.scale.set(tObj.s, tObj.s, tObj.s);
+                this.dummyGalaxy['currScale'] = tObj.s;
                 this.dummyGalaxy.position.copy(starPos.clone().add(gVec.clone().multiplyScalar(tObj.s)));
             }
         });

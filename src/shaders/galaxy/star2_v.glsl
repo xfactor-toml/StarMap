@@ -5,29 +5,50 @@ uniform float pointMultiplier;
 uniform vec3 camPos;
 uniform float sizeFactor;
 uniform bool isCamDistLogic;
+uniform float scale;
 
 varying vec4 vColor;
-varying float distFactor;
+varying float alphaDistFactor;
 
 void main() {
+
     vColor = clr;
+
     vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
     gl_Position = projectionMatrix * mvPosition;
 
-    // gl_PointSize = .5 * size * pointMultiplier / gl_Position.w;
+    // cam pos transform
+    vec4 localCamPos = modelViewMatrix * vec4(camPos, 1.0);
+    localCamPos = projectionMatrix * localCamPos;
+
+    // gl_PointSize = .2 * size * pointMultiplier / gl_Position.w;
 
     // vec4 camPos4 = vec4(camPos, 1.);
-    // float camDist = distance(camPos4, mvPosition);
-    float camDist = distance(camPos, position);
-    float startSize = .2;
-    float sizeDt = 1. - startSize;
-    float distMin = 40.;
-    float distMax = 200.;
-    distFactor = 1. - clamp((camDist - distMin) / (distMax - distMin), 0., sizeDt);
-    // a = this.params.alpha.value.min + camFactor * (this.params.alpha.value.max - this.params.alpha.value.min);
+    float camDist = distance(localCamPos, gl_Position);
+    // float camDist = distance(camPos, position);
 
-    float sizeFactor = clamp(distFactor, .6, 1.);
+    float valMin = .2;
+    float valMax = 1. - valMin;
+    float sizeDelta = valMax - valMin;
+    float distMin = 50.;
+    float distMax = 250.;
+    float distDelta = distMax - distMin;
+    // alphaDistFactor = 1. - clamp((camDist - distMin) / (distMax - distMin), 0., valMax);
+    float alphaFactor = (clamp(camDist, distMin, distMax) - distMin) / distDelta;
+    alphaDistFactor = valMin + sizeDelta * (1. - alphaFactor);
+
+    // float sizeFactor = clamp(distFactor, .6, 1.);
+
+    valMin = .8;
+    valMax = 1.;
+    sizeDelta = valMax - valMin;
+    distMin = 200.;
+    distMax = 10000.;
+    distDelta = distMax - distMin;
+    float cdFactor = (clamp(camDist, distMin, distMax) - distMin) / distDelta;
+    float sizeFactor = valMin + sizeDelta * (1. - cdFactor);
+
     // gl_PointSize = size * 30. * distFactor;
-    // gl_PointSize = size * 30. * sizeFactor;
-    gl_PointSize = size * 30.;
+    gl_PointSize = size * 30. * sizeFactor;
+    // gl_PointSize = size * 30.;
 }
