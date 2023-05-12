@@ -1,12 +1,17 @@
 import * as THREE from "three";
 import { ThreeLoader } from "../loaders/ThreeLoader";
 import gsap from "gsap";
+import { GalaxyStarParams } from "../scenes/Galaxy";
+import { Callbacks } from "../utils/events/Callbacks";
 
 export type StarPointParams = {
-    name: string;
-    starId: number;
+    // name: string;
+    // starId: number;
     baseScale: number;
     camera: THREE.PerspectiveCamera;
+    maxAlpha?: number;
+    starParams: GalaxyStarParams;
+    scaleFactor: number;
 };
 
 export class StarPoint extends THREE.Group {
@@ -14,6 +19,7 @@ export class StarPoint extends THREE.Group {
     private _params: StarPointParams;
     private _starPointSprite: THREE.Sprite;
     private _cameraScale = 1;
+    private _scaleFactor = 1;
 
     constructor(aParams: StarPointParams) {
 
@@ -26,7 +32,7 @@ export class StarPoint extends THREE.Group {
         let previewMaterial = new THREE.SpriteMaterial({
             map: previewTexture,
             transparent: true,
-            opacity: 0.9,
+            opacity: 0,
             depthWrite: false,
             // blending: THREE.AdditiveBlending
         });
@@ -35,12 +41,26 @@ export class StarPoint extends THREE.Group {
 
         this._starPointSprite.scale.set(1, 1, 1);
         this._starPointSprite[`name`] = 'starPoint';
-        this._starPointSprite[`starId`] = this._params.starId;
-        this.updateScale();
+        // this._starPointSprite[`starId`] = this._params.starId;
+        // this.updateScale();
+        this.updateCameraScale();
         this.add(this._starPointSprite);
 
     }
-
+    
+    public get params(): StarPointParams {
+        return this._params;
+    }
+    
+    public get maxOpacity(): number {
+        return this._params.maxAlpha || .9;
+    }
+    
+    public set cameraScale(v: number) {
+        this._cameraScale = v;
+        this.updateScale();
+    }
+    
     private updateScale() {
         let sc = this._params.baseScale * this._cameraScale;
         this._starPointSprite.scale.set(sc, sc, 1);
@@ -69,8 +89,6 @@ export class StarPoint extends THREE.Group {
                 let perc = (dist - minDist) / dtDist;
                 this._cameraScale = minScale + perc * dtScale;
 
-                this.updateScale();
-
                 break;
             
             case 1:
@@ -85,18 +103,12 @@ export class StarPoint extends THREE.Group {
 
     }
     
-    public set cameraScale(v: number) {
-        this._cameraScale = v;
-        this.updateScale();
-    }
-    
-
-    show(aDur: number, aDelay: number) {
+    show(aDur: number, aDelay?: number) {
         const starPointSprite = this._starPointSprite;
         gsap.to([starPointSprite.material], {
-            opacity: 1,
+            opacity: this.maxOpacity,
             duration: aDur,
-            delay: aDelay,
+            delay: aDelay || 0,
             ease: 'sine.out',
             onStart: () => {
                 starPointSprite.visible = true;
@@ -104,16 +116,24 @@ export class StarPoint extends THREE.Group {
         });
     }
 
-    hide(aDur: number) {
+    hide(aDur: number, aDelay?: number, cb?: Callbacks) {
         const starPointSprite = this._starPointSprite;
         gsap.to([starPointSprite.material], {
             opacity: 0,
             duration: aDur,
+            delay: aDelay || 0,
             ease: 'sine.in',
             onComplete: () => {
                 starPointSprite.visible = false;
+                cb?.onComplete?.call(cb?.context);
             }
         });
+    }
+
+    destroy() {
+        this.clear();
+        this._params = null;
+        this._starPointSprite = null;
     }
 
     update() {

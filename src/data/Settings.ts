@@ -1,5 +1,31 @@
 ﻿import * as datGui from "dat.gui";
 
+export type GalaxyData = {
+    starsCount: number;
+    blinkStarsCount: number;
+    blinkDurMin: number;
+    blinkDurMax: number;
+    startAngle: number;
+    endAngle: number;
+    startOffsetXY: number;
+    endOffsetXY: number;
+    startOffsetH: number;
+    endOffsetH: number;
+    k: number;
+    alphaMin: number;
+    alphaMax: number;
+    scaleMin: number;
+    scaleMax: number;
+    starAlphaFactor: number;
+    cameraDistAlpha: {
+        min: number;
+        max: number;
+        factor: number;
+    },
+    camDistMin: number;
+    camDistMax: number;
+}
+
 /**
  * Global parameters
  */
@@ -16,32 +42,46 @@ export class Settings {
     static datGui: datGui.GUI;
 
     // galaxy default data and varaibled
-    static galaxyData = {
-        starsCount: 3000,
-        blinkStarsCount: 1000,
+    static galaxyData: GalaxyData = {
+
+        starsCount: 21000,
+        blinkStarsCount: 2000,
         blinkDurMin: 1,
         blinkDurMax: 2,
-        startAngle: 0.7,
+        startAngle: 0.1,
         endAngle: 3.6,
-        startOffsetXY: 2.2,
-        endOffsetXY: 0.8,
-        startOffsetH: 4,
+
+        startOffsetXY: 5,
+        endOffsetXY: 0.4,
+
+        startOffsetH: 6,
         endOffsetH: 1,
+
         k: 0.3,
         alphaMin: 1,
         alphaMax: 1,
-        scaleMin: 1,
-        scaleMax: 1
+        scaleMin: .5,
+        scaleMax: 1.1,
+
+        starAlphaFactor: .8,
+        cameraDistAlpha: {
+            min: 100,
+            max: 500,
+            factor: .6
+        },
+
+        camDistMin: 2,
+        camDistMax: 300
     };
 
     static skyData = {
-        starsCount: 500,
+        starsCount: 2000,
         radiusMin: 30,
         radiusMax: 1000,
-        scaleMin: 3,
-        scaleMax: 30,
+        scaleMin: 8,
+        scaleMax: 10,
         starSize: 1.5,
-        starAlpha: 0.8,
+        starAlpha: 0.5,
 
         galaxiesCount: 5,
         galaxiesSizeMin: 1000,
@@ -49,9 +89,11 @@ export class Settings {
     };
 
     // game
+    static loadFromFile = false;
     static isCameraAutoRotate = false;
     static cameraAutoRotateSpeed = -0.05;
-
+    static isFakeStarLevels = true;
+    static isGridPlane = false;
 
     static INIT_FULL_SCREEN = false;
 
@@ -63,8 +105,8 @@ export class Settings {
     static AA_TYPE = 1; // 0 - none, 1 - FXAA, 2 - SMAA
 
     static CAMERA = {
-        near: 0.5,
-        far: 15000
+        near: 1,
+        far: 20000
     };
     static CAM_DAMPING_FACTOR = 0.025;
 
@@ -77,6 +119,8 @@ export class Settings {
     static GALAXY_CENTER_COLOR = 0xd3ccff;
     static GALAXY_CENTER_SCALE = 150;
     static GALAXY_CENTER_SCALE_2 = 150 * 0.8;
+
+    static STAR_CLICK_POINTS = true;
 
     // audio
     // static musicVolume = 1;

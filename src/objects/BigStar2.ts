@@ -6,8 +6,9 @@ import fsSun from '../shaders/sunTextured/frag.glsl';
 
 export type BigStar2Params = {
     starSize: number;
-    sun2Color?: { r, g, b };
-    sun2CoronaColor?: { r, g, b };
+    galaxyColor: { r, g, b };
+    mainColor?: { r, g, b };
+    coronaColor?: { r, g, b };
 };
 
 export class BigStar2 extends THREE.Group {
@@ -33,12 +34,12 @@ export class BigStar2 extends THREE.Group {
         this._starScale = aStarScale;
         this._params = aParams;
 
-        if (!this._params.sun2Color) this._params.sun2Color = { r: .9, g: .6, b: .3 };
-        if (!this._params.sun2CoronaColor) this._params.sun2CoronaColor = { r: .9, g: .3, b: .1 };
+        if (!this._params.mainColor) this._params.mainColor = { r: .9, g: .6, b: .3 };
+        if (!this._params.coronaColor) this._params.coronaColor = { r: .9, g: .3, b: .1 };
 
         // RGB
-        let centerClr = this._params.sun2Color;
-        let coronaClr = this._params.sun2CoronaColor;
+        let centerClr = this._params.mainColor;
+        let coronaClr = this._params.coronaColor;
 
         let loader = ThreeLoader.getInstance();
         let tSun = loader.getTexture('sun_surf');
@@ -84,15 +85,15 @@ export class BigStar2 extends THREE.Group {
         const GUI_PARAMS = {
             // coronaColor: MyMath.rgbToHex(this._uniforms.coronaColor.value.x * 255, this._uniforms.coronaColor.value.y * 255, this._uniforms.coronaColor.value.z * 255),
             coronaColor: {
-                r: this._params.sun2Color.r * 255,
-                g: this._params.sun2Color.g * 255,
-                b: this._params.sun2Color.b * 255
+                r: this._params.mainColor.r * 255,
+                g: this._params.mainColor.g * 255,
+                b: this._params.mainColor.b * 255
             },
             // centerColor: MyMath.rgbToHex(this._uniforms.centerColor.value.x * 255, this._uniforms.centerColor.value.y * 255, this._uniforms.centerColor.value.z * 255),
             centerColor: {
-                r: this._params.sun2CoronaColor.r * 255,
-                g: this._params.sun2CoronaColor.g * 255,
-                b: this._params.sun2CoronaColor.b * 255
+                r: this._params.coronaColor.r * 255,
+                g: this._params.coronaColor.g * 255,
+                b: this._params.coronaColor.b * 255
             },
             coronaNoiseParam1: this._uniforms.coronaNoiseParam1.value,
             coronaNoiseParam2: this._uniforms.coronaNoiseParam2.value,

@@ -7,7 +7,8 @@
         "start": "webpack serve",
         "start:open": "webpack serve --open",
         "build": "webpack --progress",
-        "build:prod": "webpack --config webpack.config.prod.js --progress"
+        "build:prod": "webpack --config webpack.config.prod.js --progress",
+        "deploy": "vercel --prod"
     },
     "author": "Monax",
     "license": "ISC",

@@ -1,11 +1,11 @@
 import { ThreeLoader } from '../loaders/ThreeLoader';
-import { Signal } from '../events/Signal';
 import { LogMng } from '../utils/LogMng';
 import { Settings } from '../data/Settings';
 import { AudioMng } from '../audio/AudioMng';
 import { AudioData } from '../audio/AudioData';
 import { GameEvents } from '../events/GameEvents';
 import { FrontEvents } from '../events/FrontEvents';
+import { Signal } from '../utils/events/Signal';
 
 export class GamePreloader {
 

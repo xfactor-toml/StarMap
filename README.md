@@ -1,7 +1,11 @@
 # starmap
 
-Gameplay itself.
+Starmap - it is the main repository with gameplay.
 
-Dev branch is actual:
+Available for building through npm:
 
-    git checkout dev
+    npm install
+	
+	then (depends on your aim):
+	
+	npm start | npm run build | npm run build:prod

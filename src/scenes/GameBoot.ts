@@ -1,4 +1,3 @@
-import { Signal } from "../events/Signal";
 import { LogMng } from "../utils/LogMng";
 import { GamePreloader } from "./GamePreloader";
 import * as MyUtils from "../utils/MyUtils";
@@ -8,12 +7,13 @@ import { GameEvents } from "../events/GameEvents";
 import { FrontEvents } from "../events/FrontEvents";
 import { AudioMng } from "../audio/AudioMng";
 import { AudioData } from "../audio/AudioData";
+import { ILogger } from "../interfaces/ILogger";
 
 type InitParams = {
 
 };
 
-export class GameBoot {
+export class GameBoot implements ILogger {
     private inited = false;
     private preloader: GamePreloader;
     isLoaded = false;
@@ -24,23 +24,31 @@ export class GameBoot {
         Settings.domGuiParent = document.getElementById('gui');
     }
 
+    logDebug(aMsg: string, aData?: any): void {
+        LogMng.debug(`GameBoot -> ${aMsg}`, aData);
+    }
+    logWarn(aMsg: string, aData?: any): void {
+        LogMng.warn(`GameBoot -> ${aMsg}`, aData);
+    }
+    logError(aMsg: string, aData?: any): void {
+        LogMng.error(`GameBoot -> ${aMsg}`, aData);
+    }
+
     init(aParams?: InitParams) {
         if (this.inited) {
-            LogMng.warn('GameBoot: game is already inited!');
+            this.logWarn('game is already inited!');
             return;
         }
         this.inited = true;
 
-        // Boot
+        // init debug mode
         Settings.isDebugMode = window.location.hash === '#debug';
 
         // LogMng settings
         if (!Settings.isDebugMode) LogMng.setMode(LogMng.MODE_RELEASE);
-        LogMng.system('LogMng mode: ' + LogMng.getMode());
+        LogMng.system('log mode: ' + LogMng.getMode());
 
-        if (Settings.isDebugMode) {
-            console.log('GameStarter.init(): init params: ', aParams);
-        }
+        this.logDebug('GameStarter.init(): init params: ', aParams);
         
         // GET Params
         this.readGETParams();
@@ -51,21 +59,30 @@ export class GameBoot {
     }
 
     private readGETParams() {
-        const names = [];
 
-        for (let i = 0; i < names.length; i++) {
-            const n = names[i];
-            let val = MyUtils.getQueryValue(n);
-            if (val != null && val != undefined) {
-                switch (i) {
-                    case 0: // skytype
-                        // Config.ENVIRONMENT_TYPE = Number(val);
-                        // LogMng.debug(`Config.SKYBOX_TYPE = ${Config.ENVIRONMENT_TYPE}`);
-                        break;
+        const LIST = [
+            {
+                // load from file
+                keys: ['loadfromfile'],
+                onReadHandler: (aValue: string) => {
+                    Settings.loadFromFile = aValue == '1';
+                    LogMng.debug('Config.loadFromFile = ' + Settings.loadFromFile);
+                }
+            }
+        ];
 
+        for (let i = 0; i < LIST.length; i++) {
+            const listItem = LIST[i];
+            const keys = listItem.keys;
+            for (let j = 0; j < keys.length; j++) {
+                const getName = keys[j];
+                let qValue = MyUtils.getQueryValue(getName);
+                if (qValue != null && qValue != undefined) {
+                    listItem.onReadHandler(qValue);
                 }
             }
         }
+
     }
 
     private startPreloader() {

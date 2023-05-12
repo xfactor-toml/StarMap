@@ -61,7 +61,7 @@ select {
   pointer-events: none;
 }
 
-#game > canvas {
+#game>canvas {
   position: absolute;
   left: 0;
   top: 0;
@@ -88,4 +88,15 @@ select {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+.version {
+  position: absolute;
+  left: 12px;
+  bottom: 10px;
+  z-index: 2;
+  color: #fff;
+  opacity: 0.5;
+  font-size: 13px;
+  color: #00f0ff;
 }

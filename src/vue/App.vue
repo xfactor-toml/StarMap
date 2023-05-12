@@ -1,70 +1,36 @@
 <template>
   <Preloader v-if="elements.preloader.visible" />
-  <StartScreen
-    v-if="elements.startScreen.visible"
-    @run="(state) => emit('run', state)"
-    @runButtonHover="emit('buttonHover', 'run')"
-    @agreement="emit('agreement')"
-    @agreementClick="emit('buttonClick', 'agreement')"
-    @agreementHover="emit('buttonHover', 'agreement')"
-  />
-  <Interface
-    v-if="elements.interface.visible"
-    :fullscreen="fullscreen"
-    :musicVolume="musicVolume"
-    :sfxVolume="sfxVolume"
+  <StartScreen v-if="elements.startScreen.visible" @run="(state) => emit('run', state)"
+    @runButtonHover="emit('buttonHover', 'run')" @agreement="emit('agreement')"
+    @agreementClick="emit('buttonClick', 'agreement')" @agreementHover="emit('buttonHover', 'agreement')" />
+  <Interface v-if="elements.interface.visible" :fullscreen="fullscreen" :musicVolume="musicVolume" :sfxVolume="sfxVolume"
     @setMusicVolume="(volume) => _handleVolumeChange('music', volume)"
-    @setSfxVolume="(volume) => _handleVolumeChange('sfx', volume)"
-    @toggleFullscreen="emit('toggleFullscreen')"
-    @settingsToggleClick="emit('buttonClick', 'settings')"
-    @settingsToggleHover="emit('buttonHover', 'settings')"
-    @volumeButtonClick="emit('buttonClick', 'volume')"
-    @volumeButtonHover="emit('buttonHover', 'volume')"
+    @setSfxVolume="(volume) => _handleVolumeChange('sfx', volume)" @toggleFullscreen="emit('toggleFullscreen')"
+    @settingsToggleClick="emit('buttonClick', 'settings')" @settingsToggleHover="emit('buttonHover', 'settings')"
+    @volumeButtonClick="emit('buttonClick', 'volume')" @volumeButtonHover="emit('buttonHover', 'volume')"
     @fullscreenToggleClick="emit('buttonClick', 'fullscreen')"
-    @fullscreenToggleHover="emit('buttonHover', 'fullscreen')"
-  />
+    @fullscreenToggleHover="emit('buttonHover', 'fullscreen')" />
   <transition name="fade">
-    <div
-      v-if="elements.overlay.visible"
-      class="gui-overlay"
-      @click="emit('overlayClick')"
-    />
+    <div v-if="elements.overlay.visible" class="gui-overlay" @click="emit('overlayClick')" />
   </transition>
   <transition name="fade">
-    <StarPanel
-      v-if="elements.starPanel.visible"
-      :name="elements.starPanel.data.name"
-      :description="elements.starPanel.data.description"
-      :level="elements.starPanel.data.level"
-      :race="elements.starPanel.data.race"
-      :planetsSlots="elements.starPanel.data.planetsSlots"
-      :energy="elements.starPanel.data.energy"
-      :life="elements.starPanel.data.life"
-      :scale="elements.starPanel.data.scale"
+    <StarPanel v-if="elements.starPanel.visible" :name="elements.starPanel.data.name"
+      :description="elements.starPanel.data.description" :level="elements.starPanel.data.level"
+      :race="elements.starPanel.data.race" :planetSlots="elements.starPanel.data.planetSlots"
+      :energy="elements.starPanel.data.energy" :life="elements.starPanel.data.life" :scale="elements.starPanel.data.scale"
       :raceImageUrl="_getRaceImage(elements.starPanel.data.race, 'star-panel')"
-      @hide="emit('buttonClick', 'starPanelHide')"
-      @hideButtonHover="emit('buttonHover', 'starPanelHide')"
-      @play="emit('buttonClick', 'starPanelPlay')"
-      @playButtonHover="emit('buttonHover', 'starPanelPlay')"
-    />
+      @hide="emit('buttonClick', 'starPanelHide')" @hideButtonHover="emit('buttonHover', 'starPanelHide')"
+      @play="emit('buttonClick', 'starPanelPlay')" @playButtonHover="emit('buttonHover', 'starPanelPlay')" />
   </transition>
   <transition name="fade">
-    <Tooltip
-      v-if="elements.tooltip.visible"
-      :name="elements.tooltip.data.name"
-      :description="elements.tooltip.data.description"
-      :textAutofit="elements.tooltip.data.textAutofit"
-      :level="elements.tooltip.data.level"
-      :race="elements.tooltip.data.race"
-      :position="elements.tooltip.data.pos2d"
-      :scale="elements.tooltip.data.scale"
-      :raceImageUrl="_getRaceImage(elements.tooltip.data.race, 'tooltip')"
-      @hide="emit('buttonClick', 'tooltipHide')"
-      @hideButtonHover="emit('buttonHover', 'tooltipHide')"
-      @diveIn="emit('buttonClick', 'tooltipDiveIn')"
-      @diveInButtonHover="emit('buttonHover', 'tooltipDiveIn')"
-    />
+    <Tooltip v-if="elements.tooltip.visible" :name="elements.tooltip.data.name"
+      :description="elements.tooltip.data.description" :textAutofit="elements.tooltip.data.textAutofit"
+      :level="elements.tooltip.data.level" :race="elements.tooltip.data.race" :position="elements.tooltip.data.pos2d"
+      :scale="elements.tooltip.data.scale" :raceImageUrl="_getRaceImage(elements.tooltip.data.race, 'tooltip')"
+      @hide="emit('buttonClick', 'tooltipHide')" @hideButtonHover="emit('buttonHover', 'tooltipHide')"
+      @diveIn="emit('buttonClick', 'tooltipDiveIn')" @diveInButtonHover="emit('buttonHover', 'tooltipDiveIn')" />
   </transition>
+  <div class="version">v0.25</div>
 </template>
 
 <script lang="ts">
