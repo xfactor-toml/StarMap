@@ -280,10 +280,12 @@ export class Galaxy {
         this.dummyGalaxy.add(this.galaxyCenterPlane);
 
         // GRID
+        if (Settings.isGridPlane) {
         this._gridPlane = new THREE.GridHelper(1000, 80, 0xaaaaaa, 0xffffff);
         (this._gridPlane.material as any).transparent = true;
         (this._gridPlane.material as any).opacity = .3;
         this.scene.add(this._gridPlane);
+        }
 
         this.createGalaxyStars(Settings.loadFromFile);
         // this.createGalaxyStars();
@@ -479,7 +481,7 @@ export class Galaxy {
         });
 
         gui.add(DEBUG_PARAMS, 'gridVisible').onChange((v: boolean) => {
-            this._gridPlane.visible = v;
+            if (this._gridPlane) this._gridPlane.visible = v;
         });
 
     }
@@ -746,7 +748,7 @@ export class Galaxy {
             if (lvlRandom <= 210 / 210) starLevel = 4;
             if (lvlRandom <= 21 / 210) starLevel = 5;
             
-            if (Settings.isDebugMode) {
+            if (Settings.isDebugMode || Settings.isFakeStarLevels) {
                 if (lvlRandom <= 60) starLevel = 2;
                 if (lvlRandom <= 40) starLevel = 3;
                 if (lvlRandom <= 20) {

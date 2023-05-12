@@ -92,7 +92,8 @@ export class Settings {
     static loadFromFile = false;
     static isCameraAutoRotate = false;
     static cameraAutoRotateSpeed = -0.05;
-
+    static isFakeStarLevels = true;
+    static isGridPlane = false;
 
     static INIT_FULL_SCREEN = false;
 
