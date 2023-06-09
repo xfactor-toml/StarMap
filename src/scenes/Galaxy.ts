@@ -1251,15 +1251,36 @@ export class Galaxy {
 
     private onInputUp(x: number, y: number) {
 
-        let distLimit = DeviceInfo.getInstance().desktop ? 10 : 30;
+        const CLICK_DIST = DeviceInfo.getInstance().desktop ? 10 : 30;
         let inMng = InputMng.getInstance();
         let dist = MyMath.getVectorLength(inMng.inputDownClientX, inMng.inputDownClientY, x, y);
         
         // LogMng.debug(`onInputUp: dist = ${dist}`);
         // if (!DeviceInfo.getInstance().desktop) alert(`onInputUp: dist = ${dist}`);
 
-        if (dist > distLimit) return;
+        if (dist <= CLICK_DIST) {
+            this.onClick({
+                down: {
+                    x: inMng.inputDownClientX,
+                    y: inMng.inputDownClientY
+                },
+                up: {
+                    x: x,
+                    y: y
+                }
+            });
+            return;
+        }
 
+        
+
+    }
+
+    private onClick(aParams: {
+        down: { x: number, y: number },
+        up: { x: number, y: number }
+    }) {
+        
         switch (this.fsm.getCurrentState().name) {
 
             case States.galaxy:
@@ -1274,11 +1295,6 @@ export class Galaxy {
                     this.orbitControl.setSphericalDelta(0, 0);
                     if (this.orbitControl.enabled) this.orbitControl.enabled = false;
 
-                    // let starId = this.starPointHovered.params.starId;
-                    // if (starId >= TEST_STARS_DATA.length) starId = TEST_STARS_DATA.length - 1;
-                    // let starData = TEST_STARS_DATA[starId];
-                    // debugger;
-
                     this.starPointParamsHovered = this.starPointHovered.params;
                     let starParams = this.starPointHovered.params.starParams;
 
@@ -1291,8 +1307,8 @@ export class Galaxy {
                         level: starParams.starInfo.level,
                         race: RACES[starParams.starInfo.raceId],
                         pos2d: {
-                            x: inMng.inputDownClientX,
-                            y: inMng.inputDownClientY
+                            x: aParams.down.x,
+                            y: aParams.down.y
                         }
                     });
                     
