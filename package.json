@@ -1,33 +1,46 @@
 {
-    "name": "galaxy",
+    "name": "vorpal-galaxy",
     "version": "1.0.0",
-    "description": "",
-    "main": "./src/script.js",
+    "description": "Vorpal Galaxy",
+    "main": "./src/idnex.ts",
     "scripts": {
-        "start": "webpack-dev-server",
-        "start:open": "webpack-dev-server --open",
-        "prod": "webpack --mode=production",
-        "preview": "npx live-server ./build"
+        "start": "webpack serve",
+        "start:open": "webpack serve --open",
+        "build": "webpack --progress",
+        "build:prod": "webpack --config webpack.config.prod.js --progress",
+        "deploy": "vercel --prod"
     },
     "author": "Monax",
     "license": "ISC",
     "devDependencies": {
-        "ts-loader": "^8.0.0",
-        "ts-shader-loader": "^1.0.6",
-        "webpack": "^4.41.6",
-        "webpack-cli": "^3.3.11",
-        "webpack-dev-server": "^3.11.2"
+        "clean-webpack-plugin": "^4.0.0",
+        "copy-webpack-plugin": "^11.0.0",
+        "css-loader": "^6.7.3",
+        "html-webpack-plugin": "^5.5.0",
+        "mini-css-extract-plugin": "^2.7.2",
+        "ts-loader": "^9.4.2",
+        "ts-shader-loader": "^2.0.2",
+        "tsconfig-paths-webpack-plugin": "^4.0.0",
+        "vue-loader": "^17.0.1",
+        "vue-tsc": "^1.2.0",
+        "webpack": "^5.75.0",
+        "webpack-cli": "^5.0.1",
+        "webpack-dev-server": "^4.11.1",
+        "webpack-merge": "^5.8.0"
     },
     "dependencies": {
         "@pixi/sound": "^4.2.0",
         "@types/dat.gui": "^0.7.7",
         "@types/stats": "^0.16.30",
-        "@types/three": "^0.138.0",
+        "@types/three": "^0.144.0",
         "@types/ua-parser-js": "^0.7.36",
-        "dat.gui": "^0.7.6",
-        "gsap": "^3.10.2",
+        "click-outside-vue3": "^4.0.1",
+        "dat.gui": "^0.7.9",
+        "gsap": "^3.11.4",
         "stats-js": "^1.0.1",
-        "three": "^0.138.3",
-        "ua-parser-js": "^1.0.2"
+        "textfit": "^2.4.0",
+        "three": "^0.144.0",
+        "ua-parser-js": "^1.0.33",
+        "vue": "^3.2.47"
     }
 }
