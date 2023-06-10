@@ -1,14 +1,14 @@
 import { defineStore } from 'pinia';
 import { ClientData } from '@/types';
+import { Star } from '@/models';
 
 type ClientStore = {
-  currentStarId: number;
   fullscreen: boolean;
   musicVolume: number;
   overlay: boolean;
+  panelStar: ClientData | null;
   sfxVolume: number;
-  starPanel: ClientData | null;
-  tooltip: ClientData | null;
+  tooltipStar: Star | null;
 };
 
 export const useClientStore = defineStore('client', {
@@ -16,14 +16,27 @@ export const useClientStore = defineStore('client', {
     const musicVolume = Number(localStorage.getItem('musicVolume')) * 100;
     const sfxVolume = Number(localStorage.getItem('sfxVolume')) * 100;
 
+    const star = new Star({
+      owner: '0x24kvk4346klsda9x',
+      starId: 1303,
+      name: 'Star 1303',
+      description: 'Star 1303 description',
+      level: 1,
+      race: 'Humans',
+      pos2d: {
+        x: 564,
+        y: 530
+      },
+      scale: 1
+    });
+
     return {
-      currentStarId: -1,
       fullscreen: false,
       musicVolume: musicVolume ?? 50,
       overlay: false,
+      panelStar: null,
       sfxVolume: sfxVolume ?? 50,
-      starPanel: null,
-      tooltip: null
+      tooltipStar: star
     };
   },
   actions: {
@@ -42,31 +55,28 @@ export const useClientStore = defineStore('client', {
       this.overlay = false;
     },
     diveIn() {
-      this.hideTooltip();
-      this.client.diveIn(this.currentStarId);
+      this.client.diveIn(this.tooltipStar.starId);
+      this.hideStarTooltip();
     },
-    hideTooltip() {
-      this.tooltip = null;
+    hideStarTooltip() {
+      this.tooltipStar = null;
       this.disableOverlay();
       this.client.closeStarPreview();
     },
     hideStarPanel() {
-      this.starPanel = null;
+      this.panelStar = null;
       this.client.flyFromStar();
     },
     setFullscreenMode(value: boolean) {
       this.fullscreen = value;
     },
-    setCurrentStarId(starId: number) {
-      this.currentStarId = starId;
-    },
-    showTooltip(data) {
+    showStarTooltip(data) {
       this.client.handleClick();
-      this.tooltip = data;
+      this.tooltipStar = new Star(data);
       this.enableOverlay();
     },
     showStarPanel(data) {
-      this.starPanel = data;
+      this.panelStar = data;
     }
   }
 });

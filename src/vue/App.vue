@@ -47,12 +47,11 @@ export default {
           break;
 
         case 'SHOW_STAR_PREVIEW':
-          this.clientStore.currentStarId = data.starId;
-          this.clientStore.showTooltip({ ...data, textAutofit: true });
+          this.clientStore.showStarTooltip(data);
           break;
 
         case 'HIDE_STAR_PREVIEW':
-          this.clientStore.hideTooltip();
+          this.clientStore.hideStarTooltip();
           break;
 
         case 'SHOW_STAR_GUI':

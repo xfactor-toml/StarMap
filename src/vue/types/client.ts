@@ -1,4 +1,4 @@
-export type RaceType = 'Robots' | 'Humans' | 'Simbionts' | 'Lizards' | 'Insects';
+import { RaceType } from '@/types/planets';
 
 export type ClientEvent =
   | 'GAME_LOADING'

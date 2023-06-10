@@ -2,66 +2,55 @@
   <div class="RealMode">
     <transition name="fade">
       <template v-if="clientStore.overlay">
-        <div class="gui-overlay" @click="clientStore.hideTooltip" />
+        <div class="gui-overlay" @click="clientStore.hideStarTooltip" />
       </template>
     </transition>
     <transition name="fade">
-      <template v-if="clientStore.tooltip !== null">
-        <Tooltip
-          :name="clientStore.tooltip.name"
-          :description="clientStore.tooltip.description"
-          :textAutofit="clientStore.tooltip.textAutofit"
-          :level="clientStore.tooltip.level"
-          :race="clientStore.tooltip.race"
-          :position="clientStore.tooltip.pos2d"
-          :scale="clientStore.tooltip.scale"
-          :raceImageUrl="getRaceImage(clientStore.tooltip.race, 'tooltip')"
-          @hide="clientStore.hideTooltip"
+      <template v-if="clientStore.tooltipStar !== null">
+        <StarTooltip
+          :star="clientStore.tooltipStar"
+          @hide="clientStore.hideStarTooltip"
           @hideButtonHover="$client.handleHover()"
           @diveIn="clientStore.diveIn"
           @diveInButtonHover="$client.handleHover()"
         />
       </template>
     </transition>
-    <transition name="fade">
-      <template v-if="clientStore.starPanel !== null">
+    <!-- <transition name="fade">
+      <template v-if="clientStore.panelStar !== null">
         <StarPanel
-          :name="clientStore.starPanel.name"
-          :description="clientStore.starPanel.description"
-          :level="clientStore.starPanel.level"
-          :race="clientStore.starPanel.race"
-          :planetSlots="clientStore.starPanel.planetSlots"
-          :energy="clientStore.starPanel.energy"
-          :life="clientStore.starPanel.life"
-          :scale="clientStore.starPanel.scale"
-          :raceImageUrl="getRaceImage(clientStore.starPanel.race, 'star-panel')"
+          :name="clientStore.panelStar.name"
+          :description="clientStore.panelStar.description"
+          :level="clientStore.panelStar.level"
+          :race="clientStore.panelStar.race"
+          :planetSlots="clientStore.panelStar.planetSlots"
+          :energy="clientStore.panelStar.energy"
+          :life="clientStore.panelStar.life"
+          :scale="clientStore.panelStar.scale"
+          :raceImageUrl="getRaceImage(clientStore.panelStar.race, 'star-panel')"
           @hide="clientStore.hideStarPanel"
           @hideButtonHover="$client.handleHover()"
           @play="$client.playStarPanel()"
           @playButtonHover="$client.handleHover()"
         />
       </template>
-    </transition>
+    </transition> -->
   </div>
 </template>
 
 <script lang="ts">
-import { StarPanel, Tooltip } from '@/components';
-import { getRaceImage } from '@/helpers';
 import { useSettingsStore, useClientStore } from '@/stores';
+import { StarPanel, StarTooltip } from '@/components';
 import { mapStores } from 'pinia';
 
 export default {
   name: 'RealMode',
   components: {
     StarPanel,
-    Tooltip
+    StarTooltip
   },
   computed: {
     ...mapStores(useSettingsStore, useClientStore)
-  },
-  methods: {
-    getRaceImage
   }
 };
 </script>
