@@ -1,5 +1,5 @@
 <template>
-  <div class="ViewsPanel" :class="{ 'is-hidden': hidden }">
+  <div class="ViewsPanel" :class="{ 'is-hidden': settingsStore.viewsPanelHidden }">
     <div class="ViewsPanel__group">
       <template v-for="view in settingsStore.mode.views">
         <button
@@ -17,7 +17,7 @@
         </button>
       </template>
     </div>
-    <button class="ViewsPanel__toggle" @click="toggle" />
+    <button class="ViewsPanel__toggle" @click="settingsStore.toggleViewsPanel" />
   </div>
 </template>
 
@@ -27,16 +27,8 @@ import { mapStores } from 'pinia';
 
 export default {
   name: 'ViewsPanel',
-  data: () => ({
-    hidden: false
-  }),
   computed: {
     ...mapStores(useSettingsStore)
-  },
-  methods: {
-    toggle() {
-      this.hidden = !this.hidden;
-    }
   }
 };
 </script>

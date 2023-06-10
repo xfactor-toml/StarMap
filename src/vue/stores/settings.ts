@@ -5,19 +5,25 @@ import { MODES } from '@/constants';
 type SettingsStore = {
   agreementAccepted: boolean;
   mode: GuiMode;
+  modesPanelHidden: boolean;
   screen: GuiScreen;
   view: GuiViewName;
+  viewsPanelHidden: boolean;
 };
 
 export const useSettingsStore = defineStore('settings', {
   state: (): SettingsStore => {
     const agreementAccepted = Boolean(localStorage.getItem('agreementAccepted'));
+    const modesPanelHidden = Boolean(localStorage.getItem('modesPanelHidden'));
+    const viewsPanelHidden = Boolean(localStorage.getItem('viewsPanelHidden'));
 
     return {
       agreementAccepted,
       mode: MODES['real'],
+      modesPanelHidden,
       screen: 'preloader',
-      view: 'galaxy'
+      view: 'galaxy',
+      viewsPanelHidden
     };
   },
   actions: {
@@ -41,6 +47,14 @@ export const useSettingsStore = defineStore('settings', {
     revokeAgreement() {
       this.agreementAccepted = false;
       localStorage.removeItem('agreementAccepted');
+    },
+    toggleModesPanel() {
+      this.modesPanelHidden = !this.modesPanelHidden;
+      localStorage.setItem('modesPanelHidden', `${Number(this.modesPanelHidden)}`);
+    },
+    toggleViewsPanel() {
+      this.viewsPanelHidden = !this.viewsPanelHidden;
+      localStorage.setItem('viewsPanelHidden', `${Number(this.viewsPanelHidden)}`);
     }
   }
 });

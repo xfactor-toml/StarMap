@@ -1,6 +1,6 @@
 <template>
-  <div class="ModesPanel" :class="{ 'is-hidden': hidden }">
-    <button class="ModesPanel__toggle" @click="toggle" />
+  <div class="ModesPanel" :class="{ 'is-hidden': settingsStore.modesPanelHidden }">
+    <button class="ModesPanel__toggle" @click="settingsStore.toggleModesPanel" />
     <div class="ModesPanel__group">
       <template v-for="mode in modes">
         <button
@@ -29,16 +29,10 @@ import { mapStores } from 'pinia';
 export default {
   name: 'ModesPanel',
   data: () => ({
-    hidden: false,
     modes: Object.values(MODES)
   }),
   computed: {
     ...mapStores(useSettingsStore)
-  },
-  methods: {
-    toggle() {
-      this.hidden = !this.hidden;
-    }
   }
 };
 </script>

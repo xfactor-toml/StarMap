@@ -14,11 +14,13 @@
         <ViewsPanel />
       </div>
     </template>
-    <template v-if="settingsStore.view === 'galaxy'">
-      <div class="InterfaceScreen__levels">
-        <LevelsPanel />
-      </div>
-    </template>
+    <transition name="fade">
+      <template v-if="settingsStore.view === 'galaxy'">
+        <div class="InterfaceScreen__levels">
+          <LevelsPanel />
+        </div>
+      </template>
+    </transition>
     <div class="InterfaceScreen__modes">
       <ModesPanel />
     </div>
