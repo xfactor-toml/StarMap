@@ -1,4 +1,4 @@
-import { GuiMode, GuiModeName, GuiView, GuiViewName } from '@/types';
+import { GuiMode, GuiModeName } from '@/types';
 
 export const MODES: { [K in GuiModeName]: GuiMode<K> } = {
   phantom: {

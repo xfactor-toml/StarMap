@@ -14,6 +14,11 @@
         <ViewsPanel />
       </div>
     </template>
+    <template v-if="settingsStore.view === 'galaxy'">
+      <div class="InterfaceScreen__levels">
+        <LevelsPanel />
+      </div>
+    </template>
     <div class="InterfaceScreen__modes">
       <ModesPanel />
     </div>
@@ -21,15 +26,7 @@
 </template>
 
 <script lang="ts">
-import {
-  Logo,
-  ModesPanel,
-  SettingsPopup,
-  StarPanel,
-  Tooltip,
-  UserBar,
-  ViewsPanel
-} from '@/components';
+import { LevelsPanel, Logo, ModesPanel, UserBar, ViewsPanel } from '@/components';
 import { PhantomMode, RealMode } from '@/modes';
 import { useSettingsStore, useClientStore } from '@/stores';
 import { mapStores } from 'pinia';
@@ -39,11 +36,9 @@ import { Component } from 'vue';
 export default {
   name: 'InterfaceScreen',
   components: {
+    LevelsPanel,
     Logo,
     ModesPanel,
-    SettingsPopup,
-    StarPanel,
-    Tooltip,
     UserBar,
     ViewsPanel
   },

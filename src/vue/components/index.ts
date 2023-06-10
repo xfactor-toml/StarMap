@@ -1,3 +1,4 @@
+export * from './LevelsPanel';
 export * from './Logo';
 export * from './ModesPanel';
 export * from './SettingsPopup';

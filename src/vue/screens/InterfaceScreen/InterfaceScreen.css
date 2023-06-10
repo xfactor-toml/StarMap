@@ -30,13 +30,19 @@
   top: 20px;
 }
 
-.InterfaceScreen__views {
+.InterfaceScreen__views,
+.InterfaceScreen__levels {
   display: flex;
   align-items: center;
   height: 100%;
   position: absolute;
   left: 20px;
   top: 0;
+}
+
+.InterfaceScreen__levels {
+  left: auto;
+  right: 20px;
 }
 
 .InterfaceScreen__modes {
