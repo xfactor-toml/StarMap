@@ -1,2 +1,2 @@
-export * from './elements';
+export * from './client';
 export * from './settings';

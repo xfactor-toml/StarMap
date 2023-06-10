@@ -1,7 +1,8 @@
-import { GuiMode, GuiModeName } from '../types';
+import { GuiMode, GuiModeName } from '../types/types';
 
-export const MODES: Record<GuiModeName, GuiMode> = {
+export const MODES: { [K in GuiModeName]: GuiMode<K> } = {
   phantom: {
+    name: 'phantom',
     views: [
       {
         name: 'galaxy',
@@ -11,6 +12,7 @@ export const MODES: Record<GuiModeName, GuiMode> = {
     enabled: true
   },
   real: {
+    name: 'real',
     views: [
       {
         name: 'galaxy',
@@ -28,6 +30,7 @@ export const MODES: Record<GuiModeName, GuiMode> = {
     enabled: true
   },
   season: {
+    name: 'season',
     views: [],
     enabled: false
   }
