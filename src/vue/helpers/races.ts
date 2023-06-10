@@ -1,7 +1,8 @@
-import { RACES } from '../constants';
-import { RaceType } from '../types/types';
+import { RACES } from '@/constants';
+import { RaceType } from '@/types';
 
 export const getRaceId = (raceName: RaceType) => RACES[raceName] || '';
 
-export const getRaceImage = (race: RaceType, folder: 'tooltip' | 'star-panel') =>
-  `./gui/images/${folder}/race-${getRaceId(race)}.png`;
+export const getRaceImage = (race: RaceType, folder: 'tooltip' | 'star-panel') => {
+  return `./gui/images/${folder}/race-${getRaceId(race)}.png`;
+};
