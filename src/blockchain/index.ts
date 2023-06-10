@@ -1,1 +1,1 @@
-export * as contractTypes from './types'
+export * as CTypes from './types'

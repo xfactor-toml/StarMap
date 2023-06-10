@@ -1,3 +1,9 @@
+declare global {
+    interface Window {
+      ethereum: any
+    }
+  }
+
 export type StarParams = {
     name: string,
     isLive: boolean,
@@ -11,3 +17,13 @@ export type StarParams = {
     habitableZoneMax: number,
     planetSlots: number,
 }
+
+export type StarData = {
+    id: number,
+    owner: string,
+    params: StarParams
+}
+
+export type StarList = StarData[]
+
+export type account = string | null
