@@ -27,11 +27,11 @@
 </template>
 
 <script lang="ts">
-import { SettingsPopup } from "../SettingsPopup";
-import { default as vClickOutside } from "click-outside-vue3";
+import { SettingsPopup } from '../..';
+import { default as vClickOutside } from 'click-outside-vue3';
 
 export default {
-  name: "Interface",
+  name: 'Interface',
   props: {
     fullscreen: {
       type: Boolean,
@@ -58,7 +58,7 @@ export default {
   methods: {
     toggleSettings() {
       this.settingsVisible = !this.settingsVisible;
-      this.$emit("settingsToggleClick");
+      this.$emit('settingsToggleClick');
     },
     hideSettings() {
       this.settingsVisible = false;

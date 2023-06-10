@@ -1,38 +1,43 @@
-import { ComponentPublicInstance } from "vue";
+import { ComponentPublicInstance } from 'vue';
 
-export type GuiElement =
-  | "interface"
-  | "overlay"
-  | "preloader"
-  | "starPanel"
-  | "startScreen"
-  | "tooltip";
+export type GuiScreen = 'preloader' | 'welcome' | 'interface';
+
+export type GuiElement = 'starPanel' | 'tooltip';
+
+export type GuiViewName = 'galaxy' | 'star' | 'planet';
+
+export type GuiView = {
+  name: GuiViewName;
+  enabled: boolean;
+};
+
+export type GuiModeName = 'phantom' | 'real' | 'season';
+
+export type GuiMode = {
+  views: GuiView[];
+  enabled: boolean;
+};
 
 export type GuiButton =
-  | "run"
-  | "agreement"
-  | "settings"
-  | "starPanelHide"
-  | "starPanelPlay"
-  | "tooltipHide"
-  | "tooltipDiveIn";
+  | 'run'
+  | 'agreement'
+  | 'settings'
+  | 'starPanelHide'
+  | 'starPanelPlay'
+  | 'tooltipHide'
+  | 'tooltipDiveIn';
 
 export type ClientEvent =
-  | "GAME_LOADING"
-  | "GAME_LOADED"
-  | "GAME_CREATED"
-  | "GAME_FULLSCREEN"
-  | "GAME_CREATED"
-  | "SHOW_STAR_PREVIEW"
-  | "HIDE_STAR_PREVIEW"
-  | "SHOW_STAR_GUI";
+  | 'GAME_LOADING'
+  | 'GAME_LOADED'
+  | 'GAME_CREATED'
+  | 'GAME_FULLSCREEN'
+  | 'GAME_CREATED'
+  | 'SHOW_STAR_PREVIEW'
+  | 'HIDE_STAR_PREVIEW'
+  | 'SHOW_STAR_GUI';
 
-export type RaceType =
-  | "Robots"
-  | "Humans"
-  | "Simbionts"
-  | "Lizards"
-  | "Insects";
+export type RaceType = 'Robots' | 'Humans' | 'Simbionts' | 'Lizards' | 'Insects';
 
 export type ClientData = {
   starId: number;
@@ -47,14 +52,14 @@ export type ClientData = {
 };
 
 export type GuiEvent =
-  | "overlayClick"
-  | "agreement"
-  | "setMusicVolume"
-  | "setSfxVolume"
-  | "toggleFullscreen"
-  | "buttonHover"
-  | "buttonClick"
-  | "run";
+  | 'overlayClick'
+  | 'agreement'
+  | 'setMusicVolume'
+  | 'setSfxVolume'
+  | 'toggleFullscreen'
+  | 'buttonHover'
+  | 'buttonClick'
+  | 'run';
 
 export type GuiEventEmitterListener = (data?: any) => void;
 

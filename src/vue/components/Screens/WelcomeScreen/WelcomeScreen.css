@@ -1,4 +1,4 @@
-.startScreen {
+.WelcomeScreen {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -16,7 +16,7 @@
   background-size: cover;
 }
 
-.startScreen__logo {
+.WelcomeScreen__logo {
   width: 440px;
   height: 320px;
   background-image: url(../gui/images/preloader/logo.svg);
@@ -25,7 +25,7 @@
   background-size: contain;
 }
 
-.startScreen__logo-text {
+.WelcomeScreen__logo-text {
   width: 284px;
   height: 92px;
   margin-top: 48px;
@@ -35,11 +35,11 @@
   background-size: contain;
 }
 
-.startScreen__text {
+.WelcomeScreen__text {
   max-width: 640px;
   margin: 48px 0;
   color: #00f0ff;
-  font-family: "Exo 2";
+  font-family: 'Exo 2';
   font-weight: 300;
   font-size: 18px;
   text-align: center;
@@ -48,7 +48,7 @@
   pointer-events: all;
 }
 
-.startScreen__button {
+.WelcomeScreen__button {
   margin-top: 26px;
   padding: 2px 0 3px;
   position: relative;
@@ -56,7 +56,7 @@
   background-color: transparent;
   border: none;
   color: #00f0ff;
-  font-family: "Exo 2";
+  font-family: 'Exo 2';
   font-weight: 600;
   font-size: 18px;
   text-align: center;
@@ -69,21 +69,16 @@
   will-change: transform;
 }
 
-.startScreen__button.active {
+.WelcomeScreen__button.active {
   padding-left: 48px;
   padding-right: 48px;
-  background-image: linear-gradient(
-    90deg,
-    #000000 0%,
-    rgba(0, 0, 0, 0) 50%,
-    #000000 100%
-  );
+  background-image: linear-gradient(90deg, #000000 0%, rgba(0, 0, 0, 0) 50%, #000000 100%);
   font-size: 24px;
 }
 
-.startScreen__button.active::before,
-.startScreen__button.active::after {
-  content: "";
+.WelcomeScreen__button.active::before,
+.WelcomeScreen__button.active::after {
+  content: '';
   display: block;
   width: 80px;
   height: 194%;
@@ -97,32 +92,32 @@
   transform: translateY(-50%);
 }
 
-.startScreen__button.active::after {
+.WelcomeScreen__button.active::after {
   left: auto;
   right: -28px;
   transform: translateY(-50%) scaleX(-1);
 }
 
-.startScreen__button + .startScreen__button {
+.WelcomeScreen__button + .WelcomeScreen__button {
   margin-top: 16px;
 }
 
-.startScreen__button:hover {
+.WelcomeScreen__button:hover {
   transform: scale(1.05);
 }
 
-.startScreen__button:active {
+.WelcomeScreen__button:active {
   transform: scale(1);
 }
 
-.startScreen__checkbox {
+.WelcomeScreen__checkbox {
   display: flex;
   align-items: center;
   margin-top: 32px;
   position: relative;
   z-index: 0;
   color: #00f0ff;
-  font-family: "Exo 2";
+  font-family: 'Exo 2';
   font-weight: 500;
   font-size: 22px;
   line-height: 1.21;
@@ -131,15 +126,15 @@
   cursor: pointer;
 }
 
-.startScreen__checkbox-field {
+.WelcomeScreen__checkbox-field {
   width: 26px;
   height: 26px;
   opacity: 0;
   margin-right: 12px;
 }
 
-.startScreen__checkbox-label::before {
-  content: "";
+.WelcomeScreen__checkbox-label::before {
+  content: '';
   display: inline-block;
   width: 26px;
   height: 26px;
@@ -151,8 +146,8 @@
   border-radius: 10px;
 }
 
-.startScreen__checkbox-label::after {
-  content: "";
+.WelcomeScreen__checkbox-label::after {
+  content: '';
   display: inline-block;
   width: 18px;
   height: 18px;
@@ -167,6 +162,6 @@
   transition: ease 200ms opacity;
 }
 
-.startScreen__checkbox-field:checked + .startScreen__checkbox-label::after {
+.WelcomeScreen__checkbox-field:checked + .WelcomeScreen__checkbox-label::after {
   transform: scale(1);
 }

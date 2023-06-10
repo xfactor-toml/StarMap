@@ -1,45 +1,49 @@
-import { GuiInterface, ClientData, GuiButton } from "./types";
+import { GuiInterface, ClientData, GuiButton } from './types';
+import { useSettingsStore, useElementsStore } from './stores';
 
 export function Controller(GUI: GuiInterface) {
   // @ts-ignore
   let frontEvents;
   let currentStarId = -1;
 
-  GUI.showPreloader();
+  const elementsStore = useElementsStore();
+  const settingsStore = useSettingsStore();
 
-  GUI.on("agreement", () => {
+  settingsStore.setScreen('preloader');
+
+  GUI.on('agreement', () => {
     frontEvents.playInitScreenSfx.dispatch();
   });
 
-  GUI.on("run", (fullscreen) => {
+  GUI.on('run', fullscreen => {
     frontEvents.onClick.dispatch();
     frontEvents.startGame.dispatch(fullscreen);
-    GUI.showInterface();
+    settingsStore.setScreen('interface');
   });
 
-  GUI.on("buttonClick", (buttonName: GuiButton) => {
+  GUI.on('buttonClick', (buttonName: GuiButton) => {
     frontEvents.onClick.dispatch();
 
     switch (buttonName) {
-      case "starPanelHide": {
-        GUI.hideStarPanel();
+      case 'starPanelHide': {
+        elementsStore.hideStarPanel();
         frontEvents.flyFromStar.dispatch();
         break;
       }
 
-      case "starPanelPlay": {
-        console.log("star panel play");
+      case 'starPanelPlay': {
+        console.log('star panel play');
         break;
       }
 
-      case "tooltipHide": {
-        GUI.hideTooltip();
+      case 'tooltipHide': {
+        elementsStore.hideTooltip();
         frontEvents.starPreviewClose.dispatch();
         break;
       }
 
-      case "tooltipDiveIn": {
-        GUI.hideTooltip();
+      case 'tooltipDiveIn': {
+        elementsStore.hideTooltip();
         frontEvents.diveIn.dispatch({
           starId: currentStarId
         });
@@ -48,63 +52,57 @@ export function Controller(GUI: GuiInterface) {
     }
   });
 
-  GUI.on("buttonHover", (buttonName: GuiButton) => {
+  GUI.on('buttonHover', (buttonName: GuiButton) => {
     frontEvents.onHover.dispatch();
   });
 
-  GUI.on("overlayClick", () => {
-    GUI.emit("buttonClick", "tooltipHide");
+  GUI.on('overlayClick', () => {
+    GUI.emit('buttonClick', 'tooltipHide');
   });
 
-  GUI.on("setMusicVolume", (volume: number) => {
-    frontEvents.setMusicVolume.dispatch({ v: volume });
-  });
-
-  GUI.on("setSfxVolume", (volume: number) => {
-    frontEvents.setSFXVolume.dispatch({ v: volume });
-  });
-
-  GUI.on("toggleFullscreen", () => {
-    frontEvents.toggleFullscreen.dispatch();
-  });
-
-  window.addEventListener("gameEvent", (e: Event & { detail: ClientData }) => {
+  window.addEventListener('gameEvent', (e: Event & { detail: ClientData }) => {
     const data = e.detail;
 
     switch (data.eventName) {
-      case "GAME_LOADING":
+      case 'GAME_LOADING':
         break;
 
-      case "GAME_LOADED":
+      case 'GAME_LOADED':
         // @ts-ignore
         frontEvents = e.detail.frontEvents;
-
-        GUI.hidePreloader();
-        GUI.showStartScreen();
+        settingsStore.setScreen('welcome');
 
         break;
 
-      case "GAME_CREATED":
-        GUI.hideStartScreen();
-
+      case 'GAME_CREATED':
         break;
 
-      case "GAME_FULLSCREEN":
+      case 'GAME_FULLSCREEN':
         break;
 
-      case "SHOW_STAR_PREVIEW":
+      case 'SHOW_STAR_PREVIEW':
         currentStarId = data.starId;
-        GUI.showTooltip({ ...data, textAutofit: true });
+        elementsStore.showTooltip({ ...data, textAutofit: true });
         break;
 
-      case "HIDE_STAR_PREVIEW":
-        GUI.hideTooltip();
+      case 'HIDE_STAR_PREVIEW':
+        elementsStore.hideTooltip();
         break;
 
-      case "SHOW_STAR_GUI":
-        GUI.showStarPanel(data);
+      case 'SHOW_STAR_GUI':
+        elementsStore.showStarPanel(data);
         break;
     }
+  });
+
+  // INFO: client didnt send event when press escape
+  document.body.addEventListener('fullscreenchange', () => {
+    settingsStore.setFullscreenMode(!settingsStore.fullscreen);
+  });
+
+  // Global Events
+  window.addEventListener('resize', () => {
+    frontEvents.onWindowResizeSignal.dispatch();
   });
 
   return GUI;
