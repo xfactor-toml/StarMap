@@ -1,6 +1,5 @@
 <template>
   <div class="RealMode">
-    <p>TEST</p>
     <transition name="fade">
       <template v-if="clientStore.overlay">
         <div class="gui-overlay" @click="clientStore.hideTooltip" />

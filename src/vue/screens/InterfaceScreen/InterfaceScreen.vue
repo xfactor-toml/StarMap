@@ -1,13 +1,35 @@
 <template>
   <div class="InterfaceScreen">
-    <component :is="mode" class="InterfaceScreen__mode" />
-    <Logo class="InterfaceScreen__logo" />
-    <UserBar class="InterfaceScreen__userbar" />
+    <div class="InterfaceScreen__content">
+      <component :is="mode" />
+    </div>
+    <div class="InterfaceScreen__logo">
+      <Logo />
+    </div>
+    <div class="InterfaceScreen__userbar">
+      <UserBar />
+    </div>
+    <template v-if="settingsStore.mode.views.length">
+      <div class="InterfaceScreen__views">
+        <ViewsPanel />
+      </div>
+    </template>
+    <div class="InterfaceScreen__modes">
+      <ModesPanel />
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Logo, SettingsPopup, StarPanel, Tooltip, UserBar } from '@/components';
+import {
+  Logo,
+  ModesPanel,
+  SettingsPopup,
+  StarPanel,
+  Tooltip,
+  UserBar,
+  ViewsPanel
+} from '@/components';
 import { PhantomMode, RealMode } from '@/modes';
 import { useSettingsStore, useClientStore } from '@/stores';
 import { mapStores } from 'pinia';
@@ -18,10 +40,12 @@ export default {
   name: 'InterfaceScreen',
   components: {
     Logo,
+    ModesPanel,
     SettingsPopup,
     StarPanel,
     Tooltip,
-    UserBar
+    UserBar,
+    ViewsPanel
   },
   computed: {
     ...mapStores(useSettingsStore, useClientStore),

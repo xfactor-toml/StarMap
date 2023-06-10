@@ -4,4 +4,5 @@ export * from './SettingsPopup';
 export * from './StarPanel';
 export * from './Tooltip';
 export * from './VolumeControl';
+export * from './ViewsPanel';
 export * from './UserBar';

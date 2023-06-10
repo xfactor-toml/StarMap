@@ -1,11 +1,13 @@
-import { GuiMode, GuiModeName } from '../types/types';
+import { GuiMode, GuiModeName, GuiView, GuiViewName } from '@/types';
 
 export const MODES: { [K in GuiModeName]: GuiMode<K> } = {
   phantom: {
     name: 'phantom',
+    label: 'Phantom',
     views: [
       {
         name: 'galaxy',
+        label: 'Galaxy',
         enabled: true
       }
     ],
@@ -13,17 +15,21 @@ export const MODES: { [K in GuiModeName]: GuiMode<K> } = {
   },
   real: {
     name: 'real',
+    label: 'Real',
     views: [
       {
         name: 'galaxy',
+        label: 'Galaxy',
         enabled: true
       },
       {
         name: 'star',
+        label: 'Star',
         enabled: true
       },
       {
         name: 'planet',
+        label: 'Planet',
         enabled: false
       }
     ],
@@ -31,6 +37,7 @@ export const MODES: { [K in GuiModeName]: GuiMode<K> } = {
   },
   season: {
     name: 'season',
+    label: 'Season',
     views: [],
     enabled: false
   }
