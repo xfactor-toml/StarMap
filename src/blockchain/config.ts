@@ -1,0 +1,1 @@
+export const mobileUrl = `"https://metamask.app.link/dapp/${document.location.hostname}/"`
