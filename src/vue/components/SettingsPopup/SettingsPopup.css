@@ -5,7 +5,7 @@
 
 .settings-popup::before,
 .settings-popup::after {
-  content: "";
+  content: '';
   width: 114%;
   height: 80%;
   position: absolute;
@@ -43,7 +43,7 @@
 .settings-popup__label {
   flex-grow: 1;
   color: #00f0ff;
-  font-family: "Exo 2";
+  font-family: 'Inter';
   font-weight: 300;
   font-size: 13px;
   line-height: 1.12;

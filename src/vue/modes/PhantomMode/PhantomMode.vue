@@ -6,23 +6,21 @@
       </template>
     </transition>
     <transition name="fade">
-      <template v-if="clientStore.tooltipStar !== null && !creation">
+      <template v-if="clientStore.tooltipStar !== null">
         <StarCreationTooltip
           :star="clientStore.tooltipStar"
           @hide="clientStore.hideStarTooltip"
           @hideButtonHover="$client.handleHover()"
-          @create="() => (creation = true)"
+          @create="openStarCreationPanel"
           @createButtonHover="$client.handleHover()"
         />
       </template>
     </transition>
     <transition name="fade">
-      <template v-if="clientStore.tooltipStar !== null && creation">
+      <template v-if="creationPanel">
         <StarCreationPanel
           :star="clientStore.tooltipStar"
-          @hide="() => ((creation = false), clientStore.hideStarTooltip)"
-          @create="() => {}"
-          @approve="() => {}"
+          @hide="closeStarCreationPanel"
           @hover="$client.handleHover()"
         />
       </template>
@@ -42,10 +40,21 @@ export default {
     StarCreationTooltip
   },
   data: () => ({
-    creation: false
+    creationPanel: false
   }),
   computed: {
     ...mapStores(useClientStore)
+  },
+  methods: {
+    openStarCreationPanel() {
+      this.clientStore.hideStarTooltip();
+      this.clientStore.enableOverlay();
+      this.creationPanel = true;
+    },
+    closeStarCreationPanel() {
+      this.clientStore.disableOverlay();
+      this.creationPanel = false;
+    }
   }
 };
 </script>

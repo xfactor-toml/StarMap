@@ -13,15 +13,15 @@ type ClientStore = {
 
 export const useClientStore = defineStore('client', {
   state: (): ClientStore => {
-    const musicVolume = Number(localStorage.getItem('musicVolume')) * 100;
-    const sfxVolume = Number(localStorage.getItem('sfxVolume')) * 100;
+    const musicVolume = Number(localStorage.getItem('musicVolume') ?? 0.5) * 100;
+    const sfxVolume = Number(localStorage.getItem('sfxVolume') ?? 0.5) * 100;
 
     return {
       fullscreen: false,
-      musicVolume: musicVolume ?? 50,
+      musicVolume,
       overlay: false,
       panelStar: null,
-      sfxVolume: sfxVolume ?? 50,
+      sfxVolume,
       tooltipStar: null
     };
   },

@@ -114,6 +114,13 @@
   border-top: 1px solid #47a8d1;
 }
 
+.StarCreationPanel__group.is-notice {
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  min-height: 74px;
+}
+
 .StarCreationPanel__label {
   color: #000000;
   font-size: 14px;
@@ -175,15 +182,16 @@
 }
 
 .StarCreationPanel__notice {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 64px;
   padding: 4px 0;
-  color: #3ba2ce;
+  color: #47aad5;
   font-size: 14px;
   text-transform: uppercase;
   text-align: center;
+}
+
+.StarCreationPanel__notice a {
+  color: #fff;
+  text-decoration: none;
 }
 
 .StarCreationPanel.is-fetching .StarCreationPanel__price {

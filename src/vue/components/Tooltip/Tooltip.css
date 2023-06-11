@@ -30,23 +30,23 @@
 }
 
 .tooltip.is-humans .tooltip__star {
-  background-image: url("../gui/images/tooltip/starBg2.png");
+  background-image: url('../gui/images/tooltip/starBg2.png');
 }
 
 .tooltip.is-humans .tooltip__star::before {
-  background-image: url("../gui/images/tooltip/avatarStar2.png");
+  background-image: url('../gui/images/tooltip/avatarStar2.png');
 }
 
 .tooltip.is-humans .tooltip__info::before {
-  background-image: url("../gui/images/tooltip/bgInf2.png");
+  background-image: url('../gui/images/tooltip/bgInf2.png');
 }
 
 .tooltip.is-humans .tooltip__info::after {
-  background-image: url("../gui/images/tooltip/starBgInf2.png");
+  background-image: url('../gui/images/tooltip/starBgInf2.png');
 }
 
 .tooltip.is-humans .tooltip__race::before {
-  background-image: url("../gui/images/tooltip/avatar2.png");
+  background-image: url('../gui/images/tooltip/avatar2.png');
 }
 
 .tooltip.is-simbionts {
@@ -56,23 +56,23 @@
 }
 
 .tooltip.is-simbionts .tooltip__star {
-  background-image: url("../gui/images/tooltip/starBg3.png");
+  background-image: url('../gui/images/tooltip/starBg3.png');
 }
 
 .tooltip.is-simbionts .tooltip__star::before {
-  background-image: url("../gui/images/tooltip/avatarStar3.png");
+  background-image: url('../gui/images/tooltip/avatarStar3.png');
 }
 
 .tooltip.is-simbionts .tooltip__info::before {
-  background-image: url("../gui/images/tooltip/bgInf3.png");
+  background-image: url('../gui/images/tooltip/bgInf3.png');
 }
 
 .tooltip.is-simbionts .tooltip__info::after {
-  background-image: url("../gui/images/tooltip/starBgInf3.png");
+  background-image: url('../gui/images/tooltip/starBgInf3.png');
 }
 
 .tooltip.is-simbionts .tooltip__race::before {
-  background-image: url("../gui/images/tooltip/avatar3.png");
+  background-image: url('../gui/images/tooltip/avatar3.png');
 }
 
 .tooltip.is-lizards {
@@ -84,23 +84,23 @@
 }
 
 .tooltip.is-lizards .tooltip__star {
-  background-image: url("../gui/images/tooltip/starBg4.png");
+  background-image: url('../gui/images/tooltip/starBg4.png');
 }
 
 .tooltip.is-lizards .tooltip__star::before {
-  background-image: url("../gui/images/tooltip/avatarStar4.png");
+  background-image: url('../gui/images/tooltip/avatarStar4.png');
 }
 
 .tooltip.is-lizards .tooltip__info::before {
-  background-image: url("../gui/images/tooltip/bgInf4.png");
+  background-image: url('../gui/images/tooltip/bgInf4.png');
 }
 
 .tooltip.is-lizards .tooltip__info::after {
-  background-image: url("../gui/images/tooltip/starBgInf4.png");
+  background-image: url('../gui/images/tooltip/starBgInf4.png');
 }
 
 .tooltip.is-lizards .tooltip__race::before {
-  background-image: url("../gui/images/tooltip/avatar4.png");
+  background-image: url('../gui/images/tooltip/avatar4.png');
 }
 
 .tooltip.is-insects {
@@ -110,23 +110,23 @@
 }
 
 .tooltip.is-insects .tooltip__star {
-  background-image: url("../gui/images/tooltip/starBg5.png");
+  background-image: url('../gui/images/tooltip/starBg5.png');
 }
 
 .tooltip.is-insects .tooltip__star::before {
-  background-image: url("../gui/images/tooltip/avatarStar5.png");
+  background-image: url('../gui/images/tooltip/avatarStar5.png');
 }
 
 .tooltip.is-insects .tooltip__info::before {
-  background-image: url("../gui/images/tooltip/bgInf5.png");
+  background-image: url('../gui/images/tooltip/bgInf5.png');
 }
 
 .tooltip.is-insects .tooltip__info::after {
-  background-image: url("../gui/images/tooltip/starBgInf5.png");
+  background-image: url('../gui/images/tooltip/starBgInf5.png');
 }
 
 .tooltip.is-insects .tooltip__race::before {
-  background-image: url("../gui/images/tooltip/avatar5.png");
+  background-image: url('../gui/images/tooltip/avatar5.png');
 }
 
 .tooltip__star {
@@ -134,17 +134,17 @@
   height: 100%;
   position: relative;
   z-index: var(--star-layer);
-  background-image: url("../gui/images/tooltip/starBg.png");
+  background-image: url('../gui/images/tooltip/starBg.png');
   background-repeat: no-repeat;
   background-size: contain;
 }
 
 .tooltip__star::before {
-  content: "";
+  content: '';
   display: block;
   width: 100%;
   height: 100%;
-  background-image: url("../gui/images/tooltip/avatarStar.png");
+  background-image: url('../gui/images/tooltip/avatarStar.png');
   background-repeat: no-repeat;
   background-position: 50% 50%;
 }
@@ -162,7 +162,7 @@
 
 .tooltip__info::before,
 .tooltip__info::after {
-  content: "";
+  content: '';
   display: block;
   width: 100%;
   height: 100%;
@@ -179,12 +179,12 @@
   height: calc(100% - 4px);
   left: 2px;
   top: 2px;
-  background-image: url("../gui/images/tooltip/bgInf.png");
+  background-image: url('../gui/images/tooltip/bgInf.png');
 }
 
 .tooltip__info::after {
   z-index: var(--main-layer);
-  background-image: url("../gui/images/tooltip/starBgInf.png");
+  background-image: url('../gui/images/tooltip/starBgInf.png');
   background-size: contain;
 }
 
@@ -197,7 +197,7 @@
 .tooltip__star-name {
   margin: 0;
   color: var(--name-color);
-  font-family: "Exo 2";
+  font-family: 'Inter';
   font-weight: 400;
   font-style: italic;
   font-size: 13px;
@@ -220,7 +220,7 @@
   margin-top: 6px;
   overflow: hidden;
   color: var(--star-description-color);
-  font-family: "Exo 2";
+  font-family: 'Inter';
   font-weight: 400;
   font-size: 10px;
   line-height: 1.2;
@@ -238,14 +238,14 @@
 }
 
 .tooltip__race::before {
-  content: "";
+  content: '';
   display: block;
   width: 100%;
   height: 100%;
   position: absolute;
   left: 0;
   top: 0;
-  background-image: url("../gui/images/tooltip/avatar.png");
+  background-image: url('../gui/images/tooltip/avatar.png');
   background-repeat: no-repeat;
   background-size: contain;
 }
@@ -265,7 +265,7 @@
   bottom: 6px;
   z-index: var(--main-layer);
   color: var(--name-color);
-  font-family: "Exo 2";
+  font-family: 'Inter';
   font-weight: 400;
   font-style: italic;
   font-size: 13px;
@@ -274,7 +274,7 @@
 }
 
 .tooltip__race-name::before {
-  content: "";
+  content: '';
   display: block;
   width: 100%;
   height: 100%;
@@ -308,7 +308,7 @@
   border: none;
   border-radius: 40px;
   color: #000;
-  font-family: "Exo 2";
+  font-family: 'Inter';
   font-weight: 400;
   font-size: 0.9rem;
   text-transform: uppercase;
@@ -319,7 +319,7 @@
 
 .tooltip__button::before,
 .tooltip__button::after {
-  content: "";
+  content: '';
   display: block;
   width: 100%;
   height: 100%;
@@ -337,14 +337,14 @@
 .tooltip__button.is-dive-in::before {
   width: 85px;
   height: 55px;
-  background-image: url("../gui/images/tooltip/bgClose.png");
+  background-image: url('../gui/images/tooltip/bgClose.png');
   left: 5px;
   top: 4px;
 }
 
 .tooltip__button.is-close::after,
 .tooltip__button.is-dive-in::after {
-  background-image: url("../gui/images/tooltip/close.png");
+  background-image: url('../gui/images/tooltip/close.png');
 }
 
 .tooltip__button.is-close:hover {
@@ -352,11 +352,11 @@
 }
 
 .tooltip__button.is-dive-in::before {
-  background-image: url("../gui/images/tooltip/bgDivein.png");
+  background-image: url('../gui/images/tooltip/bgDivein.png');
 }
 
 .tooltip__button.is-dive-in::after {
-  background-image: url("../gui/images/tooltip/divein.png");
+  background-image: url('../gui/images/tooltip/divein.png');
 }
 
 .tooltip__button.is-dive-in:hover {

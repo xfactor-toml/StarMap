@@ -58,29 +58,29 @@
 .star-panel__info-row.is-heading {
   padding-left: 36px;
   left: 10px;
-  background-image: url("../gui/images/star-panel/info-row-1-insects.png");
+  background-image: url('../gui/images/star-panel/info-row-1-insects.png');
 }
 
 .star-panel__info-row.is-slots {
   left: 2px;
-  background-image: url("../gui/images/star-panel/info-row-2-insects.png");
+  background-image: url('../gui/images/star-panel/info-row-2-insects.png');
 }
 
 .star-panel__info-row.is-energy {
   left: 3px;
-  background-image: url("../gui/images/star-panel/info-row-3-insects.png");
+  background-image: url('../gui/images/star-panel/info-row-3-insects.png');
 }
 
 .star-panel__info-row.is-life {
   padding-left: 32px;
   left: 12px;
-  background-image: url("../gui/images/star-panel/info-row-4-insects.png");
+  background-image: url('../gui/images/star-panel/info-row-4-insects.png');
 }
 
 .star-panel__info-key,
 .star-panel__info-value {
   color: var(--info-key-color);
-  font-family: "Exo 2";
+  font-family: 'Inter';
   font-weight: 400;
   font-style: italic;
   font-size: 16px;
@@ -109,21 +109,21 @@
   height: 380px;
   position: relative;
   z-index: var(--star-layer);
-  background-image: url("../gui/images/star-panel/ring-insects.svg");
+  background-image: url('../gui/images/star-panel/ring-insects.svg');
   background-repeat: no-repeat;
   background-position: 50% 50%;
   background-size: 100%;
 }
 
 .star-panel__star::after {
-  content: "";
+  content: '';
   display: block;
   width: 64px;
   height: 64px;
   position: absolute;
   top: -26px;
   left: calc(50% - 32px);
-  background-image: url("../gui/images/star-panel/circle-top-insects.svg");
+  background-image: url('../gui/images/star-panel/circle-top-insects.svg');
   background-repeat: no-repeat;
   background-position: 50% 50%;
   background-size: 100%;
@@ -137,7 +137,7 @@
   left: calc(50% - 38px);
   bottom: -35px;
   background-color: transparent;
-  background-image: url("../gui/images/star-panel/ring-button-insects.svg");
+  background-image: url('../gui/images/star-panel/ring-button-insects.svg');
   background-repeat: no-repeat;
   background-position: 50% 50%;
   background-size: 100%;
@@ -164,7 +164,7 @@
 }
 
 .star-panel__race::before {
-  content: "";
+  content: '';
   display: block;
   width: 100%;
   height: 100%;
@@ -172,7 +172,7 @@
   left: 0;
   top: 0;
   z-index: var(--main-layer);
-  background-image: url("../gui/images/star-panel/race-bg-insects.svg");
+  background-image: url('../gui/images/star-panel/race-bg-insects.svg');
   background-repeat: no-repeat;
   background-position: 50% 50%;
   background-size: contain;
@@ -197,7 +197,7 @@
   position: relative;
   z-index: var(--race-layer);
   color: var(--race-name-color);
-  font-family: "Exo 2";
+  font-family: 'Inter';
   font-weight: 400;
   font-style: italic;
   font-size: 12px;
@@ -215,7 +215,7 @@
   overflow: hidden;
   position: relative;
   z-index: var(--race-layer);
-  font-family: "Exo 2";
+  font-family: 'Inter';
   font-weight: 400;
   font-size: 12px;
   line-height: 1.25;
@@ -231,7 +231,7 @@
   top: -14px;
   z-index: var(--race-layer);
   background-color: transparent;
-  background-image: url("../gui/images/star-panel/close-button-insects.svg");
+  background-image: url('../gui/images/star-panel/close-button-insects.svg');
   background-repeat: no-repeat;
   background-position: 50% 50%;
   background-size: 100%;
@@ -250,113 +250,113 @@
 
 /* ROBOTS */
 .star-panel.is-robots .star-panel__info-row.is-heading {
-  background-image: url("../gui/images/star-panel/info-row-1-robots.png");
+  background-image: url('../gui/images/star-panel/info-row-1-robots.png');
 }
 
 .star-panel.is-robots .star-panel__info-row.is-slots {
-  background-image: url("../gui/images/star-panel/info-row-2-robots.png");
+  background-image: url('../gui/images/star-panel/info-row-2-robots.png');
 }
 
 .star-panel.is-robots .star-panel__info-row.is-energy {
-  background-image: url("../gui/images/star-panel/info-row-3-robots.png");
+  background-image: url('../gui/images/star-panel/info-row-3-robots.png');
 }
 
 .star-panel.is-robots .star-panel__info-row.is-life {
-  background-image: url("../gui/images/star-panel/info-row-4-robots.png");
+  background-image: url('../gui/images/star-panel/info-row-4-robots.png');
 }
 
 .star-panel.is-robots .star-panel__star {
-  background-image: url("../gui/images/star-panel/ring-robots.svg");
+  background-image: url('../gui/images/star-panel/ring-robots.svg');
 }
 
 .star-panel.is-robots .star-panel__star::after {
-  background-image: url("../gui/images/star-panel/circle-top-robots.svg");
+  background-image: url('../gui/images/star-panel/circle-top-robots.svg');
 }
 
 .star-panel.is-robots .star-panel__star-button {
-  background-image: url("../gui/images/star-panel/ring-button-robots.svg");
+  background-image: url('../gui/images/star-panel/ring-button-robots.svg');
 }
 
 .star-panel.is-robots .star-panel__race::before {
-  background-image: url("../gui/images/star-panel/race-bg-robots.svg");
+  background-image: url('../gui/images/star-panel/race-bg-robots.svg');
 }
 
 .star-panel.is-robots .star-panel__close-button {
-  background-image: url("../gui/images/star-panel/close-button-robots.svg");
+  background-image: url('../gui/images/star-panel/close-button-robots.svg');
 }
 
 /* HUMANS */
 .star-panel.is-humans .star-panel__info-row.is-heading {
-  background-image: url("../gui/images/star-panel/info-row-1-humans.png");
+  background-image: url('../gui/images/star-panel/info-row-1-humans.png');
 }
 
 .star-panel.is-humans .star-panel__info-row.is-slots {
-  background-image: url("../gui/images/star-panel/info-row-2-humans.png");
+  background-image: url('../gui/images/star-panel/info-row-2-humans.png');
 }
 
 .star-panel.is-humans .star-panel__info-row.is-energy {
-  background-image: url("../gui/images/star-panel/info-row-3-humans.png");
+  background-image: url('../gui/images/star-panel/info-row-3-humans.png');
 }
 
 .star-panel.is-humans .star-panel__info-row.is-life {
-  background-image: url("../gui/images/star-panel/info-row-4-humans.png");
+  background-image: url('../gui/images/star-panel/info-row-4-humans.png');
 }
 
 .star-panel.is-humans .star-panel__star {
-  background-image: url("../gui/images/star-panel/ring-humans.svg");
+  background-image: url('../gui/images/star-panel/ring-humans.svg');
 }
 
 .star-panel.is-humans .star-panel__star::after {
-  background-image: url("../gui/images/star-panel/circle-top-humans.svg");
+  background-image: url('../gui/images/star-panel/circle-top-humans.svg');
 }
 
 .star-panel.is-humans .star-panel__star-button {
-  background-image: url("../gui/images/star-panel/ring-button-humans.svg");
+  background-image: url('../gui/images/star-panel/ring-button-humans.svg');
 }
 
 .star-panel.is-humans .star-panel__race::before {
-  background-image: url("../gui/images/star-panel/race-bg-humans.svg");
+  background-image: url('../gui/images/star-panel/race-bg-humans.svg');
 }
 
 .star-panel.is-humans .star-panel__close-button {
-  background-image: url("../gui/images/star-panel/close-button-humans.svg");
+  background-image: url('../gui/images/star-panel/close-button-humans.svg');
 }
 
 /* Simbionts */
 .star-panel.is-simbionts .star-panel__info-row.is-heading {
-  background-image: url("../gui/images/star-panel/info-row-1-simbionts.png");
+  background-image: url('../gui/images/star-panel/info-row-1-simbionts.png');
 }
 
 .star-panel.is-simbionts .star-panel__info-row.is-slots {
-  background-image: url("../gui/images/star-panel/info-row-2-simbionts.png");
+  background-image: url('../gui/images/star-panel/info-row-2-simbionts.png');
 }
 
 .star-panel.is-simbionts .star-panel__info-row.is-energy {
-  background-image: url("../gui/images/star-panel/info-row-3-simbionts.png");
+  background-image: url('../gui/images/star-panel/info-row-3-simbionts.png');
 }
 
 .star-panel.is-simbionts .star-panel__info-row.is-life {
-  background-image: url("../gui/images/star-panel/info-row-4-simbionts.png");
+  background-image: url('../gui/images/star-panel/info-row-4-simbionts.png');
 }
 
 .star-panel.is-simbionts .star-panel__star {
-  background-image: url("../gui/images/star-panel/ring-simbionts.svg");
+  background-image: url('../gui/images/star-panel/ring-simbionts.svg');
 }
 
 .star-panel.is-simbionts .star-panel__star::after {
-  background-image: url("../gui/images/star-panel/circle-top-simbionts.svg");
+  background-image: url('../gui/images/star-panel/circle-top-simbionts.svg');
 }
 
 .star-panel.is-simbionts .star-panel__star-button {
-  background-image: url("../gui/images/star-panel/ring-button-simbionts.svg");
+  background-image: url('../gui/images/star-panel/ring-button-simbionts.svg');
 }
 
 .star-panel.is-simbionts .star-panel__race::before {
-  background-image: url("../gui/images/star-panel/race-bg-simbionts.svg");
+  background-image: url('../gui/images/star-panel/race-bg-simbionts.svg');
 }
 
 .star-panel.is-simbionts .star-panel__close-button {
-  background-image: url("../gui/images/star-panel/close-button-simbionts.svg");
+  background-image: url('../gui/images/star-panel/close-button-simbionts.svg');
 }
 
 /* LIZARDS */
@@ -366,37 +366,37 @@
 }
 
 .star-panel.is-lizards .star-panel__info-row.is-heading {
-  background-image: url("../gui/images/star-panel/info-row-1-lizards.png");
+  background-image: url('../gui/images/star-panel/info-row-1-lizards.png');
 }
 
 .star-panel.is-lizards .star-panel__info-row.is-slots {
-  background-image: url("../gui/images/star-panel/info-row-2-lizards.png");
+  background-image: url('../gui/images/star-panel/info-row-2-lizards.png');
 }
 
 .star-panel.is-lizards .star-panel__info-row.is-energy {
-  background-image: url("../gui/images/star-panel/info-row-3-lizards.png");
+  background-image: url('../gui/images/star-panel/info-row-3-lizards.png');
 }
 
 .star-panel.is-lizards .star-panel__info-row.is-life {
-  background-image: url("../gui/images/star-panel/info-row-4-lizards.png");
+  background-image: url('../gui/images/star-panel/info-row-4-lizards.png');
 }
 
 .star-panel.is-lizards .star-panel__star {
-  background-image: url("../gui/images/star-panel/ring-lizards.svg");
+  background-image: url('../gui/images/star-panel/ring-lizards.svg');
 }
 
 .star-panel.is-lizards .star-panel__star::after {
-  background-image: url("../gui/images/star-panel/circle-top-lizards.svg");
+  background-image: url('../gui/images/star-panel/circle-top-lizards.svg');
 }
 
 .star-panel.is-lizards .star-panel__star-button {
-  background-image: url("../gui/images/star-panel/ring-button-lizards.svg");
+  background-image: url('../gui/images/star-panel/ring-button-lizards.svg');
 }
 
 .star-panel.is-lizards .star-panel__race::before {
-  background-image: url("../gui/images/star-panel/race-bg-lizards.svg");
+  background-image: url('../gui/images/star-panel/race-bg-lizards.svg');
 }
 
 .star-panel.is-lizards .star-panel__close-button {
-  background-image: url("../gui/images/star-panel/close-button-lizards.svg");
+  background-image: url('../gui/images/star-panel/close-button-lizards.svg');
 }

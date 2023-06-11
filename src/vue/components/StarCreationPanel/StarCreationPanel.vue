@@ -8,7 +8,7 @@
     ref="tooltip"
   >
     <div class="StarCreationPanel__header">
-      <img class="StarCreationPanel__preview" :src="star.preview" />
+      <img class="StarCreationPanel__preview" :src="preview" />
       <div class="StarCreationPanel__create">Create star</div>
       <button
         class="StarCreationPanel__close"
@@ -30,7 +30,7 @@
           <div class="StarCreationPanel__label">Cost:</div>
           <div class="StarCreationPanel__wallet">
             <div class="StarCreationPanel__price">
-              <template v-if="!fetching">{{ starPrice }}</template>
+              <template v-if="!fetching">{{ creationCost }}</template>
             </div>
             <div class="StarCreationPanel__currency">{{ currency }}</div>
           </div>
@@ -50,7 +50,7 @@
           </div>
         </div>
       </template>
-      <div class="StarCreationPanel__group">
+      <div class="StarCreationPanel__group is-notice">
         <template v-if="errorMessage">
           <div class="StarCreationPanel__notice" v-html="errorMessage" />
         </template>
@@ -63,9 +63,6 @@
           >
             Create
           </button>
-          <!-- <button class="StarCreationPanel__button" @click="approve" @mouseenter="$emit('hover')">
-          Approve
-        </button> -->
         </template>
       </div>
     </div>
@@ -74,33 +71,34 @@
 </template>
 
 <script lang="ts">
-import { Star } from '@/models';
-import { PropType } from 'vue';
+import { mobileUrl } from '~/blockchain/config';
 
 export default {
   name: 'StarCreationPanel',
-  props: {
-    star: {
-      type: Object as PropType<Star>
-    }
-  },
   data: () => ({
-    starName: '',
-    connected: true,
-    fetching: false,
     balance: 0,
-    starPrice: 0
+    connected: true,
+    creationCost: 0,
+    createdStar: null,
+    fetching: false,
+    installed: false,
+    preview: './gui/images/phantom-star.png',
+    starName: ''
   }),
   computed: {
     currency() {
       return this.$wallet.currency;
     },
     canBuy() {
-      return this.balance > 0 && this.balance >= this.starPrice;
+      return this.balance > 0 && this.balance >= this.creationCost;
     },
     errorMessage() {
       if (this.fetching) {
         return '';
+      }
+
+      if (!this.installed) {
+        return `Wallet not installed<br><a href="${mobileUrl}" target="_blank">install</a>`;
       }
 
       if (!this.connected) {
@@ -123,15 +121,14 @@ export default {
   },
   methods: {
     create() {
-      this.$emit('create');
-    },
-    approve() {
-      this.$emit('approve');
+      this.$wallet.createStar(this.starName);
     }
   },
   async mounted() {
     this.fetching = true;
     this.balance = await this.$wallet.getBalance();
+    this.creationCost = await this.$wallet.getCreationCost();
+    this.installed = this.$wallet.installed;
     this.connected = this.$wallet.connected;
 
     if (this.connected) {
@@ -143,4 +140,4 @@ export default {
 };
 </script>
 
-<style scoped src="./StarCreationPanel.css"></style>
+<style src="./StarCreationPanel.css"></style>
