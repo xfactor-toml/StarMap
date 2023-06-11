@@ -19,6 +19,21 @@ export const FrontEvents = {
     diveIn: new Signal(),
     flyFromStar: new Signal(),
     onHover: new Signal(),
-    onClick: new Signal()
+    onClick: new Signal(),
 
+    // left panel
+    onLeftPanelGalaxyClick: new Signal(),
+    onLeftPanelStarClick: new Signal(),
+    onLeftPanelPlanetClick: new Signal(),
+
+    // bot panel
+    onBotPanelPhantomClick: new Signal(),
+    onBotPanelRealClick: new Signal(),
+
+    /**
+     * dispatch(levels), levels: [1, 2, 3, 4, 5]
+     */
+    starLevelFilterUpdate: new Signal(),
+
+    
 }
