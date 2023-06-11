@@ -24,6 +24,20 @@ export type StarData = {
     params: StarParams
 }
 
+export type connectRpc = {
+    keepAlive: boolean,
+    withCredentials: boolean,
+    timeout: number, // ms
+    headers: [
+        {
+            name: string,
+            value: string
+        }
+    ]
+  }
+
 export type StarList = StarData[]
+
+export type fuelTarget = "existence" | "levelup"
 
 export type account = string | null

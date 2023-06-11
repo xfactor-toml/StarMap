@@ -34,6 +34,7 @@
         "@types/stats": "^0.16.30",
         "@types/three": "^0.144.0",
         "@types/ua-parser-js": "^0.7.36",
+        "@types/web3": "^1.2.2",
         "click-outside-vue3": "^4.0.1",
         "dat.gui": "^0.7.9",
         "gsap": "^3.11.4",

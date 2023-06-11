@@ -1,7 +1,9 @@
+import { connectRpc } from "./types"
+
 export const mobileUrl = `https://metamask.app.link/dapp/${document.location.hostname}/`
 export const env = window.ethereum
 
-export const connectOptions = {
+export const connect : connectRpc = {
     keepAlive: true,
     withCredentials: false,
     timeout: 20000, // ms

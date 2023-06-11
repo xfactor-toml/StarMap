@@ -1,0 +1,216 @@
+import Web3 from "web3";
+import { contracts, env, reserveRpcs } from "../config";
+import { StarData, StarList, StarParams, account, fuelTarget } from "../types";
+import { ERC20ABI, StarNFTABI } from "../ABI";
+import { IsTrueNetwork, NetworkAuth } from "./auth";
+import { ApprovePlasma, GetAllowance } from "./plasma";
+
+const nft = contracts.starNFT
+const web3 = new Web3(env)
+const reader = new Web3()
+
+reader.setProvider(new Web3.providers.HttpProvider(reserveRpcs[1]))
+const contract = new reader.eth.Contract(StarNFTABI, nft)
+const writeable = new web3.eth.Contract(StarNFTABI, nft)
+
+async function RequiredPlasmaToApprove (owner : account, level : number = 1) : Promise<number> {
+    const demand = await contract.methods.CalcCreationCost(level.toString()).call()
+    const allowed = await GetAllowance(owner, nft)
+    if (allowed > demand) {
+        return 0
+    }
+    return Number(demand - allowed) / 1e18
+}
+
+
+async function GetAllStarData () : Promise<StarList> {
+     const stars : StarList = []
+     let cntr = 0
+     while (true) {
+         try {
+            const dt : any[] = await contract.methods.GetStarParams(cntr.toString()).call()
+            if(!dt[10]) {  // Planet slots always larger than zero
+               break;
+            }
+            const starParams : StarParams = {
+                name: String(dt[0]),
+                isLive: Boolean(dt[1]),
+                creation: Number(dt[2]),
+                updated: Number(dt[3]),
+                level: Number(dt[4]),
+                fuel: Number(dt[5]),
+                levelUpFuel: Number(dt[6]),
+                fuelSpendings: Number(dt[7]),
+                habitableZoneMin: Number(dt[8]),
+                habitableZoneMax: Number(dt[9]),
+                planetSlots: Number(dt[10])
+            }
+            const owner : string = await contract.methods.ownerOf(cntr.toString()).call()
+            const starData : StarData = {
+                id: cntr,
+                owner: owner,
+                params: starParams
+            }
+            stars.push(starData)
+            cntr += 1
+         } catch (e) {
+            break;
+         }
+     }
+     return stars
+}
+
+async function GetStarsCount () : Promise<number> {
+    const contract = new reader.eth.Contract(StarNFTABI, nft)
+    let cntr = 0
+
+    while (true) {
+        try { 
+            const owner : string = await contract.methods.ownerOf(cntr.toString()).call()
+            if(!owner) {  
+                break;
+             }
+            cntr += 1
+        } catch (e) {
+            break;
+        }
+    }
+    return cntr
+}
+
+async function GetSingleStarData ( starId : number ) : Promise<StarData | null> {
+    try {
+        const dt : any[] = await contract.methods.GetStarParams(starId.toString()).call()
+        if(!dt[10]) { 
+           return null
+        }
+        const starParams : StarParams = {
+            name: String(dt[0]),
+            isLive: Boolean(dt[1]),
+            creation: Number(dt[2]),
+            updated: Number(dt[3]),
+            level: Number(dt[4]),
+            fuel: Number(dt[5]),
+            levelUpFuel: Number(dt[6]),
+            fuelSpendings: Number(dt[7]),
+            habitableZoneMin: Number(dt[8]),
+            habitableZoneMax: Number(dt[9]),
+            planetSlots: Number(dt[10])
+        }
+        const owner : string = await contract.methods.ownerOf(starId.toString()).call()
+        const starData : StarData = {
+            id: starId,
+            owner: owner,
+            params: starParams
+        }
+        return starData
+     } catch (e) {
+        return null
+     }
+}
+
+async function CreateNewStar (owner : account, name : string, uri = `${document.location.hostname}`) : Promise<StarData | null> {
+        if (!owner || !name || !env) {
+           return null
+        }
+
+        const requiredToAllow = await RequiredPlasmaToApprove(owner)
+
+        if (requiredToAllow > 0) {
+            try {
+                const allowed = await ApprovePlasma(owner, requiredToAllow)
+                if (allowed < requiredToAllow) {
+                    return null
+                }
+            } catch (e) {
+                return null
+            }
+        }
+
+        try {
+            await writeable.methods.safeMint(owner, uri, name).send({
+                from: owner
+              })
+            const count = await GetStarsCount ()
+            if (count > 0) {
+               return await GetSingleStarData(count - 1)
+            }
+        } catch (e) {
+            console.log(e.message)
+            return null
+        }
+
+}
+
+async function RefuelStar ( account : account, 
+                            starId : number, 
+                            amount : number, 
+                            target : fuelTarget) : Promise<StarData | null> {
+      if (amount == 0 || !account) {
+          return null
+      }
+
+      const allowedAmount = await GetAllowance (account, nft)
+
+      if (allowedAmount < amount) {
+        const demand = amount - allowedAmount
+        try {
+            const allowed = await ApprovePlasma(account, demand)
+            if (allowed < amount) {
+                return null
+            }
+        } catch (e) {
+            return null
+        }
+      }
+
+      try {
+        const fuel = BigInt(amount * 1e18).toString()
+        if (target === "existence") {
+            await writeable.methods.UpdateStarFuel(starId, fuel).send({
+                from: account
+              })
+        } else {
+            await writeable.methods.UpdateStarLevelFuel(starId, fuel).send({
+                from: account
+              })
+        }
+
+        return await GetSingleStarData(starId)
+      } catch (e) {
+        console.log(e.message)
+        return null
+      }
+}
+
+async function IncreaseStarLevel (owner : account, starId : number) : Promise<StarData | null> {
+    if (!owner) {
+        return null
+    }
+
+    const starOwner = await contract.methods.ownerOf(starId).call()
+
+    if (starOwner !== owner) {
+        return null
+    }
+
+    try {
+        const result = await contract.methods.IncreaseStarLevel(starId).send({
+            from: owner
+        })
+        return await GetSingleStarData(starId)
+    } catch (e) {
+        return null
+    }
+}
+
+export {
+    RequiredPlasmaToApprove,
+    GetAllStarData,
+    GetSingleStarData,
+    CreateNewStar,
+    RefuelStar,
+    IncreaseStarLevel,
+    GetStarsCount
+}
+
