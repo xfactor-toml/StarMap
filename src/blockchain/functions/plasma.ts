@@ -2,7 +2,7 @@ import Web3 from "web3";
 import { contracts, env, reserveRpcs } from "../config";
 import { account } from "../types";
 import { ERC20ABI } from "../ABI";
-import { IsTrueNetwork } from "./auth";
+import { IsTrueNetwork, NetworkAuth } from "./auth";
 
 
 const plasma = contracts.plasma
@@ -25,15 +25,23 @@ async function GetAllowance ( owner : account, spender : account = contracts.sta
 }
 
 async function ApprovePlasma (owner: account, amount: number, spender : account = contracts.starNFT) : Promise<number> {
+    if (!owner || !IsTrueNetwork ()) owner = await NetworkAuth ()
+
     if (!owner || !env || !spender || !IsTrueNetwork()) {
         return 0
     }
 
-    const w3 = new web3.eth.Contract(ERC20ABI, plasma)
     try {
-        await w3.methods.approve(spender, String(amount * 1e18)).send()
+
+        const w3 = new web3.eth.Contract(ERC20ABI, plasma)
+        const num : number= amount * 1e18
+        const amt =  BigInt(num).toString()
+        
+        await w3.methods.approve(spender, amt).send({
+            from: owner
+          })
+
     } catch (e) {
-        console.log(e)
         return GetAllowance(owner, spender)
     }
 
