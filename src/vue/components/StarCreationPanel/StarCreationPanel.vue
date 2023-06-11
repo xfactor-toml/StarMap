@@ -29,8 +29,10 @@
         <div class="StarCreationPanel__group">
           <div class="StarCreationPanel__label">Cost:</div>
           <div class="StarCreationPanel__wallet">
-            <div class="StarCreationPanel__price">{{ fetching ? '' : starPrice }}</div>
-            <div class="StarCreationPanel__currency">plasma</div>
+            <div class="StarCreationPanel__price">
+              <template v-if="!fetching">{{ starPrice }}</template>
+            </div>
+            <div class="StarCreationPanel__currency">{{ currency }}</div>
           </div>
         </div>
         <div class="StarCreationPanel__group">
@@ -41,14 +43,16 @@
               'is-blocked': !canBuy
             }"
           >
-            <div class="StarCreationPanel__price">{{ fetching ? '' : wallet }}</div>
-            <div class="StarCreationPanel__currency">plasma</div>
+            <div class="StarCreationPanel__price is-balance">
+              <template v-if="!fetching">{{ balance }}</template>
+            </div>
+            <div class="StarCreationPanel__currency">{{ currency }}</div>
           </div>
         </div>
       </template>
       <div class="StarCreationPanel__group">
-        <template v-if="notice">
-          <div class="StarCreationPanel__notice" v-html="notice" />
+        <template v-if="errorMessage">
+          <div class="StarCreationPanel__notice" v-html="errorMessage" />
         </template>
         <template v-else>
           <button
@@ -84,15 +88,17 @@ export default {
     starName: '',
     connected: true,
     fetching: false,
-    wallet: 10,
-    starPrice: 0,
-    ready: false
+    balance: 0,
+    starPrice: 0
   }),
   computed: {
-    canBuy() {
-      return this.wallet > 0 || this.starPrice <= this.wallet;
+    currency() {
+      return this.$wallet.currency;
     },
-    notice() {
+    canBuy() {
+      return this.balance > 0 && this.balance >= this.starPrice;
+    },
+    errorMessage() {
       if (this.fetching) {
         return '';
       }
@@ -110,6 +116,9 @@ export default {
       }
 
       return '';
+    },
+    ready() {
+      return !this.fetching && !this.errorMessage.length;
     }
   },
   methods: {
@@ -122,9 +131,8 @@ export default {
   },
   async mounted() {
     this.fetching = true;
-    // this.connected = await this.$wallet.connect();
-
-    this.$wallet.getBalance();
+    this.balance = await this.$wallet.getBalance();
+    this.connected = this.$wallet.connected;
 
     if (this.connected) {
       this.$refs.input?.focus();

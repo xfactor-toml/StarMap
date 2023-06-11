@@ -2,18 +2,27 @@ import { markRaw } from 'vue';
 import { NetworkAuth, GetBalance } from '~/blockchain';
 
 export class WalletService {
-  constructor() {}
+  account = '';
+  connected = false;
+  currency = 'plasma';
 
   async connect() {
-    try {
-      return (await NetworkAuth()) !== null;
-    } catch (error) {
-      return false;
+    const auth = await NetworkAuth();
+
+    if (auth) {
+      this.connected = true;
+      this.account = auth;
     }
+
+    return auth;
   }
 
   async getBalance() {
-    return GetBalance();
+    if (!this.connected && !(await this.connect())) {
+      return 0;
+    }
+
+    return GetBalance(this.account);
   }
 
   static VuePlugin = {

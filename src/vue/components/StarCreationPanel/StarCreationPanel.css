@@ -175,8 +175,11 @@
 }
 
 .StarCreationPanel__notice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 64px;
   padding: 4px 0;
-  font-family: inherit;
   color: #3ba2ce;
   font-size: 14px;
   text-transform: uppercase;
@@ -184,8 +187,12 @@
 }
 
 .StarCreationPanel.is-fetching .StarCreationPanel__price {
-  width: 120px;
+  width: 90px;
   height: 36px;
+}
+
+.StarCreationPanel.is-fetching .StarCreationPanel__price.is-balance {
+  width: 120px;
 }
 
 .StarCreationPanel.is-fetching .StarCreationPanel__currency {
