@@ -1,6 +1,11 @@
 import { connectOptions, env, networkParams, reserveRpcs } from "../config";
+import { account } from "../types";
 
-export async function NetworkAuth () {
+export function IsTrueNetwork (): boolean {
+    return env.chainId === networkParams.networHexID
+}
+
+async function NetworkAuth (): Promise<account> {
     if (!env) {
         return null
     }
@@ -23,5 +28,31 @@ export async function NetworkAuth () {
           }]
         })
       }
-      
+
+    if (!IsTrueNetwork ()) {
+        return null
+    }
+
+    return accs[0]
+}
+
+async function SubscribeOnAccountChanging (): Promise<account> {
+    if (!env) {
+        return null
+    }
+
+    return await new Promise((resolve) => {
+        env.on('accountsChanged', function () {
+            resolve(NetworkAuth ())
+          })
+          
+        env.on('networkChanged', function () {
+            resolve(NetworkAuth ())
+         })
+    })
+}
+
+export {
+    NetworkAuth,
+    SubscribeOnAccountChanging
 }
