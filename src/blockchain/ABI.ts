@@ -1,4 +1,4 @@
-export const ERC20ABI = [
+export const ERC20ABI : any[] = [
 	{
 		"anonymous": false,
 		"inputs": [
@@ -196,7 +196,7 @@ export const ERC20ABI = [
 	}
 ]
 
-export const StarNFTABI = [
+export const StarNFTABI : any[] = [
 	{
 		"inputs": [
 			{

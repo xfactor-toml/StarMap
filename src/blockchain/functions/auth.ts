@@ -1,7 +1,8 @@
-import { connectOptions, env, networkParams, reserveRpcs } from "../config";
+import { connect, env, networkParams, reserveRpcs } from "../config";
 import { account } from "../types";
 
 export function IsTrueNetwork (): boolean {
+    if (!env) return false
     return env.chainId === networkParams.networHexID
 }
 
@@ -10,30 +11,37 @@ async function NetworkAuth (): Promise<account> {
         return null
     }
 
-    const accs = await env.request({ method: "eth_requestAccounts" }, connectOptions)
-    const network = env.chainId
+    try {
+        const accs = await env.request({ method: "eth_requestAccounts" }, connect)
+        const network = env.chainId
 
-    if (network !== networkParams.networHexID) {
-        await env.request({
-          method: 'wallet_addEthereumChain',
-          params: [{ 
-            chainId: networkParams.networHexID,
-            chainName: networkParams.chainName,
-            nativeCurrency: {
-                name: networkParams.ethSymbol,
-                symbol: networkParams.ethSymbol,
-                decimals: 18
-            },
-            rpcUrls: [networkParams.rpcUrl, reserveRpcs[0], reserveRpcs[1]]
-          }]
-        })
-      }
+        if (network !== networkParams.networHexID) {
 
-    if (!IsTrueNetwork ()) {
-        return null
+            await env.request({
+                method: 'wallet_addEthereumChain',
+                params: [{ 
+                  chainId: networkParams.networHexID,
+                  chainName: networkParams.chainName,
+                  nativeCurrency: {
+                      name: networkParams.ethSymbol,
+                      symbol: networkParams.ethSymbol,
+                      decimals: 18
+                  },
+                  rpcUrls: [networkParams.rpcUrl, reserveRpcs[0], reserveRpcs[1]]
+                }]
+              })
+        }
+
+        if (!IsTrueNetwork ()) {
+            return ""
+        }
+
+        return accs[0] || ""
+
+    } catch (e) {
+        return ""
     }
 
-    return accs[0]
 }
 
 async function SubscribeOnAccountChanging (): Promise<account> {

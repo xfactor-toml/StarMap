@@ -3,3 +3,7 @@ export {
     NetworkAuth,
     SubscribeOnAccountChanging
 } from './functions/auth'
+export {
+    GetAllowance,
+    ApprovePlasma
+} from './functions/plasma'
