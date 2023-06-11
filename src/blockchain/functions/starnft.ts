@@ -14,8 +14,9 @@ const contract = new reader.eth.Contract(StarNFTABI, nft)
 const writeable = new web3.eth.Contract(StarNFTABI, nft)
 
 async function RequiredPlasmaToApprove (owner : account, level : number = 1) : Promise<number> {
-    const demand = await contract.methods.CalcCreationCost(level.toString()).call()
+    const demand = await GetCreationCost(level)
     const allowed = await GetAllowance(owner, nft)
+
     if (allowed > demand) {
         return 0
     }

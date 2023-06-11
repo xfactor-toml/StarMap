@@ -4,7 +4,10 @@ import {
   GetBalance,
   GetCreationCost,
   CreateNewStar,
-  SubscribeOnAccountChanging
+  SubscribeOnAccountChanging,
+  ApprovePlasma,
+  GetAllowance,
+  RequiredPlasmaToApprove
 } from '~/blockchain';
 
 export class WalletService {
@@ -33,11 +36,23 @@ export class WalletService {
     return this.checkConnection(() => GetCreationCost(level), 0);
   }
 
+  async requiredPlasmaToApprove() {
+    return this.checkConnection(() => RequiredPlasmaToApprove(this.account));
+  }
+
+  async getAllowance() {
+    return this.checkConnection(() => GetAllowance(this.account));
+  }
+
+  async approvePlasma(amount: number) {
+    return this.checkConnection(() => ApprovePlasma(this.account, amount));
+  }
+
   async createStar(name: string) {
     return this.checkConnection(() => CreateNewStar(this.account, name), null);
   }
 
-  private async checkConnection(method, defaultValue) {
+  private async checkConnection(method, defaultValue?) {
     return (await this.connect()) ? method() : defaultValue;
   }
 

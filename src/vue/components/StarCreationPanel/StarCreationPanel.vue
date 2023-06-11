@@ -30,7 +30,7 @@
           <div class="StarCreationPanel__label">Cost:</div>
           <div class="StarCreationPanel__wallet">
             <div class="StarCreationPanel__price">
-              <template v-if="!fetching">{{ creationCost }}</template>
+              <template v-if="!fetching">{{ roundNumber(creationCost) }}</template>
             </div>
             <div class="StarCreationPanel__currency">{{ currency }}</div>
           </div>
@@ -44,25 +44,45 @@
             }"
           >
             <div class="StarCreationPanel__price is-balance">
-              <template v-if="!fetching">{{ balance }}</template>
+              <template v-if="!fetching">{{ roundNumber(balance) }}</template>
             </div>
             <div class="StarCreationPanel__currency">{{ currency }}</div>
           </div>
         </div>
       </template>
-      <div class="StarCreationPanel__group is-notice">
-        <template v-if="errorMessage">
-          <div class="StarCreationPanel__notice" v-html="errorMessage" />
+      <div
+        class="StarCreationPanel__group"
+        :class="{
+          'is-notice': message
+        }"
+      >
+        <template v-if="message">
+          <div class="StarCreationPanel__notice" v-html="message" />
+        </template>
+        <template v-else-if="createdStar">
+          <div class="StarCreationPanel__button">Created</div>
         </template>
         <template v-else>
-          <button
-            class="StarCreationPanel__button"
-            :disabled="!ready"
-            @click="create"
-            @mouseenter="$emit('hover')"
-          >
-            Create
-          </button>
+          <template v-if="approved">
+            <button
+              class="StarCreationPanel__button"
+              :disabled="!ready || creating"
+              @click="create"
+              @mouseenter="$emit('hover')"
+            >
+              {{ creating ? 'Pending...' : 'Create' }}
+            </button>
+          </template>
+          <template v-else>
+            <button
+              class="StarCreationPanel__button"
+              :disabled="!ready"
+              @click="approve"
+              @mouseenter="$emit('hover')"
+            >
+              Approve
+            </button>
+          </template>
         </template>
       </div>
     </div>
@@ -72,14 +92,17 @@
 
 <script lang="ts">
 import { mobileUrl } from '~/blockchain/config';
+import { roundNumber } from '@/utils';
 
 export default {
   name: 'StarCreationPanel',
   data: () => ({
+    approved: false,
     balance: 0,
     connected: true,
     creationCost: 0,
     createdStar: null,
+    creating: false,
     fetching: false,
     installed: false,
     preview: './gui/images/phantom-star.png',
@@ -92,7 +115,7 @@ export default {
     canBuy() {
       return this.balance > 0 && this.balance >= this.creationCost;
     },
-    errorMessage() {
+    message() {
       if (this.fetching) {
         return '';
       }
@@ -120,8 +143,24 @@ export default {
     }
   },
   methods: {
-    create() {
-      this.$wallet.createStar(this.starName);
+    roundNumber,
+    async approve() {
+      const allowed = await this.$wallet.getAllowance();
+
+      if (allowed >= this.creationCost) {
+        this.approved = true;
+        return;
+      }
+
+      const approvedPlasma = await this.$wallet.approvePlasma(this.creationCost);
+
+      this.approved = approvedPlasma >= this.creationCost;
+    },
+    async create() {
+      this.creating = true;
+      this.createdStar = await this.$wallet.createStar(this.starName);
+      this.creating = false;
+      this.balance = await this.$wallet.getBalance();
     }
   },
   async mounted() {
