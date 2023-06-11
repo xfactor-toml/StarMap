@@ -18,5 +18,6 @@ export {
     CreateNewStar,
     RefuelStar,
     IncreaseStarLevel,
+    GetCreationCost,
     GetStarsCount
 } from './functions/starnft'

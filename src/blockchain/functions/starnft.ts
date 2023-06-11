@@ -22,6 +22,11 @@ async function RequiredPlasmaToApprove (owner : account, level : number = 1) : P
     return Number(demand - allowed) / 1e18
 }
 
+async function GetCreationCost (level : number = 1) : Promise<number> {
+    const demand = await contract.methods.CalcCreationCost(level.toString()).call()
+    return Number( demand ) / 1e18
+}
+
 
 async function GetAllStarData () : Promise<StarList> {
      const stars : StarList = []
@@ -187,11 +192,24 @@ async function IncreaseStarLevel (owner : account, starId : number) : Promise<St
     if (!owner) {
         return null
     }
-
+    const CurrentData = await GetSingleStarData(starId)
     const starOwner = await contract.methods.ownerOf(starId).call()
-
-    if (starOwner !== owner) {
+    const newLevel = CurrentData.params.level + 1
+    if (newLevel > 3 || starOwner !== owner) {
         return null
+    }
+
+    const requireApprove = await RequiredPlasmaToApprove (owner, newLevel)
+    
+    if (requireApprove > 0) {
+        try {
+            const allowed = await ApprovePlasma(owner, requireApprove, nft)
+            if (allowed < requireApprove) {
+                return null
+            }
+        } catch (e) {
+            return null
+        }
     }
 
     try {
@@ -211,6 +229,7 @@ export {
     CreateNewStar,
     RefuelStar,
     IncreaseStarLevel,
+    GetCreationCost,
     GetStarsCount
 }
 
