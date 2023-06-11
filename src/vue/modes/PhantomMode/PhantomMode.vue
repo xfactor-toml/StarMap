@@ -7,12 +7,12 @@
     </transition>
     <transition name="fade">
       <template v-if="clientStore.tooltipStar !== null">
-        <StarTooltip
+        <StarCreationTooltip
           :star="clientStore.tooltipStar"
           @hide="clientStore.hideStarTooltip"
           @hideButtonHover="$client.handleHover()"
-          @diveIn="clientStore.diveIn"
-          @diveInButtonHover="$client.handleHover()"
+          @create="clientStore.diveIn"
+          @createButtonHover="$client.handleHover()"
         />
       </template>
     </transition>
@@ -21,13 +21,13 @@
 
 <script lang="ts">
 import { useClientStore } from '@/stores';
-import { StarTooltip } from '@/components';
+import { StarCreationTooltip } from '@/components';
 import { mapStores } from 'pinia';
 
 export default {
   name: 'PhantomMode',
   components: {
-    StarTooltip
+    StarCreationTooltip
   },
   computed: {
     ...mapStores(useClientStore)

@@ -1,6 +1,6 @@
 .StarTooltip {
   --accent-color: #ffff00;
-  --bg-image: url('../gui/images/star-tooltip/star-tooltip-l1.svg');
+  --bg-image: url('../gui/images/star-tooltip/star-tooltip-l1.png');
 
   display: flex;
   align-items: center;
@@ -25,17 +25,17 @@
 
 .StarTooltip.is-level-2 {
   --accent-color: #f7931e;
-  --bg-image: url('../gui/images/star-tooltip/star-tooltip-l2.svg');
+  --bg-image: url('../gui/images/star-tooltip/star-tooltip-l2.png');
 }
 
 .StarTooltip.is-level-3 {
   --accent-color: #30a2ff;
-  --bg-image: url('../gui/images/star-tooltip/star-tooltip-l3.svg');
+  --bg-image: url('../gui/images/star-tooltip/star-tooltip-l3.png');
 }
 
 .StarTooltip.is-level-4 {
   --accent-color: #ffffff;
-  --bg-image: url('../gui/images/star-tooltip/star-tooltip-l4.svg');
+  --bg-image: url('../gui/images/star-tooltip/star-tooltip-l4.png');
 
   width: 426px;
   height: 131px;
@@ -61,7 +61,7 @@
 
 .StarTooltip.is-level-5 {
   --accent-color: #ffffff;
-  --bg-image: url('../gui/images/star-tooltip/star-tooltip-l5.svg');
+  --bg-image: url('../gui/images/star-tooltip/star-tooltip-l5.png');
 
   width: 429px;
   height: 137px;
