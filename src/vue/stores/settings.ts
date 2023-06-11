@@ -13,9 +13,9 @@ type SettingsStore = {
 
 export const useSettingsStore = defineStore('settings', {
   state: (): SettingsStore => {
-    const agreementAccepted = Boolean(localStorage.getItem('agreementAccepted'));
-    const modesPanelHidden = Boolean(localStorage.getItem('modesPanelHidden'));
-    const viewsPanelHidden = Boolean(localStorage.getItem('viewsPanelHidden'));
+    const agreementAccepted = localStorage.getItem('agreementAccepted') === '1';
+    const modesPanelHidden = localStorage.getItem('modesPanelHidden') === '1';
+    const viewsPanelHidden = localStorage.getItem('viewsPanelHidden') === '1';
 
     return {
       agreementAccepted,

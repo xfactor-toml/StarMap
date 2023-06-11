@@ -1,37 +1,26 @@
 <template>
-  <div :class="tooltipClasses" :style="tooltipStyle" ref="tooltip">
-    <div class="StarTooltip__star" />
-    <div class="StarTooltip__info">
-      <div class="StarTooltip__info-heading">
-        <h2 class="StarTooltip__star-name">{{ star.name }}</h2>
-        <span class="StarTooltip__star-level">Lv.{{ star.level }}</span>
-      </div>
-      <p ref="description" class="StarTooltip__star-description">
-        {{ star.description }}
-      </p>
+  <div class="StarTooltip" :class="tooltipClasses" :style="tooltipStyle" ref="tooltip">
+    <img class="StarTooltip__preview" :src="star.preview" />
+    <div class="StarTooltip__meta">
+      <h3 class="StarTooltip__name">Star: {{ star.name }}</h3>
+      <p class="StarTooltip__description">{{ star.description }}</p>
+      <p class="StarTooltip__owner">Owner: {{ star.croppedOwner }}</p>
     </div>
-    <div class="StarTooltip__race">
-      <img class="StarTooltip__race-image" :src="star.preview" />
-      <p class="StarTooltip__race-name">{{ star.race }}</p>
-    </div>
-    <div class="StarTooltip__buttons">
-      <button
-        class="StarTooltip__button is-close"
-        type="button"
-        @click="hide()"
-        @mouseenter="hideButtonHover()"
-      >
-        Close
-      </button>
-      <button
-        class="StarTooltip__button is-dive-in"
-        type="button"
-        @click="diveIn()"
-        @mouseenter="diveInButtonHover()"
-      >
-        Dive in
-      </button>
-    </div>
+    <button
+      class="StarTooltip__divein"
+      type="button"
+      @click="diveIn()"
+      @mouseenter="diveInButtonHover()"
+    >
+      Dive in
+    </button>
+    <button
+      class="StarTooltip__close"
+      type="button"
+      title="close"
+      @click="hide()"
+      @mouseenter="hideButtonHover()"
+    />
   </div>
 </template>
 
@@ -55,29 +44,28 @@ export default {
       return {
         top: `${this.star.position.y}px`,
         left: `${this.star.position.x}px`,
-        transformOrigin: `${this.intersection.x ? 'calc(100% - 70px)' : '70px'} center`,
         transform: `
-          translateX(${this.intersection.x ? 'calc(-100% + 70px)' : '-70px'})
-          translateY(${this.intersection.y ? '-50%' : '-70px'})
-          scale(${this.computedScale})
+          translateX(-12px)
+          translateY(-78px)
+          scaleX(${this.computedScale * (this.intersection.x ? -1 : 1)})
         `
       };
     },
     tooltipClasses() {
       return {
-        StarTooltip: true,
         'is-reflect': this.intersection.x,
-        [`is-${this.star.race.toLowerCase()}`]: true
+        [`is-level-${this.star.level}`]: true
       };
     }
   },
   methods: {
     recalcIntersection() {
       const { innerWidth, innerHeight } = window;
+      const { width, height } = this.$refs.tooltip.getBoundingClientRect();
 
       return {
-        x: this.star.position.x > innerWidth - this.star.position.x,
-        y: this.star.position.y > innerHeight - this.star.position.y
+        x: width > innerWidth - this.star.position.x,
+        y: height > innerHeight - this.star.position.y
       };
     },
     calcScale() {

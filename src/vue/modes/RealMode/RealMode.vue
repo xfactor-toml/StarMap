@@ -39,7 +39,7 @@
 </template>
 
 <script lang="ts">
-import { useSettingsStore, useClientStore } from '@/stores';
+import { useClientStore } from '@/stores';
 import { StarPanel, StarTooltip } from '@/components';
 import { mapStores } from 'pinia';
 
@@ -50,7 +50,7 @@ export default {
     StarTooltip
   },
   computed: {
-    ...mapStores(useSettingsStore, useClientStore)
+    ...mapStores(useClientStore)
   }
 };
 </script>

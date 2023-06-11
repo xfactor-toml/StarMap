@@ -16,27 +16,13 @@ export const useClientStore = defineStore('client', {
     const musicVolume = Number(localStorage.getItem('musicVolume')) * 100;
     const sfxVolume = Number(localStorage.getItem('sfxVolume')) * 100;
 
-    const star = new Star({
-      owner: '0x24kvk4346klsda9x',
-      starId: 1303,
-      name: 'Star 1303',
-      description: 'Star 1303 description',
-      level: 1,
-      race: 'Humans',
-      pos2d: {
-        x: 564,
-        y: 530
-      },
-      scale: 1
-    });
-
     return {
       fullscreen: false,
       musicVolume: musicVolume ?? 50,
       overlay: false,
       panelStar: null,
       sfxVolume: sfxVolume ?? 50,
-      tooltipStar: star
+      tooltipStar: null
     };
   },
   actions: {

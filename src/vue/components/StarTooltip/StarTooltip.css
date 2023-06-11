@@ -1,413 +1,153 @@
 .StarTooltip {
-  --name-color: #ffff00;
-  --star-level-color: #fff;
-  --star-description-color: #fff;
-  --race-name-bg: linear-gradient(45deg, #00bdff 0%, #003dd2 100%);
-  --race-name-border-color: #01a2f6;
-  --info-width: 252px;
-
-  --under-layer: -1;
-  --main-layer: 0;
-  --star-layer: 4;
-  --info-layer: 3;
-  --race-layer: 2;
-  --buttons-layer: 1;
+  --accent-color: #ffff00;
+  --bg-image: url('../gui/images/star-tooltip/star-tooltip-l1.svg');
 
   display: flex;
   align-items: center;
-  width: auto;
-  height: 140px;
+  width: 418px;
+  height: 116px;
   position: absolute;
   left: 0;
   top: 0;
-  z-index: var(--main-layer);
+  background-image: var(--bg-image);
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-size: contain;
+  will-change: transform;
+  transform-origin: 12px 0;
+}
+
+.StarTooltip.is-reflect .StarTooltip__preview,
+.StarTooltip.is-reflect .StarTooltip__meta,
+.StarTooltip.is-reflect .StarTooltip__divein {
+  transform: scaleX(-1);
+}
+
+.StarTooltip.is-level-2 {
+  --accent-color: #f7931e;
+  --bg-image: url('../gui/images/star-tooltip/star-tooltip-l2.svg');
+}
+
+.StarTooltip.is-level-3 {
+  --accent-color: #30a2ff;
+  --bg-image: url('../gui/images/star-tooltip/star-tooltip-l3.svg');
+}
+
+.StarTooltip.is-level-4 {
+  --accent-color: #ffffff;
+  --bg-image: url('../gui/images/star-tooltip/star-tooltip-l4.svg');
+
+  width: 426px;
+  height: 131px;
+}
+
+.StarTooltip.is-level-4 .StarTooltip__preview {
+  top: 20px;
+}
+
+.StarTooltip.is-level-4 .StarTooltip__meta {
+  top: 37px;
+}
+
+.StarTooltip.is-level-4 .StarTooltip__divein {
+  right: 23px;
+  top: 32px;
+}
+
+.StarTooltip.is-level-4 .StarTooltip__close {
+  right: 8px;
+  top: 16px;
+}
+
+.StarTooltip.is-level-5 {
+  --accent-color: #ffffff;
+  --bg-image: url('../gui/images/star-tooltip/star-tooltip-l5.svg');
+
+  width: 429px;
+  height: 137px;
+}
+
+.StarTooltip.is-level-5 .StarTooltip__preview {
+  top: 23px;
+}
+
+.StarTooltip.is-level-5 .StarTooltip__meta {
+  top: 39px;
+}
+
+.StarTooltip.is-level-5 .StarTooltip__divein {
+  right: 27px;
+  top: 36px;
+  color: #fff;
+}
+
+.StarTooltip.is-level-5 .StarTooltip__close {
+  right: 11px;
+  top: 18px;
+}
+
+.StarTooltip__preview {
+  display: block;
+  width: 90px;
+  height: 90px;
+  position: absolute;
+  left: 65px;
+  top: 13px;
+  border-radius: 50%;
+  background-color: #333;
+  overflow: hidden;
+}
+
+.StarTooltip__meta {
+  height: 56px;
+  max-width: 132px;
+  overflow: hidden;
+  position: absolute;
+  top: 30px;
+  left: 188px;
+  color: var(--accent-color);
   pointer-events: all;
 }
 
-.StarTooltip.is-humans {
-  --race-name-bg: linear-gradient(45deg, #f0af29 0%, #b61b00 100%);
-  --race-name-border-color: #e79822;
-}
-
-.StarTooltip.is-humans .StarTooltip__star {
-  background-image: url('../gui/images/tooltip/starBg2.png');
-}
-
-.StarTooltip.is-humans .StarTooltip__star::before {
-  background-image: url('../gui/images/tooltip/avatarStar2.png');
-}
-
-.StarTooltip.is-humans .StarTooltip__info::before {
-  background-image: url('../gui/images/tooltip/bgInf2.png');
-}
-
-.StarTooltip.is-humans .StarTooltip__info::after {
-  background-image: url('../gui/images/tooltip/starBgInf2.png');
-}
-
-.StarTooltip.is-humans .StarTooltip__race::before {
-  background-image: url('../gui/images/tooltip/avatar2.png');
-}
-
-.StarTooltip.is-simbionts {
-  --race-name-bg: linear-gradient(45deg, #383838 0%, #141414 100%);
-  --race-name-border-color: #4f4f4f;
-  --info-width: 254px;
-}
-
-.StarTooltip.is-simbionts .StarTooltip__star {
-  background-image: url('../gui/images/tooltip/starBg3.png');
-}
-
-.StarTooltip.is-simbionts .StarTooltip__star::before {
-  background-image: url('../gui/images/tooltip/avatarStar3.png');
-}
-
-.StarTooltip.is-simbionts .StarTooltip__info::before {
-  background-image: url('../gui/images/tooltip/bgInf3.png');
-}
-
-.StarTooltip.is-simbionts .StarTooltip__info::after {
-  background-image: url('../gui/images/tooltip/starBgInf3.png');
-}
-
-.StarTooltip.is-simbionts .StarTooltip__race::before {
-  background-image: url('../gui/images/tooltip/avatar3.png');
-}
-
-.StarTooltip.is-lizards {
-  --race-name-bg: linear-gradient(45deg, #fcee21 0%, #39b54a 100%);
-  --race-name-border-color: #e3e626;
-  --name-color: #000;
-  --star-level-color: #000;
-  --star-description-color: #000;
-}
-
-.StarTooltip.is-lizards .StarTooltip__star {
-  background-image: url('../gui/images/tooltip/starBg4.png');
-}
-
-.StarTooltip.is-lizards .StarTooltip__star::before {
-  background-image: url('../gui/images/tooltip/avatarStar4.png');
-}
-
-.StarTooltip.is-lizards .StarTooltip__info::before {
-  background-image: url('../gui/images/tooltip/bgInf4.png');
-}
-
-.StarTooltip.is-lizards .StarTooltip__info::after {
-  background-image: url('../gui/images/tooltip/starBgInf4.png');
-}
-
-.StarTooltip.is-lizards .StarTooltip__race::before {
-  background-image: url('../gui/images/tooltip/avatar4.png');
-}
-
-.StarTooltip.is-insects {
-  --race-name-bg: linear-gradient(0deg, #9512d9 0%, #3d217f 100%);
-  --race-name-border-color: #ac15fb;
-  --info-width: 246px;
-}
-
-.StarTooltip.is-insects .StarTooltip__star {
-  background-image: url('../gui/images/tooltip/starBg5.png');
-}
-
-.StarTooltip.is-insects .StarTooltip__star::before {
-  background-image: url('../gui/images/tooltip/avatarStar5.png');
-}
-
-.StarTooltip.is-insects .StarTooltip__info::before {
-  background-image: url('../gui/images/tooltip/bgInf5.png');
-}
-
-.StarTooltip.is-insects .StarTooltip__info::after {
-  background-image: url('../gui/images/tooltip/starBgInf5.png');
-}
-
-.StarTooltip.is-insects .StarTooltip__race::before {
-  background-image: url('../gui/images/tooltip/avatar5.png');
-}
-
-.StarTooltip__star {
-  width: 140px;
-  height: 100%;
-  position: relative;
-  z-index: var(--star-layer);
-  background-image: url('../gui/images/tooltip/starBg.png');
-  background-repeat: no-repeat;
-  background-size: contain;
-}
-
-.StarTooltip__star::before {
-  content: '';
-  display: block;
-  width: 100%;
-  height: 100%;
-  background-image: url('../gui/images/tooltip/avatarStar.png');
-  background-repeat: no-repeat;
-  background-position: 50% 50%;
-}
-
-.StarTooltip__info {
-  width: var(--info-width);
-  height: calc(100% - 12px);
-  margin-left: -44px;
-  padding: 20px 30px;
-  padding-left: 56px;
-  position: relative;
-  z-index: var(--info-layer);
-  overflow: hidden;
-}
-
-.StarTooltip__info::before,
-.StarTooltip__info::after {
-  content: '';
-  display: block;
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: var(--under-layer);
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-
-.StarTooltip__info::before {
-  width: calc(100% - 4px);
-  height: calc(100% - 4px);
-  left: 2px;
-  top: 2px;
-  background-image: url('../gui/images/tooltip/bgInf.png');
-}
-
-.StarTooltip__info::after {
-  z-index: var(--main-layer);
-  background-image: url('../gui/images/tooltip/starBgInf.png');
-  background-size: contain;
-}
-
-.StarTooltip__info-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-}
-
-.StarTooltip__star-name {
+.StarTooltip__name,
+.StarTooltip__description,
+.StarTooltip__owner {
   margin: 0;
-  color: var(--name-color);
-  font-family: 'Exo 2';
+  font-size: 14px;
   font-weight: 400;
-  font-style: italic;
-  font-size: 13px;
-  line-height: 1.1;
-  text-transform: uppercase;
+  line-height: 1.36;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.StarTooltip__star-level {
-  margin: 0;
-  margin-left: 10px;
-  font-weight: 400;
+.StarTooltip__description {
   font-size: 12px;
-  line-height: 1.1;
-  color: var(--star-level-color);
 }
 
-.StarTooltip__star-description {
-  height: 70px;
-  margin: 0;
-  margin-top: 6px;
-  overflow: hidden;
-  color: var(--star-description-color);
-  font-family: 'Exo 2';
-  font-weight: 400;
-  font-size: 10px;
-  line-height: 1.2;
-}
-
-.StarTooltip__race {
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  width: 116px;
-  height: calc(100% - 12px);
-  position: relative;
-  z-index: var(--race-layer);
-  left: -8px;
-}
-
-.StarTooltip__race::before {
-  content: '';
+.StarTooltip__divein,
+.StarTooltip__close {
   display: block;
-  width: 100%;
-  height: 100%;
   position: absolute;
-  left: 0;
-  top: 0;
-  background-image: url('../gui/images/tooltip/avatar.png');
-  background-repeat: no-repeat;
-  background-size: contain;
-}
-
-.StarTooltip__race-image {
-  position: absolute;
-  z-index: var(--under-layer);
-  top: 8px;
-  left: 10px;
-  width: 100px;
-  height: 112px;
-}
-
-.StarTooltip__race-name {
-  padding: 4px 8px;
-  position: relative;
-  bottom: 6px;
-  z-index: var(--main-layer);
-  color: var(--name-color);
-  font-family: 'Exo 2';
-  font-weight: 400;
-  font-style: italic;
-  font-size: 13px;
-  line-height: 1;
-  text-transform: uppercase;
-}
-
-.StarTooltip__race-name::before {
-  content: '';
-  display: block;
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  left: 2px;
-  bottom: 2px;
-  z-index: var(--under-layer);
-  background-image: var(--race-name-bg);
-  border-top: 2px solid var(--race-name-border-color);
-  border-right: 2px solid var(--race-name-border-color);
-  transform: skewX(-10deg);
-}
-
-.StarTooltip__buttons {
-  height: calc(100% - 12px);
-  width: 94px;
-  left: -12px;
-  position: relative;
-  z-index: var(--buttons-layer);
-}
-
-.StarTooltip__button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 93px;
-  height: 63px;
-  padding: 0;
-  position: relative;
-  background-color: transparent;
   border: none;
-  border-radius: 40px;
-  color: #000;
-  font-family: 'Exo 2';
-  font-weight: 400;
-  font-size: 0.9rem;
+  background-color: transparent;
+  pointer-events: all;
+}
+
+.StarTooltip__divein {
+  width: 66px;
+  height: 66px;
+  right: 18px;
+  top: 26px;
+  font-size: 14px;
   text-transform: uppercase;
-  cursor: pointer;
-  transition: ease opacity 300ms, ease box-shadow 300ms;
-  will-change: box-shadow, opacity;
+  color: #000000;
+  border-radius: 10px;
 }
 
-.StarTooltip__button::before,
-.StarTooltip__button::after {
-  content: '';
-  display: block;
-  width: 100%;
-  height: 100%;
-  background-repeat: no-repeat;
-  background-size: cover;
-  position: absolute;
-  z-index: var(--under-layer);
-}
-
-.StarTooltip__button::after {
-  z-index: var(--main-layer);
-}
-
-.StarTooltip__button.is-close::before,
-.StarTooltip__button.is-dive-in::before {
-  width: 85px;
-  height: 55px;
-  background-image: url('../gui/images/tooltip/bgClose.png');
-  left: 5px;
-  top: 4px;
-}
-
-.StarTooltip__button.is-close::after,
-.StarTooltip__button.is-dive-in::after {
-  background-image: url('../gui/images/tooltip/close.png');
-}
-
-.StarTooltip__button.is-close:hover {
-  box-shadow: 0 0 40px #fa7d2c;
-}
-
-.StarTooltip__button.is-dive-in::before {
-  background-image: url('../gui/images/tooltip/bgDivein.png');
-}
-
-.StarTooltip__button.is-dive-in::after {
-  background-image: url('../gui/images/tooltip/divein.png');
-}
-
-.StarTooltip__button.is-dive-in:hover {
-  box-shadow: 0 0 40px #40f059;
-}
-
-.StarTooltip__button + .StarTooltip__button {
-  margin-top: 2px;
-}
-
-.StarTooltip__button:hover {
-  opacity: 0.9;
-}
-
-.StarTooltip.is-reflect {
-  flex-direction: row-reverse;
-}
-
-.StarTooltip.is-reflect .StarTooltip__info {
-  margin-left: 0;
-  margin-right: -44px;
-  padding-left: 26px;
-  padding-right: 56px;
-}
-
-.StarTooltip.is-reflect .StarTooltip__race {
-  left: 8px;
-}
-
-.StarTooltip.is-reflect .StarTooltip__race-image {
-  left: 7px;
-}
-
-.StarTooltip.is-reflect .StarTooltip__race-name::before {
-  left: -2px;
-  transform: skewX(10deg);
-}
-
-.StarTooltip.is-reflect .StarTooltip__buttons {
-  left: 12px;
-}
-
-.StarTooltip.is-reflect .StarTooltip__button::before {
-  left: 3px;
-}
-
-.StarTooltip.is-reflect .StarTooltip__info::before,
-.StarTooltip.is-reflect .StarTooltip__info::after,
-.StarTooltip.is-reflect .StarTooltip__race::before,
-.StarTooltip.is-reflect .StarTooltip__race-image,
-.StarTooltip.is-reflect .StarTooltip__button::before,
-.StarTooltip.is-reflect .StarTooltip__button::after {
-  transform: scaleX(-1);
+.StarTooltip__close {
+  width: 31px;
+  height: 31px;
+  right: 2px;
+  top: 9px;
+  border-radius: 50%;
 }
