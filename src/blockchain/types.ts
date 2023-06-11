@@ -3,8 +3,8 @@ declare global {
       ethereum: any
     }
   }
-
-export type StarParams = {
+  
+  export type StarParams = {
     name: string,
     isLive: boolean,
     creation: number,  // timestamp

@@ -28,6 +28,13 @@
   background-position: 0 calc(100% + 18px);
 }
 
+.StarCreationPanel:not(.is-connected) .StarCreationPanel__body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 30px;
+}
+
 .StarCreationPanel__footer {
   height: 18px;
   background-position: 0 100%;
@@ -99,11 +106,11 @@
 .StarCreationPanel__group {
   display: flex;
   flex-direction: column;
-  margin-top: 10px;
+  padding-top: 10px;
 }
 
 .StarCreationPanel__group + .StarCreationPanel__group {
-  padding-top: 10px;
+  margin-top: 10px;
   border-top: 1px solid #47a8d1;
 }
 
@@ -125,11 +132,13 @@
 }
 
 .StarCreationPanel__price {
+  position: relative;
   font-size: 36px;
   line-height: 1;
 }
 
 .StarCreationPanel__currency {
+  position: relative;
   font-size: 12px;
   line-height: 1;
   text-transform: uppercase;
@@ -159,6 +168,12 @@
   background-color: #47a8d1;
 }
 
+.StarCreationPanel__button[disabled] {
+  opacity: 0.2;
+  pointer-events: none;
+  user-select: none;
+}
+
 .StarCreationPanel__notice {
   padding: 4px 0;
   font-family: inherit;
@@ -166,4 +181,32 @@
   font-size: 14px;
   text-transform: uppercase;
   text-align: center;
+}
+
+.StarCreationPanel.is-fetching .StarCreationPanel__price {
+  width: 120px;
+  height: 36px;
+}
+
+.StarCreationPanel.is-fetching .StarCreationPanel__currency {
+  width: 46px;
+  height: 18px;
+  color: transparent;
+}
+
+.StarCreationPanel.is-fetching .StarCreationPanel__wallet {
+  align-items: flex-end;
+}
+
+.StarCreationPanel.is-fetching .StarCreationPanel__price::after,
+.StarCreationPanel.is-fetching .StarCreationPanel__currency::after {
+  content: '';
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: calc(100% - 4px);
+  left: 0;
+  bottom: 0;
+  background-color: #1e7fa9;
+  animation: pulse 2s infinite;
 }
