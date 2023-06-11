@@ -52,6 +52,7 @@ export default {
 
         case 'HIDE_STAR_PREVIEW':
           this.clientStore.hideStarTooltip();
+          this.settingsStore.setView('galaxy');
           break;
 
         case 'SHOW_STAR_GUI':
@@ -66,7 +67,7 @@ export default {
 
     // Global Events
     window.addEventListener('resize', () => {
-      this.$client.handleResize();
+      this.$client.handleGuiEvent('resize');
     });
 
     // INFO: client didnt send event when press escape

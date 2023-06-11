@@ -57,7 +57,7 @@ export const useClientStore = defineStore('client', {
       this.fullscreen = value;
     },
     showStarTooltip(data) {
-      this.client.handleClick();
+      this.client.handleGuiEvent('click');
       this.tooltipStar = new Star(data);
       this.enableOverlay();
     },

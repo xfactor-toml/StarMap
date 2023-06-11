@@ -10,12 +10,12 @@
       </p>
       <button
         class="WelcomeScreen__button active"
-        @mouseenter="$client.handleHover()"
+        @mouseenter="$client.handleGuiEvent('hover')"
         @click="handleAgreementRunClick"
       >
         Run
       </button>
-      <label class="WelcomeScreen__checkbox" @mouseenter="$client.handleHover()">
+      <label class="WelcomeScreen__checkbox" @mouseenter="$client.handleGuiEvent('hover')">
         <input
           type="checkbox"
           class="WelcomeScreen__checkbox-field"
@@ -30,14 +30,14 @@
       <div class="WelcomeScreen__logo-text" />
       <button
         class="WelcomeScreen__button active"
-        @mouseenter="$client.handleHover()"
+        @mouseenter="$client.handleGuiEvent('hover')"
         @click="handleRunClick(true)"
       >
         Run fullscreen
       </button>
       <button
         class="WelcomeScreen__button"
-        @mouseenter="$client.handleHover()"
+        @mouseenter="$client.handleGuiEvent('hover')"
         @click="handleRunClick(false)"
       >
         Run windowed

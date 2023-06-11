@@ -8,10 +8,12 @@
             `is-${view.name}`,
             {
               'is-active': view.name === settingsStore.view,
-              'is-disabled': !view.enabled
+              'is-disabled': !view.enabled,
+              'is-clickable': view.clickable
             }
           ]"
-          @click="settingsStore.setView(view.name)"
+          :disabled="!view.clickable"
+          @click="setView(view.name)"
         >
           {{ view.label }}
         </button>
@@ -22,13 +24,19 @@
 </template>
 
 <script lang="ts">
-import { useSettingsStore } from '@/stores';
+import { useSettingsStore, useClientStore } from '@/stores';
+import { GuiViewName } from '@/types';
 import { mapStores } from 'pinia';
 
 export default {
   name: 'ViewsPanel',
   computed: {
-    ...mapStores(useSettingsStore)
+    ...mapStores(useSettingsStore, useClientStore)
+  },
+  methods: {
+    setView(view: GuiViewName) {
+      this.settingsStore.setView(view);
+    }
   }
 };
 </script>

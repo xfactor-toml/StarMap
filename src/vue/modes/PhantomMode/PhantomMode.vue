@@ -10,9 +10,9 @@
         <StarCreationTooltip
           :star="clientStore.tooltipStar"
           @hide="clientStore.hideStarTooltip"
-          @hideButtonHover="$client.handleHover()"
+          @hideButtonHover="$client.handleGuiEvent('hover')"
           @create="openStarCreationPanel"
-          @createButtonHover="$client.handleHover()"
+          @createButtonHover="$client.handleGuiEvent('hover')"
         />
       </template>
     </transition>
@@ -21,7 +21,7 @@
         <StarCreationPanel
           :star="clientStore.tooltipStar"
           @hide="closeStarCreationPanel"
-          @hover="$client.handleHover()"
+          @hover="$client.handleGuiEvent('hover')"
         />
       </template>
     </transition>

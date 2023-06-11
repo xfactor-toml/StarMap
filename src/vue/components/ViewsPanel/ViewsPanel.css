@@ -145,6 +145,11 @@
   filter: grayscale();
 }
 
+.ViewsPanel__button:not(.is-clickable) {
+  user-select: none;
+  pointer-events: none;
+}
+
 .ViewsPanel__button.is-disabled::before,
 .ViewsPanel__button:hover::before,
 .ViewsPanel__button.is-active::before,

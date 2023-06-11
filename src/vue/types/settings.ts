@@ -6,6 +6,7 @@ export type GuiView = {
   name: GuiViewName;
   label: string;
   enabled: boolean;
+  clickable: boolean;
 };
 
 export type GuiMode<T extends GuiModeName = GuiModeName> = {
@@ -20,3 +21,13 @@ export type GuiLevel = {
   value: number;
   label: string;
 };
+
+export type GuiEvent =
+  | 'click'
+  | 'hover'
+  | 'resize'
+  | 'leftPanelGalaxyClick'
+  | 'leftPanelStarClick'
+  | 'leftPanelPlanetClick'
+  | 'botPanelPhantomClick'
+  | 'botPanelRealClick';

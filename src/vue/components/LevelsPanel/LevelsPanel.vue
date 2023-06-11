@@ -37,6 +37,7 @@ export default {
       this.selectedLevels = this.selectedLevels.includes(selectedLevel)
         ? this.selectedLevels.filter(level => level !== selectedLevel)
         : [...this.selectedLevels, selectedLevel];
+      this.$client.updateStarLevelFilter(this.selectedLevels);
     }
   }
 };

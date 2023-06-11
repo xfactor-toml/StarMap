@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
-import { GuiMode, GuiModeName, GuiScreen, GuiViewName } from '@/types';
+import { GuiEvent, GuiMode, GuiModeName, GuiScreen, GuiViewName } from '@/types';
 import { MODES } from '@/constants';
+import { useClientStore } from '@/stores';
 
 type SettingsStore = {
   agreementAccepted: boolean;
@@ -28,13 +29,38 @@ export const useSettingsStore = defineStore('settings', {
   },
   actions: {
     setMode(modeName: GuiModeName) {
+      const clientStore = useClientStore();
       const mode = MODES[modeName];
       const view = mode.views.find(view => view.enabled);
+      const eventsMap: Record<
+        Exclude<GuiModeName, 'season'>,
+        Extract<GuiEvent, 'botPanelPhantomClick' | 'botPanelRealClick'>
+      > = {
+        phantom: 'botPanelPhantomClick',
+        real: 'botPanelRealClick'
+      };
 
+      this.client.handleGuiEvent(eventsMap[modeName]);
       this.mode = mode;
-      this.view = view.name;
+      this.setView(view.name);
     },
     setView(view: GuiViewName) {
+      const clientStore = useClientStore();
+      const eventsMap: Record<
+        GuiViewName,
+        Extract<GuiEvent, 'leftPanelGalaxyClick' | 'leftPanelStarClick' | 'leftPanelPlanetClick'>
+      > = {
+        galaxy: 'leftPanelGalaxyClick',
+        planet: 'leftPanelPlanetClick',
+        star: 'leftPanelStarClick'
+      };
+
+      this.client.handleGuiEvent(eventsMap[view]);
+
+      if (this.view === 'star' && view === 'galaxy') {
+        clientStore.hideStarPanel();
+      }
+
       this.view = view;
     },
     setScreen(screen: GuiScreen) {

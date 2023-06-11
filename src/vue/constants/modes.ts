@@ -8,7 +8,8 @@ export const MODES: { [K in GuiModeName]: GuiMode<K> } = {
       {
         name: 'galaxy',
         label: 'Galaxy',
-        enabled: true
+        enabled: true,
+        clickable: true
       }
     ],
     enabled: true
@@ -20,17 +21,20 @@ export const MODES: { [K in GuiModeName]: GuiMode<K> } = {
       {
         name: 'galaxy',
         label: 'Galaxy',
-        enabled: true
+        enabled: true,
+        clickable: true
       },
       {
         name: 'star',
         label: 'Star',
-        enabled: true
+        enabled: true,
+        clickable: false
       },
       {
         name: 'planet',
         label: 'Planet',
-        enabled: false
+        enabled: false,
+        clickable: false
       }
     ],
     enabled: true

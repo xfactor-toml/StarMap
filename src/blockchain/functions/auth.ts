@@ -54,7 +54,7 @@ async function SubscribeOnAccountChanging (): Promise<account> {
             resolve(NetworkAuth ())
           })
           
-        env.on('networkChanged', function () {
+        env.on('chainChanged', function () {
             resolve(NetworkAuth ())
          })
     })

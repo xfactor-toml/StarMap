@@ -10,9 +10,9 @@
         <StarTooltip
           :star="clientStore.tooltipStar"
           @hide="clientStore.hideStarTooltip"
-          @hideButtonHover="$client.handleHover()"
-          @diveIn="clientStore.diveIn"
-          @diveInButtonHover="$client.handleHover()"
+          @hideButtonHover="$client.handleGuiEvent('hover')"
+          @diveIn="diveIn"
+          @diveInButtonHover="$client.handleGuiEvent('hover')"
         />
       </template>
     </transition>
@@ -29,9 +29,9 @@
           :scale="clientStore.panelStar.scale"
           :raceImageUrl="getRaceImage(clientStore.panelStar.race, 'star-panel')"
           @hide="clientStore.hideStarPanel"
-          @hideButtonHover="$client.handleHover()"
+          @hideButtonHover="$client.handleGuiEvent('hover')"
           @play="$client.playStarPanel()"
-          @playButtonHover="$client.handleHover()"
+          @playButtonHover="$client.handleGuiEvent('hover')"
         />
       </template>
     </transition> -->
@@ -39,7 +39,7 @@
 </template>
 
 <script lang="ts">
-import { useClientStore } from '@/stores';
+import { useClientStore, useSettingsStore } from '@/stores';
 import { StarPanel, StarTooltip } from '@/components';
 import { mapStores } from 'pinia';
 
@@ -50,7 +50,13 @@ export default {
     StarTooltip
   },
   computed: {
-    ...mapStores(useClientStore)
+    ...mapStores(useClientStore, useSettingsStore)
+  },
+  methods: {
+    diveIn() {
+      this.clientStore.diveIn();
+      this.settingsStore.setView('star');
+    }
   }
 };
 </script>

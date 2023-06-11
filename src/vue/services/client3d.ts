@@ -1,3 +1,4 @@
+import { GuiEvent } from '@/types';
 import { markRaw } from 'vue';
 import { FrontEvents } from '~/events/FrontEvents';
 
@@ -5,7 +6,7 @@ export class Client3DService {
   constructor(private dispatcher: typeof FrontEvents) {}
 
   run(fullscreen: boolean) {
-    this.handleClick();
+    this.handleGuiEvent('click');
     this.dispatcher.startGame.dispatch(fullscreen);
   }
 
@@ -26,17 +27,17 @@ export class Client3DService {
   }
 
   closeStarPreview() {
-    this.handleClick();
+    this.handleGuiEvent('click');
     this.dispatcher.starPreviewClose.dispatch();
   }
 
   diveIn(starId: number) {
-    this.handleClick();
+    this.handleGuiEvent('click');
     this.dispatcher.diveIn.dispatch({ starId });
   }
 
   flyFromStar() {
-    this.handleClick();
+    this.handleGuiEvent('click');
     this.dispatcher.flyFromStar.dispatch();
   }
 
@@ -44,16 +45,25 @@ export class Client3DService {
     console.log('star panel play');
   }
 
-  handleClick() {
-    this.dispatcher.onClick.dispatch();
+  updateStarLevelFilter(levels: number[]) {
+    this.dispatcher.starLevelFilterUpdate.dispatch(levels);
   }
 
-  handleHover() {
-    this.dispatcher.onHover.dispatch();
-  }
+  handleGuiEvent(event: GuiEvent) {
+    const handlers: Record<GuiEvent, () => void> = {
+      click: () => this.dispatcher.onClick.dispatch(),
+      hover: () => this.dispatcher.onHover.dispatch(),
+      resize: () => this.dispatcher.onWindowResizeSignal.dispatch(),
+      leftPanelGalaxyClick: () => this.dispatcher.onLeftPanelGalaxyClick.dispatch(),
+      leftPanelStarClick: () => this.dispatcher.onLeftPanelStarClick.dispatch(),
+      leftPanelPlanetClick: () => this.dispatcher.onLeftPanelPlanetClick.dispatch(),
+      botPanelPhantomClick: () => this.dispatcher.onBotPanelPhantomClick.dispatch(),
+      botPanelRealClick: () => this.dispatcher.onBotPanelRealClick.dispatch()
+    };
 
-  handleResize() {
-    this.dispatcher.onWindowResizeSignal.dispatch();
+    const handler = handlers[event];
+
+    handler();
   }
 
   static VuePlugin = {
