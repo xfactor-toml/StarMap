@@ -38,4 +38,6 @@ export type connectRpc = {
 
 export type StarList = StarData[]
 
+export type fuelTarget = "existence" | "levelup"
+
 export type account = string | null

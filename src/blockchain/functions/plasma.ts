@@ -24,6 +24,16 @@ async function GetAllowance ( owner : account, spender : account = contracts.sta
 
 }
 
+async function GetBalance ( owner : account ) : Promise<number> {
+    if (!owner) {
+        return 0
+    }
+
+    const w3 = new reader.eth.Contract(ERC20ABI, plasma)
+    const balance = await w3.methods.balanceOf(owner).call()
+    return Number(balance) / 1e18
+}
+
 async function ApprovePlasma (owner: account, amount: number, spender : account = contracts.starNFT) : Promise<number> {
     if (!owner || !IsTrueNetwork ()) owner = await NetworkAuth ()
 
@@ -50,5 +60,6 @@ async function ApprovePlasma (owner: account, amount: number, spender : account 
 
 export {
     GetAllowance,
+    GetBalance,
     ApprovePlasma
 }
