@@ -36,18 +36,18 @@
 </template>
 
 <script lang="ts">
-import textFit from "textfit";
+import textFit from 'textfit';
 
 export default {
-  name: "Tooltip",
+  name: 'Tooltip',
   props: {
     name: {
       type: String,
-      default: ""
+      default: ''
     },
     description: {
       type: String,
-      default: ""
+      default: ''
     },
     level: {
       type: Number,
@@ -55,9 +55,8 @@ export default {
     },
     race: {
       type: String,
-      validation: (type) =>
-        ["Robots", "Humans", "Simbionts", "Lizards", "Insects"].includes(type),
-      default: "Robots"
+      validation: type => ['Robots', 'Humans', 'Simbionts', 'Lizards', 'Insects'].includes(type),
+      default: 'Robots'
     },
     position: {
       type: Object,
@@ -65,7 +64,7 @@ export default {
     },
     raceImageUrl: {
       type: String,
-      default: "./images/tooltip/ava.png"
+      default: './images/tooltip/ava.png'
     },
     scale: {
       type: Number,
@@ -85,12 +84,10 @@ export default {
       return {
         top: `${this.position.y}px`,
         left: `${this.position.x}px`,
-        transformOrigin: `${
-          this.intersection.x ? "calc(100% - 70px)" : "70px"
-        } center`,
+        transformOrigin: `${this.intersection.x ? 'calc(100% - 70px)' : '70px'} center`,
         transform: `
-          translateX(${this.intersection.x ? "calc(-100% + 70px)" : "-70px"})
-          translateY(${this.intersection.y ? "-50%" : "-70px"})
+          translateX(${this.intersection.x ? 'calc(-100% + 70px)' : '-70px'})
+          translateY(${this.intersection.y ? '-50%' : '-70px'})
           scale(${this.computedScale})
         `
       };
@@ -98,7 +95,7 @@ export default {
     tooltipClasses() {
       return {
         tooltip: true,
-        "is-reflect": this.intersection.x,
+        'is-reflect': this.intersection.x,
         [`is-${this.race.toLowerCase()}`]: true
       };
     }
@@ -117,24 +114,22 @@ export default {
       const { width } = this.$refs.tooltip.getBoundingClientRect();
 
       const factor = 1.1;
-      const area = this.intersection.x
-        ? this.position.x
-        : innerWidth - this.position.x;
+      const area = this.intersection.x ? this.position.x : innerWidth - this.position.x;
       const scale = Math.min((area / width) * factor, 1) * this.scale;
 
       return scale;
     },
     hide() {
-      this.$emit("hide");
+      this.$emit('hide');
     },
     hideButtonHover() {
-      this.$emit("hideButtonHover");
+      this.$emit('hideButtonHover');
     },
     diveIn() {
-      this.$emit("diveIn");
+      this.$emit('diveIn');
     },
     diveInButtonHover() {
-      this.$emit("diveInButtonHover");
+      this.$emit('diveInButtonHover');
     }
   },
   mounted() {

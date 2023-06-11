@@ -39,10 +39,10 @@
 </template>
 
 <script lang="ts">
-import { VolumeControl } from "../VolumeControl";
+import { VolumeControl } from '@/components/VolumeControl';
 
 export default {
-  name: "SettingsPopup",
+  name: 'SettingsPopup',
   props: {
     fullscreen: {
       type: Boolean,

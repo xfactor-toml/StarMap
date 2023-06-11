@@ -3,9 +3,7 @@
     <div class="star-panel__info">
       <div class="star-panel__info-row is-heading">
         <div class="star-panel__info-key is-selectable">{{ name }}</div>
-        <div class="star-panel__info-value is-selectable is-level">
-          Lv.{{ level }}
-        </div>
+        <div class="star-panel__info-value is-selectable is-level">Lv.{{ level }}</div>
       </div>
       <div class="star-panel__info-row is-slots">
         <div class="star-panel__info-key is-selectable">Planet slots</div>
@@ -48,15 +46,15 @@
 
 <script lang="ts">
 export default {
-  name: "StarPanel",
+  name: 'StarPanel',
   props: {
     name: {
       type: String,
-      default: ""
+      default: ''
     },
     description: {
       type: String,
-      default: ""
+      default: ''
     },
     level: {
       type: Number,
@@ -76,13 +74,12 @@ export default {
     },
     race: {
       type: String,
-      validation: (type) =>
-        ["Robots", "Humans", "Simbionts", "Lizards", "Insects"].includes(type),
-      default: "Robots"
+      validation: type => ['Robots', 'Humans', 'Simbionts', 'Lizards', 'Insects'].includes(type),
+      default: 'Robots'
     },
     raceImageUrl: {
       type: String,
-      default: "./images/star-panel/race-insects.png"
+      default: './images/star-panel/race-insects.png'
     },
     scale: {
       type: Number,
@@ -97,23 +94,23 @@ export default {
     },
     panelClasses() {
       return {
-        "star-panel": true,
+        'star-panel': true,
         [`is-${this.race.toLowerCase()}`]: true
       };
     }
   },
   methods: {
     play() {
-      this.$emit("play");
+      this.$emit('play');
     },
     playButtonHover() {
-      this.$emit("playButtonHover");
+      this.$emit('playButtonHover');
     },
     hide() {
-      this.$emit("hide");
+      this.$emit('hide');
     },
     hideButtonHover() {
-      this.$emit("hideButtonHover");
+      this.$emit('hideButtonHover');
     }
   }
 };

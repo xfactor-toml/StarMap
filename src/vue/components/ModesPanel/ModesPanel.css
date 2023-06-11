@@ -1,0 +1,143 @@
+.ModesPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  max-width: 540px;
+  transition: ease-in-out transform 300ms;
+}
+
+.ModesPanel.is-hidden {
+  transform: translateY(100%);
+}
+
+.ModesPanel__toggle {
+  width: 38px;
+  height: 10px;
+  position: relative;
+  border: none;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-size: contain;
+  background-image: url(../gui/images/modes/modes-toggle-button.svg);
+  cursor: pointer;
+  outline: none;
+  opacity: 0.8;
+  transition: ease opacity 200ms, ease transform 200ms;
+}
+
+.ModesPanel__toggle::before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: -10px;
+  z-index: -1;
+  width: calc(100% + 20px);
+  height: calc(100% + 20px);
+}
+
+.ModesPanel.is-hidden .ModesPanel__toggle {
+  transform: scale(-1);
+}
+
+.ModesPanel__toggle:hover {
+  opacity: 1;
+}
+
+.ModesPanel__group {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+  padding-top: 24px;
+  transition: ease opacity 200ms, ease visibility 200ms;
+}
+
+.ModesPanel.is-hidden .ModesPanel__group {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.ModesPanel__group::before {
+  content: '';
+  width: 100%;
+  height: 64px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-size: contain;
+  background-image: url(../gui/images/modes/mode-panel-outline.svg);
+}
+
+.ModesPanel__button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 60px;
+  border: none;
+  background-color: transparent;
+  color: #00ffff;
+  font-size: 14px;
+  text-transform: none;
+  cursor: pointer;
+  outline: none;
+}
+
+.ModesPanel__button::before,
+.ModesPanel__button::after {
+  content: '';
+  width: 60px;
+  height: 60px;
+  margin-bottom: 10px;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-size: contain;
+  opacity: 0.3;
+  transition: ease opacity 200ms;
+}
+
+.ModesPanel__button::after {
+  width: 50px; /* 27px; */
+  height: 27px; /* 7px; */
+  margin-top: -2px;
+  margin-bottom: 0;
+  opacity: 0;
+  background-image: url(../gui/images/modes/mode-active-marker.svg);
+}
+
+.ModesPanel__button.is-phantom::before {
+  background-image: url(../gui/images/modes/mode-phantom.svg);
+}
+
+.ModesPanel__button.is-real::before {
+  background-image: url(../gui/images/modes/mode-real.svg);
+}
+
+.ModesPanel__button.is-season::before {
+  width: 80px;
+  height: 80px;
+  margin-top: -10px;
+  margin-bottom: 0;
+  background-image: url(../gui/images/modes/mode-season.svg);
+}
+
+.ModesPanel__button.is-disabled {
+  user-select: none;
+  pointer-events: none;
+  opacity: 0.2;
+  filter: grayscale();
+}
+
+.ModesPanel__button.is-disabled::before,
+.ModesPanel__button:hover::before,
+.ModesPanel__button.is-active::before,
+.ModesPanel__button.is-active::after {
+  opacity: 1;
+}
