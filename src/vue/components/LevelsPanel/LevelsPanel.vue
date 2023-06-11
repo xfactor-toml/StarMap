@@ -26,7 +26,7 @@ import { mapStores } from 'pinia';
 export default {
   name: 'LevelsPanel',
   data: () => ({
-    selectedLevels: [],
+    selectedLevels: LEVELS.map(({ id }) => id),
     levels: [...LEVELS].reverse()
   }),
   computed: {

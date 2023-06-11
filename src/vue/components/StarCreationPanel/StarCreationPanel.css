@@ -1,0 +1,169 @@
+.StarCreationPanel {
+  width: 307px;
+  position: absolute;
+  left: calc(50% - 144px);
+  top: calc(50% - 190px);
+  will-change: transform;
+  pointer-events: all;
+  cursor: default;
+}
+
+.StarCreationPanel__header,
+.StarCreationPanel__body,
+.StarCreationPanel__footer {
+  height: 132px;
+  width: 100%;
+  background-image: url('../gui/images/star-tooltip/star-create-panel.png');
+  background-repeat: no-repeat;
+  background-position: 0% 0%;
+  background-size: 100%;
+}
+
+.StarCreationPanel__body {
+  height: auto;
+  min-height: 140px;
+  max-height: 246px;
+  padding: 0 20px;
+  padding-right: 40px;
+  background-position: 0 calc(100% + 18px);
+}
+
+.StarCreationPanel__footer {
+  height: 18px;
+  background-position: 0 100%;
+}
+
+.StarCreationPanel__preview {
+  display: block;
+  width: 96px;
+  height: 96px;
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  border-radius: 50%;
+  background-color: #333;
+  overflow: hidden;
+}
+
+.StarCreationPanel__create {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 150px;
+  height: 66px;
+  padding-bottom: 2px;
+  position: absolute;
+  right: 30px;
+  top: 35px;
+  color: #000000;
+  font-size: 14px;
+  text-transform: uppercase;
+  opacity: 0.2;
+}
+
+.StarCreationPanel__close {
+  display: block;
+  width: 31px;
+  height: 31px;
+  position: absolute;
+  right: 11px;
+  top: 19px;
+  border: none;
+  background-color: transparent;
+  border-radius: 50%;
+}
+
+.StarCreationPanel__name {
+  width: 100%;
+  padding: 2px 8px;
+  background-color: #eaf5fa;
+  border: none;
+  border-radius: 4px;
+  color: #000000;
+  font-family: inherit;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  outline: none;
+}
+
+.StarCreationPanel__name:focus {
+  background-color: #fff;
+}
+
+.StarCreationPanel__name.is-invalid {
+  box-shadow: 0 0 0 2px #ed1c24;
+}
+
+.StarCreationPanel__group {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+}
+
+.StarCreationPanel__group + .StarCreationPanel__group {
+  padding-top: 10px;
+  border-top: 1px solid #47a8d1;
+}
+
+.StarCreationPanel__label {
+  color: #000000;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.StarCreationPanel__wallet {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  color: #ffffff;
+}
+
+.StarCreationPanel__wallet.is-blocked {
+  color: #ed1c24;
+}
+
+.StarCreationPanel__price {
+  font-size: 36px;
+  line-height: 1;
+}
+
+.StarCreationPanel__currency {
+  font-size: 12px;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.StarCreationPanel__button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 64px;
+  background-color: #47a8d1;
+  border: none;
+  font-family: inherit;
+  color: #000000;
+  font-size: 14px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: ease background-color 200ms;
+}
+
+.StarCreationPanel__button:hover {
+  background-color: #5ab1d6;
+}
+
+.StarCreationPanel__button:active {
+  background-color: #47a8d1;
+}
+
+.StarCreationPanel__notice {
+  padding: 4px 0;
+  font-family: inherit;
+  color: #3ba2ce;
+  font-size: 14px;
+  text-transform: uppercase;
+  text-align: center;
+}

@@ -2,6 +2,7 @@ export * from './LevelsPanel';
 export * from './Logo';
 export * from './ModesPanel';
 export * from './SettingsPopup';
+export * from './StarCreationPanel';
 export * from './StarCreationTooltip';
 export * from './StarPanel';
 export * from './StarTooltip';

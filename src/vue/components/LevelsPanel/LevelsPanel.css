@@ -65,7 +65,10 @@
   background-image: url(../gui/images/levels/level-4.svg);
 }
 
-.LevelsPanel__button:hover::before,
+.LevelsPanel__button:hover::before {
+  opacity: 0.5;
+}
+
 .LevelsPanel__button.is-active::before {
   opacity: 1;
 }

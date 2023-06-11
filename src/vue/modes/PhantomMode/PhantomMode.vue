@@ -6,13 +6,24 @@
       </template>
     </transition>
     <transition name="fade">
-      <template v-if="clientStore.tooltipStar !== null">
+      <template v-if="clientStore.tooltipStar !== null && !creation">
         <StarCreationTooltip
           :star="clientStore.tooltipStar"
           @hide="clientStore.hideStarTooltip"
           @hideButtonHover="$client.handleHover()"
-          @create="clientStore.diveIn"
+          @create="() => (creation = true)"
           @createButtonHover="$client.handleHover()"
+        />
+      </template>
+    </transition>
+    <transition name="fade">
+      <template v-if="clientStore.tooltipStar !== null && creation">
+        <StarCreationPanel
+          :star="clientStore.tooltipStar"
+          @hide="() => ((creation = false), clientStore.hideStarTooltip)"
+          @create="() => {}"
+          @approve="() => {}"
+          @hover="$client.handleHover()"
         />
       </template>
     </transition>
@@ -21,14 +32,18 @@
 
 <script lang="ts">
 import { useClientStore } from '@/stores';
-import { StarCreationTooltip } from '@/components';
+import { StarCreationPanel, StarCreationTooltip } from '@/components';
 import { mapStores } from 'pinia';
 
 export default {
   name: 'PhantomMode',
   components: {
+    StarCreationPanel,
     StarCreationTooltip
   },
+  data: () => ({
+    creation: false
+  }),
   computed: {
     ...mapStores(useClientStore)
   }
