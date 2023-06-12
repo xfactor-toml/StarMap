@@ -1318,22 +1318,32 @@ export class Galaxy {
                         let plainPoint = this.getPlanePoint(inMng.normalInputPos);
                         if (plainPoint) {
                             // move camera to point
-                            // this.isStarPreviewState = false;
+                            let newCamPos = this.camera.position.clone().sub(plainPoint).normalize().multiplyScalar(Settings.POINTS_CAMERA_MAX_DIST / 2);
+                            newCamPos.add(plainPoint);
                             this.orbitControl.enabled = false;
-                            // this.camera.lookAt(this.cameraTarget);
                             gsap.to(this.camera.position, {
+                                x: newCamPos.x,
+                                y: newCamPos.y,
+                                z: newCamPos.z,
+                                duration: 3,
+                                ease: 'sine.inOut',
+                                onComplete: () => {
+                                    this.orbitControl.enabled = true;
+                                }
+                            });
+
+                            // move camera target to center of Click Point
+                            gsap.to(this.cameraTarget, {
                                 x: plainPoint.x,
                                 y: plainPoint.y,
                                 z: plainPoint.z,
                                 duration: 3,
                                 ease: 'sine.inOut',
-                                onComplete: () => {
-                                    // this.fsm.startState(States.galaxy);
-                                    // this.orbitControl.maxDistance = Settings.galaxyData.camDistMax;
-                                    this.orbitControl.enabled = true;
-                                    
+                                onUpdate: () => {
+                                    this.orbitCenter.copy(this.cameraTarget);
                                 }
                             });
+
                         }
                     }
 
@@ -1501,24 +1511,23 @@ export class Galaxy {
     }
 
     private updateStarPoints() {
-        // for (let i = 0; i < this.starPointSprites.length; i++) {
-        //     const point = this.starPointSprites[i];
-        //     point.update();
-        // }
 
         if (!Settings.STAR_CLICK_POINTS) return;
 
         // new dynamic points
-        const checkRadius = 40;
+        const MaxCheckRadius = Settings.POINTS_CAMERA_MAX_DIST;
+        let targetPos = this.cameraTarget.clone();
         // let cam_y = Math.abs(this.camera.position.y);
-        let lookPoint = this.camera.position.clone();
-        lookPoint.y = 0;
-        // let len = lookPoint.length();
-        lookPoint.normalize().multiplyScalar(-30);
-        lookPoint.x += this.camera.position.x;
-        lookPoint.z += this.camera.position.z;
+        let camPos = this.camera.position.clone();
+        let dist = camPos.distanceTo(targetPos);
+        // camPos.normalize().multiplyScalar(-30);
+        // camPos.x += this.camera.position.x;
+        // camPos.z += this.camera.position.z;
 
-        let points = this.quadTree.getPointsInCircle(new QTCircle(lookPoint.x, lookPoint.z, checkRadius));
+        let checkRadius = (1 - Math.min(1, dist / MaxCheckRadius)) * Settings.POINTS_MAX_CHECK_RADIUS;
+        // let checkRadius = 10;
+
+        let points = this.quadTree.getPointsInCircle(new QTCircle(targetPos.x, targetPos.z, checkRadius));
 
         this.starPointsMng.updatePoints(points);
 

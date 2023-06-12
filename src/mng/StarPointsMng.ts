@@ -33,9 +33,9 @@ export class StarPointsMng {
         }[] = [];
         let pDatas: GalaxyStarParams[] = [];
 
-        let camDir = new THREE.Vector3();
-        this._camera.getWorldDirection(camDir);
-        camDir.add(this._camera.position);
+        // let camDir = new THREE.Vector3();
+        // this._camera.getWorldDirection(camDir);
+        // camDir.add(this._camera.position);
 
         for (let i = 0; i < aPoints.length; i++) {
             const p = aPoints[i];
@@ -50,10 +50,10 @@ export class StarPointsMng {
 
             pDir.subVectors(wPos, this._camera.position);
 
-            let dotProduct = camDir.dot(pDir);
-            if (dotProduct >= 0) continue;
+            // let dotProduct = camDir.dot(pDir);
+            // if (dotProduct >= 0) continue;
 
-            if (dist > this._dist) continue;
+            // if (dist > this._dist) continue;
             points.push({
                 id: starParams.id,
                 dist: dist
