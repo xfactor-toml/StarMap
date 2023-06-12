@@ -25,4 +25,9 @@ export type ClientData = {
   planetSlots?: number;
   energy?: number;
   life?: number;
+  massPercent?: number;
+  lifePercent?: number;
+  energyPercent?: number;
+  energyPerHourPercent?: number;
+  slotsPercent?: number;
 };

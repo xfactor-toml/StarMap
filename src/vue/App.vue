@@ -6,9 +6,10 @@
 <script lang="ts">
 import { Component } from 'vue';
 import { mapStores } from 'pinia';
+import { debounce } from 'debounce';
 import { InterfaceScreen, PreloaderScreen, WelcomeScreen } from '@/screens';
 import { ClientData, GuiScreen } from '@/types';
-import { useSettingsStore, useClientStore } from '@/stores';
+import { useSettingsStore } from '@/stores';
 
 export default {
   name: 'App',
@@ -19,7 +20,7 @@ export default {
     version: 'v0.25'
   }),
   computed: {
-    ...mapStores(useSettingsStore, useClientStore),
+    ...mapStores(useSettingsStore),
     screen() {
       const screens: Record<GuiScreen, Component> = {
         preloader: PreloaderScreen,
@@ -47,16 +48,15 @@ export default {
           break;
 
         case 'SHOW_STAR_PREVIEW':
-          this.clientStore.showStarTooltip(data);
+          this.settingsStore.showStarTooltip(data);
           break;
 
         case 'HIDE_STAR_PREVIEW':
-          this.clientStore.hideStarTooltip();
-          this.settingsStore.setView('galaxy');
+          this.settingsStore.hideStarTooltip();
           break;
 
         case 'SHOW_STAR_GUI':
-          this.clientStore.showStarPanel(data);
+          this.settingsStore.showStarPanel(data);
           break;
       }
     }
@@ -66,13 +66,16 @@ export default {
     window.addEventListener('gameEvent', this.handleGameEvent.bind(this));
 
     // Global Events
-    window.addEventListener('resize', () => {
-      this.$client.handleGuiEvent('resize');
-    });
+    window.addEventListener(
+      'resize',
+      debounce(() => {
+        this.$client.handleGuiEvent('resize');
+      }, 200)
+    );
 
     // INFO: client didnt send event when press escape
     document.body.addEventListener('fullscreenchange', () => {
-      this.clientStore.setFullscreenMode(!this.clientStore.fullscreen);
+      this.settingsStore.setFullscreenMode(!this.settingsStore.fullscreen);
     });
   }
 };

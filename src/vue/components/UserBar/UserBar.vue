@@ -8,11 +8,11 @@
     />
     <div class="UserBar__settings-popup" v-if="settingsVisible">
       <SettingsPopup
-        :fullscreen="clientStore.fullscreen"
-        :musicVolume="clientStore.musicVolume"
-        :sfxVolume="clientStore.sfxVolume"
-        @setMusicVolume="clientStore.changeMusicVolume"
-        @setSfxVolume="clientStore.changeSfxVolume"
+        :fullscreen="settingsStore.fullscreen"
+        :musicVolume="settingsStore.musicVolume"
+        :sfxVolume="settingsStore.sfxVolume"
+        @setMusicVolume="settingsStore.changeMusicVolume"
+        @setSfxVolume="settingsStore.changeSfxVolume"
         @toggleFullscreen="$client.toggleFullscreen()"
         @volumeButtonClick="$client.handleGuiEvent('click')"
         @volumeButtonHover="$client.handleGuiEvent('hover')"
@@ -25,7 +25,7 @@
 
 <script lang="ts">
 import { SettingsPopup } from '@/components/SettingsPopup';
-import { useSettingsStore, useClientStore } from '@/stores';
+import { useSettingsStore } from '@/stores';
 import { default as vClickOutside } from 'click-outside-vue3';
 import { mapStores } from 'pinia';
 
@@ -41,7 +41,7 @@ export default {
     settingsVisible: false
   }),
   computed: {
-    ...mapStores(useSettingsStore, useClientStore)
+    ...mapStores(useSettingsStore)
   },
   methods: {
     toggleSettings() {

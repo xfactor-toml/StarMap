@@ -1,15 +1,15 @@
 <template>
   <div class="PhantomMode">
     <transition name="fade">
-      <template v-if="clientStore.overlay">
-        <div class="gui-overlay" @click="clientStore.hideStarTooltip" />
+      <template v-if="settingsStore.overlay">
+        <div class="gui-overlay" @click="settingsStore.hideStarTooltip" />
       </template>
     </transition>
     <transition name="fade">
-      <template v-if="clientStore.tooltipStar !== null">
+      <template v-if="settingsStore.tooltipStar !== null">
         <StarCreationTooltip
-          :star="clientStore.tooltipStar"
-          @hide="clientStore.hideStarTooltip"
+          :star="settingsStore.tooltipStar"
+          @hide="settingsStore.hideStarTooltip"
           @hideButtonHover="$client.handleGuiEvent('hover')"
           @create="openStarCreationPanel"
           @createButtonHover="$client.handleGuiEvent('hover')"
@@ -19,7 +19,7 @@
     <transition name="fade">
       <template v-if="creationPanel">
         <StarCreationPanel
-          :star="clientStore.tooltipStar"
+          :star="settingsStore.tooltipStar"
           @hide="closeStarCreationPanel"
           @hover="$client.handleGuiEvent('hover')"
         />
@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { useClientStore } from '@/stores';
+import { useSettingsStore } from '@/stores';
 import { StarCreationPanel, StarCreationTooltip } from '@/components';
 import { mapStores } from 'pinia';
 
@@ -43,16 +43,16 @@ export default {
     creationPanel: false
   }),
   computed: {
-    ...mapStores(useClientStore)
+    ...mapStores(useSettingsStore)
   },
   methods: {
     openStarCreationPanel() {
-      this.clientStore.hideStarTooltip();
-      this.clientStore.enableOverlay();
+      this.settingsStore.hideStarTooltip();
+      this.settingsStore.enableOverlay();
       this.creationPanel = true;
     },
     closeStarCreationPanel() {
-      this.clientStore.disableOverlay();
+      this.settingsStore.disableOverlay();
       this.creationPanel = false;
     }
   }

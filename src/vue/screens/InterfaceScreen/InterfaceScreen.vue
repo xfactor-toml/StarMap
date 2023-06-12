@@ -30,7 +30,7 @@
 <script lang="ts">
 import { LevelsPanel, Logo, ModesPanel, UserBar, ViewsPanel } from '@/components';
 import { PhantomMode, RealMode } from '@/modes';
-import { useSettingsStore, useClientStore } from '@/stores';
+import { useSettingsStore } from '@/stores';
 import { mapStores } from 'pinia';
 import { GuiModeName } from '@/types';
 import { Component } from 'vue';
@@ -45,7 +45,7 @@ export default {
     ViewsPanel
   },
   computed: {
-    ...mapStores(useSettingsStore, useClientStore),
+    ...mapStores(useSettingsStore),
     mode() {
       const modes: Record<GuiModeName, Component | null> = {
         phantom: PhantomMode,

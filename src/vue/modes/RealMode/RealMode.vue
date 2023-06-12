@@ -1,31 +1,31 @@
 <template>
   <div class="RealMode">
     <transition name="fade">
-      <template v-if="clientStore.overlay">
-        <div class="gui-overlay" @click="clientStore.hideStarTooltip" />
+      <template v-if="settingsStore.overlay">
+        <div class="gui-overlay" @click="settingsStore.hideStarTooltip" />
       </template>
     </transition>
     <transition name="fade">
-      <template v-if="clientStore.tooltipStar !== null">
+      <template v-if="settingsStore.tooltipStar !== null">
         <StarTooltip
-          :star="clientStore.tooltipStar"
-          @hide="clientStore.hideStarTooltip"
+          :star="settingsStore.tooltipStar"
+          @hide="settingsStore.hideStarTooltip"
           @hideButtonHover="$client.handleGuiEvent('hover')"
-          @diveIn="diveIn"
+          @diveIn="settingsStore.diveIn"
           @diveInButtonHover="$client.handleGuiEvent('hover')"
         />
       </template>
     </transition>
     <transition name="fade">
-      <template v-if="clientStore.panelStar !== null">
-        <StarPanel :star="clientStore.panelStar" />
+      <template v-if="settingsStore.panelStar !== null">
+        <StarPanel :star="settingsStore.panelStar" />
       </template>
     </transition>
   </div>
 </template>
 
 <script lang="ts">
-import { useClientStore, useSettingsStore } from '@/stores';
+import { useSettingsStore } from '@/stores';
 import { StarPanel, StarTooltip } from '@/components';
 import { mapStores } from 'pinia';
 
@@ -36,13 +36,7 @@ export default {
     StarTooltip
   },
   computed: {
-    ...mapStores(useClientStore, useSettingsStore)
-  },
-  methods: {
-    diveIn() {
-      this.clientStore.diveIn();
-      this.settingsStore.setView('star');
-    }
+    ...mapStores(useSettingsStore)
   }
 };
 </script>

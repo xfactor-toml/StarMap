@@ -24,14 +24,14 @@
 </template>
 
 <script lang="ts">
-import { useSettingsStore, useClientStore } from '@/stores';
+import { useSettingsStore } from '@/stores';
 import { GuiViewName } from '@/types';
 import { mapStores } from 'pinia';
 
 export default {
   name: 'ViewsPanel',
   computed: {
-    ...mapStores(useSettingsStore, useClientStore)
+    ...mapStores(useSettingsStore)
   },
   methods: {
     setView(view: GuiViewName) {
