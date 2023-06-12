@@ -41,10 +41,6 @@ export class Client3DService {
     this.dispatcher.flyFromStar.dispatch();
   }
 
-  playStarPanel() {
-    console.log('star panel play');
-  }
-
   updateStarLevelFilter(levels: number[]) {
     this.dispatcher.starLevelFilterUpdate.dispatch(levels);
   }

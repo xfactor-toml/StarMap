@@ -16,25 +16,11 @@
         />
       </template>
     </transition>
-    <!-- <transition name="fade">
+    <transition name="fade">
       <template v-if="clientStore.panelStar !== null">
-        <StarPanel
-          :name="clientStore.panelStar.name"
-          :description="clientStore.panelStar.description"
-          :level="clientStore.panelStar.level"
-          :race="clientStore.panelStar.race"
-          :planetSlots="clientStore.panelStar.planetSlots"
-          :energy="clientStore.panelStar.energy"
-          :life="clientStore.panelStar.life"
-          :scale="clientStore.panelStar.scale"
-          :raceImageUrl="getRaceImage(clientStore.panelStar.race, 'star-panel')"
-          @hide="clientStore.hideStarPanel"
-          @hideButtonHover="$client.handleGuiEvent('hover')"
-          @play="$client.playStarPanel()"
-          @playButtonHover="$client.handleGuiEvent('hover')"
-        />
+        <StarPanel :star="clientStore.panelStar" />
       </template>
-    </transition> -->
+    </transition>
   </div>
 </template>
 

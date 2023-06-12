@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
 import { GuiEvent, GuiMode, GuiModeName, GuiScreen, GuiViewName } from '@/types';
 import { MODES } from '@/constants';
-import { useClientStore } from '@/stores';
 
 type SettingsStore = {
   agreementAccepted: boolean;
@@ -29,7 +28,6 @@ export const useSettingsStore = defineStore('settings', {
   },
   actions: {
     setMode(modeName: GuiModeName) {
-      const clientStore = useClientStore();
       const mode = MODES[modeName];
       const view = mode.views.find(view => view.enabled);
       const eventsMap: Record<
@@ -45,7 +43,6 @@ export const useSettingsStore = defineStore('settings', {
       this.setView(view.name);
     },
     setView(view: GuiViewName) {
-      const clientStore = useClientStore();
       const eventsMap: Record<
         GuiViewName,
         Extract<GuiEvent, 'leftPanelGalaxyClick' | 'leftPanelStarClick' | 'leftPanelPlanetClick'>
@@ -58,7 +55,7 @@ export const useSettingsStore = defineStore('settings', {
       this.client.handleGuiEvent(eventsMap[view]);
 
       if (this.view === 'star' && view === 'galaxy') {
-        clientStore.hideStarPanel();
+        this.client.flyFromStar();
       }
 
       this.view = view;
