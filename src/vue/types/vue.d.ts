@@ -1,8 +1,8 @@
-import { Client3DService, WalletService } from '@/services';
+import { ClientService, WalletService } from '@/services';
 
 declare module '@vue/runtime-core' {
   export interface ComponentCustomProperties {
-    $client: Client3DService;
+    $client: ClientService;
     $wallet: WalletService;
   }
 }

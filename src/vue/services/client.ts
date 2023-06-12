@@ -2,7 +2,7 @@ import { GuiEvent } from '@/types';
 import { markRaw } from 'vue';
 import { FrontEvents } from '~/events/FrontEvents';
 
-export class Client3DService {
+export class ClientService {
   constructor(private dispatcher: typeof FrontEvents) {}
 
   run(fullscreen: boolean) {
@@ -64,11 +64,11 @@ export class Client3DService {
 
   static VuePlugin = {
     install: app => {
-      app.config.globalProperties.$client = markRaw(new Client3DService(FrontEvents));
+      app.config.globalProperties.$client = markRaw(new ClientService(FrontEvents));
     }
   };
 
   static StorePlugin = () => ({
-    client: markRaw(new Client3DService(FrontEvents))
+    client: markRaw(new ClientService(FrontEvents))
   });
 }

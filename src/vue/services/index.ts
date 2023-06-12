@@ -1,2 +1,2 @@
-export * from './client3d';
+export * from './client';
 export * from './wallet';
