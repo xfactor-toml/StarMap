@@ -3,6 +3,8 @@
   flex-direction: column;
   align-items: center;
   gap: 10px;
+  pointer-events: all;
+  cursor: default;
 }
 
 .LevelsPanel__group {

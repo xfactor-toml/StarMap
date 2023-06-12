@@ -5,6 +5,8 @@
   align-items: center;
   width: 100%;
   max-width: 540px;
+  pointer-events: all;
+  cursor: default;
   transition: ease-in-out transform 300ms;
 }
 
@@ -69,7 +71,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 0;
+  z-index: -1;
   background-repeat: no-repeat;
   background-position: 50% 50%;
   background-size: contain;
