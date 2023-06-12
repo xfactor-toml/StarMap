@@ -37,6 +37,9 @@ export default {
   },
   computed: {
     ...mapStores(useSettingsStore)
+  },
+  unmounted() {
+    this.settingsStore.hideStarTooltip();
   }
 };
 </script>

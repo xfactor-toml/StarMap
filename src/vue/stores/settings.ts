@@ -14,6 +14,7 @@ type SettingsStore = {
   screen: GuiScreen;
   sfxVolume: number;
   tooltipStar: Star | null;
+  tooltipNewStar: Star | null;
   view: GuiViewName;
   viewsPanelHidden: boolean;
 };
@@ -37,6 +38,7 @@ export const useSettingsStore = defineStore('settings', {
       screen: 'preloader',
       sfxVolume,
       tooltipStar: null,
+      tooltipNewStar: null,
       view: 'galaxy',
       viewsPanelHidden
     };
@@ -118,6 +120,7 @@ export const useSettingsStore = defineStore('settings', {
       this.client.flyFromStar();
     },
     hideStarTooltip() {
+      this.tooltipNewStar = null;
       this.tooltipStar = null;
       this.disableOverlay();
       this.client.closeStarPreview();
@@ -130,7 +133,11 @@ export const useSettingsStore = defineStore('settings', {
     },
     showStarTooltip(data) {
       this.client.handleGuiEvent('click');
-      this.tooltipStar = new Star(data);
+      if (this.mode.name === 'phantom') {
+        this.tooltipNewStar = new Star(data);
+      } else {
+        this.tooltipStar = new Star(data);
+      }
       this.enableOverlay();
     },
     showStarPanel(data) {

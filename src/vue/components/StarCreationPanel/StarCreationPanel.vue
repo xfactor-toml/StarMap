@@ -139,7 +139,7 @@ export default {
       return '';
     },
     ready() {
-      return !this.fetching && !this.errorMessage.length;
+      return !this.fetching && !this.message.length;
     }
   },
   methods: {

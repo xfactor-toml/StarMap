@@ -6,9 +6,9 @@
       </template>
     </transition>
     <transition name="fade">
-      <template v-if="settingsStore.tooltipStar !== null">
+      <template v-if="settingsStore.tooltipNewStar !== null">
         <StarCreationTooltip
-          :star="settingsStore.tooltipStar"
+          :star="settingsStore.tooltipNewStar"
           @hide="settingsStore.hideStarTooltip"
           @hideButtonHover="$client.handleGuiEvent('hover')"
           @create="openStarCreationPanel"
@@ -19,7 +19,7 @@
     <transition name="fade">
       <template v-if="creationPanel">
         <StarCreationPanel
-          :star="settingsStore.tooltipStar"
+          :star="settingsStore.tooltipNewStar"
           @hide="closeStarCreationPanel"
           @hover="$client.handleGuiEvent('hover')"
         />
@@ -55,6 +55,10 @@ export default {
       this.settingsStore.disableOverlay();
       this.creationPanel = false;
     }
+  },
+  unmounted() {
+    this.settingsStore.hideStarTooltip();
+    this.closeStarCreationPanel();
   }
 };
 </script>
