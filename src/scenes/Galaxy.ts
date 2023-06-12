@@ -311,7 +311,6 @@ export class Galaxy {
         this.smallFlySystem = new SmallFlySystem(this.dummyGalaxy, starsPos);
 
         // camera controls
-
         this.createCameraControls({
             enabled: false,
             minDist: Settings.galaxyData.camDistMin,
@@ -354,7 +353,6 @@ export class Galaxy {
             am.musicVolume = music.volume = aData.v;
             localStorage.setItem(`musicVolume`, String(am.musicVolume));
         }, this);
-
         FrontEvents.setSFXVolume.add((aData: { v: number }) => {
             let am = AudioMng.getInstance();
             am.sfxVolume = aData.v;
@@ -415,7 +413,6 @@ export class Galaxy {
         offsFolder.add(Settings.galaxyData, 'endOffsetXY', 0, 6, 0.1).name('XY End').onFinishChange(() => { this.createGalaxyStars(); });
         offsFolder.add(Settings.galaxyData, 'startOffsetH', 0, 50, 0.1).name('H Start').onFinishChange(() => { this.createGalaxyStars(); });
         offsFolder.add(Settings.galaxyData, 'endOffsetH', 0, 20, 0.1).name('H End').onFinishChange(() => { this.createGalaxyStars(); });
-
         let alphaFolder = galaxyFolder.addFolder('Alpha');
         // alphaFolder.add(Settings.galaxyData, 'alphaMin', 0, 1, 0.02).name('Stars Alpha Min').onFinishChange(() => { this.createGalaxyStars(); });
         // alphaFolder.add(Settings.galaxyData, 'alphaMax', 0, 1, 0.02).name('Stars Alpha Max').onFinishChange(() => { this.createGalaxyStars(); });
@@ -440,7 +437,6 @@ export class Galaxy {
         });
 
         this._info.camDistGui = galaxyFolder.add(this._info, 'cameraDistanceStr');
-
         galaxyFolder.add(DEBUG_PARAMS, 'recreate');
 
         let skyFolder = gui.addFolder('Sky');
@@ -713,7 +709,6 @@ export class Galaxy {
             // offset xy
 
             let offsetVec = new THREE.Vector3().randomDirection();
-
             let offsetXY = aParams.startOffsetXY + anglePercent * (aParams.endOffsetXY - aParams.startOffsetXY);
             offsetXY *= 0.05;
 
@@ -734,7 +729,6 @@ export class Galaxy {
             offsetVec.y = Math.pow(offsetVec.y, 3);
             let offsetH = aParams.startOffsetH + anglePercent * (aParams.endOffsetH - aParams.startOffsetH);
             offsetH = offsetH * offsetVec.y;
-
             // let offsetHFactor = MyMath.easeInExpo((offsetH - offHParams.min) / (offHParams.max - offHParams.min));
             // offsetH = offsetH * MyMath.randomInRange(-1, 1) * offsetHFactor;
 
@@ -747,7 +741,6 @@ export class Galaxy {
             if (lvlRandom <= 1200 / 210) starLevel = 3;
             if (lvlRandom <= 210 / 210) starLevel = 4;
             if (lvlRandom <= 21 / 210) starLevel = 5;
-
             if (Settings.isDebugMode || Settings.isFakeStarLevels) {
                 if (lvlRandom <= 60) starLevel = 2;
                 if (lvlRandom <= 40) starLevel = 3;
@@ -838,7 +831,6 @@ export class Galaxy {
                     tweenFunction: MyMath.easeInOutSine
                 }
             }
-
         }
 
         return resData;
@@ -851,7 +843,6 @@ export class Galaxy {
         if (!aParams.alphaMax) aParams.alphaMax = 1;
         if (!aParams.scaleMin) aParams.scaleMin = 1;
         if (!aParams.scaleMax) aParams.scaleMax = 1;
-
         let resData: GalaxyStarParams[] = [];
         const numArms = 5;
         const armDeltaAngle = 2 * Math.PI / numArms;
@@ -860,7 +851,6 @@ export class Galaxy {
         if (aParams.minRadius > aParams.maxRadius) aParams.minRadius = aParams.maxRadius;
 
         for (let i = 0; i < aParams.starsCount; i++) {
-
             let pos = new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5);
             pos.normalize().multiplyScalar(MyMath.randomInRange(aParams.minRadius, aParams.maxRadius));
 
@@ -968,14 +958,12 @@ export class Galaxy {
             poolSize: 400,
             dist: 20
         });
-
     }
 
     private createSkybox() {
         let loader = ThreeLoader.getInstance();
         this.scene.background = loader.getCubeTexture('skybox');
     }
-
 
     // SMALL GALAXIES
 
@@ -1105,7 +1093,6 @@ export class Galaxy {
         let size = aGalaxyParams.size;
 
         let loader = ThreeLoader.getInstance();
-
         let t = loader.getTexture(tName);
         let mat = new THREE.MeshBasicMaterial({
             map: t,
@@ -1262,7 +1249,6 @@ export class Galaxy {
         const CLICK_DIST = DeviceInfo.getInstance().desktop ? 10 : 30;
         let inMng = InputMng.getInstance();
         let dist = MyMath.getVectorLength(inMng.inputDownClientX, inMng.inputDownClientY, x, y);
-
         // LogMng.debug(`onInputUp: dist = ${dist}`);
         // if (!DeviceInfo.getInstance().desktop) alert(`onInputUp: dist = ${dist}`);
 
@@ -1415,7 +1401,6 @@ export class Galaxy {
     private getYFOV(aCamera: THREE.PerspectiveCamera) {
         return aCamera.fov;
     }
-
     /**
      * Absolute polar angle relative to the main galaxy plain
      * @returns 
@@ -1497,7 +1482,6 @@ export class Galaxy {
                     try {
                         snd.play();
                     } catch (error) {
-
                     }
                 }
             }
@@ -1591,7 +1575,6 @@ export class Galaxy {
         this.orbitControl.enabled = true;
 
     }
-
     private onStateGalaxyUpdate(dt: number) {
 
         this.orbitControl.update();
@@ -1643,7 +1626,6 @@ export class Galaxy {
 
         // LogMng.debug('onStateToStarEnter(): gsId:', gsId);
         LogMng.debug('onStateToStarEnter(): starParams:', starParams);
-
         this.orbitControl.enabled = false;
         document.body.style.cursor = 'default';
 
@@ -1739,7 +1721,6 @@ export class Galaxy {
         //     this.starPointSprites[i].hide(DUR / 10);
         // }
         this.starPointsMng.hidePoints(DUR / 10);
-
         // hide galaxy plane
         this.galaxySaveAnimData.galaxyPlaneOpacity = this.galaxyPlane.material['opacity'];
         gsap.to(this.galaxyPlane.material, {
@@ -1835,7 +1816,6 @@ export class Galaxy {
 
         let newCameraPos = this.camera.position.clone().sub(starPos).normalize().
             multiplyScalar(starDist).add(starPos);
-
         gsap.to(this.camera.position, {
             x: newCameraPos.x,
             y: newCameraPos.y,
@@ -1904,7 +1884,6 @@ export class Galaxy {
     }
 
     private onStateToStarUpdate(dt: number) {
-
         this.orbitControl.update();
 
         if (this.cameraTarget && this.camera) {
@@ -2024,7 +2003,6 @@ export class Galaxy {
             duration: DUR,
             ease: 'sine.in'
         });
-
         // hide galaxyCenterPlane
         gsap.to([this.galaxyCenterPlane.material], {
             opacity: 0,
@@ -2130,13 +2108,11 @@ export class Galaxy {
         this.smallFlySystem.activeSpawn = true;
 
         AudioMng.getInstance().playSfx(AudioData.SFX_DIVE_OUT);
-
         setTimeout(() => {
             AudioMng.getInstance().getSound(AudioData.SFX_STAR_FIRE).stop();
         }, 1000 * DUR / 3);
 
     }
-
     private onStateFromStarUpdate(dt: number) {
         this.orbitControl.update();
 
