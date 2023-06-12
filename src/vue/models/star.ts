@@ -5,7 +5,7 @@ export class Star {
   description = '';
   level = 1;
   name = 'noname';
-  owner = 'unknown';
+  owner = '0x000000000000000000';
   pos2d: {
     x: number;
     y: number;
