@@ -8,6 +8,8 @@ import { FrontEvents } from "../events/FrontEvents";
 import { AudioMng } from "../audio/AudioMng";
 import { AudioData } from "../audio/AudioData";
 import { ILogger } from "../interfaces/ILogger";
+import { DB } from "~/data/DB";
+import { ServerStarData } from "~/data/Types";
 
 type InitParams = {
 
@@ -90,9 +92,9 @@ export class GameBoot implements ILogger {
         this.preloader.onLoadCompleteSignal.addOnce(this.onLoadComplete, this);
         this.preloader.loadDefault();
 
-        FrontEvents.startGame.add((aFullscreen = false) => {
+        FrontEvents.startGame.add((aFullscreen = false, aRealStars = []) => {
             Settings.INIT_FULL_SCREEN = aFullscreen;
-            this.startGame();
+            this.startGame(aRealStars);
         }, this);
     }
 
@@ -121,8 +123,10 @@ export class GameBoot implements ILogger {
         }, this);
     }
         
-    startGame() {
+    startGame(aRealStars: ServerStarData[]) {
+        DB.realStars = aRealStars;
         let gameEngine = new GameRender();
+        gameEngine.initGalaxy();
         GameEvents.dispatchEvent(GameEvents.EVENT_GAME_CREATED);
     }
 

@@ -87,3 +87,22 @@ export type FarGalaxyParams = {
     },
     rotationSpeed: number;
 };
+
+export type ServerStarData = {
+    name: string,
+    isLive: boolean,
+    creation: number,
+    updated: number,
+    level: number,
+    fuel: number,
+    levelUpFuel: number,
+    fuelSpendings: number,
+    habitableZoneMin: number,
+    habitableZoneMax: number,
+    planetSlots: number,
+    coords: {
+        X: number,
+        Y: number,
+        Z: number
+    }
+}

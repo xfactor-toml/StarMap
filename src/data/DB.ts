@@ -1,3 +1,4 @@
+import { ServerStarData } from "./Types";
 
 export const RACES = ['Robots', 'Humans', 'Simbionts', 'Lizards', 'Insects'];
 
@@ -74,3 +75,9 @@ export const STAR_COLOR_2 = {
     }
 
 };
+
+export class DB {
+    static realStars: ServerStarData[];
+
+
+}

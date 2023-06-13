@@ -5,7 +5,7 @@ export const FrontEvents = {
     onWindowResizeSignal: new Signal(),
     
     /**
-     * { aFullscreen: boolean }
+     * ( aFullscreen: boolean, aRealStars: [] )
      */
     startGame: new Signal(),
 
