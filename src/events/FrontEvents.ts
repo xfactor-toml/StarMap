@@ -35,5 +35,10 @@ export const FrontEvents = {
      */
     starLevelFilterUpdate: new Signal(),
 
+    /**
+     * (aStarData: ServerStarData)
+     */
+    onStarCreated: new Signal()
+
     
 }

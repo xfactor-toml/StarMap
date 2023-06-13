@@ -1034,7 +1034,7 @@ export class Galaxy {
                         this.starPointParamsHovered = this.starPointHovered.params;
                         let starParams = this.starPointHovered.params.starParams;
 
-                        LogMng.debug('onInputUp(): starParams:', starParams);
+                        LogMng.debug('onClick(): realStars: starParams:', starParams);
 
                         GameEvents.dispatchEvent(GameEvents.EVENT_SHOW_STAR_PREVIEW, {
                             starId: starParams.id,
@@ -1042,6 +1042,77 @@ export class Galaxy {
                             description: starParams.starInfo.description,
                             level: starParams.starInfo.level,
                             race: RACES[starParams.starInfo.raceId],
+                            pos2d: {
+                                x: aParams.down.x,
+                                y: aParams.down.y
+                            }
+                        });
+
+                        FrontEvents.starPreviewClose.addOnce(() => {
+                            this.isStarPreviewState = false;
+                            this._orbitControl.autoRotate = true;
+                            this._orbitControl.enableZoom = true;
+                            if (!this._orbitControl.enabled) this._orbitControl.enabled = true;
+                        }, this);
+
+                    }
+                    else {
+                        // galaxy plane click
+                        let plainPoint = this.getPlanePoint(inMng.normalInputPos);
+                        if (plainPoint) {
+                            // move camera to point
+                            let newCamPos = this._camera.position.clone().sub(plainPoint).normalize().multiplyScalar(Settings.POINTS_CAMERA_MAX_DIST / 2);
+                            newCamPos.add(plainPoint);
+                            this._orbitControl.enabled = false;
+                            gsap.to(this._camera.position, {
+                                x: newCamPos.x,
+                                y: newCamPos.y,
+                                z: newCamPos.z,
+                                duration: 3,
+                                ease: 'sine.inOut',
+                                onComplete: () => {
+                                    this._orbitControl.enabled = true;
+                                }
+                            });
+
+                            // move camera target to center of Click Point
+                            gsap.to(this._cameraTarget, {
+                                x: plainPoint.x,
+                                y: plainPoint.y,
+                                z: plainPoint.z,
+                                duration: 3,
+                                ease: 'sine.inOut',
+                                onUpdate: () => {
+                                    this._orbitCenter.copy(this._cameraTarget);
+                                }
+                            });
+
+                        }
+                    }
+
+
+                }
+                break;
+
+                case States.phantomStars:
+                if (!this.isStarPreviewState) {
+
+                    if (this.starPointSpriteHovered) {
+                        // star point clicked
+                        AudioMng.getInstance().playSfx(AudioData.SFX_CLICK);
+
+                        this.isStarPreviewState = true;
+                        this._orbitControl.autoRotate = false;
+                        this._orbitControl.setSphericalDelta(0, 0);
+                        if (this._orbitControl.enabled) this._orbitControl.enabled = false;
+
+                        this.starPointParamsHovered = this.starPointHovered.params;
+                        let starParams = this.starPointHovered.params.starParams;
+
+                        LogMng.debug('onClick(): phantomStars: starParams:', starParams);
+
+                        GameEvents.dispatchEvent(GameEvents.EVENT_PHANTOM_STAR_PREVIEW, {
+                            pos3d: starParams.pos,
                             pos2d: {
                                 x: aParams.down.x,
                                 y: aParams.down.y

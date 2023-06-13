@@ -30,8 +30,8 @@ export const GameEvents = {
     EVENT_SHOW_STAR_GUI: 'SHOW_STAR_GUI',
 
     /**
-     * starId: number,
-     * send pos: {x, y, z}
+     * pos3d: {x, y, z}
+     * pos2d: { x, y }
      */
     EVENT_PHANTOM_STAR_PREVIEW: 'PHANTOM_STAR_PREVIEW',
 
