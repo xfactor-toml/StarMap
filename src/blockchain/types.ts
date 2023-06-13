@@ -4,6 +4,12 @@ declare global {
     }
   }
 
+export type Coords = {
+    X: number,
+    Y: number,
+    Z: number
+}
+
 export type StarParams = {
     name: string,
     isLive: boolean,
@@ -16,6 +22,7 @@ export type StarParams = {
     habitableZoneMin: number,
     habitableZoneMax: number,
     planetSlots: number,
+    coords: Coords
 }
 
 export type StarData = {
