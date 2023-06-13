@@ -1,6 +1,6 @@
 import Web3 from "web3";
 import { contracts, env, reserveRpcs } from "../config";
-import { Coords, StarData, StarList, StarParams, account, fuelTarget } from "../types";
+import { Coords, Race, StarData, StarList, StarParams, account, fuelTarget } from "../types";
 import { ERC20ABI, StarNFTABI } from "../ABI";
 import { IsTrueNetwork, NetworkAuth } from "./auth";
 import { ApprovePlasma, GetAllowance } from "./plasma";
@@ -12,6 +12,21 @@ const reader = new Web3()
 reader.setProvider(new Web3.providers.HttpProvider(reserveRpcs[1]))
 const contract = new reader.eth.Contract(StarNFTABI, nft)
 const writeable = new web3.eth.Contract(StarNFTABI, nft)
+
+function ExtractRace ( str : string) : Race {
+    switch (str) {
+        case "Waters" :
+            return "Waters";
+        case "Humans" :
+            return "Waters";
+        case "Insects" :
+            return "Insects";
+        case "Lizards":
+            return "Lizards";
+    default:
+        throw new Error("wrong race")
+    }
+}
 
 async function RequiredPlasmaToApprove (owner : account, level : number = 1) : Promise<number> {
     const demand = await GetCreationCost(level)
@@ -32,12 +47,14 @@ async function GetCreationCost (level : number = 1) : Promise<number> {
 async function GetAllStarData () : Promise<StarList> {
      const stars : StarList = []
      let cntr = 0
-     while (true) {
+     const total = await GetStarsCount ()
+     while (cntr < total) {
          try {
             const dt : any[] = await contract.methods.GetStarParams(cntr.toString()).call()
             if(!dt[10]) {  // Planet slots always larger than zero
                break;
             }
+
             const starParams : StarParams = {
                 name: String(dt[0]),
                 isLive: Boolean(dt[1]),
@@ -50,10 +67,12 @@ async function GetAllStarData () : Promise<StarList> {
                 habitableZoneMin: Number(dt[8]),
                 habitableZoneMax: Number(dt[9]),
                 planetSlots: Number(dt[10]),
+                mass: Number(dt[11]),
+                race: ExtractRace(dt[12]),
                 coords: {
-                    X: Number(dt[11]) / 1000000,
-                    Y: Number(dt[12]) / 1000000,
-                    Z: Number(dt[13]) / 1000000
+                    X: Number(dt[13]) / 1000000,
+                    Y: Number(dt[14]) / 1000000,
+                    Z: Number(dt[15]) / 1000000
                 }
             }
             const owner : string = await contract.methods.ownerOf(cntr.toString()).call()
@@ -73,20 +92,8 @@ async function GetAllStarData () : Promise<StarList> {
 
 async function GetStarsCount () : Promise<number> {
     const contract = new reader.eth.Contract(StarNFTABI, nft)
-    let cntr = 0
-
-    while (true) {
-        try { 
-            const owner : string = await contract.methods.ownerOf(cntr.toString()).call()
-            if(!owner) {  
-                break;
-             }
-            cntr += 1
-        } catch (e) {
-            break;
-        }
-    }
-    return cntr
+    const count : number = Number(await contract.methods.GetTotalStarCount().call())
+    return count 
 }
 
 async function GetSingleStarData ( starId : number ) : Promise<StarData | null> {
@@ -107,10 +114,12 @@ async function GetSingleStarData ( starId : number ) : Promise<StarData | null> 
             habitableZoneMin: Number(dt[8]),
             habitableZoneMax: Number(dt[9]),
             planetSlots: Number(dt[10]),
+            mass: Number(dt[11]),
+            race: ExtractRace(dt[12]),
             coords: {
-                X: Number(dt[11]) / 1000000,
-                Y: Number(dt[12]) / 1000000,
-                Z: Number(dt[13]) / 1000000
+                X: Number(dt[13]) / 1000000,
+                Y: Number(dt[14]) / 1000000,
+                Z: Number(dt[15]) / 1000000
             }
         }
         const owner : string = await contract.methods.ownerOf(starId.toString()).call()
@@ -125,7 +134,7 @@ async function GetSingleStarData ( starId : number ) : Promise<StarData | null> 
      }
 }
 
-async function CreateNewStar (owner : account, name : string, uri = `${document.location.hostname}`, coords: Coords) : Promise<StarData | null> {
+async function CreateNewStar (owner : account, name : string, uri = `${document.location.hostname}`, race: Race, coords: Coords) : Promise<StarData | null> {
         if (!owner || !name || !env) {
            return null
         }
@@ -147,7 +156,7 @@ async function CreateNewStar (owner : account, name : string, uri = `${document.
             const coordX = String(Math.round(coords.X * 1000000))
             const coordY = String(Math.round(coords.Y * 1000000))
             const coordZ = String(Math.round(coords.Z * 1000000))
-            await writeable.methods.safeMint(owner, uri, name, coordX, coordY, coordZ).send({
+            await writeable.methods.safeMint(owner, uri, name, race, coordX, coordY, coordZ).send({
                 from: owner
               })
             const count = await GetStarsCount ()

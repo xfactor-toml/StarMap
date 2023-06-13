@@ -421,6 +421,16 @@ export const StarNFTABI : any[] = [
 						"type": "uint256"
 					},
 					{
+						"internalType": "uint256",
+						"name": "mass",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "race",
+						"type": "string"
+					},
+					{
 						"internalType": "uint256[3]",
 						"name": "coords",
 						"type": "uint256[3]"
@@ -458,6 +468,25 @@ export const StarNFTABI : any[] = [
 		"name": "IncreaseStarLevel",
 		"outputs": [],
 		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_race",
+				"type": "string"
+			}
+		],
+		"name": "IsRaceExists",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -610,7 +639,64 @@ export const StarNFTABI : any[] = [
 				"type": "uint256"
 			}
 		],
+		"name": "levelMaxFuel",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "levelMaxMass",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
 		"name": "levelMaxPlanets",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "levelMinMass",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -718,6 +804,25 @@ export const StarNFTABI : any[] = [
 		"type": "function"
 	},
 	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "races",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [],
 		"name": "renounceOwnership",
 		"outputs": [],
@@ -739,6 +844,11 @@ export const StarNFTABI : any[] = [
 			{
 				"internalType": "string",
 				"name": "_name",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_race",
 				"type": "string"
 			},
 			{
