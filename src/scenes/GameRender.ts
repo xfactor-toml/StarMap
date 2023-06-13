@@ -16,6 +16,7 @@ import { Galaxy } from "./Galaxy";
 import { FrontEvents } from "../events/FrontEvents";
 import { GameEvents } from "../events/GameEvents";
 import { GameUtils } from "../math/GameUtils";
+import { GameController } from "~/mng/GameController";
 
 
 export class GameRender {
@@ -29,7 +30,8 @@ export class GameRender {
 
     private scene: THREE.Scene;
     private camera: THREE.PerspectiveCamera;
-    private galaxy: Galaxy;
+
+    private _gameController: GameController;
 
     private clock: THREE.Clock;
     private stats: Stats;
@@ -89,22 +91,6 @@ export class GameRender {
             Settings.datGui = new datGui.GUI();
         }
 
-        // SCENES
-
-        this.galaxy = new Galaxy({
-            // backScene: this.backScene,
-            render: this.renderer,
-            scene: this.scene,
-            camera: this.camera
-        });
-        this.galaxy.init();
-
-        // DEBUG GUI
-
-        if (Settings.isDebugMode) {
-            this.galaxy.initDebugGui();
-        }
-
         // clock
 
         this.clock = new THREE.Clock();
@@ -145,6 +131,16 @@ export class GameRender {
 
         this.animate();
 
+    }
+
+    initGame() {
+        // SCENES
+        this._gameController = new GameController();
+        this._gameController.initGalaxy({
+            render: this.renderer,
+            scene: this.scene,
+            camera: this.camera
+        });
     }
 
     private onWindowResize() {
@@ -189,7 +185,7 @@ export class GameRender {
     private update(dt: number) {
 
         // galaxy update
-        if (this.galaxy) this.galaxy.update(dt);
+        if (this._gameController) this._gameController.update(dt);
 
     }
 

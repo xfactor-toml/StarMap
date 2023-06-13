@@ -5,7 +5,7 @@ export const FrontEvents = {
     onWindowResizeSignal: new Signal(),
     
     /**
-     * { aFullscreen: boolean }
+     * ( aFullscreen: boolean, aRealStars: [] )
      */
     startGame: new Signal(),
 
@@ -34,6 +34,11 @@ export const FrontEvents = {
      * dispatch(levels), levels: [1, 2, 3, 4, 5]
      */
     starLevelFilterUpdate: new Signal(),
+
+    /**
+     * (aStarData: ServerStarData)
+     */
+    onStarCreated: new Signal()
 
     
 }

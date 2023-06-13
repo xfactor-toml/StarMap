@@ -5,8 +5,6 @@ import { Callbacks } from "../utils/events/Callbacks";
 import { GalaxyStarParams } from "~/data/Types";
 
 export type StarPointParams = {
-    // name: string;
-    // starId: number;
     baseScale: number;
     camera: THREE.PerspectiveCamera;
     maxAlpha?: number;
