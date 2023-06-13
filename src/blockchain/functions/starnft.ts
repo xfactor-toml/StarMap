@@ -51,9 +51,9 @@ async function GetAllStarData () : Promise<StarList> {
                 habitableZoneMax: Number(dt[9]),
                 planetSlots: Number(dt[10]),
                 coords: {
-                    X: Number(dt[11]),
-                    Y: Number(dt[12]),
-                    Z: Number(dt[13])
+                    X: Number(dt[11]) / 1000000,
+                    Y: Number(dt[12]) / 1000000,
+                    Z: Number(dt[13]) / 1000000
                 }
             }
             const owner : string = await contract.methods.ownerOf(cntr.toString()).call()
@@ -108,9 +108,9 @@ async function GetSingleStarData ( starId : number ) : Promise<StarData | null> 
             habitableZoneMax: Number(dt[9]),
             planetSlots: Number(dt[10]),
             coords: {
-                X: Number(dt[11]),
-                Y: Number(dt[12]),
-                Z: Number(dt[13])
+                X: Number(dt[11]) / 1000000,
+                Y: Number(dt[12]) / 1000000,
+                Z: Number(dt[13]) / 1000000
             }
         }
         const owner : string = await contract.methods.ownerOf(starId.toString()).call()
