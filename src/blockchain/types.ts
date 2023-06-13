@@ -3,8 +3,14 @@ declare global {
       ethereum: any
     }
   }
-  
-  export type StarParams = {
+
+export type Coords = {
+    X: number,
+    Y: number,
+    Z: number
+}
+
+export type StarParams = {
     name: string,
     isLive: boolean,
     creation: number,  // timestamp
@@ -16,6 +22,7 @@ declare global {
     habitableZoneMin: number,
     habitableZoneMax: number,
     planetSlots: number,
+    coords: Coords
 }
 
 export type StarData = {

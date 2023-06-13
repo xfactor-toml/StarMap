@@ -419,11 +419,29 @@ export const StarNFTABI : any[] = [
 						"internalType": "uint256",
 						"name": "planetSlots",
 						"type": "uint256"
+					},
+					{
+						"internalType": "uint256[3]",
+						"name": "coords",
+						"type": "uint256[3]"
 					}
 				],
 				"internalType": "struct StarNFT721.StarParams",
 				"name": "",
 				"type": "tuple"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "GetTotalStarCount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",
@@ -722,6 +740,21 @@ export const StarNFTABI : any[] = [
 				"internalType": "string",
 				"name": "_name",
 				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "coordX",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "coordY",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "coordZ",
+				"type": "uint256"
 			}
 		],
 		"name": "safeMint",

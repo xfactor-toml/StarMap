@@ -1,6 +1,6 @@
 import Web3 from "web3";
 import { contracts, env, reserveRpcs } from "../config";
-import { StarData, StarList, StarParams, account, fuelTarget } from "../types";
+import { Coords, StarData, StarList, StarParams, account, fuelTarget } from "../types";
 import { ERC20ABI, StarNFTABI } from "../ABI";
 import { IsTrueNetwork, NetworkAuth } from "./auth";
 import { ApprovePlasma, GetAllowance } from "./plasma";
@@ -49,7 +49,12 @@ async function GetAllStarData () : Promise<StarList> {
                 fuelSpendings: Number(dt[7]),
                 habitableZoneMin: Number(dt[8]),
                 habitableZoneMax: Number(dt[9]),
-                planetSlots: Number(dt[10])
+                planetSlots: Number(dt[10]),
+                coords: {
+                    X: Number(dt[11]),
+                    Y: Number(dt[12]),
+                    Z: Number(dt[13])
+                }
             }
             const owner : string = await contract.methods.ownerOf(cntr.toString()).call()
             const starData : StarData = {
@@ -101,7 +106,12 @@ async function GetSingleStarData ( starId : number ) : Promise<StarData | null> 
             fuelSpendings: Number(dt[7]),
             habitableZoneMin: Number(dt[8]),
             habitableZoneMax: Number(dt[9]),
-            planetSlots: Number(dt[10])
+            planetSlots: Number(dt[10]),
+            coords: {
+                X: Number(dt[11]),
+                Y: Number(dt[12]),
+                Z: Number(dt[13])
+            }
         }
         const owner : string = await contract.methods.ownerOf(starId.toString()).call()
         const starData : StarData = {
@@ -115,7 +125,7 @@ async function GetSingleStarData ( starId : number ) : Promise<StarData | null> 
      }
 }
 
-async function CreateNewStar (owner : account, name : string, uri = `${document.location.hostname}`) : Promise<StarData | null> {
+async function CreateNewStar (owner : account, name : string, uri = `${document.location.hostname}`, coords: Coords) : Promise<StarData | null> {
         if (!owner || !name || !env) {
            return null
         }
@@ -134,7 +144,10 @@ async function CreateNewStar (owner : account, name : string, uri = `${document.
         }
 
         try {
-            await writeable.methods.safeMint(owner, uri, name).send({
+            const coordX = String(Math.round(coords.X * 1000000))
+            const coordY = String(Math.round(coords.Y * 1000000))
+            const coordZ = String(Math.round(coords.Z * 1000000))
+            await writeable.methods.safeMint(owner, uri, name, coordX, coordY, coordZ).send({
                 from: owner
               })
             const count = await GetStarsCount ()
