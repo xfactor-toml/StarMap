@@ -7,9 +7,10 @@ import {
   SubscribeOnAccountChanging,
   ApprovePlasma,
   GetAllowance,
-  RequiredPlasmaToApprove
+  RequiredPlasmaToApprove,
+  GetAllStarData
 } from '~/blockchain';
-import { Coords } from '~/blockchain/types';
+import { Coords, StarList } from '~/blockchain/types';
 
 export class WalletService {
   account = '';
@@ -29,22 +30,6 @@ export class WalletService {
     return this.updateState(await NetworkAuth());
   }
 
-  async getBalance() {
-    return this.checkConnection(() => GetBalance(this.account), 0);
-  }
-
-  async getCreationCost(level = 1) {
-    return this.checkConnection(() => GetCreationCost(level), 0);
-  }
-
-  async requiredPlasmaToApprove() {
-    return this.checkConnection(() => RequiredPlasmaToApprove(this.account));
-  }
-
-  async getAllowance() {
-    return this.checkConnection(() => GetAllowance(this.account));
-  }
-
   async approvePlasma(amount: number) {
     return this.checkConnection(() => ApprovePlasma(this.account, amount));
   }
@@ -56,7 +41,30 @@ export class WalletService {
     );
   }
 
-  private async checkConnection(method, defaultValue?) {
+  async getAllowance() {
+    return this.checkConnection(() => GetAllowance(this.account));
+  }
+
+  async getBalance() {
+    return this.checkConnection(() => GetBalance(this.account), 0);
+  }
+
+  async getCreationCost(level = 1) {
+    return this.checkConnection(() => GetCreationCost(level), 0);
+  }
+
+  async getStars(): Promise<StarList> {
+    return this.checkConnection(() => GetAllStarData(), []);
+  }
+
+  async requiredPlasmaToApprove() {
+    return this.checkConnection(() => RequiredPlasmaToApprove(this.account));
+  }
+
+  private async checkConnection<T extends (...args: unknown[]) => ReturnType<Awaited<T>>>(
+    method: T,
+    defaultValue?: Awaited<ReturnType<T>>
+  ) {
     return (await this.connect()) ? method() : defaultValue;
   }
 

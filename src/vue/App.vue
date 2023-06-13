@@ -61,7 +61,7 @@ export default {
       }
     }
   },
-  created() {
+  async created() {
     // Game Events
     window.addEventListener('gameEvent', this.handleGameEvent.bind(this));
 
@@ -72,6 +72,10 @@ export default {
         this.$client.handleGuiEvent('resize');
       }, 200)
     );
+
+    const stars = await this.$wallet.getStars();
+
+    console.log(stars);
 
     // INFO: client didnt send event when press escape
     document.body.addEventListener('fullscreenchange', () => {
