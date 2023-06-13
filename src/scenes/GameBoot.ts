@@ -126,7 +126,7 @@ export class GameBoot implements ILogger {
     startGame(aRealStars: ServerStarData[]) {
         DB.realStars = aRealStars;
         let gameEngine = new GameRender();
-        gameEngine.initGalaxy();
+        gameEngine.initGame();
         GameEvents.dispatchEvent(GameEvents.EVENT_GAME_CREATED);
     }
 

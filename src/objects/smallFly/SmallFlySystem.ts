@@ -28,6 +28,7 @@ export class SmallFlySystem {
     }
 
     private spawn() {
+        if (this._starPositions?.length <= 0) return;
         let starId1 = MyMath.randomIntInRange(0, this._starPositions.length - 1);
         let starId2 = MyMath.randomIntInRange(0, this._starPositions.length - 1);
         let pos1 = this._starPositions[starId1];

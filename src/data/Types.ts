@@ -88,7 +88,7 @@ export type FarGalaxyParams = {
     rotationSpeed: number;
 };
 
-export type ServerStarData = {
+export type ServerStarParams = {
     name: string,
     isLive: boolean,
     creation: number,
@@ -100,9 +100,16 @@ export type ServerStarData = {
     habitableZoneMin: number,
     habitableZoneMax: number,
     planetSlots: number,
+    race: string,
     coords: {
         X: number,
         Y: number,
         Z: number
     }
+}
+
+export type ServerStarData = {
+    id: number,
+    owner: string,
+    params: ServerStarParams
 }

@@ -1,7 +1,8 @@
 
 export enum States {
     init = 'STATE_INIT',
-    galaxy = 'STATE_GALAXY',
+    realStars = 'STATE_REAL_STARS',
+    phantomStars = 'STATE_PHANTOM_STARS',
     toStar = 'STATE_TO_STAR',
     star = 'STATE_STAR',
     fromStar = 'STATE_FROM_STAR'

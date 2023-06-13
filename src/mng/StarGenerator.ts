@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { RACES, STAR_COLOR_2 } from "~/data/DB";
 import { Settings } from "~/data/Settings";
-import { GalaxyCircleParams, GalaxyParams, GalaxyStarParams } from "~/data/Types";
+import { GalaxyCircleParams, GalaxyParams, GalaxyStarParams, ServerStarData } from "~/data/Types";
 import { MyMath } from "~/utils/MyMath";
 
 export class StarGenerator {
@@ -253,5 +253,56 @@ export class StarGenerator {
 
         return resData;
     }
+
+    getRealStarDataByServer(aParams: GalaxyParams, aServerStars: ServerStarData[]): GalaxyStarParams[] {
+        let resData: GalaxyStarParams[] = [];
+        for (let i = 0; i < aServerStars.length; i++) {
+            const serverStar = aServerStars[i];
+            const serverStarParams = serverStar.params;
+
+            // color
+            let clr = new THREE.Color(1, 1, 1);
+            let clrBigStar: any;
+            let colorSet = STAR_COLOR_2[serverStarParams.level];
+            let clrLen = colorSet.galaxyStar.length;
+            let clrId = clrLen > 1 ? MyMath.randomIntInRange(0, clrLen - 1) : 0;
+            clr.r = colorSet.galaxyStar[clrId].r;
+            clr.g = colorSet.galaxyStar[clrId].g;
+            clr.b = colorSet.galaxyStar[clrId].b;
+            clrBigStar = colorSet.bigStar[clrId];
+
+            // race
+            let raceName: string = serverStar.params.race || '';
+            
+
+            resData.push({
+                id: serverStar.id,
+                pos: { x: serverStarParams.coords.X, y: serverStarParams.coords.Y, z: serverStarParams.coords.Z },
+                scale: MyMath.randomInRange(aParams.scaleMin, aParams.scaleMax),
+                color: {
+                    r: clr.r,
+                    g: clr.g,
+                    b: clr.b,
+                    a: MyMath.randomInRange(aParams.alphaMin, aParams.alphaMax)
+                },
+                starInfo: {
+                    name: serverStarParams.name,
+                    description: `Star description`,
+                    level: serverStarParams.level,
+                    // TODO: get real race
+                    raceId: 0,
+                    planetSlots: serverStarParams.planetSlots,
+                    energy: serverStarParams.fuel,
+                    life: serverStarParams.fuel, // ???
+                    bigStar: {
+                        starSize: 30,
+                        color: clrBigStar
+                    }
+                }
+            });
+        }
+        return resData;
+    }
+
 
 }

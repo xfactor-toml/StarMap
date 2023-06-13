@@ -21,10 +21,10 @@ import { StarPoint, StarPointParams } from '../objects/StarPoint';
 import { GameUtils } from '../math/GameUtils';
 import { QTCircle, QTDebugRender, QTPoint, QTRect, QuadTree } from '../systems/QuadTree';
 import { StarPointsMng } from '../mng/StarPointsMng';
-import { FAR_STAR_COLORS, RACES, STAR_COLOR_2 } from '../data/DB';
+import { DB, FAR_STAR_COLORS, RACES } from '../data/DB';
 import { LogMng } from '../utils/LogMng';
 import { FileMng } from '../mng/FileMng';
-import { FarGalaxyParams, GalaxyCircleParams, GalaxyStarParams } from '~/data/Types';
+import { FarGalaxyParams, GalaxyStarParams } from '~/data/Types';
 import { StarGenerator } from '~/mng/StarGenerator';
 
 let debugObjects = {
@@ -54,6 +54,7 @@ export class Galaxy {
     private _phantomStarsData: GalaxyStarParams[];
     private _phantomStarsParticles: GalaxyStars;
 
+    private _realStarsData: GalaxyStarParams[];
     private _realStarsParticles: GalaxyStars;
 
     private _blinkStarsData: GalaxyStarParams[];
@@ -94,7 +95,8 @@ export class Galaxy {
     private _prevCameraAzimutAngle = 0;
     private _prevCamPolarAngle = 0;
 
-    private _quadTree: QuadTree;
+    private _quadTreeReal: QuadTree;
+    private _quadTreePhantom: QuadTree;
     private _qtDebugRender: QTDebugRender;
 
     private _info: {
@@ -205,9 +207,9 @@ export class Galaxy {
 
         // fly system
         let starsPos: THREE.Vector3[] = [];
-        for (let i = 0; i < this._phantomStarsData.length; i += 2) {
-            let pos = this._phantomStarsData[i].pos;
-            starsPos.push(new THREE.Vector3(pos.x, pos.y, pos.z));
+        for (let i = 0; i < DB.realStars.length; i += 2) {
+            let pos = DB.realStars[i].params.coords;
+            starsPos.push(new THREE.Vector3(pos.X, pos.Y, pos.Z));
         }
         this.smallFlySystem = new SmallFlySystem(this._dummyGalaxy, starsPos);
 
@@ -240,7 +242,8 @@ export class Galaxy {
 
         this._fsm = new FSM();
         this._fsm.addState(States.init, this, this.onStateInitEnter, this.onStateInitUpdate);
-        this._fsm.addState(States.galaxy, this, this.onStateGalaxyEnter, this.onStateGalaxyUpdate);
+        this._fsm.addState(States.realStars, this, this.onStateRealEnter, this.onStateRealUpdate);
+        this._fsm.addState(States.phantomStars, this, this.onStatePhantomEnter, this.onStatePhantomUpdate);
         this._fsm.addState(States.toStar, this, this.onStateToStarEnter, this.onStateToStarUpdate);
         this._fsm.addState(States.star, this, this.onStateStarEnter, this.onStateStarUpdate);
         this._fsm.addState(States.fromStar, this, this.onStateFromStarEnter, this.onStateFromStarUpdate);
@@ -383,6 +386,14 @@ export class Galaxy {
 
     }
 
+    openPhantomMode() {
+        this._fsm.startState(States.phantomStars);
+    }
+
+    openRealMode() {
+        this._fsm.startState(States.realStars);
+    }
+
     private createGalaxyPlane(): THREE.Mesh {
         let t = ThreeLoader.getInstance().getTexture('galaxySprite');
         let galaxy = new THREE.Mesh(
@@ -479,6 +490,45 @@ export class Galaxy {
 
         Settings.galaxyData.blinkStarsCount = this._blinkStarsData.length;
 
+        // real star particles
+
+        // get real stars data
+        this._realStarsData = StarGenerator.getInstance().getRealStarDataByServer({
+            starsCount: Settings.galaxyData.starsCount,
+            startAngle: Settings.galaxyData.startAngle,
+            endAngle: Settings.galaxyData.endAngle,
+            startOffsetXY: Settings.galaxyData.startOffsetXY,
+            endOffsetXY: Settings.galaxyData.endOffsetXY,
+            startOffsetH: Settings.galaxyData.startOffsetH,
+            endOffsetH: Settings.galaxyData.endOffsetH,
+            k: Settings.galaxyData.k,
+            alphaMin: Settings.galaxyData.alphaMin,
+            alphaMax: Settings.galaxyData.alphaMax,
+            scaleMin: Settings.galaxyData.scaleMin,
+            scaleMax: Settings.galaxyData.scaleMax
+        }, DB.realStars);
+
+        // real stars particles
+        this._realStarsParticles = new GalaxyStars({
+            camera: this._camera,
+            starsData: this._realStarsData,
+            camDistLogic: true,
+            onWindowResizeSignal: FrontEvents.onWindowResizeSignal,
+            alpha: {
+                camDist: {
+                    min: 50,
+                    max: 400
+                },
+                value: {
+                    min: .2,
+                    max: 1
+                }
+            }
+        });
+        // this.starsParticles.alphaFactor = 0.5;
+        this._dummyGalaxy.add(this._realStarsParticles);
+
+
         // particle stars
         let t = ThreeLoader.getInstance().getTexture('star4');
         this._phantomStarsParticles = new GalaxyStars({
@@ -499,6 +549,7 @@ export class Galaxy {
             }
         });
         // this.starsParticles.alphaFactor = 0.5;
+        this._phantomStarsParticles.visible = false;
         this._dummyGalaxy.add(this._phantomStarsParticles);
 
         // blink particle stars
@@ -542,18 +593,32 @@ export class Galaxy {
 
     private initQuadTree() {
 
-        if (this._quadTree) {
-            this._quadTree.destroy();
-            this._quadTree = null;
+        if (this._quadTreeReal) {
+            this._quadTreeReal.destroy();
+            this._quadTreeReal = null;
         }
 
-        this._quadTree = new QuadTree(new QTRect(0, 0, 400, 400), 30);
+        if (this._quadTreePhantom) {
+            this._quadTreePhantom.destroy();
+            this._quadTreePhantom = null;
+        }
+
+        this._quadTreeReal = new QuadTree(new QTRect(0, 0, 400, 400), 30);
+
+        // add stars to quadtree
+        for (let i = 0; i < this._realStarsData.length; i++) {
+            const sd = this._realStarsData[i];
+            if (sd.id == null) sd.id = StarGenerator.getInstance().getStarId();
+            this._quadTreePhantom.addPoint(new QTPoint(sd.pos.x, sd.pos.z, { starData: sd }));
+        }
+
+        this._quadTreePhantom = new QuadTree(new QTRect(0, 0, 400, 400), 30);
 
         // add stars to quadtree
         for (let i = 0; i < this._phantomStarsData.length; i++) {
             const sd = this._phantomStarsData[i];
             if (sd.id == null) sd.id = StarGenerator.getInstance().getStarId();
-            this._quadTree.addPoint(new QTPoint(sd.pos.x, sd.pos.z, { starData: sd }));
+            this._quadTreePhantom.addPoint(new QTPoint(sd.pos.x, sd.pos.z, { starData: sd }));
         }
         // LogMng.debug(`qt:`, this.quadTree);
 
@@ -567,6 +632,11 @@ export class Galaxy {
     }
 
     private destroyGalaxyStars() {
+
+        if (this._realStarsParticles) {
+            this._realStarsParticles.free();
+            this._realStarsParticles = null;
+        }
 
         if (this._phantomStarsParticles) {
             this._phantomStarsParticles.free();
@@ -906,7 +976,7 @@ export class Galaxy {
             GameEvents.dispatchEvent(GameEvents.EVENT_HIDE_STAR_PREVIEW);
 
             switch (this._fsm.getCurrentState().name) {
-                case States.galaxy:
+                case States.realStars:
                     if (!this._orbitControl.autoRotate) this._orbitControl.autoRotate = true;
                     this._orbitControl.enableZoom = true;
                     if (!this._orbitControl.enabled) this._orbitControl.enabled = true;
@@ -949,7 +1019,7 @@ export class Galaxy {
 
         switch (this._fsm.getCurrentState().name) {
 
-            case States.galaxy:
+            case States.realStars:
                 if (!this.isStarPreviewState) {
 
                     if (this.starPointSpriteHovered) {
@@ -1114,7 +1184,21 @@ export class Galaxy {
         this._galaxyPlane.material['opacity'] = galaxyOpacity;
     }
 
-    private updateGalaxyStars(dt: number) {
+    private updateRealStars(dt: number) {
+        const an = this.getAbsPolarAngle();
+        const MIN_ALPHA = 0.5;
+        let starsOpacity = MIN_ALPHA + (1 - (an / (Math.PI / 2))) * (1 - MIN_ALPHA);
+
+        let camDist = this._camera.position.length()
+        this._info.cameraDistance = camDist;
+        this._info.cameraDistanceStr = String(camDist.toFixed(0));
+        this._info.camDistGui?.updateDisplay();
+
+        this._realStarsParticles.alphaFactor = starsOpacity * Settings.galaxyData.starAlphaFactor;
+        this._realStarsParticles.update(dt);
+    }
+
+    private updatePhantomStars(dt: number) {
         const an = this.getAbsPolarAngle();
         const MIN_ALPHA = 0.5;
         let starsOpacity = MIN_ALPHA + (1 - (an / (Math.PI / 2))) * (1 - MIN_ALPHA);
@@ -1126,8 +1210,10 @@ export class Galaxy {
 
         this._phantomStarsParticles.alphaFactor = starsOpacity * Settings.galaxyData.starAlphaFactor;
         this._phantomStarsParticles.update(dt);
-        this._blinkStarsParticles.update(dt);
+    }
 
+    private updateBlinkStars(dt: number) {
+        this._blinkStarsParticles.update(dt);
     }
 
     private updateFarStars(dt: number) {
@@ -1190,17 +1276,19 @@ export class Galaxy {
         // new dynamic points
         const MaxCheckRadius = Settings.POINTS_CAMERA_MAX_DIST;
         let targetPos = this._cameraTarget.clone();
-        // let cam_y = Math.abs(this.camera.position.y);
         let camPos = this._camera.position.clone();
         let dist = camPos.distanceTo(targetPos);
-        // camPos.normalize().multiplyScalar(-30);
-        // camPos.x += this.camera.position.x;
-        // camPos.z += this.camera.position.z;
-
         let checkRadius = (1 - Math.min(1, dist / MaxCheckRadius)) * Settings.POINTS_MAX_CHECK_RADIUS;
         // let checkRadius = 10;
-
-        let points = this._quadTree.getPointsInCircle(new QTCircle(targetPos.x, targetPos.z, checkRadius));
+        let points: QTPoint[] = [];
+        switch (this._fsm.getCurrentState().name) {
+            case States.realStars:
+                points = this._quadTreeReal.getPointsInCircle(new QTCircle(targetPos.x, targetPos.z, checkRadius));
+                break;
+            case States.phantomStars:
+                points = this._quadTreePhantom.getPointsInCircle(new QTCircle(targetPos.x, targetPos.z, checkRadius));
+                break;
+        }
 
         this.starPointsMng.updatePoints(points, 20);
 
@@ -1224,7 +1312,7 @@ export class Galaxy {
             // delay: 0.1,
             ease: 'sine.inOut',
             onComplete: () => {
-                this._fsm.startState(States.galaxy);
+                this._fsm.startState(States.realStars);
                 this._orbitControl.maxDistance = Settings.galaxyData.camDistMax;
             }
         });
@@ -1241,14 +1329,16 @@ export class Galaxy {
 
         this.updateGalaxyPlane(dt);
         this.updateGalaxyCenterSprite();
-        this.updateGalaxyStars(dt);
+        // this.updateGalaxyStars(dt);
+        this.updateRealStars(dt);
+        this.updateBlinkStars(dt);
         this.updateFarStars(dt);
         this.updateSmallGalaxies(dt);
         this.updateStarPoints();
 
     }
 
-    private onStateGalaxyEnter() {
+    private onStateRealEnter() {
         this._prevCameraAzimutAngle = this._orbitControl.getAzimuthalAngle();
         this._prevCamPolarAngle = this._orbitControl.getPolarAngle();
         this._orbitControl.update();
@@ -1256,8 +1346,12 @@ export class Galaxy {
         this._orbitControl.enableZoom = true;
         this._orbitControl.enabled = true;
 
+        this._phantomStarsParticles.visible = false;
+        this._realStarsParticles.visible = true;
+
     }
-    private onStateGalaxyUpdate(dt: number) {
+
+    private onStateRealUpdate(dt: number) {
 
         this._orbitControl.update();
 
@@ -1267,7 +1361,9 @@ export class Galaxy {
 
         this.updateGalaxyPlane(dt);
         this.updateGalaxyCenterSprite();
-        this.updateGalaxyStars(dt);
+        // this.updateGalaxyStars(dt);
+        this.updateRealStars(dt);
+        this.updateBlinkStars(dt);
         this.updateFarStars(dt);
         this.updateSmallGalaxies(dt);
         this.updateRotationSound(dt);
@@ -1283,6 +1379,46 @@ export class Galaxy {
             }
         }
 
+    }
+
+    private onStatePhantomEnter(aParams: any) {
+        this._prevCameraAzimutAngle = this._orbitControl.getAzimuthalAngle();
+        this._prevCamPolarAngle = this._orbitControl.getPolarAngle();
+        this._orbitControl.update();
+        this._orbitControl.autoRotate = true;
+        this._orbitControl.enableZoom = true;
+        this._orbitControl.enabled = true;
+
+        this._realStarsParticles.visible = false;
+        this._phantomStarsParticles.visible = true;
+    }    
+
+    private onStatePhantomUpdate(dt: number) {
+        this._orbitControl.update();
+
+        if (this._cameraTarget && this._camera) {
+            this._camera.lookAt(this._cameraTarget);
+        }
+
+        this.updateGalaxyPlane(dt);
+        this.updateGalaxyCenterSprite();
+        // this.updateGalaxyStars(dt);
+        this.updatePhantomStars(dt);
+        this.updateBlinkStars(dt);
+        this.updateFarStars(dt);
+        this.updateSmallGalaxies(dt);
+        this.updateRotationSound(dt);
+        this.updateStarPoints();
+
+        this.smallFlySystem.update(dt);
+
+        if (DeviceInfo.getInstance().desktop) {
+            this.checkMousePointerTimer -= dt;
+            if (this.checkMousePointerTimer <= 0) {
+                this.checkMousePointerTimer = 0.1;
+                this.updateInputMove();
+            }
+        }
     }
 
     private onStateToStarEnter(aParams: any) {
@@ -1783,7 +1919,7 @@ export class Galaxy {
             duration: DUR,
             ease: 'sine.inOut',
             onComplete: () => {
-                this._fsm.startState(States.galaxy);
+                this._fsm.startState(States.realStars);
             }
         });
 

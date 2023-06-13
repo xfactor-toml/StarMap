@@ -9,6 +9,7 @@ import star1Frag from "../shaders/galaxy/star_f.glsl";
 
 import star2Vert from "../shaders/galaxy/star2_v.glsl";
 import star2Frag from "../shaders/galaxy/star2_f.glsl";
+import { LogMng } from "~/utils/LogMng";
 
 const SHADER_1 = {
     vertex: star1Vert,
@@ -23,7 +24,7 @@ const SHADER_2 = {
 type GalaxyStarsParams = {
     camera: THREE.Camera;
     starsData: GalaxyStarParams[];
-    texture: THREE.Texture;
+    texture?: THREE.Texture;
     onWindowResizeSignal: Signal;
     camDistLogic: boolean;
     alpha?: {
@@ -77,6 +78,10 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
     }
 
     private init1() {
+        if (!this._params.texture) {
+            LogMng.warn(`GalaxyStarts: init1: !this._params.texture`);
+            return;
+        }
         this._uniforms = {
             diffuseTexture: { value: this._params.texture },
             pointMultiplier: { value: innerHeight / (2.0 * Math.tan(.02 * 60.0 * Math.PI / 180)) }
