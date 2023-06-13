@@ -46,7 +46,8 @@ async function GetCreationCost (level : number = 1) : Promise<number> {
 async function GetAllStarData () : Promise<StarList> {
      const stars : StarList = []
      let cntr = 0
-     while (true) {
+     const total = await GetStarsCount ()
+     while (cntr < total) {
          try {
             const dt : any[] = await contract.methods.GetStarParams(cntr.toString()).call()
             if(!dt[10]) {  // Planet slots always larger than zero
@@ -90,20 +91,8 @@ async function GetAllStarData () : Promise<StarList> {
 
 async function GetStarsCount () : Promise<number> {
     const contract = new reader.eth.Contract(StarNFTABI, nft)
-    let cntr = 0
-
-    while (true) {
-        try { 
-            const owner : string = await contract.methods.ownerOf(cntr.toString()).call()
-            if(!owner) {  
-                break;
-             }
-            cntr += 1
-        } catch (e) {
-            break;
-        }
-    }
-    return cntr
+    const count : number = Number(await contract.methods.GetTotalStarCount().call())
+    return count 
 }
 
 async function GetSingleStarData ( starId : number ) : Promise<StarData | null> {
