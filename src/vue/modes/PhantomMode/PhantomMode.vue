@@ -6,7 +6,7 @@
       </template>
     </transition>
     <transition name="fade">
-      <template v-if="settingsStore.tooltipNewStar !== null">
+      <template v-if="settingsStore.tooltipNewStar !== null && !creationPanel">
         <StarCreationTooltip
           :star="settingsStore.tooltipNewStar"
           @hide="settingsStore.hideStarTooltip"
@@ -47,12 +47,10 @@ export default {
   },
   methods: {
     openStarCreationPanel() {
-      this.settingsStore.hideStarTooltip();
-      this.settingsStore.enableOverlay();
       this.creationPanel = true;
     },
     closeStarCreationPanel() {
-      this.settingsStore.disableOverlay();
+      this.settingsStore.hideStarTooltip();
       this.creationPanel = false;
     }
   },

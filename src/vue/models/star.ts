@@ -9,12 +9,13 @@ export class Star {
   pos2d: {
     x: number;
     y: number;
-  } = { x: 0, y: 0 };
+    z: number;
+  } = { x: 0, y: 0, z: 0 };
   race: RaceType = 'Humans';
   scale = 1;
   starId = 1;
 
-  constructor(data: Omit<Star, 'preview' | 'position' | 'croppedOwner'>) {
+  constructor(data: Omit<Star, 'preview' | 'position' | 'croppedOwner' | 'coords'>) {
     Object.assign(this, data);
   }
 
@@ -24,6 +25,14 @@ export class Star {
 
   get position() {
     return this.pos2d;
+  }
+
+  get coords() {
+    return {
+      X: this.pos2d.x,
+      Y: this.pos2d.y,
+      Z: this.pos2d.z ?? 0
+    };
   }
 
   get croppedOwner() {

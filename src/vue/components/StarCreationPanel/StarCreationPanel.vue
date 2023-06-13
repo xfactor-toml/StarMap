@@ -93,9 +93,16 @@
 <script lang="ts">
 import { mobileUrl } from '~/blockchain/config';
 import { roundNumber } from '@/utils';
+import { PropType } from 'vue';
+import { Star } from '@/models';
 
 export default {
   name: 'StarCreationPanel',
+  props: {
+    star: {
+      type: Object as PropType<Star>
+    }
+  },
   data: () => ({
     approved: false,
     balance: 0,
@@ -158,7 +165,7 @@ export default {
     },
     async create() {
       this.creating = true;
-      this.createdStar = await this.$wallet.createStar(this.starName);
+      this.createdStar = await this.$wallet.createStar(this.starName, this.star.coords);
       this.creating = false;
       this.balance = await this.$wallet.getBalance();
     }

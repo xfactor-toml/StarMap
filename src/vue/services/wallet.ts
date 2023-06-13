@@ -9,6 +9,7 @@ import {
   GetAllowance,
   RequiredPlasmaToApprove
 } from '~/blockchain';
+import { Coords } from '~/blockchain/types';
 
 export class WalletService {
   account = '';
@@ -48,8 +49,11 @@ export class WalletService {
     return this.checkConnection(() => ApprovePlasma(this.account, amount));
   }
 
-  async createStar(name: string) {
-    return this.checkConnection(() => CreateNewStar(this.account, name), null);
+  async createStar(name: string, coords: Coords) {
+    return this.checkConnection(
+      () => CreateNewStar(this.account, name, `${document.location.hostname}`, { ...coords }),
+      null
+    );
   }
 
   private async checkConnection(method, defaultValue?) {
