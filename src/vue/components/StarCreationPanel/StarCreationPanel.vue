@@ -94,13 +94,13 @@
 import { mobileUrl } from '~/blockchain/config';
 import { roundNumber } from '@/utils';
 import { PropType } from 'vue';
-import { Star } from '@/models';
+import { StarPosition } from '@/models';
 
 export default {
   name: 'StarCreationPanel',
   props: {
-    star: {
-      type: Object as PropType<Star>
+    starPosition: {
+      type: Object as PropType<StarPosition>
     }
   },
   data: () => ({
@@ -165,9 +165,13 @@ export default {
     },
     async create() {
       this.creating = true;
-      this.createdStar = await this.$wallet.createStar(this.starName, this.star.coords);
+      this.createdStar = await this.$wallet.createStar(
+        this.starName,
+        this.starPosition.contractFormat
+      );
       this.creating = false;
       this.balance = await this.$wallet.getBalance();
+      this.$client.onStarCreated(this.createdStar);
     }
   },
   async mounted() {

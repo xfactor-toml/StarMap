@@ -1,9 +1,8 @@
-import { RaceType } from '@/types';
+import { Race } from '~/blockchain/types';
 
-export const RACES: Record<RaceType, string> = {
+export const RACES: Record<Race, string> = {
+  Waters: 'waters',
   Humans: 'human',
-  Simbionts: 'simbionts',
-  Lizards: 'lizards',
   Insects: 'insects',
-  Robots: 'robots'
+  Lizards: 'lizards'
 };

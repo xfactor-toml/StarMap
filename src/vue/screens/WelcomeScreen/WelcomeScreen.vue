@@ -10,12 +10,12 @@
       </p>
       <button
         class="WelcomeScreen__button active"
-        @mouseenter="$client.handleGuiEvent('hover')"
+        @mouseenter="$client.onHover()"
         @click="handleAgreementRunClick"
       >
         Run
       </button>
-      <label class="WelcomeScreen__checkbox" @mouseenter="$client.handleGuiEvent('hover')">
+      <label class="WelcomeScreen__checkbox" @mouseenter="$client.onHover()">
         <input
           type="checkbox"
           class="WelcomeScreen__checkbox-field"
@@ -30,14 +30,14 @@
       <div class="WelcomeScreen__logo-text" />
       <button
         class="WelcomeScreen__button active"
-        @mouseenter="$client.handleGuiEvent('hover')"
+        @mouseenter="$client.onHover()"
         @click="handleRunClick(true)"
       >
         Run fullscreen
       </button>
       <button
         class="WelcomeScreen__button"
-        @mouseenter="$client.handleGuiEvent('hover')"
+        @mouseenter="$client.onHover()"
         @click="handleRunClick(false)"
       >
         Run windowed
@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts">
-import { useSettingsStore } from '@/stores';
+import { useSettingsStore, useStarsStore } from '@/stores';
 import { mapStores } from 'pinia';
 
 export default {
@@ -59,11 +59,12 @@ export default {
     };
   },
   computed: {
-    ...mapStores(useSettingsStore)
+    ...mapStores(useSettingsStore, useStarsStore)
   },
   methods: {
     handleRunClick(fullscreen = false) {
       if (this.settingsStore.agreementAccepted) {
+        this.$client.onClick();
         this.$client.run(fullscreen);
         this.settingsStore.setScreen('interface');
       } else {
@@ -80,9 +81,13 @@ export default {
       }
     },
     handleAgreementRunClick() {
-      this.$client.run(this.preservedFullscreenRun);
+      this.$client.onClick();
+      this.$client.run(this.preservedFullscreenRun, this.starsStore.stars);
       this.settingsStore.setScreen('interface');
     }
+  },
+  created() {
+    this.starsStore.fetchStars();
   }
 };
 </script>

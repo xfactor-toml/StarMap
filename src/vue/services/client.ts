@@ -1,13 +1,12 @@
-import { GuiEvent } from '@/types';
+import { Star } from '@/models';
 import { markRaw } from 'vue';
 import { FrontEvents } from '~/events/FrontEvents';
 
 export class ClientService {
   constructor(private dispatcher: typeof FrontEvents) {}
 
-  run(fullscreen: boolean) {
-    this.handleGuiEvent('click');
-    this.dispatcher.startGame.dispatch(fullscreen);
+  run(fullscreen: boolean, stars: Star[]) {
+    this.dispatcher.startGame.dispatch(fullscreen, stars);
   }
 
   playInitScreenSfx() {
@@ -27,17 +26,14 @@ export class ClientService {
   }
 
   closeStarPreview() {
-    this.handleGuiEvent('click');
     this.dispatcher.starPreviewClose.dispatch();
   }
 
   diveIn(starId: number) {
-    this.handleGuiEvent('click');
     this.dispatcher.diveIn.dispatch({ starId });
   }
 
   flyFromStar() {
-    this.handleGuiEvent('click');
     this.dispatcher.flyFromStar.dispatch();
   }
 
@@ -45,21 +41,40 @@ export class ClientService {
     this.dispatcher.starLevelFilterUpdate.dispatch(levels);
   }
 
-  handleGuiEvent(event: GuiEvent) {
-    const handlers: Record<GuiEvent, () => void> = {
-      click: () => this.dispatcher.onClick.dispatch(),
-      hover: () => this.dispatcher.onHover.dispatch(),
-      resize: () => this.dispatcher.onWindowResizeSignal.dispatch(),
-      leftPanelGalaxyClick: () => this.dispatcher.onLeftPanelGalaxyClick.dispatch(),
-      leftPanelStarClick: () => this.dispatcher.onLeftPanelStarClick.dispatch(),
-      leftPanelPlanetClick: () => this.dispatcher.onLeftPanelPlanetClick.dispatch(),
-      botPanelPhantomClick: () => this.dispatcher.onBotPanelPhantomClick.dispatch(),
-      botPanelRealClick: () => this.dispatcher.onBotPanelRealClick.dispatch()
-    };
+  onClick() {
+    this.dispatcher.onClick.dispatch();
+  }
 
-    const handler = handlers[event];
+  onHover() {
+    this.dispatcher.onHover.dispatch();
+  }
 
-    handler();
+  onWindowResize() {
+    this.dispatcher.onWindowResizeSignal.dispatch();
+  }
+
+  onLeftPanelGalaxyClick() {
+    this.dispatcher.onLeftPanelGalaxyClick.dispatch();
+  }
+
+  onLeftPanelStarClick() {
+    this.dispatcher.onLeftPanelStarClick.dispatch();
+  }
+
+  onLeftPanelPlanetClick() {
+    this.dispatcher.onLeftPanelPlanetClick.dispatch();
+  }
+
+  onBotPanelPhantomClick() {
+    this.dispatcher.onBotPanelPhantomClick.dispatch();
+  }
+
+  onBotPanelRealClick() {
+    this.dispatcher.onBotPanelRealClick.dispatch();
+  }
+
+  onStarCreated(star: Star) {
+    this.dispatcher.onStarCreated.dispatch(star);
   }
 
   static VuePlugin = {

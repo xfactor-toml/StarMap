@@ -1,14 +1,15 @@
+import { Star } from '@/models';
 import { markRaw } from 'vue';
 import {
-  NetworkAuth,
+  ApprovePlasma,
+  CreateNewStar,
+  GetAllowance,
+  GetAllStarData,
   GetBalance,
   GetCreationCost,
-  CreateNewStar,
-  SubscribeOnAccountChanging,
-  ApprovePlasma,
-  GetAllowance,
+  NetworkAuth,
   RequiredPlasmaToApprove,
-  GetAllStarData
+  SubscribeOnAccountChanging
 } from '~/blockchain';
 import { Coords, StarList } from '~/blockchain/types';
 
@@ -35,10 +36,11 @@ export class WalletService {
   }
 
   async createStar(name: string, coords: Coords) {
-    return this.checkConnection(
-      () => CreateNewStar(this.account, name, `${document.location.hostname}`, { ...coords }),
-      null
-    );
+    const owner = this.account;
+    const uri = `${document.location.hostname}`;
+    const race = Star.getRandomRace();
+
+    return this.checkConnection(() => CreateNewStar(owner, name, uri, race, coords), null);
   }
 
   async getAllowance() {

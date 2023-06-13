@@ -6,22 +6,22 @@
       </template>
     </transition>
     <transition name="fade">
-      <template v-if="settingsStore.tooltipNewStar !== null && !creationPanel">
+      <template v-if="settingsStore.newStarPosition !== null && !creationPanel">
         <StarCreationTooltip
-          :star="settingsStore.tooltipNewStar"
+          :starPosition="settingsStore.newStarPosition"
           @hide="settingsStore.hideStarTooltip"
-          @hideButtonHover="$client.handleGuiEvent('hover')"
+          @hideButtonHover="$client.onHover()"
           @create="openStarCreationPanel"
-          @createButtonHover="$client.handleGuiEvent('hover')"
+          @createButtonHover="$client.onHover()"
         />
       </template>
     </transition>
     <transition name="fade">
-      <template v-if="creationPanel">
+      <template v-if="settingsStore.newStarPosition !== null && creationPanel">
         <StarCreationPanel
-          :star="settingsStore.tooltipNewStar"
+          :starPosition="settingsStore.newStarPosition"
           @hide="closeStarCreationPanel"
-          @hover="$client.handleGuiEvent('hover')"
+          @hover="$client.onHover()"
         />
       </template>
     </transition>
@@ -55,7 +55,6 @@ export default {
     }
   },
   unmounted() {
-    this.settingsStore.hideStarTooltip();
     this.closeStarCreationPanel();
   }
 };

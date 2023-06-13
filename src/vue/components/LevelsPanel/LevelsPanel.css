@@ -4,6 +4,7 @@
   align-items: center;
   gap: 10px;
   pointer-events: all;
+  user-select: none;
   cursor: default;
 }
 

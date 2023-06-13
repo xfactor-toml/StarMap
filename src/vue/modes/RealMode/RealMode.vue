@@ -6,13 +6,14 @@
       </template>
     </transition>
     <transition name="fade">
-      <template v-if="settingsStore.tooltipStar !== null">
+      <template v-if="settingsStore.starTooltip !== null">
         <StarTooltip
-          :star="settingsStore.tooltipStar"
+          :star="settingsStore.starTooltip.star"
+          :position="settingsStore.starTooltip.position"
           @hide="settingsStore.hideStarTooltip"
-          @hideButtonHover="$client.handleGuiEvent('hover')"
+          @hideButtonHover="$client.onHover()"
           @diveIn="settingsStore.diveIn"
-          @diveInButtonHover="$client.handleGuiEvent('hover')"
+          @diveInButtonHover="$client.onHover()"
         />
       </template>
     </transition>

@@ -7,6 +7,7 @@
   max-width: 540px;
   pointer-events: all;
   cursor: default;
+  user-select: none;
   transition: ease-in-out transform 300ms;
 }
 

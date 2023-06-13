@@ -1,5 +1,7 @@
 export type GuiScreen = 'preloader' | 'welcome' | 'interface';
+
 export type GuiModeName = 'phantom' | 'real' | 'season';
+
 export type GuiViewName = 'galaxy' | 'star' | 'planet';
 
 export type GuiView = {
@@ -17,17 +19,6 @@ export type GuiMode<T extends GuiModeName = GuiModeName> = {
 };
 
 export type GuiLevel = {
-  id: number;
   value: number;
   label: string;
 };
-
-export type GuiEvent =
-  | 'click'
-  | 'hover'
-  | 'resize'
-  | 'leftPanelGalaxyClick'
-  | 'leftPanelStarClick'
-  | 'leftPanelPlanetClick'
-  | 'botPanelPhantomClick'
-  | 'botPanelRealClick';

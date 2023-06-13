@@ -3,7 +3,7 @@
     <button
       class="UserBar__settings-button"
       :class="{ active: settingsVisible }"
-      @mouseenter="$client.handleGuiEvent('hover')"
+      @mouseenter="$client.onHover()"
       @click="toggleSettings"
     />
     <div class="UserBar__settings-popup" v-if="settingsVisible">
@@ -14,10 +14,10 @@
         @setMusicVolume="settingsStore.changeMusicVolume"
         @setSfxVolume="settingsStore.changeSfxVolume"
         @toggleFullscreen="$client.toggleFullscreen()"
-        @volumeButtonClick="$client.handleGuiEvent('click')"
-        @volumeButtonHover="$client.handleGuiEvent('hover')"
-        @fullscreenToggleClick="$client.handleGuiEvent('click')"
-        @fullscreenToggleHover="$client.handleGuiEvent('hover')"
+        @volumeButtonClick="$client.onClick()"
+        @volumeButtonHover="$client.onHover()"
+        @fullscreenToggleClick="$client.onClick()"
+        @fullscreenToggleHover="$client.onHover()"
       />
     </div>
   </div>
@@ -45,7 +45,7 @@ export default {
   },
   methods: {
     toggleSettings() {
-      this.$client.handleGuiEvent('click');
+      this.$client.onClick();
       this.settingsVisible = !this.settingsVisible;
     },
     hideSettings() {

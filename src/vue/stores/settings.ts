@@ -1,26 +1,37 @@
 import { defineStore } from 'pinia';
-import { ClientData, GuiEvent, GuiMode, GuiModeName, GuiScreen, GuiViewName } from '@/types';
+import {
+  GuiMode,
+  GuiModeName,
+  GuiScreen,
+  GuiViewName,
+  PhantomStarPreviewEvent,
+  ShowStarPreviewEvent
+} from '@/types';
 import { MODES } from '@/constants';
-import { Star } from '@/models';
+import { Star, StarPosition, StarScreenPosition } from '@/models';
+import { useStarsStore } from '@/stores/stars';
 
-type SettingsStore = {
+type SettingsStoreState = {
   agreementAccepted: boolean;
   fullscreen: boolean;
   mode: GuiMode;
   modesPanelHidden: boolean;
   musicVolume: number;
+  newStarPosition: StarPosition | null;
   overlay: boolean;
-  panelStar: ClientData | null;
+  panelStar: Star | null;
   screen: GuiScreen;
   sfxVolume: number;
-  tooltipStar: Star | null;
-  tooltipNewStar: Star | null;
+  starTooltip: {
+    star: Star;
+    position: StarScreenPosition;
+  } | null;
   view: GuiViewName;
   viewsPanelHidden: boolean;
 };
 
 export const useSettingsStore = defineStore('settings', {
-  state: (): SettingsStore => {
+  state: (): SettingsStoreState => {
     const agreementAccepted = localStorage.getItem('agreementAccepted') === '1';
     const modesPanelHidden = localStorage.getItem('modesPanelHidden') === '1';
     const musicVolume = Number(localStorage.getItem('musicVolume') ?? 0.5) * 100;
@@ -33,12 +44,12 @@ export const useSettingsStore = defineStore('settings', {
       mode: MODES['real'],
       modesPanelHidden,
       musicVolume,
+      newStarPosition: null,
       overlay: false,
       panelStar: null,
       screen: 'preloader',
       sfxVolume,
-      tooltipStar: null,
-      tooltipNewStar: null,
+      starTooltip: null,
       view: 'galaxy',
       viewsPanelHidden
     };
@@ -47,29 +58,24 @@ export const useSettingsStore = defineStore('settings', {
     setMode(modeName: GuiModeName) {
       const mode = MODES[modeName];
       const view = mode.views.find(view => view.enabled);
-      const eventsMap: Record<
-        Exclude<GuiModeName, 'season'>,
-        Extract<GuiEvent, 'botPanelPhantomClick' | 'botPanelRealClick'>
-      > = {
-        phantom: 'botPanelPhantomClick',
-        real: 'botPanelRealClick'
+      const clientHandler: Record<Exclude<GuiModeName, 'season'>, () => {}> = {
+        phantom: () => this.client.onBotPanelPhantomClick(),
+        real: () => this.client.onBotPanelRealClick()
       };
 
-      this.client.handleGuiEvent(eventsMap[modeName]);
+      clientHandler[modeName]();
+
       this.mode = mode;
       this.setView(view.name);
     },
     setView(view: GuiViewName) {
-      const eventsMap: Record<
-        GuiViewName,
-        Extract<GuiEvent, 'leftPanelGalaxyClick' | 'leftPanelStarClick' | 'leftPanelPlanetClick'>
-      > = {
-        galaxy: 'leftPanelGalaxyClick',
-        planet: 'leftPanelPlanetClick',
-        star: 'leftPanelStarClick'
+      const clientHandler: Record<GuiViewName, () => {}> = {
+        galaxy: () => this.client.onLeftPanelGalaxyClick(),
+        planet: () => this.client.onLeftPanelPlanetClick(),
+        star: () => this.client.onLeftPanelStarClick()
       };
 
-      this.client.handleGuiEvent(eventsMap[view]);
+      clientHandler[view]();
 
       if (this.view === 'star' && view === 'galaxy') {
         this.returnToGalaxy();
@@ -111,18 +117,21 @@ export const useSettingsStore = defineStore('settings', {
       this.overlay = false;
     },
     diveIn() {
-      this.client.diveIn(this.tooltipStar.starId);
+      this.client.onClick();
+      this.client.diveIn(this.starTooltip.star.id);
       this.hideStarTooltip();
       this.setView('star');
     },
     returnToGalaxy() {
       this.hideStarPanel();
+      this.client.onClick();
       this.client.flyFromStar();
     },
     hideStarTooltip() {
-      this.tooltipNewStar = null;
-      this.tooltipStar = null;
+      this.newStarPosition = null;
+      this.starTooltip = null;
       this.disableOverlay();
+      this.client.onClick();
       this.client.closeStarPreview();
     },
     hideStarPanel() {
@@ -131,17 +140,32 @@ export const useSettingsStore = defineStore('settings', {
     setFullscreenMode(value: boolean) {
       this.fullscreen = value;
     },
-    showStarTooltip(data) {
-      this.client.handleGuiEvent('click');
-      if (this.mode.name === 'phantom') {
-        this.tooltipNewStar = new Star(data);
-      } else {
-        this.tooltipStar = new Star(data);
+    showStarTooltip({ starId, pos2d }: ShowStarPreviewEvent) {
+      this.client.onClick();
+
+      const starsStore = useStarsStore();
+      const star = starsStore.getById(starId);
+
+      if (!star) {
+        return;
       }
+
       this.enableOverlay();
+      this.starTooltip = {
+        position: new StarScreenPosition(pos2d),
+        star
+      };
     },
-    showStarPanel(data) {
-      this.panelStar = data;
+    showStarPanel({ starId }) {
+      const starsStore = useStarsStore();
+      const star = starsStore.getById(starId);
+
+      this.panelStar = star;
+    },
+    showPhantomStarTooltip({ pos2d, pos3d }: PhantomStarPreviewEvent) {
+      this.client.onClick();
+      this.enableOverlay();
+      this.newStarPosition = new StarPosition(pos2d, pos3d);
     }
   }
 });

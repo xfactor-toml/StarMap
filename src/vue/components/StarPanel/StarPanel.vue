@@ -52,7 +52,7 @@
       <g id="data-output">
         <g id="data-output-value">
           <text class="StarPanel__text" text-anchor="middle">
-            <tspan x="436" y="176">{{ paramValue }}</tspan>
+            <tspan x="436" y="176">{{ activeParamValue }}</tspan>
           </text>
         </g>
         <path
@@ -87,7 +87,7 @@
             d="M139.1,118.1c-24.7,24.7-45.1,52.4-61,82.4"
           />
           <path
-            v-if="star.level > 4"
+            v-if="star.params.level > 4"
             id="level-info-5-active"
             class="StarPanel__line is-progress"
             d="M139.1,118.1c-24.7,24.7-45.1,52.4-61,82.4"
@@ -106,7 +106,7 @@
             d="M43.5,302.3c5.5-32.4,15.7-63.6,30.1-92.9"
           />
           <path
-            v-if="star.level > 3"
+            v-if="star.params.level > 3"
             id="level-info-4-active"
             class="StarPanel__line is-progress"
             d="M43.5,302.3c5.5-32.4,15.7-63.6,30.1-92.9"
@@ -125,7 +125,7 @@
             d="M41.8,409.2c-4.6-32.6-4.4-65.4,0.4-97.6"
           />
           <path
-            v-if="star.level > 2"
+            v-if="star.params.level > 2"
             id="level-info-3-active"
             class="StarPanel__line is-progress"
             d="M41.8,409.2c-4.6-32.6-4.4-65.4,0.4-97.6"
@@ -144,7 +144,7 @@
             d="M73.8,512.1c-14.7-29.4-25-60.6-30.7-92.7"
           />
           <path
-            v-if="star.level > 1"
+            v-if="star.params.level > 1"
             id="level-info-2-active"
             class="StarPanel__line is-progress"
             d="M73.8,512.1c-14.7-29.4-25-60.6-30.7-92.7"
@@ -163,7 +163,7 @@
             d="M139,603.5c-23.5-23-45.1-53.5-61-82"
           />
           <path
-            v-if="star.level > 0"
+            v-if="star.params.level > 0"
             id="level-info-1-active"
             class="StarPanel__line is-progress"
             d="M139,603.5c-23.5-23-45.1-53.5-61-82"
@@ -191,7 +191,7 @@
           />
         </transition>
         <path
-          :style="getParamProgressStyle(462, star.massPercent)"
+          :style="getParamProgressStyle(462, star.hud.mass.percent)"
           id="mass-level-line-progress"
           class="StarPanel__line is-progress"
           d="M174.5,568.5C119.1,513.1,88.6,439.4,88.6,361s30.5-152.1,85.9-207.5"
@@ -235,7 +235,7 @@
           />
         </transition>
         <path
-          :style="getParamProgressStyle(382, star.slotsPercent)"
+          :style="getParamProgressStyle(382, star.hud.slots.percent)"
           id="slots-level-line-progress"
           class="StarPanel__line is-progress"
           d="M209.9,533.1c-46-46-71.3-107.1-71.3-172.1s25.3-126.2,71.3-172.1"
@@ -278,7 +278,7 @@
           />
         </transition>
         <path
-          :style="getParamProgressStyle(382, star.energyPercent, true)"
+          :style="getParamProgressStyle(382, star.hud.totalEnergy.percent, true)"
           id="total-energy-level-line-progress"
           class="StarPanel__line is-progress"
           d="M654.1,188.9c46,46,71.3,107.1,71.3,172.1s-25.3,126.2-71.3,172.1"
@@ -321,7 +321,7 @@
           />
         </transition>
         <path
-          :style="getParamProgressStyle(462, star.energyPerHourPercent, true)"
+          :style="getParamProgressStyle(462, star.hud.energyPerHour.percent, true)"
           id="energy-per-hour-level-line-progress"
           class="StarPanel__line is-progress"
           d="M689.5,153.5c55.4,55.4,85.9,129.1,85.9,207.5
@@ -366,7 +366,7 @@
           />
         </transition>
         <path
-          :style="getParamProgressStyle(540, star.lifePercent, true)"
+          :style="getParamProgressStyle(540, star.hud.life.percent, true)"
           id="life-level-line-progress"
           class="StarPanel__line is-progress"
           d="M724.9,118.1C789.7,183,825.4,269.3,825.4,361s-35.7,178-100.6,242.8"
@@ -426,23 +426,23 @@
 </template>
 
 <script lang="ts">
-import { ClientData, StarParam } from '@/types';
+import { Star, StarHudParam } from '@/models';
 import { PropType } from 'vue';
 
 export default {
   name: 'StarPanel',
   props: {
     star: {
-      type: Object as PropType<ClientData>
+      type: Object as PropType<Star>
     }
   },
   data: (): {
-    selectedParam: StarParam;
+    selectedParam: StarHudParam;
   } => ({
     selectedParam: 'mass'
   }),
   computed: {
-    activeParam(): Record<StarParam, boolean> {
+    activeParam(): Record<StarHudParam, boolean> {
       return {
         mass: this.selectedParam === 'mass',
         slots: this.selectedParam === 'slots',
@@ -451,14 +451,8 @@ export default {
         life: this.selectedParam === 'life'
       };
     },
-    paramValue(): Record<StarParam, string> {
-      return {
-        mass: '330 000 E.M.',
-        slots: '330 000 E.M.',
-        totalEnergy: '340 000 E.M.',
-        energyPerHour: '530 000 E.M.',
-        life: '360 000 E.M.'
-      }[this.selectedParam];
+    activeParamValue(): Record<StarHudParam, string> {
+      return this.star.hud[this.selectedParam].text;
     },
     panelStyle() {
       return {
@@ -467,14 +461,13 @@ export default {
     }
   },
   methods: {
-    // value=50 - temp
-    getParamProgressStyle(dasharray: number, value = 50, negative = false) {
+    getParamProgressStyle(dasharray: number, value: number, negative = false) {
       return {
         'stroke-dasharray': `${dasharray}px`,
         'stroke-dashoffset': `${(dasharray - dasharray * (value / 100)) * (negative ? -1 : 1)}px`
       };
     },
-    selectParam(param: StarParam) {
+    selectParam(param: StarHudParam) {
       this.selectedParam = param;
     }
   }

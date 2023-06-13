@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { Star } from '@/models';
+import { Star, StarScreenPosition } from '@/models';
 import { PropType } from 'vue';
 
 export default {
@@ -33,6 +33,9 @@ export default {
   props: {
     star: {
       type: Object as PropType<Star>
+    },
+    position: {
+      type: Object as PropType<StarScreenPosition>
     }
   },
   data: () => ({
@@ -42,8 +45,8 @@ export default {
   computed: {
     tooltipStyle() {
       return {
-        top: `${this.star.position.y}px`,
-        left: `${this.star.position.x}px`,
+        top: `${this.position.y}px`,
+        left: `${this.position.x}px`,
         transform: `
           translateX(-12px)
           translateY(-78px)
@@ -64,8 +67,8 @@ export default {
       const { width, height } = this.$refs.tooltip.getBoundingClientRect();
 
       return {
-        x: width > innerWidth - this.star.position.x,
-        y: height > innerHeight - this.star.position.y
+        x: width > innerWidth - this.position.x,
+        y: height > innerHeight - this.position.y
       };
     },
     calcScale() {
@@ -73,7 +76,7 @@ export default {
       const { width } = this.$refs.tooltip.getBoundingClientRect();
 
       const factor = 1.1;
-      const area = this.intersection.x ? this.star.position.x : innerWidth - this.star.position.x;
+      const area = this.intersection.x ? this.position.x : innerWidth - this.position.x;
       const scale = Math.min((area / width) * factor, 1) * this.star.scale;
 
       return scale;

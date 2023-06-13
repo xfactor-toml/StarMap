@@ -8,14 +8,11 @@ import { Component } from 'vue';
 import { mapStores } from 'pinia';
 import { debounce } from 'debounce';
 import { InterfaceScreen, PreloaderScreen, WelcomeScreen } from '@/screens';
-import { ClientData, GuiScreen } from '@/types';
+import { ClientEvent, GuiScreen } from '@/types';
 import { useSettingsStore } from '@/stores';
 
 export default {
   name: 'App',
-  components: {
-    PreloaderScreen
-  },
   data: () => ({
     version: 'v0.25'
   }),
@@ -32,8 +29,8 @@ export default {
     }
   },
   methods: {
-    handleGameEvent({ detail: data }: Event & { detail: ClientData }) {
-      switch (data.eventName) {
+    handleGameEvent({ detail: clientEvent }: Event & { detail: ClientEvent }) {
+      switch (clientEvent.eventName) {
         case 'GAME_LOADING':
           break;
 
@@ -48,7 +45,7 @@ export default {
           break;
 
         case 'SHOW_STAR_PREVIEW':
-          this.settingsStore.showStarTooltip(data);
+          this.settingsStore.showStarTooltip(clientEvent);
           break;
 
         case 'HIDE_STAR_PREVIEW':
@@ -56,12 +53,16 @@ export default {
           break;
 
         case 'SHOW_STAR_GUI':
-          this.settingsStore.showStarPanel(data);
+          this.settingsStore.showStarPanel(clientEvent);
+          break;
+
+        case 'PHANTOM_STAR_PREVIEW':
+          this.settingsStore.showPhantomStarTooltip(clientEvent);
           break;
       }
     }
   },
-  async created() {
+  created() {
     // Game Events
     window.addEventListener('gameEvent', this.handleGameEvent.bind(this));
 
@@ -69,13 +70,9 @@ export default {
     window.addEventListener(
       'resize',
       debounce(() => {
-        this.$client.handleGuiEvent('resize');
+        this.$client.onWindowResize();
       }, 200)
     );
-
-    const stars = await this.$wallet.getStars();
-
-    console.log(stars);
 
     // INFO: client didnt send event when press escape
     document.body.addEventListener('fullscreenchange', () => {

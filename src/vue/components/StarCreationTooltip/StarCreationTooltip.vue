@@ -1,6 +1,6 @@
 <template>
   <div class="StarCreationTooltip" :class="tooltipClasses" :style="tooltipStyle" ref="tooltip">
-    <img class="StarCreationTooltip__preview" :src="star.preview" />
+    <img class="StarCreationTooltip__preview" :src="preview" />
     <button
       class="StarCreationTooltip__create"
       type="button"
@@ -20,25 +20,26 @@
 </template>
 
 <script lang="ts">
-import { Star } from '@/models';
+import { StarPosition } from '@/models';
 import { PropType } from 'vue';
 
 export default {
   name: 'StarCreationTooltip',
   props: {
-    star: {
-      type: Object as PropType<Star>
+    starPosition: {
+      type: Object as PropType<StarPosition>
     }
   },
   data: () => ({
     intersection: { x: false, y: false },
-    computedScale: 1
+    computedScale: 1,
+    preview: './gui/images/phantom-star.png'
   }),
   computed: {
     tooltipStyle() {
       return {
-        top: `${this.star.position.y}px`,
-        left: `${this.star.position.x}px`,
+        top: `${this.starPosition.screen.y}px`,
+        left: `${this.starPosition.screen.x}px`,
         transform: `
           translateX(-10px)
           translateY(-86px)
@@ -58,19 +59,9 @@ export default {
       const { width, height } = this.$refs.tooltip.getBoundingClientRect();
 
       return {
-        x: width > innerWidth - this.star.position.x,
-        y: height > innerHeight - this.star.position.y
+        x: width > innerWidth - this.starPosition.screen.x,
+        y: height > innerHeight - this.starPosition.screen.y
       };
-    },
-    calcScale() {
-      const { innerWidth } = window;
-      const { width } = this.$refs.tooltip.getBoundingClientRect();
-
-      const factor = 1.1;
-      const area = this.intersection.x ? this.star.position.x : innerWidth - this.star.position.x;
-      const scale = Math.min((area / width) * factor, 1) * this.star.scale;
-
-      return scale;
     },
     hide() {
       this.$emit('hide');
@@ -87,7 +78,6 @@ export default {
   },
   mounted() {
     this.intersection = this.recalcIntersection();
-    this.computedScale = this.calcScale();
   }
 };
 </script>
