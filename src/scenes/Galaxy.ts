@@ -790,14 +790,16 @@ export class Galaxy {
 
             let life = MyMath.randomIntInRange(0, 100);
             let race = MyMath.randomIntInRange(0, RACES.length - 1);
+            let position = {
+                x: Math.trunc(px * xScale * 1000000) / 1000000,
+                y: Math.trunc(offsetH * 1000000) / 1000000,
+                z: Math.trunc(py * zScale * 1000000) / 1000000
+            };
+
 
             resData[i] = {
                 id: starId,
-                pos: {
-                    x: px * xScale,
-                    y: offsetH,
-                    z: py * zScale
-                },
+                pos: position,
                 color: {
                     r: clr.r,
                     g: clr.g,

@@ -213,7 +213,7 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
 
     private init3() {
 
-        let camPos = this._params.camera.position;
+        let camPos = this._params.camera.position.clone();
         if (!this._params.camDistLogic) {
             camPos.x = 0;
             camPos.y = 0;
