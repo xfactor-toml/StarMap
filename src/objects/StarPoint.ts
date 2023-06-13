@@ -1,8 +1,8 @@
 import * as THREE from "three";
 import { ThreeLoader } from "../loaders/ThreeLoader";
 import gsap from "gsap";
-import { GalaxyStarParams } from "../scenes/Galaxy";
 import { Callbacks } from "../utils/events/Callbacks";
+import { GalaxyStarParams } from "~/data/Types";
 
 export type StarPointParams = {
     // name: string;

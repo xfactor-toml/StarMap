@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { QTPoint } from '../systems/QuadTree';
 import { StarPoint } from "../objects/StarPoint";
-import { GalaxyStarParams } from '../scenes/Galaxy';
+import { GalaxyStarParams } from '~/data/Types';
 
 export class StarPointsMng {
 
@@ -24,7 +24,7 @@ export class StarPointsMng {
         this._starPoints = [];
     }
 
-    updatePoints(aPoints: QTPoint[]) {
+    updatePoints(aPoints: QTPoint[], aRadius: number) {
 
         let ids: number[] = [];
         let points: { 
@@ -41,7 +41,8 @@ export class StarPointsMng {
             const p = aPoints[i];
             let starParams = p.data.starData as GalaxyStarParams;
             let pos = new THREE.Vector3(starParams.pos.x, starParams.pos.y, starParams.pos.z);
-            let dist = pos.distanceTo(this._camera.position);
+            let camDist = pos.distanceTo(this._camera.position);
+            // let centerDist = pos.distanceTo(this._camera.position);
 
             let wPos = pos.clone();
             this._parent.localToWorld(wPos);
@@ -53,10 +54,10 @@ export class StarPointsMng {
             // let dotProduct = camDir.dot(pDir);
             // if (dotProduct >= 0) continue;
 
-            // if (dist > this._dist) continue;
+            // if (centerDist > aRadius) continue;
             points.push({
                 id: starParams.id,
-                dist: dist
+                dist: camDist
             });
             pDatas.push(starParams);
         }
