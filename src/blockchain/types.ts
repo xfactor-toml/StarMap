@@ -10,6 +10,8 @@ export type Coords = {
     Z: number
 }
 
+export type Race = "Waters" | "Humans" | "Insects" | "Lizards"
+
 export type StarParams = {
     name: string,
     isLive: boolean,
@@ -22,6 +24,8 @@ export type StarParams = {
     habitableZoneMin: number,
     habitableZoneMax: number,
     planetSlots: number,
+    mass: number,
+    race: Race,
     coords: Coords
 }
 
