@@ -124,7 +124,6 @@ export class GameBoot implements ILogger {
     }
         
     startGame(aRealStars: ServerStarData[]) {
-        debugger;
         DB.realStars = aRealStars;
         let gameEngine = new GameRender();
         gameEngine.initGame();

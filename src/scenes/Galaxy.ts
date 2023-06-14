@@ -207,7 +207,6 @@ export class Galaxy {
 
         // fly system
         let starsPos: THREE.Vector3[] = [];
-        debugger;
         for (let i = 0; i < DB.realStars.length; i += 2) {
             let pos = DB.realStars[i].params.coords;
             if (pos.X && pos.Y && pos.Z) {
