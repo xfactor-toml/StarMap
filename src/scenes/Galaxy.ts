@@ -27,13 +27,14 @@ import { FileMng } from '../mng/FileMng';
 import { FarGalaxyParams, GalaxyStarParams, ServerStarData } from '~/data/Types';
 import { StarGenerator } from '~/mng/StarGenerator';
 import { StarMath } from '~/math/StarMath';
+import { ILogger } from '~/interfaces/ILogger';
 
 let debugObjects = {
     farStarsSphereMin: null,
     farStarsSphereMax: null,
 }
 
-export class Galaxy {
+export class Galaxy implements ILogger {
 
     private _fsm: FSM;
 
@@ -122,6 +123,16 @@ export class Galaxy {
         // }
         Settings.galaxyData.starAlphaFactor = 1;
 
+    }
+
+    logDebug(aMsg: string, aData?: any): void {
+        LogMng.debug(`Galaxy: ${aMsg}`, aData);
+    }
+    logWarn(aMsg: string, aData?: any): void {
+        LogMng.warn(`Galaxy: ${aMsg}`, aData);
+    }
+    logError(aMsg: string, aData?: any): void {
+        LogMng.error(`Galaxy: ${aMsg}`, aData);
     }
 
     public set centerVisible(v: boolean) {
@@ -1615,6 +1626,8 @@ export class Galaxy {
         const LOOK_DUR = 2;
         const DUR = 3;
 
+        this.logDebug('onStateToStarEnter...');
+
         this.currentStarId = aParams.starId;
 
         // get star params by id
@@ -1915,6 +1928,8 @@ export class Galaxy {
         starId: number,
         starParams: GalaxyStarParams
     }) {
+
+        this.logDebug('onStateStarEnter...');
 
         this._orbitControl.autoRotate = false;
         this._orbitControl.enableZoom = false;
