@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { RACES, STAR_COLOR_2 } from "~/data/DB";
+import { PHANTOM_BIG_STAR_COLOR, PHANTOM_STAR_COLOR, RACES, STAR_COLOR_2 } from "~/data/DB";
 import { Settings } from "~/data/Settings";
 import { GalaxyCircleParams, GalaxyParams, GalaxyStarParams, ServerStarData } from "~/data/Types";
 import { MyMath } from "~/utils/MyMath";
@@ -27,7 +27,7 @@ export class StarGenerator {
     }
 
     generateGalaxyStarsData(aParams: GalaxyParams,
-        xScale: number, zScale: number, aColorSet?: any[], aBlinkData?: any): GalaxyStarParams[] {
+        xScale: number, zScale: number, isPhantom = false, aColorSet?: any[], aBlinkData?: any): GalaxyStarParams[] {
 
         if (!aParams.startAngle) aParams.startAngle = 0;
         if (!aParams.endAngle) aParams.endAngle = Math.PI;
@@ -116,7 +116,15 @@ export class StarGenerator {
             // color
             let clr = new THREE.Color(1, 1, 1);
             let clrBigStar: any;
-            if (aColorSet) {
+            
+            if (isPhantom) {
+                clr.r = PHANTOM_STAR_COLOR.r;
+                clr.g = PHANTOM_STAR_COLOR.g;
+                clr.b = PHANTOM_STAR_COLOR.b;
+                clrBigStar = PHANTOM_BIG_STAR_COLOR;
+
+            }
+            else if (aColorSet) {
                 let customStarColor = aColorSet[MyMath.randomIntInRange(0, aColorSet.length - 1)];
                 clr.r = customStarColor[0];
                 clr.g = customStarColor[1];

@@ -76,6 +76,12 @@ export const STAR_COLOR_2 = {
 
 };
 
+export const PHANTOM_STAR_COLOR = { r: 45 / 255, g: 140 / 255, b: 180 / 255 };
+export const PHANTOM_BIG_STAR_COLOR = {
+    main: { r: 164 / 255, g: 228 / 255, b: 1 },
+    corona: { r: 45 / 255, g: 140 / 255, b: 180 / 255. }
+}
+
 export class DB {
     static realStars: ServerStarData[];
 

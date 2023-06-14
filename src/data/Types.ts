@@ -100,6 +100,7 @@ export type ServerStarParams = {
     habitableZoneMin: number,
     habitableZoneMax: number,
     planetSlots: number,
+    mass: number,
     race: string,
     coords: {
         X: number,

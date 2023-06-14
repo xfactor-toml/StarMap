@@ -455,7 +455,7 @@ export class Galaxy {
                 alphaMax: Settings.galaxyData.alphaMax,
                 scaleMin: Settings.galaxyData.scaleMin,
                 scaleMax: Settings.galaxyData.scaleMax
-            }, 145, 145);
+            }, 145, 145, true);
         }
 
         Settings.galaxyData.starsCount = this._phantomStarsData.length;
@@ -479,7 +479,7 @@ export class Galaxy {
                 scaleMin: Settings.galaxyData.scaleMin,
                 scaleMax: Settings.galaxyData.scaleMax,
             },
-                145, 145,
+                145, 145, false,
                 FAR_STAR_COLORS,
                 {
                     durationMin: Settings.galaxyData.blinkDurMin,

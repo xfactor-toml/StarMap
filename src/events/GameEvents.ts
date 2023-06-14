@@ -18,6 +18,12 @@ export const GameEvents = {
     EVENT_HIDE_STAR_PREVIEW: 'HIDE_STAR_PREVIEW',
 
     /**
+     * pos3d: {x, y, z}
+     * pos2d: { x, y }
+     */
+    EVENT_PHANTOM_STAR_PREVIEW: 'PHANTOM_STAR_PREVIEW',
+
+    /**
      * name,
      * description,
      * level,
@@ -28,13 +34,7 @@ export const GameEvents = {
      * scale
      */
     EVENT_SHOW_STAR_GUI: 'SHOW_STAR_GUI',
-
-    /**
-     * pos3d: {x, y, z}
-     * pos2d: { x, y }
-     */
-    EVENT_PHANTOM_STAR_PREVIEW: 'PHANTOM_STAR_PREVIEW',
-
+    
     dispatchEvent: (aEventName: string, aData: any = {}) => {
         aData.eventName = aEventName;
         window.dispatchEvent(new CustomEvent('gameEvent', { detail: aData }));
