@@ -207,9 +207,12 @@ export class Galaxy {
 
         // fly system
         let starsPos: THREE.Vector3[] = [];
+        debugger;
         for (let i = 0; i < DB.realStars.length; i += 2) {
             let pos = DB.realStars[i].params.coords;
-            starsPos.push(new THREE.Vector3(pos.X, pos.Y, pos.Z));
+            if (pos.X && pos.Y && pos.Z) {
+                starsPos.push(new THREE.Vector3(pos.X, pos.Y, pos.Z));
+            }
         }
         this.smallFlySystem = new SmallFlySystem(this._dummyGalaxy, starsPos);
 
@@ -462,32 +465,38 @@ export class Galaxy {
 
         // blink stars data generate
         if (galaxyBlinkStarsData) {
-            this._blinkStarsData = galaxyBlinkStarsData;
+            if (Settings.USE_BLINK_STARS) {
+                this._blinkStarsData = galaxyBlinkStarsData;
+            }
         }
         else {
-            this._blinkStarsData = StarGenerator.getInstance().generateGalaxyStarsData({
-                starsCount: Settings.galaxyData.blinkStarsCount,
-                startAngle: Settings.galaxyData.startAngle,
-                endAngle: Settings.galaxyData.endAngle,
-                startOffsetXY: Settings.galaxyData.startOffsetXY,
-                endOffsetXY: Settings.galaxyData.endOffsetXY,
-                startOffsetH: Settings.galaxyData.startOffsetH,
-                endOffsetH: Settings.galaxyData.endOffsetH,
-                k: Settings.galaxyData.k,
-                alphaMin: Settings.galaxyData.alphaMin,
-                alphaMax: Settings.galaxyData.alphaMax,
-                scaleMin: Settings.galaxyData.scaleMin,
-                scaleMax: Settings.galaxyData.scaleMax,
-            },
-                145, 145, false,
-                FAR_STAR_COLORS,
-                {
-                    durationMin: Settings.galaxyData.blinkDurMin,
-                    durationMax: Settings.galaxyData.blinkDurMax
-                }
-            );
+            if (Settings.USE_BLINK_STARS) {
+                this._blinkStarsData = StarGenerator.getInstance().generateGalaxyStarsData({
+                    starsCount: Settings.galaxyData.blinkStarsCount,
+                    startAngle: Settings.galaxyData.startAngle,
+                    endAngle: Settings.galaxyData.endAngle,
+                    startOffsetXY: Settings.galaxyData.startOffsetXY,
+                    endOffsetXY: Settings.galaxyData.endOffsetXY,
+                    startOffsetH: Settings.galaxyData.startOffsetH,
+                    endOffsetH: Settings.galaxyData.endOffsetH,
+                    k: Settings.galaxyData.k,
+                    alphaMin: Settings.galaxyData.alphaMin,
+                    alphaMax: Settings.galaxyData.alphaMax,
+                    scaleMin: Settings.galaxyData.scaleMin,
+                    scaleMax: Settings.galaxyData.scaleMax,
+                },
+                    145, 145, false,
+                    FAR_STAR_COLORS,
+                    {
+                        durationMin: Settings.galaxyData.blinkDurMin,
+                        durationMax: Settings.galaxyData.blinkDurMax
+                    }
+                );
+            }
         }
 
+        if (!Settings.USE_BLINK_STARS) this._blinkStarsData = [];
+        
         Settings.galaxyData.blinkStarsCount = this._blinkStarsData.length;
 
         // real star particles
@@ -593,14 +602,10 @@ export class Galaxy {
 
     private initQuadTree() {
 
+        // REAL STARS
         if (this._quadTreeReal) {
             this._quadTreeReal.destroy();
             this._quadTreeReal = null;
-        }
-
-        if (this._quadTreePhantom) {
-            this._quadTreePhantom.destroy();
-            this._quadTreePhantom = null;
         }
 
         this._quadTreeReal = new QuadTree(new QTRect(0, 0, 400, 400), 30);
@@ -609,7 +614,13 @@ export class Galaxy {
         for (let i = 0; i < this._realStarsData.length; i++) {
             const sd = this._realStarsData[i];
             if (sd.id == null) sd.id = StarGenerator.getInstance().getStarId();
-            this._quadTreePhantom.addPoint(new QTPoint(sd.pos.x, sd.pos.z, { starData: sd }));
+            this._quadTreeReal.addPoint(new QTPoint(sd.pos.x, sd.pos.z, { starData: sd }));
+        }
+
+        // PHANTOM STARS
+        if (this._quadTreePhantom) {
+            this._quadTreePhantom.destroy();
+            this._quadTreePhantom = null;
         }
 
         this._quadTreePhantom = new QuadTree(new QTRect(0, 0, 400, 400), 30);
@@ -698,6 +709,7 @@ export class Galaxy {
         this.starPointsMng = new StarPointsMng({
             parent: this._dummyGalaxy,
             camera: this._camera,
+            cameraTarget: this._cameraTarget,
             poolSize: 400,
             dist: 20
         });

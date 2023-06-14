@@ -120,6 +120,7 @@ export class Settings {
     static GALAXY_CENTER_SCALE = 150;
     static GALAXY_CENTER_SCALE_2 = 150 * 0.8;
 
+    static USE_BLINK_STARS = false;
     static STAR_CLICK_POINTS = true;
     static POINTS_CAMERA_MAX_DIST = 100;
     static POINTS_MAX_CHECK_RADIUS = 10;

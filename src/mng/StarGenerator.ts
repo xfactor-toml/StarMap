@@ -2,15 +2,27 @@ import * as THREE from "three";
 import { PHANTOM_BIG_STAR_COLOR, PHANTOM_STAR_COLOR, RACES, STAR_COLOR_2 } from "~/data/DB";
 import { Settings } from "~/data/Settings";
 import { GalaxyCircleParams, GalaxyParams, GalaxyStarParams, ServerStarData } from "~/data/Types";
+import { ILogger } from "~/interfaces/ILogger";
+import { LogMng } from "~/utils/LogMng";
 import { MyMath } from "~/utils/MyMath";
 
-export class StarGenerator {
+export class StarGenerator implements ILogger {
     private static instance: StarGenerator = null;
     private _starIdCounter: number;
 
     private constructor() {
         if (StarGenerator.instance) throw new Error("Don't use StarGenerator.constructor(), it's SINGLETON, use getInstance() method");
         this.resetStarId();
+    }
+
+    logDebug(aMsg: string, aData?: any): void {
+        LogMng.debug(`StarGenerator: ${aMsg}`, aData);
+    }
+    logWarn(aMsg: string, aData?: any): void {
+        LogMng.warn(`StarGenerator: ${aMsg}`, aData);
+    }
+    logError(aMsg: string, aData?: any): void {
+        LogMng.error(`StarGenerator: ${aMsg}`, aData);
     }
 
     static getInstance(): StarGenerator {
@@ -116,7 +128,7 @@ export class StarGenerator {
             // color
             let clr = new THREE.Color(1, 1, 1);
             let clrBigStar: any;
-            
+
             if (isPhantom) {
                 clr.r = PHANTOM_STAR_COLOR.r;
                 clr.g = PHANTOM_STAR_COLOR.g;
@@ -267,7 +279,13 @@ export class StarGenerator {
         for (let i = 0; i < aServerStars.length; i++) {
             const serverStar = aServerStars[i];
             const serverStarParams = serverStar.params;
+            const pos = serverStarParams.coords;
 
+            if (!pos.X || !pos.Y || !pos.Z) {
+                this.logWarn(`getRealStarDataByServer(): !pos.X || !pos.Y || !pos.Z for serverStarData:`, serverStar);
+                continue;
+            }
+            
             // color
             let clr = new THREE.Color(1, 1, 1);
             let clrBigStar: any;
@@ -285,7 +303,7 @@ export class StarGenerator {
 
             resData.push({
                 id: serverStar.id,
-                pos: { x: serverStarParams.coords.X, y: serverStarParams.coords.Y, z: serverStarParams.coords.Z },
+                pos: { x: pos.X, y: pos.Y, z: pos.Z },
                 scale: MyMath.randomInRange(aParams.scaleMin, aParams.scaleMax),
                 color: {
                     r: clr.r,

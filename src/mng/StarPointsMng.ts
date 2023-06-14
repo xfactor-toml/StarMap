@@ -7,6 +7,7 @@ export class StarPointsMng {
 
     private _parent: THREE.Object3D;
     private _camera: THREE.PerspectiveCamera;
+    private _cameraTarget: THREE.Vector3;
     private _poolSize: number;
     private _dist: number;
     private _starPoints: StarPoint[];
@@ -14,11 +15,13 @@ export class StarPointsMng {
     constructor(aParams: {
         parent: THREE.Object3D,
         camera: THREE.PerspectiveCamera,
+        cameraTarget: THREE.Vector3,
         poolSize: number,
         dist: number
     }) {
         this._parent = aParams.parent;
         this._camera = aParams.camera;
+        this._cameraTarget = aParams.cameraTarget;
         this._poolSize = aParams.poolSize;
         this._dist = aParams.dist;
         this._starPoints = [];
@@ -42,7 +45,7 @@ export class StarPointsMng {
             let starParams = p.data.starData as GalaxyStarParams;
             let pos = new THREE.Vector3(starParams.pos.x, starParams.pos.y, starParams.pos.z);
             let camDist = pos.distanceTo(this._camera.position);
-            // let centerDist = pos.distanceTo(this._camera.position);
+            let centerDist = pos.distanceTo(this._cameraTarget);
 
             let wPos = pos.clone();
             this._parent.localToWorld(wPos);
@@ -54,7 +57,7 @@ export class StarPointsMng {
             // let dotProduct = camDir.dot(pDir);
             // if (dotProduct >= 0) continue;
 
-            // if (centerDist > aRadius) continue;
+            if (centerDist > aRadius) continue;
             points.push({
                 id: starParams.id,
                 dist: camDist
