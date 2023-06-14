@@ -121,7 +121,6 @@ export const useSettingsStore = defineStore('settings', {
     },
     returnToGalaxy() {
       this.hideStarPanel();
-      this.client.onClick();
       this.client.flyFromStar();
     },
     hideStarTooltip() {

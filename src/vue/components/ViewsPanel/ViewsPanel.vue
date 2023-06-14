@@ -13,7 +13,7 @@
             }
           ]"
           :disabled="!view.clickable"
-          @click="settingsStore.setView(view.name)"
+          @click="changeView(view.name)"
         >
           {{ view.label }}
         </button>
@@ -25,12 +25,19 @@
 
 <script lang="ts">
 import { useSettingsStore } from '@/stores';
+import { GuiViewName } from '@/types';
 import { mapStores } from 'pinia';
 
 export default {
   name: 'ViewsPanel',
   computed: {
     ...mapStores(useSettingsStore)
+  },
+  methods: {
+    changeView(viewName: GuiViewName) {
+      this.$client.onClick();
+      this.settingsStore.setView(viewName);
+    }
   }
 };
 </script>
