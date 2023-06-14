@@ -1,4 +1,5 @@
 import { Race } from '~/blockchain/types';
+import { ServerStarData } from '~/data/Types';
 import { FrontEvents } from '~/events/FrontEvents';
 
 type ClientEventName =
@@ -40,23 +41,13 @@ export interface GameHideStarPreviewEvent extends BaseEvent {
 
 export interface ShowStarPreviewEvent extends BaseEvent {
   eventName: 'SHOW_STAR_PREVIEW';
-  starId: number;
-  name: string;
-  description: string;
-  level: number;
-  race: Race;
-  pos2d: { x: number; y: number };
+  starData: ServerStarData;
+  pos2d: { x; y };
 }
 
 export interface ShowStarGuiEvent extends BaseEvent {
   eventName: 'SHOW_STAR_GUI';
-  name: string;
-  description: string;
-  level: number;
-  race: Race;
-  planetSlots: number;
-  energy: number;
-  life: number;
+  starData: ServerStarData;
   scale: number;
 }
 

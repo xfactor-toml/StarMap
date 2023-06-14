@@ -5,6 +5,7 @@ import {
   GuiScreen,
   GuiViewName,
   PhantomStarPreviewEvent,
+  ShowStarGuiEvent,
   ShowStarPreviewEvent
 } from '@/types';
 import { MODES } from '@/constants';
@@ -140,11 +141,11 @@ export const useSettingsStore = defineStore('settings', {
     setFullscreenMode(value: boolean) {
       this.fullscreen = value;
     },
-    showStarTooltip({ starId, pos2d }: ShowStarPreviewEvent) {
+    showStarTooltip({ starData, pos2d }: ShowStarPreviewEvent) {
       this.client.onClick();
 
       const starsStore = useStarsStore();
-      const star = starsStore.getById(starId);
+      const star = starsStore.getById(starData.id);
 
       if (!star) {
         return;
@@ -156,9 +157,11 @@ export const useSettingsStore = defineStore('settings', {
         star
       };
     },
-    showStarPanel({ starId }) {
+    showStarPanel({ starData, scale }: ShowStarGuiEvent) {
       const starsStore = useStarsStore();
-      const star = starsStore.getById(starId);
+      const star = starsStore.getById(starData.id);
+
+      star.setScale(scale);
 
       this.panelStar = star;
     },

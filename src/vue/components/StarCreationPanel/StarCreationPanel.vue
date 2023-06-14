@@ -94,7 +94,9 @@
 import { mobileUrl } from '~/blockchain/config';
 import { roundNumber } from '@/utils';
 import { PropType } from 'vue';
-import { StarPosition } from '@/models';
+import { Star, StarPosition } from '@/models';
+import { useSettingsStore, useStarsStore } from '@/stores';
+import { mapStores } from 'pinia';
 
 export default {
   name: 'StarCreationPanel',
@@ -116,6 +118,7 @@ export default {
     starName: ''
   }),
   computed: {
+    ...mapStores(useSettingsStore, useStarsStore),
     currency() {
       return this.$wallet.currency;
     },
@@ -165,12 +168,19 @@ export default {
     },
     async create() {
       this.creating = true;
-      this.createdStar = await this.$wallet.createStar(
+
+      const createdStar = await this.$wallet.createStar(
         this.starName,
-        this.starPosition.contractFormat
+        this.starPosition.galaxy.toContractFormat()
       );
+
+      this.createdStar = new Star(createdStar);
+
       this.creating = false;
       this.balance = await this.$wallet.getBalance();
+      this.starsStore.addStar(this.createdStar);
+      this.settingsStore.hideStarTooltip();
+
       this.$client.onStarCreated(this.createdStar);
     }
   },

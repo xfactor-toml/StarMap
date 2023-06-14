@@ -9,7 +9,7 @@ import { mapStores } from 'pinia';
 import { debounce } from 'debounce';
 import { InterfaceScreen, PreloaderScreen, WelcomeScreen } from '@/screens';
 import { ClientEvent, GuiScreen } from '@/types';
-import { useSettingsStore } from '@/stores';
+import { useSettingsStore, useStarsStore } from '@/stores';
 
 export default {
   name: 'App',
@@ -17,7 +17,7 @@ export default {
     version: 'v0.25'
   }),
   computed: {
-    ...mapStores(useSettingsStore),
+    ...mapStores(useSettingsStore, useStarsStore),
     screen() {
       const screens: Record<GuiScreen, Component> = {
         preloader: PreloaderScreen,
@@ -29,12 +29,13 @@ export default {
     }
   },
   methods: {
-    handleGameEvent({ detail: clientEvent }: Event & { detail: ClientEvent }) {
+    async handleGameEvent({ detail: clientEvent }: Event & { detail: ClientEvent }) {
       switch (clientEvent.eventName) {
         case 'GAME_LOADING':
           break;
 
         case 'GAME_LOADED':
+          await this.starsStore.fetchStars();
           this.settingsStore.setScreen('welcome');
           break;
 

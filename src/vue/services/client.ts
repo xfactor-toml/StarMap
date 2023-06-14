@@ -5,8 +5,11 @@ import { FrontEvents } from '~/events/FrontEvents';
 export class ClientService {
   constructor(private dispatcher: typeof FrontEvents) {}
 
-  run(fullscreen: boolean, stars: Star[]) {
-    this.dispatcher.startGame.dispatch(fullscreen, stars);
+  run(fullscreen: boolean, stars: Star[] = []) {
+    this.dispatcher.startGame.dispatch(
+      fullscreen,
+      stars.map(star => star.toRaw())
+    );
   }
 
   playInitScreenSfx() {
@@ -74,7 +77,7 @@ export class ClientService {
   }
 
   onStarCreated(star: Star) {
-    this.dispatcher.onStarCreated.dispatch(star);
+    this.dispatcher.onStarCreated.dispatch(star.toRaw());
   }
 
   static VuePlugin = {

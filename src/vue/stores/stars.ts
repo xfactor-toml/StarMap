@@ -21,8 +21,11 @@ export const useStarsStore = defineStore('stars', {
     async fetchStars() {
       this.stars = (await this.wallet.getStars()).map(star => new Star(star));
     },
+    addStar(star: Star) {
+      this.stars.push(star);
+    },
     getById(starId: number) {
-      return this.star.find(star => star.id === starId);
+      return this.stars.find(star => star.id === starId);
     },
     setLevelsFilter(levels: number[]) {
       this.levelsFilter = levels;
