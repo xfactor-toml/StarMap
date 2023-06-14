@@ -1876,7 +1876,7 @@ export class Galaxy {
                 this.solarSystem.visible = true;
             },
             onComplete: () => {
-                this._fsm.startState(States.star);
+                this._fsm.startState(States.star, aParams);
             }
         });
 
@@ -1911,7 +1911,10 @@ export class Galaxy {
 
     }
 
-    private onStateStarEnter() {
+    private onStateStarEnter(aParams: {
+        starId: number,
+        starParams: GalaxyStarParams
+    }) {
 
         this._orbitControl.autoRotate = false;
         this._orbitControl.enableZoom = false;
@@ -1928,7 +1931,8 @@ export class Galaxy {
         //     }
         // }
 
-        let starParams: GalaxyStarParams = this.starPointParamsHovered.starParams;
+        // let starParams: GalaxyStarParams = this.starPointParamsHovered.starParams;
+        let starParams: GalaxyStarParams = aParams.starParams;
 
         let guiScale = this.guiGetScaleBigStarTooltip();
 
@@ -2141,7 +2145,7 @@ export class Galaxy {
         // find star in phantom mode and remove it
         for (let i = 0; i < this._phantomStarsData.length; i++) {
             const psd = this._phantomStarsData[i];
-            if (psd.id == this._phantomStarPicked.id) {
+            if (psd.id == this._phantomStarPicked?.id) {
                 this._phantomStarsData.splice(i, 1);
                 break;
             }
