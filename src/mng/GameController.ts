@@ -12,6 +12,7 @@ export class GameController implements ILogger {
     private galaxy: Galaxy;
 
     constructor() {
+        FrontEvents.onLeftPanelGalaxyClick.add(this.onLeftPanelGalaxyClick, this);
         FrontEvents.onBotPanelPhantomClick.add(this.onBotPanelPhantomClick, this);
         FrontEvents.onBotPanelRealClick.add(this.onBotPanelRealClick, this);
         FrontEvents.onStarCreated.add(this.onStarCreated, this);
@@ -25,6 +26,11 @@ export class GameController implements ILogger {
     }
     logError(aMsg: string, aData?: any): void {
         LogMng.error(`GameController: ${aMsg}`, aData);
+    }
+
+    private onLeftPanelGalaxyClick() {
+        this.logDebug(`onLeftPanelGalaxyClick...`);
+        this.galaxy?.gotoGalaxy();
     }
 
     private onBotPanelPhantomClick() {

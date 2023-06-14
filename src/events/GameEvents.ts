@@ -24,6 +24,7 @@ export const GameEvents = {
      * scale
      */
     EVENT_SHOW_STAR_GUI: 'SHOW_STAR_GUI',
+    EVENT_HIDE_STAR_GUI: 'HIDE_STAR_GUI',
 
     EVENT_SHOW_REAL_MODE: 'SHOW_REAL_MODE',
     EVENT_SHOW_PHANTOM_MODE: 'SHOW_PHANTOM_MODE',

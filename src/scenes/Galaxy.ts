@@ -390,12 +390,28 @@ export class Galaxy {
 
     }
 
+    gotoGalaxy() {
+        switch (this._fsm.getCurrentState().name) {
+            case States.star:
+                this._fsm.startState(States.fromStar);
+                break;
+        }
+    }
+
     openPhantomMode() {
-        this._fsm.startState(States.phantomStars);
+        switch (this._fsm.getCurrentState().name) {
+            case States.realStars:
+                this._fsm.startState(States.phantomStars);
+                break;
+        }
     }
 
     openRealMode() {
-        this._fsm.startState(States.realStars);
+        switch (this._fsm.getCurrentState().name) {
+            case States.phantomStars:
+                this._fsm.startState(States.realStars);
+                break;
+        }
     }
 
     onStarCreated(aStarData: ServerStarData) {
@@ -640,12 +656,15 @@ export class Galaxy {
         // this.qtDebugRender.render();
     }
 
-    private destroyGalaxyStars() {
-
+    private destroyRealStarParticles() {
         if (this._realStarsParticles) {
             this._realStarsParticles.free();
             this._realStarsParticles = null;
         }
+    }
+    private destroyGalaxyStars() {
+
+        this.destroyRealStarParticles();
 
         if (this._phantomStarsParticles) {
             this._phantomStarsParticles.free();
@@ -1997,6 +2016,8 @@ export class Galaxy {
             }
         });
 
+        GameEvents.dispatchEvent(GameEvents.EVENT_HIDE_STAR_PREVIEW);
+
         this.smallFlySystem.activeSpawn = true;
 
         AudioMng.getInstance().playSfx(AudioData.SFX_DIVE_OUT);
@@ -2036,17 +2057,40 @@ export class Galaxy {
         for (let i = 0; i < newRealStars.length; i++) {
             const star = newRealStars[i];
             this._realStarsData.push(star);
-            // add new real stars particles
-            // this._realStarsParticles.addParticle(star);
         }
+
+        // recreate star aprticles
+        this.destroyRealStarParticles();
+        
+        // real stars particles
+        this._realStarsParticles = new GalaxyStars({
+            camera: this._camera,
+            starsData: this._realStarsData,
+            camDistLogic: true,
+            onWindowResizeSignal: FrontEvents.onWindowResizeSignal,
+            alpha: {
+                camDist: {
+                    min: 50,
+                    max: 400
+                },
+                value: {
+                    min: .2,
+                    max: 1
+                }
+            }
+        });
+        this._realStarsParticles.visible = false;
+        this._dummyGalaxy.add(this._realStarsParticles);
         
         // switch to real mode
+        this._phantomStarsParticles.visible = false;
+        this._realStarsParticles.visible = true;
         GameEvents.dispatchEvent(GameEvents.EVENT_SHOW_REAL_MODE);
 
-        // animation
+        // animation star apear
 
         // goto this star
-        
+        this._fsm.startState(States.toStar, { starId: aServerStarData.id });
 
     }
     
