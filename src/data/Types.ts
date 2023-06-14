@@ -1,3 +1,4 @@
+import { Race } from "~/blockchain/types";
 
 export type GalaxyParams = {
     starsCount: number;
@@ -23,6 +24,33 @@ export type GalaxyCircleParams = {
     scaleMin?: number;
     scaleMax?: number;
 };
+
+export type ServerStarParams = {
+    name: string,
+    isLive: boolean,
+    creation: number,
+    updated: number,
+    level: number,
+    fuel: number,
+    levelUpFuel: number,
+    fuelSpendings: number,
+    habitableZoneMin: number,
+    habitableZoneMax: number,
+    planetSlots: number,
+    mass: number,
+    race: Race,
+    coords: {
+        X: number,
+        Y: number,
+        Z: number
+    }
+}
+
+export type ServerStarData = {
+    id: number,
+    owner: string,
+    params: ServerStarParams
+}
 
 export type GalaxyStarParams = {
 
@@ -53,6 +81,7 @@ export type GalaxyStarParams = {
 
     // new data
     starInfo?: {
+        serverData?: ServerStarData;
         name: string;
         description: string;
         level: number;
@@ -87,31 +116,4 @@ export type FarGalaxyParams = {
     },
     rotationSpeed: number;
 };
-
-export type ServerStarParams = {
-    name: string,
-    isLive: boolean,
-    creation: number,
-    updated: number,
-    level: number,
-    fuel: number,
-    levelUpFuel: number,
-    fuelSpendings: number,
-    habitableZoneMin: number,
-    habitableZoneMax: number,
-    planetSlots: number,
-    mass: number,
-    race: string,
-    coords: {
-        X: number,
-        Y: number,
-        Z: number
-    }
-}
-
-export type ServerStarData = {
-    id: number,
-    owner: string,
-    params: ServerStarParams
-}
 
