@@ -12,6 +12,8 @@ type ClientEventName =
   | 'SHOW_STAR_GUI'
   | 'SHOW_REAL_MODE'
   | 'SHOW_PHANTOM_MODE'
+  | 'EVENT_GALAXY_MODE'
+  | 'EVENT_STAR_MODE'
   | 'PHANTOM_STAR_PREVIEW';
 
 interface BaseEvent {
@@ -71,6 +73,13 @@ export interface ShowPhantomModeEvent extends BaseEvent {
   eventName: 'SHOW_PHANTOM_MODE';
 }
 
+export interface GalaxyModeEvent extends BaseEvent {
+  eventName: 'EVENT_GALAXY_MODE';
+}
+export interface StarModeEvent extends BaseEvent {
+  eventName: 'EVENT_STAR_MODE';
+}
+
 export type ClientEvent =
   | GameLoadingEvent
   | GameLoadedEvent
@@ -82,4 +91,6 @@ export type ClientEvent =
   | ShowStarGuiEvent
   | ShowRealModeEvent
   | ShowPhantomModeEvent
-  | PhantomStarPreviewEvent;
+  | PhantomStarPreviewEvent
+  | GalaxyModeEvent
+  | StarModeEvent;

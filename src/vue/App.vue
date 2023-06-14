@@ -72,6 +72,14 @@ export default {
         case 'SHOW_PHANTOM_MODE':
           this.settingsStore.setMode('phantom');
           break;
+
+        case 'EVENT_STAR_MODE':
+          this.settingsStore.setView('star');
+          break;
+
+        case 'EVENT_GALAXY_MODE':
+          this.settingsStore.setView('galaxy');
+          break;
       }
     }
   },
