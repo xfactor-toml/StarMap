@@ -24,8 +24,9 @@ import { StarPointsMng } from '../mng/StarPointsMng';
 import { DB, FAR_STAR_COLORS, RACES } from '../data/DB';
 import { LogMng } from '../utils/LogMng';
 import { FileMng } from '../mng/FileMng';
-import { FarGalaxyParams, GalaxyStarParams } from '~/data/Types';
+import { FarGalaxyParams, GalaxyStarParams, ServerStarData } from '~/data/Types';
 import { StarGenerator } from '~/mng/StarGenerator';
+import { StarMath } from '~/math/StarMath';
 
 let debugObjects = {
     farStarsSphereMin: null,
@@ -249,6 +250,7 @@ export class Galaxy {
         this._fsm.addState(States.toStar, this, this.onStateToStarEnter, this.onStateToStarUpdate);
         this._fsm.addState(States.star, this, this.onStateStarEnter, this.onStateStarUpdate);
         this._fsm.addState(States.fromStar, this, this.onStateFromStarEnter, this.onStateFromStarUpdate);
+        this._fsm.addState(States.createStar, this, this.onStateCreateStarEnter, this.onStateCreateStarUpdate);
         this._fsm.startState(States.init);
 
         // front events
@@ -396,6 +398,10 @@ export class Galaxy {
         this._fsm.startState(States.realStars);
     }
 
+    onStarCreated(aStarData: ServerStarData) {
+        this._fsm.startState(States.createStar, aStarData);
+    }
+
     private createGalaxyPlane(): THREE.Mesh {
         let t = ThreeLoader.getInstance().getTexture('galaxySprite');
         let galaxy = new THREE.Mesh(
@@ -421,8 +427,8 @@ export class Galaxy {
         this.destroyGalaxyStars();
         StarGenerator.getInstance().resetStarId();
 
-        let galaxyStarsData: GalaxyStarParams[];
-        let galaxyBlinkStarsData: GalaxyStarParams[];
+        let laodedStarsData: GalaxyStarParams[];
+        let laodedBlinkStarsData: GalaxyStarParams[];
 
         if (aLoadFromFile) {
             let loader = ThreeLoader.getInstance();
@@ -434,14 +440,14 @@ export class Galaxy {
                         Settings.galaxyData[key] = element;
                     }
                 }
-                galaxyStarsData = loadData.galaxyStarsData;
-                galaxyBlinkStarsData = loadData.galaxyBlinkStarsData_FAIL;
+                laodedStarsData = loadData.galaxyStarsData;
+                laodedBlinkStarsData = loadData.galaxyBlinkStarsData_FAIL;
             }
         }
 
         // galaxy static stars data generate
-        if (galaxyStarsData) {
-            this._phantomStarsData = galaxyStarsData;
+        if (laodedStarsData) {
+            this._phantomStarsData = laodedStarsData;
         }
         else {
             this._phantomStarsData = StarGenerator.getInstance().generateGalaxyStarsData({
@@ -463,9 +469,9 @@ export class Galaxy {
         Settings.galaxyData.starsCount = this._phantomStarsData.length;
 
         // blink stars data generate
-        if (galaxyBlinkStarsData) {
+        if (laodedBlinkStarsData) {
             if (Settings.USE_BLINK_STARS) {
-                this._blinkStarsData = galaxyBlinkStarsData;
+                this._blinkStarsData = laodedBlinkStarsData;
             }
         }
         else {
@@ -502,14 +508,6 @@ export class Galaxy {
 
         // get real stars data
         this._realStarsData = StarGenerator.getInstance().getRealStarDataByServer({
-            starsCount: Settings.galaxyData.starsCount,
-            startAngle: Settings.galaxyData.startAngle,
-            endAngle: Settings.galaxyData.endAngle,
-            startOffsetXY: Settings.galaxyData.startOffsetXY,
-            endOffsetXY: Settings.galaxyData.endOffsetXY,
-            startOffsetH: Settings.galaxyData.startOffsetH,
-            endOffsetH: Settings.galaxyData.endOffsetH,
-            k: Settings.galaxyData.k,
             alphaMin: Settings.galaxyData.alphaMin,
             alphaMax: Settings.galaxyData.alphaMax,
             scaleMin: Settings.galaxyData.scaleMin,
@@ -533,6 +531,7 @@ export class Galaxy {
                 }
             }
         });
+
         // this.starsParticles.alphaFactor = 0.5;
         this._dummyGalaxy.add(this._realStarsParticles);
 
@@ -1046,6 +1045,9 @@ export class Galaxy {
                         let starParams = this.starPointHovered.params.starParams;
 
                         LogMng.debug('onClick(): realStars: starParams:', starParams);
+                        // debugger;
+                        // LogMng.debug('onClick(): realStars: GUI params:', StarMath.getEnergyPerHourValues(starParams.starInfo.serverData.params));
+                        // LogMng.debug('onClick(): realStars: GUI params:', StarMath.getLifeValues(starParams.starInfo.serverData.params));
 
                         GameEvents.dispatchEvent(GameEvents.EVENT_SHOW_STAR_PREVIEW, {
                             starData: starParams.starInfo.serverData,
@@ -1728,7 +1730,7 @@ export class Galaxy {
             duration: DUR,
             ease: 'sine.in',
             onUpdate: () => {
-                LogMng.debug(`dummyGalaxy.scale:`, tObj.s);
+                // LogMng.debug(`dummyGalaxy.scale:`, tObj.s);
                 this._dummyGalaxy['currScale'] = tObj.s;
                 this._dummyGalaxy.scale.set(tObj.s, tObj.s, tObj.s);
                 this._dummyGalaxy.position.copy(starPos.clone().add(gVec.clone().multiplyScalar(tObj.s)));
@@ -2018,6 +2020,38 @@ export class Galaxy {
         if (this._solarSystemBlinkStarsParticles?.visible) this._solarSystemBlinkStarsParticles.update(dt);
 
         this.smallFlySystem.update(dt);
+    }
+
+    private onStateCreateStarEnter(aServerStarData: ServerStarData) {
+        // find star in phantom mode and remove it
+
+        // add new star to real mode
+        let newRealStars = StarGenerator.getInstance().getRealStarDataByServer({
+            alphaMin: Settings.galaxyData.alphaMin,
+            alphaMax: Settings.galaxyData.alphaMax,
+            scaleMin: Settings.galaxyData.scaleMin,
+            scaleMax: Settings.galaxyData.scaleMax
+        }, [aServerStarData]);
+        
+        for (let i = 0; i < newRealStars.length; i++) {
+            const star = newRealStars[i];
+            this._realStarsData.push(star);
+            // add new real stars particles
+            // this._realStarsParticles.addParticle(star);
+        }
+        
+        // switch to real mode
+        GameEvents.dispatchEvent(GameEvents.EVENT_SHOW_REAL_MODE);
+
+        // animation
+
+        // goto this star
+        
+
+    }
+    
+    private onStateCreateStarUpdate(dt: number) {
+
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////

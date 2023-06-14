@@ -15,6 +15,13 @@ export type GalaxyParams = {
     scaleMax?: number;
 };
 
+export type GalaxySmallParams = {
+    alphaMin?: number;
+    alphaMax?: number;
+    scaleMin?: number;
+    scaleMax?: number;
+};
+
 export type GalaxyCircleParams = {
     starsCount: number;
     minRadius?: number;

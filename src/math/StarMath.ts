@@ -1,4 +1,5 @@
 import { ServerStarParams } from "~/data/Types";
+import { MyMath } from "~/utils/MyMath";
 
 export class StarMath {
     
@@ -10,7 +11,7 @@ export class StarMath {
         const max = 10000000;
         let res = {
             value: aStarParams.mass,
-            percent: aStarParams.mass / max
+            percent: MyMath.clamp(aStarParams.mass / max, 0, 1)
         }
         return res;
     }
@@ -23,7 +24,7 @@ export class StarMath {
         const max = 100;
         let res = {
             value: aStarParams.planetSlots,
-            percent: aStarParams.planetSlots / max
+            percent: MyMath.clamp(aStarParams.planetSlots / max, 0, 1)
         }
         return res;
     }
@@ -38,7 +39,7 @@ export class StarMath {
         const realValue = aStarParams.fuel / factor;
         let res = {
             value: realValue,
-            percent: realValue / max
+            percent: MyMath.clamp(realValue / max, 0, 1)
         }
         return res;
     }
@@ -52,8 +53,8 @@ export class StarMath {
         const min = 0.000002314 * factor;
         const max = 0.042651648 * factor;
         let res = {
-            value: aStarParams.fuelSpendings * factorView,
-            percent: aStarParams.fuelSpendings / max
+            value: aStarParams.fuelSpendings / factorView,
+            percent: MyMath.clamp(aStarParams.fuelSpendings / max, 0, 1)
         }
         return res;
     }
@@ -70,12 +71,10 @@ export class StarMath {
             5: 17280
         };
         const starMaxHours = HoursByLevel[aStarParams.level];
-        const factorView = 1e9;
-        const factor = 1e18;
         const e = aStarParams.fuel / aStarParams.fuelSpendings;
         let res = {
             value: e,
-            percent: e / starMaxHours
+            percent: MyMath.clamp(e / starMaxHours, 0, 1)
         }
         return res;
     }

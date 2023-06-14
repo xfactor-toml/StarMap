@@ -1,4 +1,5 @@
 import { Settings } from "~/data/Settings";
+import { ServerStarData } from "~/data/Types";
 import { FrontEvents } from "~/events/FrontEvents";
 import { ILogger } from "~/interfaces/ILogger";
 import { Galaxy } from "~/scenes/Galaxy";
@@ -13,6 +14,7 @@ export class GameController implements ILogger {
     constructor() {
         FrontEvents.onBotPanelPhantomClick.add(this.onBotPanelPhantomClick, this);
         FrontEvents.onBotPanelRealClick.add(this.onBotPanelRealClick, this);
+        FrontEvents.onStarCreated.add(this.onStarCreated, this);
     }
 
     logDebug(aMsg: string, aData?: any): void {
@@ -33,6 +35,10 @@ export class GameController implements ILogger {
     private onBotPanelRealClick() {
         this.logDebug(`onBotPanelRealClick...`);
         this.galaxy?.openRealMode();
+    }
+
+    private onStarCreated(aStarData: ServerStarData) {
+        this.galaxy?.onStarCreated(aStarData);
     }
 
     initGalaxy(aParams: {

@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { PHANTOM_BIG_STAR_COLOR, PHANTOM_STAR_COLOR, RACES, STAR_COLOR_2 } from "~/data/DB";
 import { Settings } from "~/data/Settings";
-import { GalaxyCircleParams, GalaxyParams, GalaxyStarParams, ServerStarData } from "~/data/Types";
+import { GalaxyCircleParams, GalaxyParams, GalaxySmallParams, GalaxyStarParams, ServerStarData } from "~/data/Types";
 import { ILogger } from "~/interfaces/ILogger";
 import { LogMng } from "~/utils/LogMng";
 import { MyMath } from "~/utils/MyMath";
@@ -274,7 +274,7 @@ export class StarGenerator implements ILogger {
         return resData;
     }
 
-    getRealStarDataByServer(aParams: GalaxyParams, aServerStars: ServerStarData[]): GalaxyStarParams[] {
+    getRealStarDataByServer(aParams: GalaxySmallParams, aServerStars: ServerStarData[]): GalaxyStarParams[] {
         let resData: GalaxyStarParams[] = [];
         for (let i = 0; i < aServerStars.length; i++) {
             const serverStar = aServerStars[i];
