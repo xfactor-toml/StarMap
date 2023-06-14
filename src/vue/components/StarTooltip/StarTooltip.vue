@@ -78,7 +78,7 @@ export default {
 
       const factor = 1.1;
       const area = this.intersection.x ? this.position.x : innerWidth - this.position.x;
-      const scale = Math.min((area / width) * factor, 1) * this.star.scale;
+      const scale = Math.min((area / width) * factor, 1);
 
       return scale;
     },
