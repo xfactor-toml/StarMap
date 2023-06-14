@@ -1,12 +1,17 @@
 import * as THREE from 'three';
 import { MyMath } from '../utils/MyMath';
+import { GalaxyStarParams } from '~/data/Types';
 
 export class QTPoint {
     x: number;
     y: number;
-    data: any;
+    data?: {
+        starData: GalaxyStarParams
+    };
 
-    constructor(x: number, y: number, data?: any) {
+    constructor(x: number, y: number, data?: {
+        starData: GalaxyStarParams
+    }) {
         this.x = x;
         this.y = y;
         this.data = data;
