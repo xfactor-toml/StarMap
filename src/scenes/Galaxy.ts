@@ -2175,6 +2175,8 @@ export class Galaxy {
         this._realStarsParticles.visible = true;
         GameEvents.dispatchEvent(GameEvents.EVENT_SHOW_REAL_MODE);
 
+        GameEvents.dispatchEvent(GameEvents.EVENT_STAR_MODE);
+
         // animation star apear
 
         // goto this star
