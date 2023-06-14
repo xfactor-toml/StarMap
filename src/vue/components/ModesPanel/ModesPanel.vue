@@ -12,7 +12,7 @@
               'is-disabled': !mode.enabled
             }
           ]"
-          @click="settingsStore.setMode(mode.name)"
+          @click="changeMode(mode.name)"
         >
           {{ mode.label }}
         </button>
@@ -24,6 +24,7 @@
 <script lang="ts">
 import { MODES } from '@/constants';
 import { useSettingsStore } from '@/stores';
+import { GuiModeName } from '@/types';
 import { mapStores } from 'pinia';
 
 export default {
@@ -33,6 +34,12 @@ export default {
   }),
   computed: {
     ...mapStores(useSettingsStore)
+  },
+  methods: {
+    changeMode(modeName: GuiModeName) {
+      this.$client.onClick();
+      this.settingsStore.setMode(modeName);
+    }
   }
 };
 </script>
