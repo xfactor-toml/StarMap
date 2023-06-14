@@ -155,12 +155,12 @@ export default {
   methods: {
     roundNumber,
     async approve() {
-      const allowed = await this.$wallet.getAllowance();
+      // const allowed = await this.$wallet.getAllowance();
 
-      if (allowed >= this.creationCost) {
-        this.approved = true;
-        return;
-      }
+      // if (allowed >= this.creationCost) {
+      //   this.approved = true;
+      //   return;
+      // }
 
       const approvedPlasma = await this.$wallet.approvePlasma(this.creationCost);
 
