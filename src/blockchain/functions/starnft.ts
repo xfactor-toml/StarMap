@@ -69,9 +69,9 @@ async function GetAllStarData () : Promise<StarList> {
                 mass: Number(dt[11]),
                 race: ExtractRace(dt[12]),
                 coords: {
-                    X: Number(dt[13][0]) / 1000000,
-                    Y: Number(dt[13][1]) / 1000000,
-                    Z: Number(dt[13][2]) / 1000000
+                    X: (Number(dt[13][0]) / 1000000) - 1000000,
+                    Y: (Number(dt[13][1]) / 1000000) - 1000000,
+                    Z: (Number(dt[13][2]) / 1000000) - 1000000
                 }
             }
             const owner : string = await contract.methods.ownerOf(cntr.toString()).call()
@@ -116,9 +116,9 @@ async function GetSingleStarData ( starId : number ) : Promise<StarData | null> 
             mass: Number(dt[11]),
             race: ExtractRace(dt[12]),
             coords: {
-                X: Number(dt[13][0]) / 1000000,
-                Y: Number(dt[13][1]) / 1000000,
-                Z: Number(dt[13][2]) / 1000000
+                X: (Number(dt[13][0]) / 1000000) - 1000000,
+                Y: (Number(dt[13][1]) / 1000000) - 1000000,
+                Z: (Number(dt[13][2]) / 1000000) - 1000000
             }
         }
         const owner : string = await contract.methods.ownerOf(starId.toString()).call()
@@ -136,6 +136,12 @@ async function GetSingleStarData ( starId : number ) : Promise<StarData | null> 
 async function CreateNewStar (owner : account, name : string, uri = `${document.location.hostname}`, race: Race, coords: Coords) : Promise<StarData | null> {
         if (!owner || !name || !env) {
            return null
+        }
+
+        coords = {
+            X: coords.X + 1000000,
+            Y: coords.Y + 1000000,
+            Z: coords.Z + 1000000
         }
 
         const requiredToAllow = await RequiredPlasmaToApprove(owner)
