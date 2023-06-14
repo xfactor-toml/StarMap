@@ -17,7 +17,6 @@ export class Star {
   owner: string;
   description: string;
   params: ServerStarParams;
-  scale = 1;
 
   constructor({ id, owner, params }: StarData) {
     this.id = id;
@@ -54,10 +53,6 @@ export class Star {
       owner: this.owner,
       params: { ...this.params }
     };
-  }
-
-  setScale(scale: number) {
-    this.scale = scale;
   }
 
   static getRandomRace(): Race {

@@ -18,8 +18,8 @@
       </template>
     </transition>
     <transition name="fade">
-      <template v-if="settingsStore.panelStar !== null">
-        <StarPanel :star="settingsStore.panelStar" />
+      <template v-if="settingsStore.starPanel !== null">
+        <StarPanel :star="settingsStore.starPanel.star" :scale="settingsStore.starPanel.scale" />
       </template>
     </transition>
   </div>
