@@ -435,6 +435,9 @@ export default {
   props: {
     star: {
       type: Object as PropType<Star>
+    },
+    scale: {
+      type: Number
     }
   },
   data: (): {
@@ -457,7 +460,7 @@ export default {
     },
     panelStyle() {
       return {
-        transform: `scale(${this.star.scale})`
+        transform: `scale(${this.scale})`
       };
     }
   },

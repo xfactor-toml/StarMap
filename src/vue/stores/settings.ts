@@ -20,11 +20,15 @@ type SettingsStoreState = {
   musicVolume: number;
   newStarPosition: StarPosition | null;
   overlay: boolean;
-  panelStar: Star | null;
   screen: GuiScreen;
   sfxVolume: number;
+  starPanel: {
+    star: Star;
+    scale: number;
+  } | null;
   starTooltip: {
     star: Star;
+    scale: number;
     position: StarScreenPosition;
   } | null;
   view: GuiViewName;
@@ -47,7 +51,7 @@ export const useSettingsStore = defineStore('settings', {
       musicVolume,
       newStarPosition: null,
       overlay: false,
-      panelStar: null,
+      starPanel: null,
       screen: 'preloader',
       sfxVolume,
       starTooltip: null,
@@ -117,7 +121,7 @@ export const useSettingsStore = defineStore('settings', {
       this.client.closeStarPreview();
     },
     hideStarPanel() {
-      this.panelStar = null;
+      this.starPanel = null;
     },
     setFullscreenMode(value: boolean) {
       this.fullscreen = value;
@@ -126,11 +130,7 @@ export const useSettingsStore = defineStore('settings', {
       this.client.onClick();
 
       const starsStore = useStarsStore();
-      const star = starsStore.getById(starData.id);
-
-      if (!star) {
-        return;
-      }
+      const star = starsStore.getById(starData.id) || new Star(starData);
 
       this.enableOverlay();
       this.starTooltip = {
@@ -140,11 +140,12 @@ export const useSettingsStore = defineStore('settings', {
     },
     showStarPanel({ starData, scale }: ShowStarGuiEvent) {
       const starsStore = useStarsStore();
-      const star = starsStore.getById(starData.id);
+      const star = starsStore.getById(starData.id) || new Star(starData);
 
-      star.setScale(scale);
-
-      this.panelStar = star;
+      this.starPanel = {
+        scale,
+        star
+      };
     },
     showPhantomStarTooltip({ pos2d, pos3d }: PhantomStarPreviewEvent) {
       this.client.onClick();

@@ -155,13 +155,6 @@ export default {
   methods: {
     roundNumber,
     async approve() {
-      // const allowed = await this.$wallet.getAllowance();
-
-      // if (allowed >= this.creationCost) {
-      //   this.approved = true;
-      //   return;
-      // }
-
       const approvedPlasma = await this.$wallet.approvePlasma(this.creationCost);
 
       this.approved = approvedPlasma >= this.creationCost;
@@ -174,10 +167,13 @@ export default {
         this.starPosition.galaxy.toContractFormat()
       );
 
-      this.createdStar = new Star(createdStar);
-
       this.creating = false;
-      this.balance = await this.$wallet.getBalance();
+
+      if (createdStar === null) {
+        return;
+      }
+
+      this.createdStar = new Star(createdStar);
       this.starsStore.addStar(this.createdStar);
       this.settingsStore.hideStarTooltip();
 
