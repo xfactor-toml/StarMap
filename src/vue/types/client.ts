@@ -10,6 +10,8 @@ type ClientEventName =
   | 'HIDE_STAR_PREVIEW'
   | 'SHOW_STAR_PREVIEW'
   | 'SHOW_STAR_GUI'
+  | 'SHOW_REAL_MODE'
+  | 'SHOW_PHANTOM_MODE'
   | 'PHANTOM_STAR_PREVIEW';
 
 interface BaseEvent {
@@ -57,6 +59,14 @@ export interface PhantomStarPreviewEvent extends BaseEvent {
   pos2d: { x: number; y: number };
 }
 
+export interface ShowRealModeEvent extends BaseEvent {
+  eventName: 'SHOW_REAL_MODE';
+}
+
+export interface ShowPhantomModeEvent extends BaseEvent {
+  eventName: 'SHOW_PHANTOM_MODE';
+}
+
 export type ClientEvent =
   | GameLoadingEvent
   | GameLoadedEvent
@@ -65,4 +75,6 @@ export type ClientEvent =
   | GameHideStarPreviewEvent
   | ShowStarPreviewEvent
   | ShowStarGuiEvent
+  | ShowRealModeEvent
+  | ShowPhantomModeEvent
   | PhantomStarPreviewEvent;
