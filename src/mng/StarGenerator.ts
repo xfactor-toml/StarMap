@@ -191,7 +191,7 @@ export class StarGenerator implements ILogger {
                     name: `Star ${starId}`,
                     description: `Star ${starId} description`,
                     level: starLevel,
-                    raceId: race,
+                    // raceId: race,
                     planetSlots: planetCnt,
                     energy: energy,
                     life: life,
@@ -298,7 +298,7 @@ export class StarGenerator implements ILogger {
             clrBigStar = colorSet.bigStar[clrId];
 
             // race
-            let raceName: string = serverStar.params.race || '';
+            let raceName: string = serverStar.params.race;
             
 
             resData.push({
@@ -312,11 +312,12 @@ export class StarGenerator implements ILogger {
                     a: MyMath.randomInRange(aParams.alphaMin, aParams.alphaMax)
                 },
                 starInfo: {
+                    serverData: serverStar,
                     name: serverStarParams.name,
                     description: `Star description`,
                     level: serverStarParams.level,
                     // TODO: get real race
-                    raceId: 0,
+                    // raceId: 0,
                     planetSlots: serverStarParams.planetSlots,
                     energy: serverStarParams.fuel,
                     life: serverStarParams.fuel, // ???

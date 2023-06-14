@@ -70,6 +70,7 @@ export type GalaxyStarParams = {
         a: number;
     }
 
+    // scale in galaxy
     scale: number;
 
     blink?: {
@@ -85,7 +86,6 @@ export type GalaxyStarParams = {
         name: string;
         description: string;
         level: number;
-        raceId: number;
         planetSlots: number;
         energy: number;
         life: number;

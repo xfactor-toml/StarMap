@@ -1048,11 +1048,7 @@ export class Galaxy {
                         LogMng.debug('onClick(): realStars: starParams:', starParams);
 
                         GameEvents.dispatchEvent(GameEvents.EVENT_SHOW_STAR_PREVIEW, {
-                            starId: starParams.id,
-                            name: starParams.starInfo.name,
-                            description: starParams.starInfo.description,
-                            level: starParams.starInfo.level,
-                            race: RACES[starParams.starInfo.raceId],
+                            starData: starParams.starInfo.serverData,
                             pos2d: {
                                 x: aParams.down.x,
                                 y: aParams.down.y
@@ -1372,7 +1368,7 @@ export class Galaxy {
                 break;
         }
 
-        this.starPointsMng.updatePoints(points, 20);
+        this.starPointsMng.updatePoints(points, checkRadius);
 
     }
 
@@ -1823,13 +1819,7 @@ export class Galaxy {
         let guiScale = this.guiGetScaleBigStarTooltip();
 
         GameEvents.dispatchEvent(GameEvents.EVENT_SHOW_STAR_GUI, {
-            name: starParams.starInfo.name,
-            description: starParams.starInfo.description,
-            level: starParams.starInfo.level,
-            race: RACES[starParams.starInfo.raceId],
-            planetSlots: starParams.starInfo.planetSlots,
-            energy: starParams.starInfo.energy,
-            life: starParams.starInfo.life,
+            starData: starParams.starInfo.serverData,
             scale: guiScale
         });
 

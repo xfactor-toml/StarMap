@@ -7,11 +7,7 @@ export const GameEvents = {
     EVENT_GAME_FULSCREEN: 'GAME_FULLSCREEN',
 
     /**
-     * starId: number,
-     * name: string,
-     * description: string,
-     * level: number,
-     * race: string,
+     * starData: ServerStarData
      * pos2d: { x, y }
      */
     EVENT_SHOW_STAR_PREVIEW: 'SHOW_STAR_PREVIEW',
@@ -24,17 +20,11 @@ export const GameEvents = {
     EVENT_PHANTOM_STAR_PREVIEW: 'PHANTOM_STAR_PREVIEW',
 
     /**
-     * name,
-     * description,
-     * level,
-     * race,
-     * planetSlots,
-     * energy,
-     * life,
+     * starData: ServerStarData
      * scale
      */
     EVENT_SHOW_STAR_GUI: 'SHOW_STAR_GUI',
-    
+
     dispatchEvent: (aEventName: string, aData: any = {}) => {
         aData.eventName = aEventName;
         window.dispatchEvent(new CustomEvent('gameEvent', { detail: aData }));
