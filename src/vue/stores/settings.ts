@@ -78,10 +78,6 @@ export const useSettingsStore = defineStore('settings', {
 
       clientHandler[view]();
 
-      if (this.view === 'star' && view === 'galaxy') {
-        this.returnToGalaxy();
-      }
-
       this.view = view;
     },
     setScreen(screen: GuiScreen) {

@@ -18,17 +18,19 @@ export class WalletService {
   connected = false;
   installed = false;
   currency = 'plasma';
-
-  constructor() {
-    this.init();
-  }
-
-  async init() {
-    this.updateState(await SubscribeOnAccountChanging());
-  }
+  subscribed = false;
 
   async connect() {
+    if (!this.subscribed) {
+      this.subscribe();
+    }
+
     return this.updateState(await NetworkAuth());
+  }
+
+  async subscribe() {
+    this.subscribed = true;
+    this.updateState(await SubscribeOnAccountChanging());
   }
 
   async approvePlasma(amount: number) {
@@ -52,7 +54,7 @@ export class WalletService {
   }
 
   async getCreationCost(level = 1) {
-    return GetCreationCost(level);
+    return this.checkConnection(() => GetCreationCost(level), 0);
   }
 
   async getStars(): Promise<StarList> {
