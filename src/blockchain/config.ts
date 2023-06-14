@@ -26,7 +26,7 @@ export const networkParams = {
 
 export const contracts = {
     plasma: "0xBC8F69419A68B377607067FEc8D38ab26070879D",
-    starNFT: "0x2e29B29EE3428f35A49d0FFD4905F481DCA61e1B"
+    starNFT: "0x0D1713Dfb69bB92E875Ef42C342e2eE2478c3FB9"
 }
 
 export const reserveRpcs = [
