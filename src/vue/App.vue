@@ -45,12 +45,16 @@ export default {
         case 'GAME_FULLSCREEN':
           break;
 
-        case 'SHOW_STAR_PREVIEW':
-          this.settingsStore.showStarTooltip(clientEvent);
-          break;
-
         case 'HIDE_STAR_PREVIEW':
           this.settingsStore.hideStarTooltip();
+          break;
+
+        case 'HIDE_STAR_GUI':
+          this.settingsStore.hideStarPanel();
+          break;
+
+        case 'SHOW_STAR_PREVIEW':
+          this.settingsStore.showStarTooltip(clientEvent);
           break;
 
         case 'SHOW_STAR_GUI':

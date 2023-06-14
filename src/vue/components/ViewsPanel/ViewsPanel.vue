@@ -36,6 +36,20 @@ export default {
   methods: {
     changeView(viewName: GuiViewName) {
       this.$client.onClick();
+
+      switch (viewName) {
+        case 'galaxy':
+          this.settingsStore.hideStarPanel();
+          this.$client.onLeftPanelGalaxyClick();
+          break;
+        case 'planet':
+          this.$client.onLeftPanelPlanetClick();
+          break;
+        case 'star':
+          this.$client.onLeftPanelStarClick();
+          break;
+      }
+
       this.settingsStore.setView(viewName);
     }
   }

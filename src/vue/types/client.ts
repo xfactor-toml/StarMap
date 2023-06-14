@@ -1,4 +1,3 @@
-import { Race } from '~/blockchain/types';
 import { ServerStarData } from '~/data/Types';
 import { FrontEvents } from '~/events/FrontEvents';
 
@@ -8,6 +7,7 @@ type ClientEventName =
   | 'GAME_CREATED'
   | 'GAME_FULLSCREEN'
   | 'HIDE_STAR_PREVIEW'
+  | 'HIDE_STAR_GUI'
   | 'SHOW_STAR_PREVIEW'
   | 'SHOW_STAR_GUI'
   | 'SHOW_REAL_MODE'
@@ -37,8 +37,12 @@ export interface GameFullscreenEvent extends BaseEvent {
   v: boolean;
 }
 
-export interface GameHideStarPreviewEvent extends BaseEvent {
+export interface HideStarPreviewEvent extends BaseEvent {
   eventName: 'HIDE_STAR_PREVIEW';
+}
+
+export interface HideStarGuiEvent extends BaseEvent {
+  eventName: 'HIDE_STAR_GUI';
 }
 
 export interface ShowStarPreviewEvent extends BaseEvent {
@@ -72,7 +76,8 @@ export type ClientEvent =
   | GameLoadedEvent
   | GameCreatedEvent
   | GameFullscreenEvent
-  | GameHideStarPreviewEvent
+  | HideStarPreviewEvent
+  | HideStarGuiEvent
   | ShowStarPreviewEvent
   | ShowStarGuiEvent
   | ShowRealModeEvent

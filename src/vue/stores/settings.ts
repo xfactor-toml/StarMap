@@ -59,25 +59,11 @@ export const useSettingsStore = defineStore('settings', {
     setMode(modeName: GuiModeName) {
       const mode = MODES[modeName];
       const view = mode.views.find(view => view.enabled);
-      const clientHandler: Record<Exclude<GuiModeName, 'season'>, () => {}> = {
-        phantom: () => this.client.onBotPanelPhantomClick(),
-        real: () => this.client.onBotPanelRealClick()
-      };
-
-      clientHandler[modeName]();
 
       this.mode = mode;
       this.setView(view.name);
     },
     setView(view: GuiViewName) {
-      const clientHandler: Record<GuiViewName, () => {}> = {
-        galaxy: () => this.client.onLeftPanelGalaxyClick(),
-        planet: () => this.client.onLeftPanelPlanetClick(),
-        star: () => this.client.onLeftPanelStarClick()
-      };
-
-      clientHandler[view]();
-
       this.view = view;
     },
     setScreen(screen: GuiScreen) {

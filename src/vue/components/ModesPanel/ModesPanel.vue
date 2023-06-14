@@ -9,7 +9,7 @@
             `is-${mode.name}`,
             {
               'is-active': mode.name === settingsStore.mode.name,
-              'is-disabled': !mode.enabled
+              'is-disabled': isDisabled(mode)
             }
           ]"
           @click="changeMode(mode.name)"
@@ -24,7 +24,7 @@
 <script lang="ts">
 import { MODES } from '@/constants';
 import { useSettingsStore } from '@/stores';
-import { GuiModeName } from '@/types';
+import { GuiMode, GuiModeName } from '@/types';
 import { mapStores } from 'pinia';
 
 export default {
@@ -36,8 +36,25 @@ export default {
     ...mapStores(useSettingsStore)
   },
   methods: {
+    isDisabled(mode: GuiMode) {
+      if (mode.name !== 'real' && this.settingsStore.view === 'star') {
+        return true;
+      }
+
+      return !mode.enabled;
+    },
     changeMode(modeName: GuiModeName) {
       this.$client.onClick();
+
+      switch (modeName) {
+        case 'phantom':
+          this.$client.onBotPanelPhantomClick();
+          break;
+        case 'real':
+          this.$client.onBotPanelRealClick();
+          break;
+      }
+
       this.settingsStore.setMode(modeName);
     }
   }

@@ -40,6 +40,7 @@ export default {
     ...mapStores(useSettingsStore)
   },
   unmounted() {
+    this.settingsStore.hideStarPanel();
     this.settingsStore.hideStarTooltip();
   }
 };
