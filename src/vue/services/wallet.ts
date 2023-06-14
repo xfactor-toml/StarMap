@@ -52,11 +52,11 @@ export class WalletService {
   }
 
   async getCreationCost(level = 1) {
-    return this.checkConnection(() => GetCreationCost(level), 0);
+    return GetCreationCost(level);
   }
 
   async getStars(): Promise<StarList> {
-    return this.checkConnection(() => GetAllStarData(), []);
+    return GetAllStarData();
   }
 
   async requiredPlasmaToApprove() {
