@@ -60,6 +60,14 @@ export default {
         case 'PHANTOM_STAR_PREVIEW':
           this.settingsStore.showPhantomStarTooltip(clientEvent);
           break;
+
+        case 'SHOW_REAL_MODE':
+          this.settingsStore.setMode('real');
+          break;
+
+        case 'SHOW_PHANTOM_MODE':
+          this.settingsStore.setMode('phantom');
+          break;
       }
     }
   },
