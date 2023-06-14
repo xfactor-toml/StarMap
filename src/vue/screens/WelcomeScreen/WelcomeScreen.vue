@@ -65,7 +65,7 @@ export default {
     handleRunClick(fullscreen = false) {
       if (this.settingsStore.agreementAccepted) {
         this.$client.onClick();
-        this.$client.run(fullscreen);
+        this.$client.run(fullscreen, this.starsStore.stars);
         this.settingsStore.setScreen('interface');
       } else {
         this.preservedFullscreenRun = fullscreen;
@@ -85,9 +85,6 @@ export default {
       this.$client.run(this.preservedFullscreenRun, this.starsStore.stars);
       this.settingsStore.setScreen('interface');
     }
-  },
-  created() {
-    this.starsStore.fetchStars();
   }
 };
 </script>

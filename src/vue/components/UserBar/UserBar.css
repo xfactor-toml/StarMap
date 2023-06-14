@@ -1,14 +1,18 @@
-.UserBar__settings-button {
+.UserBar {
+  display: flex;
+  gap: 16px;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.UserBar__button {
   display: inline-block;
   width: 24px;
   height: 24px;
   padding: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
   border: none;
   background-color: transparent;
-  background-image: url(../gui/images/settings.svg);
   background-position: 50% 50%;
   background-repeat: no-repeat;
   background-size: contain;
@@ -17,7 +21,15 @@
   transition: ease filter 200ms;
 }
 
-.UserBar__settings-button::before {
+.UserBar__button.is-settings {
+  background-image: url(../gui/images/settings.svg);
+}
+
+.UserBar__button.is-wallet {
+  background-image: url(../gui/images/wallet.svg);
+}
+
+.UserBar__button::before {
   content: '';
   width: calc(100% + 20px);
   height: calc(100% + 20px);
@@ -26,12 +38,12 @@
   top: -10px;
 }
 
-.UserBar__settings-button.active,
-.UserBar__settings-button:hover {
+.UserBar__button.active,
+.UserBar__button:hover {
   filter: drop-shadow(0px 0px 8px #00f0ff);
 }
 
-.UserBar__settings-popup {
+.UserBar__popup {
   position: absolute;
   right: 0;
   top: calc(100% + 20px);

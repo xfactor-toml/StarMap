@@ -57,7 +57,7 @@ export default {
     tooltipClasses() {
       return {
         'is-reflect': this.intersection.x,
-        [`is-level-${this.star.level}`]: true
+        [`is-level-${this.star.params.level}`]: true
       };
     }
   },

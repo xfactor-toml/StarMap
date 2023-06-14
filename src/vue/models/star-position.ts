@@ -21,7 +21,7 @@ export class StarGalaxyPosition {
     this.z = z;
   }
 
-  get contractFormat(): Coords {
+  toContractFormat(): Coords {
     return {
       X: this.x,
       Y: this.y,

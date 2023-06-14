@@ -1,47 +1,37 @@
 import { RACES } from '@/constants';
-import { Coords, Race, StarData } from '~/blockchain/types';
+import { Race, StarData } from '~/blockchain/types';
+import { ServerStarParams } from '~/data/Types';
+import { StarMath } from '~/math/StarMath';
 
 export type StarHudParam = 'mass' | 'slots' | 'totalEnergy' | 'energyPerHour' | 'life';
 
 export type StarHudParams = {
   [K in StarHudParam]: {
     percent: number;
-    text: string;
+    value: number;
   };
 };
 
 export class Star {
   id: number;
   owner: string;
-  name: string;
   description: string;
-  params: {
-    isLive: boolean;
-    creation: number; // timestamp
-    updated: number;
-    level: number;
-    fuel: number;
-    levelUpFuel: number;
-    fuelSpendings: number; // per hour
-    habitableZoneMin: number;
-    habitableZoneMax: number;
-    planetSlots: number;
-    mass: number;
-    race: Race;
-    coords: Coords;
-  };
-
+  params: ServerStarParams;
   scale = 1;
 
   constructor({ id, owner, params }: StarData) {
     this.id = id;
     this.owner = owner;
-    this.description = `Federation of ${params.race}`;
+    this.description = `${params.race}`.toUpperCase();
     this.params = params;
   }
 
+  get name() {
+    return this.params.name;
+  }
+
   get preview() {
-    return `./gui/images/tooltip/race-${RACES[this.params.race]}.png`;
+    return `./gui/images/races/${RACES[this.params.race]}.png`;
   }
 
   get croppedOwner() {
@@ -50,27 +40,24 @@ export class Star {
 
   get hud(): StarHudParams {
     return {
-      mass: {
-        percent: 50,
-        text: '330 000 E.M.'
-      },
-      slots: {
-        percent: 50,
-        text: '330 000 E.M.'
-      },
-      totalEnergy: {
-        percent: 50,
-        text: '340 000 E.M.'
-      },
-      energyPerHour: {
-        percent: 50,
-        text: '530 000 E.M.'
-      },
-      life: {
-        percent: 50,
-        text: '360 000 E.M.'
-      }
+      mass: StarMath.getMassValues(this.params),
+      slots: StarMath.getSlotsValues(this.params),
+      totalEnergy: StarMath.getTotalEnergyValues(this.params),
+      energyPerHour: StarMath.getEnergyPerHourValues(this.params),
+      life: StarMath.getLifeValues(this.params)
     };
+  }
+
+  toRaw(): StarData {
+    return {
+      id: this.id,
+      owner: this.owner,
+      params: { ...this.params }
+    };
+  }
+
+  setScale(scale: number) {
+    this.scale = scale;
   }
 
   static getRandomRace(): Race {

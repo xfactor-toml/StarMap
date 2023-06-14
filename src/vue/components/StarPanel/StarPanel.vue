@@ -427,6 +427,7 @@
 
 <script lang="ts">
 import { Star, StarHudParam } from '@/models';
+import { formatNumber } from '@/utils';
 import { PropType } from 'vue';
 
 export default {
@@ -451,8 +452,8 @@ export default {
         life: this.selectedParam === 'life'
       };
     },
-    activeParamValue(): Record<StarHudParam, string> {
-      return this.star.hud[this.selectedParam].text;
+    activeParamValue(): string {
+      return formatNumber(this.star.hud[this.selectedParam].value);
     },
     panelStyle() {
       return {
