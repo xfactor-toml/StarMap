@@ -64,9 +64,9 @@ export class StarMath {
         percent: number
     } {
         const HoursByLevel = {
-            1: 4320,
-            2: 2160,
-            3: 720,
+            1: 4380,
+            2: 2190,
+            3: 730,
             4: 8640,
             5: 17280
         };
