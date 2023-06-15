@@ -28,6 +28,7 @@ import { FarGalaxyParams, GalaxyStarParams, ServerStarData } from '~/data/Types'
 import { StarGenerator } from '~/mng/StarGenerator';
 import { StarMath } from '~/math/StarMath';
 import { ILogger } from '~/interfaces/ILogger';
+import { Star } from '@/models';
 
 let debugObjects = {
     farStarsSphereMin: null,
@@ -121,7 +122,7 @@ export class Galaxy implements ILogger {
         // if (!DeviceInfo.getInstance().iOS) {
         //     Settings.galaxyData.starAlphaFactor = 0.6;
         // }
-        Settings.galaxyData.starAlphaFactor = 1;
+        Settings.galaxyData.starAlphaFactor = 6;
 
     }
 
@@ -298,6 +299,9 @@ export class Galaxy implements ILogger {
     initDebugGui() {
 
         const DEBUG_PARAMS = {
+            'testGetRace': () => {
+                LogMng.debug(`test getRandomRace(): ${Star.getRandomRace()}`);
+            },
             'createTestStar': () => {
                 this.onStarCreated({
                     id: 50000,
@@ -346,6 +350,7 @@ export class Galaxy implements ILogger {
 
         const gui = Settings.datGui;
 
+        gui.add(DEBUG_PARAMS, 'testGetRace');
         gui.add(DEBUG_PARAMS, 'createTestStar');
 
         let galaxyFolder = gui.addFolder('Galaxy');
@@ -504,53 +509,6 @@ export class Galaxy implements ILogger {
             }
         }
 
-        // phantom stars generate
-
-        if (loadedStarsData) {
-            this._phantomStarsData = loadedStarsData;
-        }
-        else {
-            this._phantomStarsData = StarGenerator.getInstance().generateGalaxyStarsData({
-                starsCount: Settings.galaxyData.starsCount,
-                startAngle: Settings.galaxyData.startAngle,
-                endAngle: Settings.galaxyData.endAngle,
-                startOffsetXY: Settings.galaxyData.startOffsetXY,
-                endOffsetXY: Settings.galaxyData.endOffsetXY,
-                startOffsetH: Settings.galaxyData.startOffsetH,
-                endOffsetH: Settings.galaxyData.endOffsetH,
-                k: Settings.galaxyData.k,
-                alphaMin: Settings.galaxyData.alphaMin,
-                alphaMax: Settings.galaxyData.alphaMax,
-                scaleMin: Settings.galaxyData.scaleMin,
-                scaleMax: Settings.galaxyData.scaleMax
-            }, 145, 145, true);
-        }
-
-        // particle stars
-        // let t = ThreeLoader.getInstance().getTexture('star4');
-        this._phantomStarsParticles = new GalaxyStars({
-            camera: this._camera,
-            starsData: this._phantomStarsData,
-            // texture: t,
-            camDistLogic: true,
-            onWindowResizeSignal: FrontEvents.onWindowResizeSignal,
-            alpha: {
-                camDist: {
-                    min: 50,
-                    max: 400
-                },
-                value: {
-                    min: .2,
-                    max: 1
-                }
-            }
-        });
-        // this.starsParticles.alphaFactor = 0.5;
-        this._phantomStarsParticles.visible = false;
-        this._dummyGalaxy.add(this._phantomStarsParticles);
-
-        Settings.galaxyData.starsCount = this._phantomStarsData.length;
-
         // real star particles
 
         // get real stars data
@@ -579,8 +537,76 @@ export class Galaxy implements ILogger {
             }
         });
 
-        // this.starsParticles.alphaFactor = 0.5;
         this._dummyGalaxy.add(this._realStarsParticles);
+
+        
+        // phantom stars data
+
+        if (loadedStarsData) {
+            this._phantomStarsData = loadedStarsData;
+        }
+        else {
+            this._phantomStarsData = StarGenerator.getInstance().generateGalaxyStarsData({
+                starsCount: Settings.galaxyData.starsCount,
+                startAngle: Settings.galaxyData.startAngle,
+                endAngle: Settings.galaxyData.endAngle,
+                startOffsetXY: Settings.galaxyData.startOffsetXY,
+                endOffsetXY: Settings.galaxyData.endOffsetXY,
+                startOffsetH: Settings.galaxyData.startOffsetH,
+                endOffsetH: Settings.galaxyData.endOffsetH,
+                k: Settings.galaxyData.k,
+                alphaMin: Settings.galaxyData.alphaMin,
+                alphaMax: Settings.galaxyData.alphaMax,
+                scaleMin: Settings.galaxyData.scaleMin,
+                scaleMax: Settings.galaxyData.scaleMax
+            }, 145, 145, true);
+        }
+
+        // make it phantom and remove real stars
+        for (let i = this._phantomStarsData.length - 1; i >= 0; i--) {
+            const sd = this._phantomStarsData[i];
+
+            let isDeleted = false;
+            for (let j = 0; j < this._realStarsData.length; j++) {
+                const rsd = this._realStarsData[j];
+                let dist = MyMath.getVec3Length(rsd.pos.x, rsd.pos.y, rsd.pos.z, sd.pos.x, sd.pos.y, sd.pos.z);
+                if (dist <= 0.001) {
+                    // remove
+                    this.logWarn(`remove star for dist: ${dist}`);
+                    this._phantomStarsData.splice(i, 1);
+                    isDeleted = true;
+                    break;
+                }
+            }
+            if (isDeleted) continue;
+
+            StarGenerator.getInstance().starToPhantom(sd);
+        }
+
+        // particle stars particles
+
+        this._phantomStarsParticles = new GalaxyStars({
+            camera: this._camera,
+            starsData: this._phantomStarsData,
+            // texture: t,
+            camDistLogic: true,
+            onWindowResizeSignal: FrontEvents.onWindowResizeSignal,
+            alpha: {
+                camDist: {
+                    min: 50,
+                    max: 400
+                },
+                value: {
+                    min: .2,
+                    max: 1
+                }
+            }
+        });
+        // this.starsParticles.alphaFactor = 0.5;
+        this._phantomStarsParticles.visible = false;
+        this._dummyGalaxy.add(this._phantomStarsParticles);
+
+        Settings.galaxyData.starsCount = this._phantomStarsData.length;
         
         // blink stars data generate
         if (loadedBlinkStarsData) {
@@ -1041,14 +1067,11 @@ export class Galaxy implements ILogger {
                 }
                 this._orbitControl.target.x = tp.x;
                 this._orbitControl.target.z = tp.z;
-                if (this._orbitControl.target.y < -10) this._orbitControl.target.y = -10;
-                if (this._orbitControl.target.y > 10) this._orbitControl.target.y = 10;
+                if (this._orbitControl.target.y < -.10) this._orbitControl.target.y = -.10;
+                if (this._orbitControl.target.y > .10) this._orbitControl.target.y = .10;
                 this._cameraTarget.copy(this._orbitControl.target);
             }
         });
-
-        // this.orbitControl.addEventListener('end', () => {
-        // });
 
     }
 
@@ -1118,7 +1141,7 @@ export class Galaxy implements ILogger {
 
         const CLICK_DIST = DeviceInfo.getInstance().desktop ? 10 : 30;
         let inMng = InputMng.getInstance();
-        let dist = MyMath.getVectorLength(inMng.inputDownClientX, inMng.inputDownClientY, x, y);
+        let dist = MyMath.getVec2Length(inMng.inputDownClientX, inMng.inputDownClientY, x, y);
         // LogMng.debug(`onInputUp: dist = ${dist}`);
         // if (!DeviceInfo.getInstance().desktop) alert(`onInputUp: dist = ${dist}`);
 
@@ -1160,6 +1183,10 @@ export class Galaxy implements ILogger {
 
                         this.starPointParamsHovered = this.starPointHovered.params;
                         let starParams = this.starPointHovered.params.starParams;
+                        if (!starParams.starInfo?.serverData) {
+                            this.logWarn(`onClick: UNKNOWN starParams.starInfo.serverData!`, starParams);
+                            return;
+                        }
 
                         LogMng.debug('onClick(): realStars: starParams:', starParams);
                         // debugger;
@@ -1405,7 +1432,7 @@ export class Galaxy implements ILogger {
         this._info.cameraDistanceStr = String(camDist.toFixed(0));
         this._info.camDistGui?.updateDisplay();
 
-        this._phantomStarsParticles.alphaFactor = starsOpacity * Settings.galaxyData.starAlphaFactor;
+        this._phantomStarsParticles.alphaFactor = starsOpacity * 1.5; // Settings.galaxyData.starAlphaFactor;
         this._phantomStarsParticles.update(dt);
     }
 

@@ -89,7 +89,7 @@ export class Settings {
     };
 
     // game
-    static loadFromFile = false;
+    static loadFromFile = true;
     static isCameraAutoRotate = false;
     static cameraAutoRotateSpeed = -0.05;
     static isFakeStarLevels = true;

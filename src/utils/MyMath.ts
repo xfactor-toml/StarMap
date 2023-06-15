@@ -1,35 +1,48 @@
-﻿export type Point = {
+﻿export type Vec2 = {
     x: number;
     y: number;
 };
 
+export type Vec3 = {
+    x: number;
+    y: number;
+    z: number;
+};
+
 export class RectABCD {
-    a: Point;
-    b: Point;
-    c: Point;
-    d: Point;
-    constructor(a: Point, b: Point, c: Point, d: Point) {
+    a: Vec2;
+    b: Vec2;
+    c: Vec2;
+    d: Vec2;
+    constructor(a: Vec2, b: Vec2, c: Vec2, d: Vec2) {
         this.a = a; this.b = b; this.c = c; this.d = d;
     }
 }
 
 export class MyMath {
 
-    public static randomInRange(aMin: number, aMax: number): number {
-        if (aMin > aMax) {
-            throw new Error("MyMath.randomInRange(): Min > Max!");
+    public static randomInRange(aMin: number, aMax: number, auto = false): number {
+        if (auto && aMin > aMax) {
+            var tmp = aMin;
+            aMin = aMax;
+            aMax = tmp;
         }
         return Math.random() * Math.abs(aMax - aMin) + aMin;
     }
 
     public static randomIntInRange(aMin: number, aMax: number): number {
-        if (aMin > aMax) {
-            throw new Error("MyMath.randomIntInRange(): Min > Max!");
-        }
         return Math.round(MyMath.randomInRange(aMin, aMax));
     }
 
-    public static shuffleArray(mas: any[], factor = 2) {
+    /**
+     * Return -1 or 1 randomly
+     */
+    public static randomSign(): number {
+        let res = this.randomInRange(-10, 10) < 0 ? -1 : 1;
+        return res;
+    }
+
+    public static shuffleArray(mas: any[], factor = 4) {
         for (let i = 0; i < mas.length * factor; i++) {
             const id1 = this.randomIntInRange(0, mas.length - 1);
             const id2 = this.randomIntInRange(0, mas.length - 1);
@@ -76,30 +89,13 @@ export class MyMath {
      * @param aHexColorStr 
      * @returns 
      */
-    public static strHexToRGB(aHexColorStr: string): { r: number, g: number, b: number } {
-        //LogMng.debug(`aHexColorStr: ${aHexColorStr}`);
-
-        // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
-        // let shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-        // let newHexColor = aHexColorStr.replace(shorthandRegex, function (m, r, g, b) {
-        //     return r + r + g + g + b + b;
-        // });
-        // LogMng.debug(`newHexColor: ${newHexColor}`);
-
-        // let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(newHexColor);
-        // LogMng.debug(`result: ${result}`);
-
+    public static strHexToRGB(aHexColorStr: string, aIsNormalize = false): { r: number, g: number, b: number } {
         let newHex = aHexColorStr.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i, (m, r, g, b) => '#' + r + r + g + g + b + b);
-        //LogMng.debug(`newHex: ${newHex}`);
-
         let res: number[] = newHex.substring(1).match(/.{2}/g).map(x => parseInt(x, 16));
-        //LogMng.debug(`res: ${res}`);
-        //console.log(res);
-
         return res ? {
-            r: res[0],
-            g: res[1],
-            b: res[2]
+            r: res[0] * (aIsNormalize ? 1 / 255 : 1),
+            g: res[1] * (aIsNormalize ? 1 / 255 : 1),
+            b: res[2] * (aIsNormalize ? 1 / 255 : 1)
         } : null;
     }
 
@@ -120,9 +116,9 @@ export class MyMath {
     /**
      * 
      * @param c number in 0-255 format
-     * @returns 
+     * @returns hex string like AF, D6 etc
      */
-    static byteToHex(c: number) {
+    static byteToHexStr(c: number): string {
         let hex = c.toString(16);
         //LogMng.debug(`componentToHex: c = ${c}, hex = ${hex}`);
         return hex.length == 1 ? "0" + hex : hex;
@@ -136,24 +132,50 @@ export class MyMath {
      * @returns 
      */
     public static rgbToHexStr(r: number, g: number, b: number) {
-        return "#" + this.byteToHex(r) + this.byteToHex(g) + this.byteToHex(b);
+        return "#" + this.byteToHexStr(r) + this.byteToHexStr(g) + this.byteToHexStr(b);
     }
 
     /**
-   * Convert RGB to Hex
-   * @param r Red in format 0 - 255
-   * @param g Green in format 0 - 255
-   * @param b Blue in format 0 - 255
-   * @returns 
-   */
-    public static rgbToHex(r: number, g: number, b: number) {
-        return (Math.floor(r) << 16) + (Math.floor(g) << 8) + Math.floor(b);
+     * Lerp 2 colors in hex
+     * @param aColor1 
+     * @param aColor2 
+     * @param t 
+     * @returns rgb in 0..255 
+     */
+    public static lerpColors(aColor1: number, aColor2: number, t: number, isNormalize = false): {
+        r: number,
+        g: number,
+        b: number
+    } {
+
+        let rgb1 = this.hexToRGB(aColor1);
+        let rgb2 = this.hexToRGB(aColor2);
+        let rgb = {
+            r: Math.floor(this.lerp(rgb1.r, rgb2.r, t)),
+            g: Math.floor(this.lerp(rgb1.g, rgb2.g, t)),
+            b: Math.floor(this.lerp(rgb1.b, rgb2.b, t))
+        };
+
+        if (isNormalize) {
+            rgb.r /= 255;
+            rgb.g /= 255;
+            rgb.b /= 255;
+        }
+
+        return rgb;
     }
 
-    public static getVectorLength(x1: number, y1: number, x2: number, y2: number): number {
+    public static getVec2Length(x1: number, y1: number, x2: number, y2: number): number {
         let dx = x2 - x1;
         let dy = y2 - y1;
         return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    public static getVec3Length(x1: number, y1: number, z1: number, x2: number, y2: number, z2: number): number {
+        let dx = x2 - x1;
+        let dy = y2 - y1;
+        let dz = z2 - z1;
+        return Math.sqrt(dx * dx + dy * dy + dz * dz);
     }
 
     /**
@@ -166,8 +188,22 @@ export class MyMath {
      *
      * @return {number} The angle in radians.
      */
-    public static angleBetween(x1: number, y1: number, x2: number, y2: number) {
+    public static angleBetweenATan(x1: number, y1: number, x2: number, y2: number) {
         return Math.atan2(y2 - y1, x2 - x1);
+    };
+
+    public static angleBetweenACos(x1: number, y1: number, x2: number, y2: number) {
+        let scalar = x1 * x2 + y1 * y2;
+        let mod1 = Math.sqrt(x1 * x1 + y1 * y1);
+        let mod2 = Math.sqrt(x2 * x2 + y2 * y2);
+        return Math.acos(scalar / (mod1 * mod2));
+    };
+
+    public static angleBetweenASin(x1: number, y1: number, x2: number, y2: number) {
+        let scalar = x1 * x2 + y1 * y2;
+        let mod1 = Math.sqrt(x1 * x1 + y1 * y1);
+        let mod2 = Math.sqrt(x2 * x2 + y2 * y2);
+        return Math.asin(scalar / (mod1 * mod2));
     };
 
     public static IsPointInTriangle(ax, ay, bx, by, cx, cy, px, py: number): boolean {
@@ -188,56 +224,129 @@ export class MyMath {
         return res;
     }
 
-    public static isPointInRect(rect: RectABCD, p: Point): boolean {
+    public static isPointInRect(rect: RectABCD, p: Vec2): boolean {
         return MyMath.IsPointInTriangle(rect.a.x, rect.a.y, rect.b.x, rect.b.y, rect.c.x, rect.c.y, p.x, p.y) &&
             MyMath.IsPointInTriangle(rect.c.x, rect.c.y, rect.d.x, rect.d.y, rect.a.x, rect.a.y, p.x, p.y);
     }
 
     public static isPointInCircle(x: number, y: number, cx: number, cy: number, r: number): boolean {
-        return MyMath.getVectorLength(x, y, cx, cy) <= r;
+        return MyMath.getVec2Length(x, y, cx, cy) <= r;
     }
 
     public static isCirclesIntersect(x1: number, y1: number, r1: number, x2: number, y2: number, r2: number): boolean {
-        return MyMath.getVectorLength(x1, y1, x2, y2) <= r1 + r2;
+        return MyMath.getVec2Length(x1, y1, x2, y2) <= r1 + r2;
+    }
+
+    // INTERPOLATION
+
+    /**
+     * Linear interpolation
+     * @param min 
+     * @param max 
+     * @param perc 
+     * @returns 
+     */
+    public static getValueBetween(min: number, max: number, perc: number): number {
+        return min + (max - min) * perc;
+    }
+
+    /**
+     * Calculates the factorial of a given number for integer values greater than 0.
+     * @param {number} aValue - A positive integer to calculate the factorial of.
+     * @return {number} The factorial of the given number.
+     */
+    public static factorial(aValue: number) {
+        if (aValue === 0) return 1;
+        let res = aValue;
+        while (--aValue) {
+            res *= aValue;
+        }
+        return res;
+    };
+
+    /**
+     * Calculates the Bernstein basis from the three factorial coefficients.
+     * @param {number} n - The first value.
+     * @param {number} i - The second value.
+     *
+     * @return {number} The Bernstein basis of Factorial(n) / Factorial(i) / Factorial(n - i)
+     */
+    public static bernstein(n, i) {
+        return this.factorial(n) / this.factorial(i) / this.factorial(n - i);
+    };
+
+    /**
+    * A bezier interpolation method.
+    * @param {number[]} v - The input array of values to interpolate between.
+    * @param {number} k - The percentage of interpolation, between 0 and 1.
+    *
+    * @return {number} The interpolated value.
+    */
+    public static bezierInterpolation(v: number[], k: number) {
+        var b = 0;
+        var n = v.length - 1;
+        for (var i = 0; i <= n; i++) {
+            b += Math.pow(1 - k, n - i) * Math.pow(k, i) * v[i] * this.bernstein(n, i);
+        }
+        return b;
     }
 
 }
 
-export class LinearSpline {
-    private _points = [];
+
+export class MyLinearSpline {
+
+    private _points: { val, t }[];
     private _lerp: Function;
 
-    constructor(lerp: Function) {
+    constructor(aLerp?: Function) {
         this._points = [];
-        this._lerp = lerp;
+        if (aLerp) {
+            this._lerp = aLerp;
+        }
+        else {
+            this._lerp = MyMath.lerp;
+        }
     }
 
-    addPoint(t: number, val) {
-        this._points.push([t, val]);
+    addPoint(val, t: number) {
+        this._points.push({ val: val, t: t });
     }
 
     get(t: number) {
-        let p1 = 0;
+
+        let id1 = 0;
 
         for (let i = 0; i < this._points.length; i++) {
-            const p = this._points[i];
-            if (p[0] >= t) {
-                break;
-            }
-            p1 = i;
+            id1 = i;
+            if (this._points[i].t >= t) break;
+
         }
 
-        const p2 = Math.min(this._points.length - 1, p1 + 1);
+        let id2 = id1;
 
-        if (p1 == p2) {
-            return this._points[p1][1];
+        for (let i = this._points.length - 1; i >= 0; i--) {
+            id2 = i;
+            if (this._points[i].t <= t) break;
         }
+
+        if (id1 == id2) {
+            return this._points[id1].val;
+        }
+
+        // example:
+        // [ 0.1, 0.3, 0.5, 0.8 ]
+        // t = 0.05
+        // id1 = 0, id2 = 0
+        // t = 0.5
+        // id1 = 2, id2 = 2
 
         return this._lerp(
-            (t - this._points[p1][0]) / (this._points[p2][0] - this._points[p1][0]),
-            this._points[p1][1],
-            this._points[p2][1]
+            this._points[id1].val,
+            this._points[id2].val,
+            (t - this._points[id1].t) / (this._points[id2].t - this._points[id1].t)
         );
+
     }
 
 }

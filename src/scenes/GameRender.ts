@@ -61,8 +61,7 @@ export class GameRender {
         Settings.domRenderer = this.renderer.domElement;
 
         // SCENES
-
-        // this.backScene = new THREE.Scene();
+        
         this.scene = new THREE.Scene();
 
         // CAMERA

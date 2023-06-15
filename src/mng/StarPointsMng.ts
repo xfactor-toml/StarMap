@@ -80,7 +80,7 @@ export class StarPointsMng {
             const p = this._starPoints[i];
             if (!p?.params?.starParams) continue;
             let idPos = ids.indexOf(p.params.starParams.id);
-            if (idPos >= 0) {
+            if (idPos >= 0 && p.params.isPhantom == aIsPhantom) {
                 p.update();
                 // stay point, remove id
                 ids.splice(idPos, 1);

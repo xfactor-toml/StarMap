@@ -35,7 +35,7 @@ export class StarGenerator implements ILogger {
     }
 
     getStarId(): number {
-        return this._starIdCounter++;
+        return 1000000 + this._starIdCounter++;
     }
 
     generateGalaxyStarsData(aParams: GalaxyParams,
@@ -134,7 +134,6 @@ export class StarGenerator implements ILogger {
                 clr.g = PHANTOM_STAR_COLOR.g;
                 clr.b = PHANTOM_STAR_COLOR.b;
                 clrBigStar = PHANTOM_BIG_STAR_COLOR;
-
             }
             else if (aColorSet) {
                 let customStarColor = aColorSet[MyMath.randomIntInRange(0, aColorSet.length - 1)];
@@ -331,5 +330,19 @@ export class StarGenerator implements ILogger {
         return resData;
     }
 
+    starToPhantom(aData: GalaxyStarParams) {
+        // color
+        let clr = new THREE.Color(1, 1, 1);
+        let clrBigStar: any;
+        clr.r = PHANTOM_STAR_COLOR.r;
+        clr.g = PHANTOM_STAR_COLOR.g;
+        clr.b = PHANTOM_STAR_COLOR.b;
+        clrBigStar = PHANTOM_BIG_STAR_COLOR;
+
+        aData.color.r = clr.r;
+        aData.color.g = clr.g;
+        aData.color.b = clr.b;
+        aData.starInfo.bigStar.color = clrBigStar;
+    }
 
 }
