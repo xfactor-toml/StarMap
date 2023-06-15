@@ -33,6 +33,10 @@
   cursor: pointer;
 }
 
+.StarPanel__text.is-clickable:hover {
+  filter: drop-shadow(0 0 10px var(--accent-color));
+}
+
 .StarPanel__line {
   fill: none;
   stroke: currentColor;
@@ -71,12 +75,14 @@
 .StarPanel__button {
   cursor: pointer;
   pointer-events: all;
+}
+
+.StarPanel__button .StarPanel__line.is-button {
   filter: brightness(0.8);
   transition: ease 200ms filter;
   will-change: filter;
-  font-weight: 300;
 }
 
-.StarPanel__button:hover {
+.StarPanel__button:hover .StarPanel__line.is-button {
   filter: brightness(1);
 }

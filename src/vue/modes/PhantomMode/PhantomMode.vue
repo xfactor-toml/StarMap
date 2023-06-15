@@ -2,7 +2,7 @@
   <div class="PhantomMode">
     <transition name="fade">
       <template v-if="settingsStore.overlay">
-        <div class="gui-overlay" @click="settingsStore.hideStarTooltip" />
+        <div class="gui-overlay" @click="closeStarCreationPanel" />
       </template>
     </transition>
     <transition name="fade">
