@@ -459,7 +459,7 @@ export default {
       return formatNumber(this.star.hud[this.selectedParam].value);
     },
     activeParamUnit(): string {
-      return formatNumber(this.star.hud[this.selectedParam].unit);
+      return this.star.hud[this.selectedParam].unit;
     },
     panelStyle() {
       return {
