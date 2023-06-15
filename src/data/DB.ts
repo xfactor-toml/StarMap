@@ -85,5 +85,13 @@ export const PHANTOM_BIG_STAR_COLOR = {
 export class DB {
     static realStars: ServerStarData[];
 
+    static getStarPointColorByLevel(aStarLevel: number): number {
+        const COLORS = [0, 0xFFFF00, 0xF7931E, 0x30A2FF, 0xFFFFFF, 0x4A30E8];
+        return COLORS[aStarLevel];
+    }
+
+    static getStarPointColorPhantom(): number {
+        return 0x30A2FF;
+    }
 
 }

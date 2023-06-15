@@ -1469,6 +1469,7 @@ export class Galaxy implements ILogger {
     private updateStarPoints() {
 
         if (!Settings.STAR_CLICK_POINTS) return;
+        const isPhantomMode = this._fsm.getCurrentState().name == States.phantomStars;
 
         // new dynamic points
         const MaxCheckRadius = Settings.POINTS_CAMERA_MAX_DIST;
@@ -1487,7 +1488,7 @@ export class Galaxy implements ILogger {
                 break;
         }
 
-        this.starPointsMng.updatePoints(points, checkRadius);
+        this.starPointsMng.updatePoints(points, checkRadius, isPhantomMode);
 
     }
 

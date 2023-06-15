@@ -27,7 +27,7 @@ export class StarPointsMng {
         this._starPoints = [];
     }
 
-    updatePoints(aPoints: QTPoint[], aRadius: number) {
+    updatePoints(aPoints: QTPoint[], aRadius: number, aIsPhantom: boolean) {
 
         let ids: number[] = [];
         let points: { 
@@ -107,11 +107,12 @@ export class StarPointsMng {
             // test
             // if (pos.distanceTo(this._camera.position) > 60) continue;
             let starPointSprite = new StarPoint({
-                baseScale: 6,
+                baseScale: 3,
                 camera: this._camera,
                 maxAlpha: .7,
                 starParams: starParams,
-                scaleFactor: 0
+                scaleFactor: 0,
+                isPhantom: aIsPhantom
             });
             starPointSprite.position.copy(pos);
             starPointSprite.show(1);

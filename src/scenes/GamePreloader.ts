@@ -55,7 +55,10 @@ export class GamePreloader {
         let assetsPath = Settings.assetsPath;
 
         // star point sprite
-        this._loader.texture('starPoint', `./assets/starPoint.svg`);
+        // this._loader.texture('starPoint', `./assets/starPoint.svg`);
+        // this._loader.texture('starPoint', `./assets/starPoint_512.png`);
+        this._loader.texture('starPoint', `./assets/starPoint_128.png`);
+        // this._loader.texture('starPoint', `./assets/starPoint2.svg`);
 
         // skybox
         let path = assetsPath + 'skybox/skybox5/';

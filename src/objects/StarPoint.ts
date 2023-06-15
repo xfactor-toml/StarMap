@@ -3,6 +3,7 @@ import { ThreeLoader } from "../loaders/ThreeLoader";
 import gsap from "gsap";
 import { Callbacks } from "../utils/events/Callbacks";
 import { GalaxyStarParams } from "~/data/Types";
+import { DB } from "~/data/DB";
 
 export type StarPointParams = {
     baseScale: number;
@@ -10,6 +11,7 @@ export type StarPointParams = {
     maxAlpha?: number;
     starParams: GalaxyStarParams;
     scaleFactor: number;
+    isPhantom: boolean;
 };
 
 export class StarPoint extends THREE.Group {
@@ -26,9 +28,15 @@ export class StarPoint extends THREE.Group {
 
         let loader = ThreeLoader.getInstance();
 
+        let clr = DB.getStarPointColorByLevel(this._params.starParams.starInfo.level);
+        if (this._params.isPhantom) clr = DB.getStarPointColorPhantom();
+
         let previewTexture = loader.getTexture('starPoint');
+        // previewTexture.magFilter = THREE.NearestFilter;
+        // previewTexture.wrapT = previewTexture.wrapS = THREE.MirroredRepeatWrapping;
         let previewMaterial = new THREE.SpriteMaterial({
             map: previewTexture,
+            color: clr,
             transparent: true,
             opacity: 0,
             depthWrite: false,
@@ -72,10 +80,10 @@ export class StarPoint extends THREE.Group {
 
             case 0:
 
-                const minScale = 0.1;
+                const minScale = 0.01;
                 const maxScale = 25;
                 const dtScale = maxScale - minScale;
-                const minDist = 10;
+                const minDist = 2; // 10
                 const maxDist = 4000;
                 const dtDist = maxDist - minDist;
 

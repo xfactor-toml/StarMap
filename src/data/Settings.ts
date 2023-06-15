@@ -76,7 +76,7 @@ export class Settings {
 
     static skyData = {
         starsCount: 2000,
-        radiusMin: 30,
+        radiusMin: 200,
         radiusMax: 1000,
         scaleMin: 8,
         scaleMax: 10,
