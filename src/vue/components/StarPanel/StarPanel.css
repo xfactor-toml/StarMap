@@ -19,7 +19,7 @@
 
 .StarPanel__title,
 .StarPanel__text {
-  font-size: 18px;
+  font-size: 17px;
   fill: currentColor;
   font-family: Inter, sans-serif;
   pointer-events: all;
@@ -31,11 +31,6 @@
 
 .StarPanel__text.is-clickable {
   cursor: pointer;
-  transition: ease opacity 200ms;
-}
-
-.StarPanel__text.is-clickable:hover {
-  opacity: 0.8;
 }
 
 .StarPanel__line {
@@ -63,4 +58,25 @@
 
 .StarPanel__line.is-aim {
   stroke-width: 0.5;
+}
+
+.StarPanel__line.is-button {
+  fill: url(#leftButtonGradient);
+}
+
+.StarPanel__line.is-button.is-right {
+  fill: url(#rightButtonGradient);
+}
+
+.StarPanel__button {
+  cursor: pointer;
+  pointer-events: all;
+  filter: brightness(0.8);
+  transition: ease 200ms filter;
+  will-change: filter;
+  font-weight: 300;
+}
+
+.StarPanel__button:hover {
+  filter: brightness(1);
 }
