@@ -501,6 +501,8 @@ export class Galaxy implements ILogger {
                 if (loadData.galaxyData) {
                     for (const key in loadData.galaxyData) {
                         const element = loadData.galaxyData[key];
+                        // skip some fields
+                        if (key == 'starAlphaFactor') continue;
                         Settings.galaxyData[key] = element;
                     }
                 }
@@ -1067,8 +1069,8 @@ export class Galaxy implements ILogger {
                 }
                 this._orbitControl.target.x = tp.x;
                 this._orbitControl.target.z = tp.z;
-                if (this._orbitControl.target.y < -.10) this._orbitControl.target.y = -.10;
-                if (this._orbitControl.target.y > .10) this._orbitControl.target.y = .10;
+                if (this._orbitControl.target.y < 0) this._orbitControl.target.y = 0;
+                if (this._orbitControl.target.y > 0) this._orbitControl.target.y = 0;
                 this._cameraTarget.copy(this._orbitControl.target);
             }
         });
@@ -1211,38 +1213,8 @@ export class Galaxy implements ILogger {
                     }
                     else {
                         // galaxy plane click
-                        let plainPoint = this.getPlanePoint(inMng.normalInputPos);
-                        if (plainPoint) {
-                            // move camera to point
-                            let newCamPos = this._camera.position.clone().sub(plainPoint).normalize().multiplyScalar(Settings.POINTS_CAMERA_MAX_DIST / 2);
-                            newCamPos.add(plainPoint);
-                            this._orbitControl.enabled = false;
-                            gsap.to(this._camera.position, {
-                                x: newCamPos.x,
-                                y: newCamPos.y,
-                                z: newCamPos.z,
-                                duration: 3,
-                                ease: 'sine.inOut',
-                                onComplete: () => {
-                                    this._orbitControl.enabled = true;
-                                }
-                            });
-
-                            // move camera target to center of Click Point
-                            gsap.to(this._cameraTarget, {
-                                x: plainPoint.x,
-                                y: plainPoint.y,
-                                z: plainPoint.z,
-                                duration: 3,
-                                ease: 'sine.inOut',
-                                onUpdate: () => {
-                                    this._orbitCenter.copy(this._cameraTarget);
-                                }
-                            });
-
-                        }
+                        this.onGalaxyPlaneClick();
                     }
-
 
                 }
                 break;
@@ -1282,41 +1254,52 @@ export class Galaxy implements ILogger {
                     }
                     else {
                         // galaxy plane click
-                        let plainPoint = this.getPlanePoint(inMng.normalInputPos);
-                        if (plainPoint) {
-                            // move camera to point
-                            let newCamPos = this._camera.position.clone().sub(plainPoint).normalize().multiplyScalar(Settings.POINTS_CAMERA_MAX_DIST / 2);
-                            newCamPos.add(plainPoint);
-                            this._orbitControl.enabled = false;
-                            gsap.to(this._camera.position, {
-                                x: newCamPos.x,
-                                y: newCamPos.y,
-                                z: newCamPos.z,
-                                duration: 3,
-                                ease: 'sine.inOut',
-                                onComplete: () => {
-                                    this._orbitControl.enabled = true;
-                                }
-                            });
-
-                            // move camera target to center of Click Point
-                            gsap.to(this._cameraTarget, {
-                                x: plainPoint.x,
-                                y: plainPoint.y,
-                                z: plainPoint.z,
-                                duration: 3,
-                                ease: 'sine.inOut',
-                                onUpdate: () => {
-                                    this._orbitCenter.copy(this._cameraTarget);
-                                }
-                            });
-
-                        }
+                        this.onGalaxyPlaneClick();
                     }
-
 
                 }
                 break;
+
+        }
+
+    }
+
+    private onGalaxyPlaneClick() {
+        const MOVE_DUR = 2;
+        let inMng = InputMng.getInstance();
+        let plainPoint = this.getPlanePoint(inMng.normalInputPos);
+
+        if (plainPoint) {
+
+            let currDist = this._camera.position.distanceTo(this._cameraTarget);
+            let currNewDist = this._camera.position.distanceTo(plainPoint);
+            let resultDist = Math.min(Settings.POINTS_CAMERA_MAX_DIST / 2, currNewDist);
+            let newCamPos = this._camera.position.clone().sub(plainPoint).normalize().multiplyScalar(resultDist).add(plainPoint);
+
+            // move camera to point
+            this._orbitControl.enabled = false;
+            gsap.to(this._camera.position, {
+                x: newCamPos.x,
+                y: newCamPos.y,
+                z: newCamPos.z,
+                duration: MOVE_DUR,
+                ease: 'sine.inOut',
+                onComplete: () => {
+                    this._orbitControl.enabled = true;
+                }
+            });
+
+            // move camera target to center of Click Point
+            gsap.to(this._cameraTarget, {
+                x: plainPoint.x,
+                y: plainPoint.y,
+                z: plainPoint.z,
+                duration: MOVE_DUR,
+                ease: 'sine.inOut',
+                onUpdate: () => {
+                    this._orbitCenter.copy(this._cameraTarget);
+                }
+            });
 
         }
 
