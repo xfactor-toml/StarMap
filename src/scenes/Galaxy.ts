@@ -2158,6 +2158,7 @@ export class Galaxy implements ILogger {
 
         this.updateFarStars(dt);
         this.updateSmallGalaxies(dt);
+        this.updateStarPoints();
 
         if (this.solarSystem) this.solarSystem.update(dt);
 
