@@ -52,7 +52,7 @@
       <g id="data-output">
         <g id="data-output-value">
           <text class="StarPanel__text" text-anchor="middle">
-            <tspan x="436" y="176">{{ activeParamValue }}</tspan>
+            <tspan x="436" y="176">{{ activeParamValue }} {{ activeParamUnit }}</tspan>
           </text>
         </g>
         <path
@@ -457,6 +457,9 @@ export default {
     },
     activeParamValue(): string {
       return formatNumber(this.star.hud[this.selectedParam].value);
+    },
+    activeParamUnit(): string {
+      return formatNumber(this.star.hud[this.selectedParam].unit);
     },
     panelStyle() {
       return {
