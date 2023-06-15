@@ -161,9 +161,9 @@ export class BigStar2 extends THREE.Group {
         let camera = this._camera;
         if (camera) {
             this._mesh.quaternion.copy(camera.quaternion);
-            // let p = camera.position.clone().sub(this._parentPos).normalize();
-            // this._uniforms.mx.value = Math.atan2(p.z, p.x);
-            // this._uniforms.my.value = Math.atan2(Math.sqrt(p.x * p.x + p.z * p.z), p.y);
+            let p = camera.position.clone().sub(this._parentPos).normalize();
+            this._uniforms.mx.value = Math.atan2(p.z, p.x);
+            this._uniforms.my.value = Math.atan2(Math.sqrt(p.x * p.x + p.z * p.z), p.y);
         }
     }
 

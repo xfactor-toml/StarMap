@@ -130,12 +130,17 @@ vec4 mainImage( vec4 fragColor, vec2 fragCoord )
 	float fVal1	= 1.0 - fade;
 	float fVal2	= 1.0 - fade;
 	
-    mouseX = 0.0;
+    // v1
+	float angle = atan( p.x * clamp((cos(mouseX) + .5), .5, 1.), p.y * (sin(mouseY) + .5) ) / 6.2832;
+    // v2
+    // mouseX = 0.0;
+    // mouseY = 0.0;
 	// float angle = atan( p.x * clamp((cos(mouseX) + .5), .5, 1.), p.y * (sin(mouseY) + .5) ) / 6.2832;
-	float angle = atan( p.x * clamp((cos(mouseX) + .5), .5, 1.), p.y * (sin(0.0) + .5) ) / 6.2832;
+	// float angle = atan( p.x * clamp((cos(mouseX) + .5), .5, 1.), p.y * (sin(0.0) + .5) ) / 6.2832;
+
 	// float angle	= 1. / 6.2;
-	float dist	= length(p);
-	vec3 coord	= vec3( angle, dist, time * 0.1 );
+	float dist = length(p);
+	vec3 coord = vec3( angle, dist, time * 0.1 );
 	
     // 1st variant of corona
 
