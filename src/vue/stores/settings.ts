@@ -24,11 +24,11 @@ type SettingsStoreState = {
   screen: GuiScreen;
   sfxVolume: number;
   starBoostPanel: {
-    star: Star;
+    starId: number;
     type: StarBoostPanelType;
   } | null;
   starPanel: {
-    star: Star;
+    starId: number;
     scale: number;
   } | null;
   starTooltip: {
@@ -155,7 +155,7 @@ export const useSettingsStore = defineStore('settings', {
 
       this.starPanel = {
         scale,
-        star
+        starId: star.id
       };
     },
     showPhantomStarTooltip({ pos2d, pos3d }: PhantomStarPreviewEvent) {
@@ -163,11 +163,11 @@ export const useSettingsStore = defineStore('settings', {
       this.enableOverlay();
       this.newStarPosition = new StarPosition(pos2d, pos3d);
     },
-    showStarBoostPanel({ star, type }: { star: Star; type: StarBoostPanelType }) {
+    showStarBoostPanel({ starId, type }: SettingsStoreState['starBoostPanel']) {
       this.client.onClick();
       this.enableOverlay();
       this.starBoostPanel = {
-        star,
+        starId,
         type
       };
     }

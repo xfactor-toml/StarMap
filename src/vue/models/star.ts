@@ -20,9 +20,13 @@ export class Star {
 
   constructor({ id, owner, params }: StarData) {
     this.id = id;
-    this.owner = owner;
+    this.owner = owner.toLowerCase();
     this.description = `${params.race}`.toUpperCase();
     this.params = params;
+  }
+
+  get levelUpFuel() {
+    return this.params.levelUpFuel / 1e18;
   }
 
   get name() {
@@ -51,7 +55,12 @@ export class Star {
     return {
       id: this.id,
       owner: this.owner,
-      params: { ...this.params }
+      params: {
+        ...this.params,
+        coords: {
+          ...this.params.coords
+        }
+      }
     };
   }
 

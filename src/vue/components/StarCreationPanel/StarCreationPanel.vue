@@ -44,7 +44,7 @@
             }"
           >
             <div class="StarCreationPanel__price is-balance">
-              <template v-if="!fetching">{{ roundNumber(balance) }}</template>
+              <template v-if="!fetching">{{ roundedBalance }}</template>
             </div>
             <div class="StarCreationPanel__currency">{{ currency }}</div>
           </div>
@@ -120,6 +120,9 @@ export default {
   }),
   computed: {
     ...mapStores(useSettingsStore, useStarsStore),
+    roundedBalance() {
+      return roundNumber(this.balance, this.balance > 1000 ? 2 : 4);
+    },
     currency() {
       return this.$wallet.currency;
     },

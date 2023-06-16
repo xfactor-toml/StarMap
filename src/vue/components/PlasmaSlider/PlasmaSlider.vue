@@ -1,7 +1,7 @@
 <template>
   <vue-slider
     class="PlasmaSlider"
-    :value="value"
+    :modelValue="modelValue"
     :height="14"
     :tooltip="'always'"
     :tooltipPlacement="'bottom'"
@@ -20,7 +20,7 @@
       backgroundColor: 'transparent',
       backgroundImage: 'url(../gui/images/slider-dot.svg)'
     }"
-    @input="$emit('input', $event)"
+    @update:modelValue="$emit('update:modelValue', $event)"
   >
     <template v-slot:tooltip="{ value }">
       <div class="PlasmaSlider__tooltip">{{ value }}%</div>
@@ -39,7 +39,7 @@ export default {
     VueSlider
   },
   props: {
-    value: {
+    modelValue: {
       required: true
     }
   }

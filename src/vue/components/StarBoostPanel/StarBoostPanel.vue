@@ -1,14 +1,7 @@
 <template>
-  <div
-    class="StarBoostPanel"
-    :class="{
-      'is-fetching': fetching,
-      'is-connected': connected
-    }"
-    ref="tooltip"
-  >
+  <div class="StarBoostPanel" ref="tooltip">
     <div class="StarBoostPanel__header">
-      <div class="StarBoostPanel__title">Boost {{ type }}.</div>
+      <div class="StarBoostPanel__title">Boost {{ label }}.</div>
       <button
         class="StarBoostPanel__close"
         type="button"
@@ -18,41 +11,75 @@
       />
     </div>
     <div class="StarBoostPanel__body">
-      <template v-if="connected">
-        <div class="StarBoostPanel__group">
+      <div class="StarBoostPanel__group">
+        <template v-if="fetching">
+          <div class="StarBoostPanel__skeleton is-level" />
+        </template>
+        <template v-else>
           <div class="StarBoostPanel__level">
-            <div class="StarBoostPanel__level-progress">
-              <div class="StarBoostPanel__level-value">400 / 1000</div>
+            <div class="StarBoostPanel__level-progress" :style="{ width: `${percent}%` }">
+              <div class="StarBoostPanel__level-value">{{ current }} / {{ max }}</div>
             </div>
           </div>
-        </div>
+        </template>
+      </div>
+      <template v-if="fetching">
         <div class="StarBoostPanel__group">
-          <div class="StarBoostPanel__label is-white">Plasma - {{ plasma * 2 }}</div>
+          <div class="StarBoostPanel__skeleton is-label" />
+          <div class="StarBoostPanel__skeleton is-slider" />
+        </div>
+      </template>
+      <template v-else>
+        <div class="StarBoostPanel__group" v-if="!canLevelUp">
+          <div class="StarBoostPanel__label is-white">Plasma - {{ requiredPlasma }}</div>
           <div class="StarBoostPanel__slider">
-            <PlasmaSlider v-model="plasma" />
-          </div>
-        </div>
-        <div class="StarBoostPanel__group">
-          <div class="StarBoostPanel__label">Available in the wallet:</div>
-          <div
-            class="StarBoostPanel__wallet"
-            :class="{
-              'is-blocked': !canBuy
-            }"
-          >
-            <div class="StarBoostPanel__price is-balance">
-              <template v-if="!fetching">{{ roundNumber(balance) }}</template>
-            </div>
-            <div class="StarBoostPanel__currency">{{ currency }}</div>
+            <PlasmaSlider v-model="boostPercent" />
           </div>
         </div>
       </template>
       <div class="StarBoostPanel__group">
-        <button class="StarBoostPanel__button">Boost {{ type }}.</button>
+        <div class="StarBoostPanel__label">Available in the wallet:</div>
+        <div
+          class="StarBoostPanel__wallet"
+          :class="{
+            'is-blocked': !fetching && !canBuy
+          }"
+        >
+          <template v-if="fetching">
+            <div class="StarBoostPanel__skeleton is-balance" />
+          </template>
+          <template v-else>
+            <div class="StarBoostPanel__price is-balance">
+              {{ roundedBalance }}
+            </div>
+            <div class="StarBoostPanel__currency">{{ currency }}</div>
+          </template>
+        </div>
+      </div>
+      <div class="StarBoostPanel__group">
+        <template v-if="fetching">
+          <div class="StarBoostPanel__skeleton is-button" />
+        </template>
+        <template v-else>
+          <button class="StarBoostPanel__button" :disabled="canLevelUp || pending" @click="boost">
+            {{ pending ? 'Pending...' : `Boost ${label}` }}
+          </button>
+        </template>
       </div>
       <template v-if="type === 'exp'">
         <div class="StarBoostPanel__group">
-          <button class="StarBoostPanel__button is-yellow" disabled>Level up</button>
+          <template v-if="fetching">
+            <div class="StarBoostPanel__skeleton is-button" />
+          </template>
+          <template v-else>
+            <button
+              class="StarBoostPanel__button is-yellow"
+              :disabled="!canLevelUp || levelUpPending"
+              @click="levelUp"
+            >
+              {{ levelUpPending ? 'Pending...' : 'Level up' }}
+            </button>
+          </template>
         </div>
       </template>
     </div>
@@ -63,7 +90,7 @@
 import { roundNumber } from '@/utils';
 import { Star } from '@/models';
 import { PlasmaSlider } from '@/components';
-import { useSettingsStore, useStarsStore } from '@/stores';
+import { useStarsStore } from '@/stores';
 import { mapStores } from 'pinia';
 import { PropType } from 'vue';
 import { StarBoostPanelType } from '@/types';
@@ -74,8 +101,8 @@ export default {
     PlasmaSlider
   },
   props: {
-    star: {
-      type: Object as PropType<Star>,
+    starId: {
+      type: Number,
       required: true
     },
     type: {
@@ -84,59 +111,103 @@ export default {
     }
   },
   data: () => ({
-    plasma: 0,
     approved: false,
+    allowed: 0,
     balance: 0,
-    connected: true,
+    boostPercent: 50,
     creationCost: 0,
-    createdStar: null,
-    creating: false,
     fetching: false,
-    installed: false
+    installed: false,
+    pending: false,
+    levelUpPending: false
   }),
   computed: {
-    ...mapStores(useSettingsStore, useStarsStore),
+    ...mapStores(useStarsStore),
+    label() {
+      return this.type === 'exp' ? 'exp.' : 'nrg.';
+    },
+    roundedBalance() {
+      return roundNumber(this.balance, this.balance > 1000 ? 2 : 4);
+    },
+    star() {
+      return this.starsStore.getById(this.starId);
+    },
+    max() {
+      return this.type === 'exp' ? this.creationCost : this.roundedBalance / 1000;
+    },
+    current() {
+      return this.type === 'exp' ? this.star.levelUpFuel : this.allowed;
+    },
+    percent() {
+      return Math.min(this.current / (this.max / 100));
+    },
+    requiredAmount() {
+      return roundNumber(Math.max(this.max - this.current, 0), 4, 'ceil');
+    },
+    requiredPlasma() {
+      return roundNumber((this.requiredAmount * this.boostPercent) / 100, 4, 'ceil');
+    },
     currency() {
       return this.$wallet.currency;
     },
     canBuy() {
-      return this.balance > 0 && this.balance >= this.creationCost;
+      return this.balance > 0 && this.balance >= this.requiredAmount;
+    },
+    canLevelUp() {
+      return this.requiredAmount === 0;
     }
   },
   methods: {
-    roundNumber,
-    async approve() {
-      const approvedPlasma = await this.$wallet.approvePlasma(this.creationCost);
+    async boost() {
+      this.pending = true;
 
-      this.approved = approvedPlasma >= this.creationCost;
-    },
-    async create() {
-      this.creating = true;
+      const boostMethod = {
+        exp: 'refuelStarLevelUp',
+        energy: 'refuelStarExistence'
+      };
 
-      const createdStar = await this.$wallet.createStar(
-        this.starName,
-        this.starPosition.galaxy.toContractFormat()
+      const updatedStar = await this.$wallet[boostMethod[this.type]](
+        this.star.id,
+        this.requiredPlasma
       );
 
-      this.creating = false;
+      this.pending = false;
 
-      if (createdStar === null) {
-        return;
+      if (updatedStar) {
+        this.starsStore.updateStar(new Star(updatedStar));
+      }
+    },
+    async levelUp() {
+      this.levelUpPending = true;
+
+      const updatedStar = await this.$wallet.increaseStarLevel(this.starId);
+
+      this.levelUpPending = false;
+
+      if (updatedStar) {
+        this.starsStore.updateStar(new Star(updatedStar));
       }
 
-      this.createdStar = new Star(createdStar);
-      this.starsStore.addStar(this.createdStar);
-      this.settingsStore.hideStarTooltip();
+      this.fetchData();
+    },
+    async fetchData() {
+      const [allowed, balance, creationCost] = await Promise.all([
+        this.$wallet.getAllowance(),
+        this.$wallet.getBalance(),
+        this.$wallet.getCreationCost(this.star.params.level + 1)
+      ]);
 
-      this.$client.onStarCreated(this.createdStar);
+      this.allowed = allowed;
+      this.balance = balance;
+      this.creationCost = creationCost;
     }
   },
   async mounted() {
     this.fetching = true;
-    this.balance = await this.$wallet.getBalance();
-    this.creationCost = await this.$wallet.getCreationCost();
+
+    await this.fetchData();
+
     this.installed = this.$wallet.installed;
-    this.connected = this.$wallet.connected;
     this.fetching = false;
   }
 };

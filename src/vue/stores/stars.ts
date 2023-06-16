@@ -22,10 +22,18 @@ export const useStarsStore = defineStore('stars', {
       this.stars = (await this.wallet.getStars()).map(star => new Star(star));
     },
     addStar(star: Star) {
-      this.stars.push(star);
+      if (!this.exist(star.id)) {
+        this.stars.push(star);
+      }
+    },
+    updateStar(updatedStar: Star) {
+      this.stars = this.stars.map(star => (star.id === updatedStar.id ? updatedStar : star));
     },
     getById(starId: number) {
       return this.stars.find(star => star.id === starId);
+    },
+    exist(starId: number) {
+      return this.stars.some(star => star.id === starId);
     },
     setLevelsFilter(levels: number[]) {
       this.levelsFilter = levels;

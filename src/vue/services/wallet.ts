@@ -7,10 +7,13 @@ import {
   GetAllStarData,
   GetBalance,
   GetCreationCost,
+  IncreaseStarLevel,
   NetworkAuth,
+  RefuelStar,
   RequiredPlasmaToApprove,
   SubscribeOnAccountChanging
 } from '~/blockchain';
+import { fuelTarget } from '~/blockchain/types';
 import { Coords, StarList } from '~/blockchain/types';
 
 export class WalletService {
@@ -45,6 +48,22 @@ export class WalletService {
     return this.checkConnection(() => CreateNewStar(owner, name, uri, race, coords), null);
   }
 
+  async refuelStar(starId: number, amount: number, target: fuelTarget) {
+    return this.checkConnection(() => RefuelStar(this.account, starId, amount, target), null);
+  }
+
+  async refuelStarLevelUp(starId: number, amount: number) {
+    return this.refuelStar(starId, amount, 'levelup');
+  }
+
+  async refuelStarExistence(starId: number, amount: number) {
+    return this.refuelStar(starId, amount, 'existence');
+  }
+
+  async increaseStarLevel(starId: number) {
+    return this.checkConnection(() => IncreaseStarLevel(this.account, starId), null);
+  }
+
   async getAllowance() {
     return this.checkConnection(() => GetAllowance(this.account));
   }
@@ -54,7 +73,7 @@ export class WalletService {
   }
 
   async getCreationCost(level = 1) {
-    return this.checkConnection(() => GetCreationCost(level), 0);
+    return GetCreationCost(level) || 0;
   }
 
   async getStars(): Promise<StarList> {

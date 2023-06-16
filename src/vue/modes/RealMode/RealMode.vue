@@ -3,7 +3,7 @@
     <transition name="fade">
       <template v-if="settingsStore.starPanel !== null">
         <StarPanel
-          :star="settingsStore.starPanel.star"
+          :starId="settingsStore.starPanel.starId"
           :scale="settingsStore.starPanel.scale"
           @callStarBoost="settingsStore.showStarBoostPanel"
         />
@@ -29,7 +29,7 @@
     <transition name="fade">
       <template v-if="settingsStore.starBoostPanel !== null">
         <StarBoostPanel
-          :star="settingsStore.starBoostPanel.star"
+          :starId="settingsStore.starBoostPanel.starId"
           :type="settingsStore.starBoostPanel.type"
           @hide="settingsStore.hideStarBoostPanel"
           @hover="$client.onHover()"

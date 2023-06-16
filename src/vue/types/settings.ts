@@ -23,4 +23,4 @@ export type GuiLevel = {
   label: string;
 };
 
-export type StarBoostPanelType = 'nrg' | 'exp';
+export type StarBoostPanelType = 'energy' | 'exp';

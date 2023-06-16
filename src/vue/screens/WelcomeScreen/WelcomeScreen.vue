@@ -85,6 +85,9 @@ export default {
       this.$client.run(this.preservedFullscreenRun, this.starsStore.stars);
       this.settingsStore.setScreen('interface');
     }
+  },
+  created() {
+    this.$wallet.connect();
   }
 };
 </script>

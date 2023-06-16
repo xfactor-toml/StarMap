@@ -58,28 +58,30 @@
           d="M332.8,0.1l28,28l4.9,4.9c0.8,0.8,1.9,1.3,3,1.3h126.6c1.1,0,2.2-0.5,3-1.3l4.9-4.9
 					l28-28"
         />
-        <g id="star-left-button" class="StarPanel__button" @click="boostExp">
-          <path
-            id="star-left-button-outline"
-            class="StarPanel__line is-button is-aim"
-            d="M237.8,141.8c-0.4,0-0.9,0-1.4-0.1c-0.4-0.1-0.8-0.2-1.3-0.4c-0.4-0.2-0.8-0.4-1.2-0.6c-0.4-0.3-0.7-0.6-1-0.8l-5.1-5.1c-0.7-0.7-1.1-1.7-1.1-2.7v-8.5c0-2.1-0.8-4.1-2.3-5.5l-18.7-18.7c-1.5-1.5-3.4-2.3-5.5-2.3h-8.5c-1,0-2-0.4-2.7-1.1l-5.1-5.1c-0.6-0.6-1.2-1.4-1.5-2.3c-0.3-0.8-0.5-1.7-0.5-2.6c0-0.9,0.2-1.8,0.5-2.6c0.3-0.8,0.8-1.6,1.5-2.2l2.6-2.6l5.3-5.3l2.6-2.6c5.6-5.6,11.7-10.6,18.2-14.9c6.4-4.3,13.3-8,20.4-10.9c7.1-3,14.6-5.2,22.2-6.7c7.6-1.5,15.5-2.3,23.4-2.3h37.2c2.3,0,4.2,1.9,4.2,4.2v78.6c0,1.5-0.8,2.8-2,3.6c0,0,0,0,0,0c-1,0.7-2,1.5-2.9,2.4l-15.9,15.9c-0.2,0.2-0.5,0.4-0.8,0.6c-0.3,0.2-0.5,0.3-0.8,0.5c-0.3,0.1-0.6,0.2-0.9,0.3s-0.7,0.1-1,0.1L237.8,141.8L237.8,141.8z"
-          />
-          <text class="StarPanel__text" text-anchor="middle">
-            <tspan x="266" y="86">BOOST</tspan>
-            <tspan x="266" y="106">EXP.</tspan>
-          </text>
-        </g>
-        <g id="star-left-button" class="StarPanel__button" @click="boostNrg">
-          <path
-            id="star-right-button-outline"
-            class="StarPanel__line is-aim is-button is-right"
-            d="M626.2,141.8c0.4,0,0.9,0,1.4-0.1c0.4-0.1,0.8-0.2,1.3-0.4c0.4-0.2,0.8-0.4,1.2-0.6c0.4-0.3,0.7-0.6,1-0.8l5.1-5.1c0.7-0.7,1.1-1.7,1.1-2.7v-8.5c0-2.1,0.8-4.1,2.3-5.5l18.7-18.7c1.5-1.5,3.4-2.3,5.5-2.3h8.5c1,0,2-0.4,2.7-1.1l5.1-5.1c0.6-0.6,1.1-1.4,1.5-2.3c0.3-0.8,0.5-1.7,0.5-2.6c0-0.9-0.2-1.8-0.5-2.6c-0.3-0.8-0.9-1.6-1.5-2.2l-2.6-2.6l-5.3-5.3l-2.6-2.6c-5.6-5.6-11.7-10.6-18.2-14.9c-6.4-4.3-13.3-8-20.4-10.9c-7.1-3-14.6-5.2-22.2-6.7c-7.7-1.5-15.5-2.3-23.4-2.3h-37.2c-2.3,0-4.2,1.9-4.2,4.2v78.6c0,1.5,0.8,2.8,2,3.6c0,0,0,0,0,0c1,0.7,2,1.5,2.9,2.4l15.9,15.9c0.2,0.2,0.5,0.4,0.8,0.6c0.3,0.2,0.5,0.3,0.8,0.5c0.3,0.1,0.6,0.2,0.9,0.3c0.3,0.1,0.7,0.1,1,0.1L626.2,141.8L626.2,141.8z"
-          />
-          <text class="StarPanel__text" text-anchor="middle">
-            <tspan x="600" y="86">BOOST</tspan>
-            <tspan x="600" y="106">NRG.</tspan>
-          </text>
-        </g>
+        <template v-if="isOwner">
+          <g id="star-left-button" class="StarPanel__button" @click="boostExp">
+            <path
+              id="star-left-button-outline"
+              class="StarPanel__line is-button is-aim"
+              d="M237.8,141.8c-0.4,0-0.9,0-1.4-0.1c-0.4-0.1-0.8-0.2-1.3-0.4c-0.4-0.2-0.8-0.4-1.2-0.6c-0.4-0.3-0.7-0.6-1-0.8l-5.1-5.1c-0.7-0.7-1.1-1.7-1.1-2.7v-8.5c0-2.1-0.8-4.1-2.3-5.5l-18.7-18.7c-1.5-1.5-3.4-2.3-5.5-2.3h-8.5c-1,0-2-0.4-2.7-1.1l-5.1-5.1c-0.6-0.6-1.2-1.4-1.5-2.3c-0.3-0.8-0.5-1.7-0.5-2.6c0-0.9,0.2-1.8,0.5-2.6c0.3-0.8,0.8-1.6,1.5-2.2l2.6-2.6l5.3-5.3l2.6-2.6c5.6-5.6,11.7-10.6,18.2-14.9c6.4-4.3,13.3-8,20.4-10.9c7.1-3,14.6-5.2,22.2-6.7c7.6-1.5,15.5-2.3,23.4-2.3h37.2c2.3,0,4.2,1.9,4.2,4.2v78.6c0,1.5-0.8,2.8-2,3.6c0,0,0,0,0,0c-1,0.7-2,1.5-2.9,2.4l-15.9,15.9c-0.2,0.2-0.5,0.4-0.8,0.6c-0.3,0.2-0.5,0.3-0.8,0.5c-0.3,0.1-0.6,0.2-0.9,0.3s-0.7,0.1-1,0.1L237.8,141.8L237.8,141.8z"
+            />
+            <text class="StarPanel__text" text-anchor="middle">
+              <tspan x="266" y="86">BOOST</tspan>
+              <tspan x="266" y="106">EXP.</tspan>
+            </text>
+          </g>
+          <g id="star-left-button" class="StarPanel__button" @click="boostNrg">
+            <path
+              id="star-right-button-outline"
+              class="StarPanel__line is-aim is-button is-right"
+              d="M626.2,141.8c0.4,0,0.9,0,1.4-0.1c0.4-0.1,0.8-0.2,1.3-0.4c0.4-0.2,0.8-0.4,1.2-0.6c0.4-0.3,0.7-0.6,1-0.8l5.1-5.1c0.7-0.7,1.1-1.7,1.1-2.7v-8.5c0-2.1,0.8-4.1,2.3-5.5l18.7-18.7c1.5-1.5,3.4-2.3,5.5-2.3h8.5c1,0,2-0.4,2.7-1.1l5.1-5.1c0.6-0.6,1.1-1.4,1.5-2.3c0.3-0.8,0.5-1.7,0.5-2.6c0-0.9-0.2-1.8-0.5-2.6c-0.3-0.8-0.9-1.6-1.5-2.2l-2.6-2.6l-5.3-5.3l-2.6-2.6c-5.6-5.6-11.7-10.6-18.2-14.9c-6.4-4.3-13.3-8-20.4-10.9c-7.1-3-14.6-5.2-22.2-6.7c-7.7-1.5-15.5-2.3-23.4-2.3h-37.2c-2.3,0-4.2,1.9-4.2,4.2v78.6c0,1.5,0.8,2.8,2,3.6c0,0,0,0,0,0c1,0.7,2,1.5,2.9,2.4l15.9,15.9c0.2,0.2,0.5,0.4,0.8,0.6c0.3,0.2,0.5,0.3,0.8,0.5c0.3,0.1,0.6,0.2,0.9,0.3c0.3,0.1,0.7,0.1,1,0.1L626.2,141.8L626.2,141.8z"
+            />
+            <text class="StarPanel__text" text-anchor="middle">
+              <tspan x="600" y="86">BOOST</tspan>
+              <tspan x="600" y="106">NRG.</tspan>
+            </text>
+          </g>
+        </template>
       </g>
       <g id="data-output">
         <g id="data-output-value">
@@ -453,45 +455,61 @@
           <path class="StarPanel__line is-aim" d="M231.9,361h-33.3" />
         </g>
       </g>
-      <g id="exp">
-        <text class="StarPanel__text" text-anchor="middle">
-          <tspan x="430" y="525">EXP.</tspan>
-        </text>
-        <path id="exp-left" class="StarPanel__line" d="M272.3,524.2v20" />
-        <path id="exp-line" class="StarPanel__line" d="M272.3,534h319.4" />
-        <path
-          :style="getParamProgressStyle(320, 50)"
-          id="exp-progress"
-          class="StarPanel__line is-progress"
-          d="M272.3,534h319.4"
-        />
-        <path id="exp-right" class="StarPanel__line" d="M591.7,524v20" />
-      </g>
+      <template v-if="isOwner">
+        <transition name="fade">
+          <g id="exp" v-if="!fetching">
+            <text class="StarPanel__text" text-anchor="middle">
+              <tspan x="430" y="525">EXP.</tspan>
+            </text>
+            <path id="exp-left" class="StarPanel__line" d="M272.3,524.2v20" />
+            <path id="exp-line" class="StarPanel__line" d="M272.3,534h319.4" />
+            <path
+              :style="getParamProgressStyle(320, expPercent)"
+              id="exp-progress"
+              class="StarPanel__line is-progress"
+              d="M272.3,534h319.4"
+            />
+            <path id="exp-right" class="StarPanel__line" d="M591.7,524v20" />
+          </g>
+        </transition>
+      </template>
     </svg>
   </div>
 </template>
 
 <script lang="ts">
-import { Star, StarHudParam } from '@/models';
+import { StarHudParam } from '@/models';
+import { useStarsStore } from '@/stores';
 import { formatNumber } from '@/utils';
-import { PropType } from 'vue';
+import { mapStores } from 'pinia';
 
 export default {
   name: 'StarPanel',
   props: {
-    star: {
-      type: Object as PropType<Star>
+    starId: {
+      type: Number
     },
     scale: {
       type: Number
     }
   },
   data: (): {
+    creationCost: number;
+    fetching: boolean;
     selectedParam: StarHudParam;
   } => ({
+    creationCost: 0,
+    fetching: false,
     selectedParam: 'mass'
   }),
   computed: {
+    ...mapStores(useStarsStore),
+    star() {
+      return this.starsStore.getById(this.starId);
+    },
+    isOwner() {
+      return this.star.owner === this.$wallet.account;
+    },
     description() {
       return `Federation of ${this.star.description.toLowerCase()}`;
     },
@@ -514,6 +532,14 @@ export default {
       return {
         transform: `scale(${this.scale})`
       };
+    },
+    expPercent() {
+      return Math.min(this.star.levelUpFuel / this.creationCost, 1);
+    }
+  },
+  watch: {
+    star: function () {
+      this.fetchData();
     }
   },
   methods: {
@@ -528,11 +554,19 @@ export default {
       this.selectedParam = param;
     },
     boostExp() {
-      this.$emit('callStarBoost', { type: 'exp', star: this.star });
+      this.$emit('callStarBoost', { type: 'exp', starId: this.star.id });
     },
     boostNrg() {
-      this.$emit('callStarBoost', { type: 'nrg', star: this.star });
+      this.$emit('callStarBoost', { type: 'energy', starId: this.star.id });
+    },
+    async fetchData() {
+      this.creationCost = await this.$wallet.getCreationCost(this.star.params.level + 1);
     }
+  },
+  async created() {
+    this.fetching = true;
+    await this.fetchData();
+    this.fetching = false;
   }
 };
 </script>

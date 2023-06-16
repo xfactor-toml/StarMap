@@ -29,7 +29,6 @@
   max-height: 382px;
   padding: 2px 36px 10px 18px;
   background-position: 0 100%;
-  overflow: hidden;
 }
 
 .StarBoostPanel__close {
@@ -82,7 +81,7 @@
 }
 
 .StarBoostPanel__level-progress {
-  width: 40%;
+  width: 0%;
   position: absolute;
   left: 0;
   top: 0;
@@ -94,7 +93,7 @@
 .StarBoostPanel__level-value {
   padding-top: 2px;
   position: absolute;
-  left: calc(100% - 4px);
+  left: 100%;
   top: calc(100% + 8px);
   color: currentColor;
   border-top: 1px solid currentColor;
@@ -200,4 +199,36 @@
   opacity: 0.2;
   pointer-events: none;
   user-select: none;
+}
+
+.StarBoostPanel__skeleton {
+  width: 100%;
+  background-color: #1e7fa9;
+  animation: pulse 2s infinite;
+}
+
+.StarBoostPanel__skeleton.is-level {
+  height: 12px;
+  margin-bottom: 18px;
+}
+
+.StarBoostPanel__skeleton.is-label {
+  width: 80px;
+  height: 14px;
+  margin-bottom: 8px;
+}
+
+.StarBoostPanel__skeleton.is-slider {
+  height: 18px;
+  margin-bottom: 24px;
+}
+
+.StarBoostPanel__skeleton.is-balance {
+  width: calc(100% - 40px);
+  height: 38px;
+  margin-bottom: -2px;
+}
+
+.StarBoostPanel__skeleton.is-button {
+  height: 64px;
 }
