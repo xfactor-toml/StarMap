@@ -514,6 +514,16 @@ export class Galaxy implements ILogger {
 
         // real star particles
 
+        if (DB.realStars[0].id == 0) {
+            DB.realStars.splice(0, 1);
+        }
+        else {
+            for (let i = DB.realStars.length - 1; i >= 0; i--) {
+                const element = DB.realStars[i];
+                if (element.id == 0) DB.realStars.splice(i, 1);
+            }
+        }
+
         // get real stars data
         this._realStarsData = StarGenerator.getInstance().getRealStarDataByServer({
             alphaMin: Settings.galaxyData.alphaMin,
