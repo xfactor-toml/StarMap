@@ -50,7 +50,7 @@ export default {
         transform: `
           translateX(-12px)
           translateY(-78px)
-          scale(${this.computedScale})
+          scaleY(${this.computedScale})
           scaleX(${this.computedScale * (this.intersection.x ? -1 : 1)})
         `
       };
