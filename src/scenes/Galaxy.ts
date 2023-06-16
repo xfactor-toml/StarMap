@@ -170,7 +170,7 @@ export class Galaxy implements ILogger {
         );
         this._galaxyCenterSprite.scale.set(Settings.GALAXY_CENTER_SCALE, Settings.GALAXY_CENTER_SCALE, Settings.GALAXY_CENTER_SCALE);
         // this.galaxyCenterSprite.renderOrder = 999;
-        this._dummyGalaxy.add(this._galaxyCenterSprite);
+        // this._dummyGalaxy.add(this._galaxyCenterSprite);
 
         this._galaxyCenterSprite2 = new THREE.Sprite(
             new THREE.SpriteMaterial({
@@ -185,7 +185,7 @@ export class Galaxy implements ILogger {
         );
         this._galaxyCenterSprite2.scale.set(Settings.GALAXY_CENTER_SCALE_2, Settings.GALAXY_CENTER_SCALE_2, Settings.GALAXY_CENTER_SCALE_2);
         // this.galaxyCenterSprite2.renderOrder = 999;
-        this._dummyGalaxy.add(this._galaxyCenterSprite2);
+        // this._dummyGalaxy.add(this._galaxyCenterSprite2);
 
         let planeGeom = new THREE.PlaneGeometry(1, 1);
         let planeMat = new THREE.MeshBasicMaterial({
@@ -1635,6 +1635,7 @@ export class Galaxy implements ILogger {
         starParams: GalaxyStarParams
     }) {
 
+        const GALAXY_BIG_SCALE = 100;
         const LOOK_DUR = 2;
         const DUR = 3;
 
@@ -1784,9 +1785,28 @@ export class Galaxy implements ILogger {
             ease: 'sine.in'
         });
 
+        // pos galaxyCenterPlane
+        let starPosVec3 = new THREE.Vector3(starParams.pos.x, starParams.pos.y, starParams.pos.z);
+        let galaxyCenterPlanePos = new THREE.Vector3();
+        if (starPosVec3.length() < 50) {
+            galaxyCenterPlanePos = starPosVec3.clone().normalize().multiplyScalar(-50).add(starPosVec3);
+        }
+        gsap.killTweensOf(this._galaxyCenterPlane.position);
+        gsap.to(this._galaxyCenterPlane.position, {
+            x: galaxyCenterPlanePos.x,
+            y: 0,
+            z: galaxyCenterPlanePos.z,
+            duration: DUR * 2,
+            ease: 'sine.inOut',
+            onStart: () => {
+                this._galaxyCenterPlane.visible = true;
+            }
+        });
+
         // show galaxyCenterPlane
         this._galaxyCenterPlane.lookAt(starPos);
-        gsap.to([this._galaxyCenterPlane.material], {
+        gsap.killTweensOf(this._galaxyCenterPlane.material);
+        gsap.to(this._galaxyCenterPlane.material, {
             opacity: 1,
             duration: DUR,
             ease: 'sine.in',
@@ -1794,6 +1814,7 @@ export class Galaxy implements ILogger {
                 this._galaxyCenterPlane.visible = true;
             }
         });
+        gsap.killTweensOf(this._galaxyCenterPlane.scale);
         gsap.to([this._galaxyCenterPlane.scale], {
             x: Settings.GALAXY_CENTER_SCALE * 1.5,
             y: Settings.GALAXY_CENTER_SCALE * 0.1,
@@ -1851,7 +1872,7 @@ export class Galaxy implements ILogger {
         let tObj = { s: 1 };
         let gVec = starPos.clone().negate();
         gsap.to(tObj, {
-            s: 100,
+            s: GALAXY_BIG_SCALE,
             duration: DUR,
             ease: 'sine.in',
             onUpdate: () => {
@@ -1866,9 +1887,9 @@ export class Galaxy implements ILogger {
         for (let i = 0; i < this._smallGalaxies.length; i++) {
             const galaxy = this._smallGalaxies[i];
             gsap.to(galaxy.scale, {
-                x: 0.01,
-                y: 0.01,
-                z: 0.01,
+                x: 1 / GALAXY_BIG_SCALE,
+                y: 1 / GALAXY_BIG_SCALE,
+                z: 1 / GALAXY_BIG_SCALE,
                 duration: DUR * 1 / 3,
                 ease: 'sine.Out',
                 onComplete: () => {
@@ -2027,12 +2048,24 @@ export class Galaxy implements ILogger {
             ease: 'sine.in'
         });
         // hide galaxyCenterPlane
-        gsap.to([this._galaxyCenterPlane.material], {
+        gsap.killTweensOf(this._galaxyCenterPlane.material);
+        gsap.to(this._galaxyCenterPlane.material, {
             opacity: 0,
             duration: DUR,
             ease: 'sine.Out',
             onComplete: () => {
                 this._galaxyCenterPlane.visible = false;
+            }
+        });
+        gsap.killTweensOf(this._galaxyCenterPlane.position);
+        gsap.to(this._galaxyCenterPlane.position, {
+            x: 0,
+            y: 0,
+            z: 0,
+            duration: DUR,
+            ease: 'sine.in',
+            onStart: () => {
+                this._galaxyCenterPlane.visible = true;
             }
         });
 
