@@ -135,11 +135,15 @@
 .ModesPanel__button.is-disabled {
   user-select: none;
   pointer-events: none;
-  opacity: 0.2;
-  filter: grayscale();
+  filter: grayscale() brightness(0.5);
+  transition: none;
 }
 
-.ModesPanel__button.is-disabled::before,
+.ModesPanel__button.is-active {
+  cursor: pointer;
+  pointer-events: none;
+}
+
 .ModesPanel__button:hover::before,
 .ModesPanel__button.is-active::before,
 .ModesPanel__button.is-active::after {
