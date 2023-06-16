@@ -78,6 +78,9 @@ export class GamePreloader {
         // main sprite
         this._loader.texture('galaxySprite', `./assets/galaxySprite.webp`);
 
+        path = assetsPath + 'sprites/stars/';
+        this._loader.texture(`star_03`, path + `star_03.png`);
+
         // small galaxy sprites
         path = assetsPath + 'galaxies/';
         for (let i = 0; i < Settings.SMALL_GALAXIES_SPRITE_COUNT; i++) {

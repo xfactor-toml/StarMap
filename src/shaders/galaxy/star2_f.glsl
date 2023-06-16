@@ -14,7 +14,10 @@ void main() {
     float d = length(uv);
     float m = .1 / d;
 
-    // float rays = max(0., 1. - abs(uv.x * uv.y * 10.));
+    // float rayFactor = uv.x * uv.y;
+    // float factorX = 1. - abs(uv.x) * 2. / 3.;
+    // float factorY = 1. - abs(uv.y) * 2. / 3.;
+    // float rays = max(0., factorX * factorY * (1. - abs(rayFactor * 20.)));
     // clr += rays;
 
     // black holes

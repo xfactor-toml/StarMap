@@ -29,6 +29,7 @@ import { StarGenerator } from '~/mng/StarGenerator';
 import { StarMath } from '~/math/StarMath';
 import { ILogger } from '~/interfaces/ILogger';
 import { Star } from '@/models';
+import { NovaSprite } from '~/objects/NovaSprite';
 
 let debugObjects = {
     farStarsSphereMin: null,
@@ -1733,14 +1734,14 @@ export class Galaxy implements ILogger {
             depthTest: true,
             blending: THREE.AdditiveBlending
         }));
-        let sc = 20;
+        let sc = 5;
         this.bigStarSprite.scale.set(sc, sc, sc);
         this.bigStarSprite.position.copy(starPos);
         this._scene.add(this.bigStarSprite);
 
-        gsap.to([this.bigStarSprite.scale], {
-            x: 100,
-            y: 100,
+        gsap.to(this.bigStarSprite.scale, {
+            x: 50,
+            y: 50,
             duration: DUR,
             ease: 'sine.inOut'
         });
@@ -2189,6 +2190,8 @@ export class Galaxy implements ILogger {
         this.smallFlySystem.update(dt);
     }
 
+    // private _novaSprite: NovaSprite;
+    private _novaSprite: THREE.Sprite;
     private onStateCreateStarEnter(aServerStarData: ServerStarData) {
 
         // find star in phantom mode and remove it
@@ -2199,8 +2202,6 @@ export class Galaxy implements ILogger {
                 break;
             }
         }
-
-        // debugger;
 
         // add new star to real mode
         let newRealStars = StarGenerator.getInstance().getRealStarDataByServer({
@@ -2230,18 +2231,78 @@ export class Galaxy implements ILogger {
 
         GameEvents.dispatchEvent(GameEvents.EVENT_STAR_MODE);
 
-        // animation star apear
+        // debugger;
 
-        // goto this star
-        this._fsm.startState(States.toStar, {
-            starId: aServerStarData.id,
-            starParams: star
+        // animation star appear
+        // this._novaSprite = new NovaSprite({ camera: this._camera });
+        let clr = new THREE.Color();
+        clr.setRGB(star.color.r, star.color.g, star.color.b);
+        let sMat = new THREE.SpriteMaterial({
+            map: ThreeLoader.getInstance().getTexture(`star_03`),
+            color: clr,
+            transparent: true,
+            alphaTest: 0.01,
+            depthWrite: false,
+            blending: THREE.AdditiveBlending
         });
+        this._novaSprite = new THREE.Sprite(sMat);
+        this._novaSprite.scale.set(0, 0, 0);
+        this._novaSprite.position.set(aServerStarData.params.coords.X, aServerStarData.params.coords.Y, aServerStarData.params.coords.Z);
+        this._dummyGalaxy.add(this._novaSprite);
+
+        const DUR = 1;
+
+        gsap.to(this._cameraTarget, {
+            x: this._novaSprite.position.x,
+            y: this._novaSprite.position.y,
+            z: this._novaSprite.position.z,
+            duration: DUR,
+            delay: .1,
+            ease: 'sine.inOut',
+            onUpdate: () => {
+                this._orbitCenter.copy(this._cameraTarget);
+            }
+        });
+        let tl = gsap.timeline({delay: DUR});
+        tl.to(this._novaSprite.scale, {
+            x: 4,
+            y: 4,
+            z: 4,
+            duration: .5,
+            ease: 'sine.out',
+            onComplete: () => {
+                // this._fsm.startState(States.realStars);
+            }
+        });
+        tl.to(this._novaSprite.scale, {
+            x: 0,
+            y: 0,
+            z: 0,
+            duration: 1,
+            ease: 'sine.in',
+            onComplete: () => {
+                // goto this star
+                this._fsm.startState(States.toStar, {
+                    starId: aServerStarData.id,
+                    starParams: star
+                });
+            }
+        });
+
+        
 
     }
 
     private onStateCreateStarUpdate(dt: number) {
+        this.updateRealStars(dt);
+        this.updateBlinkStars(dt);
+        // this._novaSprite.update(dt);
+        this.updateStarPoints();
 
+        this._orbitControl.update();
+        if (this._cameraTarget && this._camera) {
+            this._camera.lookAt(this._cameraTarget);
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
