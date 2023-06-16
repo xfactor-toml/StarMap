@@ -517,10 +517,11 @@ export default {
     }
   },
   methods: {
+    // value 0...1
     getParamProgressStyle(dasharray: number, value: number, negative = false) {
       return {
         'stroke-dasharray': `${dasharray}px`,
-        'stroke-dashoffset': `${(dasharray - dasharray * (value / 100)) * (negative ? -1 : 1)}px`
+        'stroke-dashoffset': `${(dasharray - dasharray * value) * (negative ? -1 : 1)}px`
       };
     },
     selectParam(param: StarHudParam) {
