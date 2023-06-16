@@ -6,7 +6,8 @@ import {
   GuiViewName,
   PhantomStarPreviewEvent,
   ShowStarGuiEvent,
-  ShowStarPreviewEvent
+  ShowStarPreviewEvent,
+  StarBoostPanelType
 } from '@/types';
 import { MODES } from '@/constants';
 import { Star, StarPosition, StarScreenPosition } from '@/models';
@@ -22,6 +23,10 @@ type SettingsStoreState = {
   overlay: boolean;
   screen: GuiScreen;
   sfxVolume: number;
+  starBoostPanel: {
+    star: Star;
+    type: StarBoostPanelType;
+  } | null;
   starPanel: {
     star: Star;
     scale: number;
@@ -51,9 +56,10 @@ export const useSettingsStore = defineStore('settings', {
       musicVolume,
       newStarPosition: null,
       overlay: false,
-      starPanel: null,
       screen: 'preloader',
       sfxVolume,
+      starBoostPanel: null,
+      starPanel: null,
       starTooltip: null,
       view: 'galaxy',
       viewsPanelHidden
@@ -123,6 +129,11 @@ export const useSettingsStore = defineStore('settings', {
     hideStarPanel() {
       this.starPanel = null;
     },
+    hideStarBoostPanel() {
+      this.disableOverlay();
+      this.client.onClick();
+      this.starBoostPanel = null;
+    },
     setFullscreenMode(value: boolean) {
       this.fullscreen = value;
     },
@@ -151,6 +162,14 @@ export const useSettingsStore = defineStore('settings', {
       this.client.onClick();
       this.enableOverlay();
       this.newStarPosition = new StarPosition(pos2d, pos3d);
+    },
+    showStarBoostPanel({ star, type }: { star: Star; type: StarBoostPanelType }) {
+      this.client.onClick();
+      this.enableOverlay();
+      this.starBoostPanel = {
+        star,
+        type
+      };
     }
   }
 });

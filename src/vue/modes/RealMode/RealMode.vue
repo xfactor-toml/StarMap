@@ -1,8 +1,17 @@
 <template>
   <div class="RealMode">
     <transition name="fade">
+      <template v-if="settingsStore.starPanel !== null">
+        <StarPanel
+          :star="settingsStore.starPanel.star"
+          :scale="settingsStore.starPanel.scale"
+          @callStarBoost="settingsStore.showStarBoostPanel"
+        />
+      </template>
+    </transition>
+    <transition name="fade">
       <template v-if="settingsStore.overlay">
-        <div class="gui-overlay" @click="settingsStore.hideStarTooltip" />
+        <div class="gui-overlay" @click="hideAllPanels" />
       </template>
     </transition>
     <transition name="fade">
@@ -18,8 +27,13 @@
       </template>
     </transition>
     <transition name="fade">
-      <template v-if="settingsStore.starPanel !== null">
-        <StarPanel :star="settingsStore.starPanel.star" :scale="settingsStore.starPanel.scale" />
+      <template v-if="settingsStore.starBoostPanel !== null">
+        <StarBoostPanel
+          :star="settingsStore.starBoostPanel.star"
+          :type="settingsStore.starBoostPanel.type"
+          @hide="settingsStore.hideStarBoostPanel"
+          @hover="$client.onHover()"
+        />
       </template>
     </transition>
   </div>
@@ -27,21 +41,28 @@
 
 <script lang="ts">
 import { useSettingsStore } from '@/stores';
-import { StarPanel, StarTooltip } from '@/components';
+import { StarBoostPanel, StarPanel, StarTooltip } from '@/components';
 import { mapStores } from 'pinia';
 
 export default {
   name: 'RealMode',
   components: {
+    StarBoostPanel,
     StarPanel,
     StarTooltip
   },
   computed: {
     ...mapStores(useSettingsStore)
   },
+  methods: {
+    hideAllPanels() {
+      this.settingsStore.hideStarBoostPanel();
+      this.settingsStore.hideStarTooltip();
+    }
+  },
   unmounted() {
     this.settingsStore.hideStarPanel();
-    this.settingsStore.hideStarTooltip();
+    this.hideAllPanels();
   }
 };
 </script>

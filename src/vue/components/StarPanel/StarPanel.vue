@@ -526,8 +526,12 @@ export default {
     selectParam(param: StarHudParam) {
       this.selectedParam = param;
     },
-    boostExp() {},
-    boostNrg() {}
+    boostExp() {
+      this.$emit('callStarBoost', { type: 'exp', star: this.star });
+    },
+    boostNrg() {
+      this.$emit('callStarBoost', { type: 'nrg', star: this.star });
+    }
   }
 };
 </script>

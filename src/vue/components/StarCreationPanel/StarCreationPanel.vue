@@ -76,11 +76,11 @@
           <template v-else>
             <button
               class="StarCreationPanel__button"
-              :disabled="!ready"
+              :disabled="!ready || approving"
               @click="approve"
               @mouseenter="$emit('hover')"
             >
-              Approve
+              {{ approving ? 'Approving...' : 'Approve' }}
             </button>
           </template>
         </template>
@@ -107,6 +107,7 @@ export default {
   },
   data: () => ({
     approved: false,
+    approving: false,
     balance: 0,
     connected: true,
     creationCost: 0,
@@ -155,8 +156,11 @@ export default {
   methods: {
     roundNumber,
     async approve() {
+      this.approving = true;
+
       const approvedPlasma = await this.$wallet.approvePlasma(this.creationCost);
 
+      this.approving = false;
       this.approved = approvedPlasma >= this.creationCost;
     },
     async create() {
