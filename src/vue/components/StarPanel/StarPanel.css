@@ -6,7 +6,7 @@
   justify-content: center;
   width: 854px;
   height: 640px;
-  max-width: calc(100vw - 480px);
+  max-width: calc(100vw - 220px);
   margin: auto;
   position: relative;
   top: -3.6vw;

@@ -133,7 +133,7 @@ export default {
       return this.starsStore.getById(this.starId);
     },
     max() {
-      return this.type === 'exp' ? this.creationCost : this.roundedBalance / 1000;
+      return this.type === 'exp' ? this.creationCost : this.roundedBalance;
     },
     current() {
       return this.type === 'exp' ? this.star.levelUpFuel : this.allowed;
@@ -176,6 +176,8 @@ export default {
       if (updatedStar) {
         this.starsStore.updateStar(new Star(updatedStar));
       }
+
+      this.fetchData();
     },
     async levelUp() {
       this.levelUpPending = true;
