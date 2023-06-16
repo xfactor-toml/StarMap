@@ -583,7 +583,7 @@ export class Galaxy implements ILogger {
             for (let j = 0; j < this._realStarsData.length; j++) {
                 const rsd = this._realStarsData[j];
                 let dist = MyMath.getVec3Length(rsd.pos.x, rsd.pos.y, rsd.pos.z, sd.pos.x, sd.pos.y, sd.pos.z);
-                if (dist <= 0.001) {
+                if (dist <= 0.01) {
                     // remove
                     this.logWarn(`remove star for dist: ${dist}`);
                     this._phantomStarsData.splice(i, 1);
@@ -1569,6 +1569,7 @@ export class Galaxy implements ILogger {
         this._phantomStarsParticles.visible = false;
         this._realStarsParticles.visible = true;
 
+        this.smallFlySystem.activeSpawn = true;
     }
 
     private onStateRealUpdate(dt: number) {
@@ -1611,6 +1612,8 @@ export class Galaxy implements ILogger {
 
         this._realStarsParticles.visible = false;
         this._phantomStarsParticles.visible = true;
+
+        this.smallFlySystem.activeSpawn = false;
     }
 
     private onStatePhantomUpdate(dt: number) {
