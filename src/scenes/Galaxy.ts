@@ -1060,6 +1060,7 @@ export class Galaxy implements ILogger {
         this._orbitControl.update();
 
         this._orbitControl.addEventListener('change', (e: THREE.Event) => {
+            const Y_FRAMES = 15;
             if (aParams.enablePan) {
                 let moveRadius = aParams.panRadius || 100;
                 let tp = this._orbitControl.target.clone();
@@ -1069,8 +1070,8 @@ export class Galaxy implements ILogger {
                 }
                 this._orbitControl.target.x = tp.x;
                 this._orbitControl.target.z = tp.z;
-                if (this._orbitControl.target.y < 0) this._orbitControl.target.y = 0;
-                if (this._orbitControl.target.y > 0) this._orbitControl.target.y = 0;
+                if (this._orbitControl.target.y < -Y_FRAMES) this._orbitControl.target.y = -Y_FRAMES;
+                if (this._orbitControl.target.y > Y_FRAMES) this._orbitControl.target.y = Y_FRAMES;
                 this._cameraTarget.copy(this._orbitControl.target);
             }
         });
@@ -1818,18 +1819,6 @@ export class Galaxy implements ILogger {
         this.galaxySaveAnimData.cameraPosition = this._camera.position.clone();
 
         // move camera
-
-        let distance = 30;
-        // let aspect = window.visualViewport.width / window.visualViewport.height;
-        // let factor = DeviceInfo.getInstance().desktop ? 1 : 1.1;
-        // let inh = window.innerHeight;
-        // let outh = window.outerHeight;
-        // let rSize = new THREE.Vector2();
-        // rSize = this.render.getSize(rSize);
-        // let rh = rSize.y;
-        // alert(`inner height: ${inh}`);
-        // alert(`outer height: ${outh}`);
-        // alert(`rh: ${rh}`);
 
         let h = GameUtils.getClientHeight();
         if (!DeviceInfo.getInstance().desktop) {
