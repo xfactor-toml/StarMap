@@ -1,26 +1,25 @@
-import { GameBoot } from "./scenes/GameBoot";
-import { FrontEvents } from "./events/FrontEvents";
-import { createApp } from "vue";
-import { Controller } from "./vue/controller";
-import { GuiInterface } from "./vue/types";
-import { default as App } from "./vue/App.vue";
-import "./css/style.css";
+import { GameBoot } from './scenes/GameBoot';
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
+import { default as App } from '@/App.vue';
+import { ClientService, WalletService } from '@/services';
+
+import './css/style.css';
 
 window.addEventListener('DOMContentLoaded', () => {
+  const app = createApp(App);
+  const store = createPinia();
 
-    // Vue
-    
-    const app = createApp(App);
-    Controller(app.mount("#gui") as GuiInterface);
-    
-    // threejs
+  store.use(ClientService.StorePlugin);
+  store.use(WalletService.StorePlugin);
 
-    let boot = new GameBoot();
-    boot.init();
+  app.use(ClientService.VuePlugin)
+  app.use(WalletService.VuePlugin)
+  app.use(store);
 
-    // Global Events
-    window.addEventListener('resize', () => {
-        FrontEvents.onWindowResizeSignal.dispatch();
-    }, false);
+  app.mount('#gui')
 
-}, false);
+  // threejs
+  let boot = new GameBoot();
+  boot.init();
+});

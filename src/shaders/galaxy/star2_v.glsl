@@ -50,5 +50,6 @@ void main() {
 
     // gl_PointSize = size * 30. * distFactor;
     gl_PointSize = size * 30. * sizeFactor;
+    // gl_PointSize = size * 30. * sizeFactor * 10.;
     // gl_PointSize = size * 30.;
 }

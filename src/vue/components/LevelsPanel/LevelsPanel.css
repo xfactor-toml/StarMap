@@ -1,0 +1,83 @@
+.LevelsPanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  pointer-events: all;
+  user-select: none;
+  cursor: default;
+}
+
+.LevelsPanel__group {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: 36px;
+  position: relative;
+  z-index: 1;
+}
+
+.LevelsPanel__button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  border: none;
+  background-color: transparent;
+  color: #00ffff;
+  font-size: 14px;
+  text-transform: none;
+  cursor: pointer;
+  outline: none;
+}
+
+.LevelsPanel__button::before {
+  content: '';
+  width: 60px;
+  height: 60px;
+  margin-bottom: 6px;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-size: contain;
+  background-image: url(../gui/images/levels/level-5.svg);
+  opacity: 0.3;
+  transition: ease opacity 200ms;
+}
+
+.LevelsPanel__button.is-level-1::before {
+  width: 28px;
+  height: 28px;
+  background-image: url(../gui/images/levels/level-1.svg);
+}
+
+.LevelsPanel__button.is-level-2::before {
+  width: 36px;
+  height: 36px;
+  background-image: url(../gui/images/levels/level-2.svg);
+}
+
+.LevelsPanel__button.is-level-3::before {
+  width: 44px;
+  height: 44px;
+  background-image: url(../gui/images/levels/level-3.svg);
+}
+
+.LevelsPanel__button.is-level-4::before {
+  width: 52px;
+  height: 52px;
+  background-image: url(../gui/images/levels/level-4.svg);
+}
+
+.LevelsPanel__button:hover::before {
+  opacity: 0.5;
+}
+
+.LevelsPanel__button.is-active::before {
+  opacity: 1;
+}
+
+.LevelsPanel__caption {
+  font-size: 14px;
+  line-height: 1.1;
+  color: #00ffff;
+}
