@@ -322,9 +322,9 @@ export class Galaxy implements ILogger {
                         "mass": 10000,
                         "race": "Waters",
                         "coords": {
-                            "X": 55,
+                            "X": 20,
                             "Y": 0,
-                            "Z": 55
+                            "Z": 20
                         }
                     }
                 });
@@ -338,19 +338,19 @@ export class Galaxy implements ILogger {
                         "isLive": true,
                         "creation": 1686761342,
                         "updated": 1686761342,
-                        "level": 2,
+                        "level": 3,
                         "fuel": 200000000000000000,
                         "levelUpFuel": 0,
                         "fuelSpendings": 45662100456621,
                         "habitableZoneMin": 3,
                         "habitableZoneMax": 5,
-                        "planetSlots": 5,
-                        "mass": 10000,
+                        "planetSlots": 20,
+                        "mass": 25000,
                         "race": "Waters",
                         "coords": {
-                            "X": 55,
+                            "X": 20,
                             "Y": 0,
-                            "Z": 55
+                            "Z": 20
                         }
                     }
                 });
@@ -495,6 +495,7 @@ export class Galaxy implements ILogger {
     }
 
     onStarUpdated(aServerStarData: ServerStarData) {
+        
         // update star data
         let updRealStars = StarGenerator.getInstance().getRealStarDataByServer({
             alphaMin: Settings.galaxyData.alphaMin,
@@ -516,6 +517,8 @@ export class Galaxy implements ILogger {
                 this._realStarsData[i] = star;
             }
         }
+
+        this.recreateRealStars();
 
         switch (this._fsm.getCurrentState().name) {
             case States.star:
@@ -755,12 +758,39 @@ export class Galaxy implements ILogger {
 
     }
 
+    private recreateRealStars() {
+        this.destroyRealStarParticles();
+        // real stars particles
+        this._realStarsParticles = new GalaxyStars({
+            camera: this._camera,
+            starsData: this._realStarsData,
+            camDistLogic: true,
+            onWindowResizeSignal: FrontEvents.onWindowResizeSignal,
+            alpha: {
+                camDist: {
+                    min: 50,
+                    max: 400
+                },
+                value: {
+                    min: .2,
+                    max: 1
+                }
+            }
+        });
+        this._realStarsParticles.visible = false;
+        this._dummyGalaxy.add(this._realStarsParticles);
+
+        this.initQuadTree();
+    }
+
     private recreateGalaxyStars(aLoadFromFile = false) {
+
+        this.recreateRealStars();
 
         // this.destroyGalaxyStars();
         // StarGenerator.getInstance().resetStarId();
         this.destroyPhantomStarParticles();
-        this.destroyRealStarParticles();
+        // this.destroyRealStarParticles();
 
         Settings.galaxyData.starsCount = this._phantomStarsData.length;
 
@@ -783,27 +813,7 @@ export class Galaxy implements ILogger {
         });
         this._phantomStarsParticles.visible = false;
         this._dummyGalaxy.add(this._phantomStarsParticles);
-
-        // real stars particles
-        this._realStarsParticles = new GalaxyStars({
-            camera: this._camera,
-            starsData: this._realStarsData,
-            camDistLogic: true,
-            onWindowResizeSignal: FrontEvents.onWindowResizeSignal,
-            alpha: {
-                camDist: {
-                    min: 50,
-                    max: 400
-                },
-                value: {
-                    min: .2,
-                    max: 1
-                }
-            }
-        });
-        this._realStarsParticles.visible = false;
-        this._dummyGalaxy.add(this._realStarsParticles);
-
+        
     }
 
     private initQuadTree() {
@@ -850,6 +860,11 @@ export class Galaxy implements ILogger {
 
     private destroyPhantomStarParticles() {
         if (this._phantomStarsParticles) {
+            try {
+                this._dummyGalaxy.remove(this._phantomStarsParticles);
+            } catch (error) {
+                // TODO
+            }
             this._phantomStarsParticles.free();
             this._phantomStarsParticles = null;
         }
@@ -857,8 +872,13 @@ export class Galaxy implements ILogger {
 
     private destroyRealStarParticles() {
         if (this._realStarsParticles) {
+            try {
+                this._dummyGalaxy.remove(this._realStarsParticles);
+            } catch (error) {
+                // TODO
+            }
             this._realStarsParticles.free();
-            this._realStarsParticles = null;
+                this._realStarsParticles = null;
         }
     }
 
@@ -2243,6 +2263,8 @@ export class Galaxy implements ILogger {
             AudioMng.getInstance().getSound(AudioData.SFX_STAR_FIRE).stop();
         }, 1000 * DUR / 3);
 
+        // GameEvents.dispatchEvent(GameEvents.EVENT_STAR_MODE);
+
     }
     private onStateFromStarUpdate(dt: number) {
         this._orbitControl.update();
@@ -2260,6 +2282,8 @@ export class Galaxy implements ILogger {
         if (this._solarSystemBlinkStarsParticles?.visible) this._solarSystemBlinkStarsParticles.update(dt);
 
         this.smallFlySystem.update(dt);
+
+
     }
 
     // private _novaSprite: NovaSprite;
@@ -2274,6 +2298,7 @@ export class Galaxy implements ILogger {
                 break;
             }
         }
+        this.recreateGalaxyStars(false);
 
         // add new star to real mode
         let newRealStars = StarGenerator.getInstance().getRealStarDataByServer({
