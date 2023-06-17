@@ -32,8 +32,9 @@ export class StarMath {
         percent: number,
         unit: string
     } {
+        const MAX_FOR_LEVEL = [0, 5, 10, 25, 50, 100];
         const min = 1;
-        const max = 25;//100;
+        const max = MAX_FOR_LEVEL[4];//100;
         let res = {
             value: aStarParams.planetSlots,
             percent: MyMath.clamp(aStarParams.planetSlots / max, 0, 1),

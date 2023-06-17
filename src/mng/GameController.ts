@@ -16,6 +16,7 @@ export class GameController implements ILogger {
         FrontEvents.onBotPanelPhantomClick.add(this.onBotPanelPhantomClick, this);
         FrontEvents.onBotPanelRealClick.add(this.onBotPanelRealClick, this);
         FrontEvents.onStarCreated.add(this.onStarCreated, this);
+        FrontEvents.onStarUpdated.add(this.onStarUpdated, this);
     }
 
     logDebug(aMsg: string, aData?: any): void {
@@ -45,6 +46,10 @@ export class GameController implements ILogger {
 
     private onStarCreated(aStarData: ServerStarData) {
         this.galaxy?.onStarCreated(aStarData);
+    }
+
+    private onStarUpdated(aStarData: ServerStarData) {
+        
     }
 
     initGalaxy(aParams: {

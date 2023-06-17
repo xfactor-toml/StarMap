@@ -38,7 +38,11 @@ export const FrontEvents = {
     /**
      * (aStarData: ServerStarData)
      */
-    onStarCreated: new Signal()
-
+    onStarCreated: new Signal(),
+    
+    /**
+     * (aStarData: ServerStarData)
+     */
+    onStarUpdated: new Signal(),
     
 }
