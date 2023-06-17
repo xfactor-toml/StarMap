@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { Settings } from '../data/Settings';
 import { BigStar2, BigStar2Params } from './BigStar2';
+import { GalaxyStarParams } from '~/data/Types';
 
 
 export type SolarSystemParams = {
@@ -10,23 +11,23 @@ export type SolarSystemParams = {
 export class SolarSystem extends THREE.Group {
     private _camera: THREE.Camera;
     private _starScale: number;
-    private params: SolarSystemParams;
-    private star: BigStar2;
+    private _params: SolarSystemParams;
+    private _star: BigStar2;
         
     constructor(aCamera: THREE.Camera, aStarScale: number, aParams: SolarSystemParams) {
         super();
         this._camera = aCamera;
         this._starScale = aStarScale;
-        this.params = aParams;
+        this._params = aParams;
         this.createStar();
     }
     
     private createStar() {
-        this.star = new BigStar2(this.position, this._camera, this._starScale, this.params.starParams);
+        this._star = new BigStar2(this.position, this._camera, this._starScale, this._params.starParams);
         if (Settings.isDebugMode) {
-            this.star.createDebugGui(Settings.datGui);
+            this._star.createDebugGui(Settings.datGui);
         }
-        this.add(this.star);
+        this.add(this._star);
     }
     
     public get starScale(): number {
@@ -35,18 +36,27 @@ export class SolarSystem extends THREE.Group {
 
     public set starScale(v: number) {
         this._starScale = v;
-        if (this.star) this.star.starScale = v;
+        if (this._star) this._star.starScale = v;
+    }
+
+    onStarUpdated(aStarParams: GalaxyStarParams) {
+        this._star.updateStar({
+            galaxyColor: aStarParams.color,
+            starSize: aStarParams.starInfo.bigStar.starSize,
+            mainColor: aStarParams.starInfo.bigStar.color.main,
+            coronaColor: aStarParams.starInfo.bigStar.color.corona
+        });
     }
 
     free() {
-        this.remove(this.star);
-        this.star.free();
-        this.star = null;
-        this.params = null;
+        this.remove(this._star);
+        this._star.free();
+        this._star = null;
+        this._params = null;
     }
 
     update(dt: number) {
-        if (this.star) this.star.update(dt);
+        if (this._star) this._star.update(dt);
     }
 
 }

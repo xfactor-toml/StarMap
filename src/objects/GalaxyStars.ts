@@ -1,20 +1,18 @@
 import * as THREE from "three";
 import { IBaseClass } from "../interfaces/IBaseClass";
 import { Settings } from "../data/Settings";
-import { GalaxyStarParams } from "../scenes/Galaxy";
+import { Signal } from "../utils/events/Signal";
+import { GalaxyStarParams } from "~/data/Types";
 
 import star1Vert from "../shaders/galaxy/star_v.glsl";
 import star1Frag from "../shaders/galaxy/star_f.glsl";
-
 import star2Vert from "../shaders/galaxy/star2_v.glsl";
 import star2Frag from "../shaders/galaxy/star2_f.glsl";
-import { Signal } from "../utils/events/Signal";
 
 const SHADER_1 = {
     vertex: star1Vert,
     fragment: star1Frag
 }
-
 const SHADER_2 = {
     vertex: star2Vert,
     fragment: star2Frag
@@ -23,7 +21,7 @@ const SHADER_2 = {
 type GalaxyStarsParams = {
     camera: THREE.Camera;
     starsData: GalaxyStarParams[];
-    texture: THREE.Texture;
+    texture?: THREE.Texture;
     onWindowResizeSignal: Signal;
     camDistLogic: boolean;
     alpha?: {
@@ -55,7 +53,7 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
 
         super();
         this._params = aParams;
-        
+
         // this.init1();
         // this.init2_saturn();
         this.init3();
@@ -74,36 +72,6 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
 
     private getPoitSizeFactor(): number {
         return innerHeight / (2.0 * Math.tan(.02 * 60.0 * Math.PI / 180));
-    }
-
-    private init1() {
-        this._uniforms = {
-            diffuseTexture: { value: this._params.texture },
-            pointMultiplier: { value: innerHeight / (2.0 * Math.tan(.02 * 60.0 * Math.PI / 180)) }
-        };
-
-        this._material = new THREE.ShaderMaterial({
-            vertexShader: SHADER_1.vertex,
-            fragmentShader: SHADER_1.fragment,
-            uniforms: this._uniforms,
-            blending: THREE.AdditiveBlending,
-            depthWrite: false,
-            transparent: true,
-            alphaTest: 0.01,
-            vertexColors: true
-        });
-
-        let starsData = this.generateStars(this._params.starsData);
-
-        this._geometry = new THREE.BufferGeometry();
-        this._geometry.setAttribute('position', new THREE.Float32BufferAttribute(starsData.positionsXYZ, 3));
-        this._geometry.setAttribute('size', new THREE.Float32BufferAttribute(starsData.scales, 1));
-        this._geometry.setAttribute('clr', new THREE.Float32BufferAttribute(starsData.colorsRGBA, 4));
-
-        this._stars = new THREE.Points(this._geometry, this._material);
-        this.add(this._stars);
-
-        this._type = '1';
     }
 
     private init2_saturn() {
@@ -126,9 +94,7 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
 
         this._geometry = new THREE.BufferGeometry().setFromPoints(points);
         this._geometry.setAttribute('position', new THREE.Float32BufferAttribute(starsData.positionsXYZ, 3));
-        // this.geometry.setAttribute("sizes", new THREE.Float32BufferAttribute(sizes, 1));
         this._geometry.setAttribute('sizes', new THREE.Float32BufferAttribute(starsData.scales, 1));
-        // this.geometry.setAttribute("shift", new THREE.Float32BufferAttribute(shift, 4));
         this._geometry.setAttribute('clr', new THREE.Float32BufferAttribute(starsData.colorsRGBA, 4));
 
 
@@ -190,18 +156,6 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
         };
         /* eslint-enable */
 
-        // this.material = new THREE.ShaderMaterial({
-        //     vertexShader: _vShader,
-        //     fragmentShader: _fShader,
-        //     uniforms: this.uniforms,
-        //     blending: THREE.AdditiveBlending,
-        //     // depthTest: true,
-        //     depthWrite: false,
-        //     transparent: true,
-        //     alphaTest: 0.01,
-        //     vertexColors: true
-        // });
-
         this._material = m as any;
 
         let p = new THREE.Points(this._geometry, m);
@@ -213,7 +167,7 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
 
     private init3() {
 
-        let camPos = this._params.camera.position;
+        let camPos = this._params.camera.position.clone();
         if (!this._params.camDistLogic) {
             camPos.x = 0;
             camPos.y = 0;
@@ -221,13 +175,12 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
         }
 
         this._uniforms = {
-            // diffuseTexture: { value: this.params.texture },
             pointMultiplier: { value: this.getPoitSizeFactor() },
             isCamDistLogic: { value: this._params.camDistLogic },
             camPos: { value: [camPos.x, camPos.y, camPos.z] },
             sizeFactor: { value: 1 },
             // alphaFactor: { value: 1 },
-            scale: { value: 1 }
+            scale: { value: 1 },
         };
 
         this._material = new THREE.ShaderMaterial({

@@ -143,6 +143,17 @@ export class BigStar2 extends THREE.Group {
 
     }
 
+    updateStar(aParams: BigStar2Params) {
+        this._params = aParams;
+        if (!this._params.mainColor) this._params.mainColor = { r: .9, g: .6, b: .3 };
+        if (!this._params.coronaColor) this._params.coronaColor = { r: .9, g: .3, b: .1 };
+        // RGB
+        let centerClr = this._params.mainColor;
+        let coronaClr = this._params.coronaColor;
+        this._uniforms.centerColor.value = { x: centerClr.r, y: centerClr.g, z: centerClr.b };
+        this._uniforms.coronaColor.value = { x: coronaClr.r, y: coronaClr.g, z: coronaClr.b };
+    }
+
     free() {
         if (this._gui) {
             for (let i = 0; i < this._guiControllers.length; i++) {
@@ -161,9 +172,9 @@ export class BigStar2 extends THREE.Group {
         let camera = this._camera;
         if (camera) {
             this._mesh.quaternion.copy(camera.quaternion);
-            // let p = camera.position.clone().sub(this._parentPos).normalize();
-            // this._uniforms.mx.value = Math.atan2(p.z, p.x);
-            // this._uniforms.my.value = Math.atan2(Math.sqrt(p.x * p.x + p.z * p.z), p.y);
+            let p = camera.position.clone().sub(this._parentPos).normalize();
+            this._uniforms.mx.value = Math.atan2(p.z, p.x);
+            this._uniforms.my.value = Math.atan2(Math.sqrt(p.x * p.x + p.z * p.z), p.y);
         }
     }
 

@@ -28,17 +28,22 @@ export class SmallFlySystem {
     }
 
     private spawn() {
+        if (this._starPositions?.length <= 1) return;
         let starId1 = MyMath.randomIntInRange(0, this._starPositions.length - 1);
         let starId2 = MyMath.randomIntInRange(0, this._starPositions.length - 1);
         let pos1 = this._starPositions[starId1];
         let pos2 = this._starPositions[starId2];
         let dist = pos1.distanceTo(pos2);
 
-        while (starId1 == starId2 || dist < 120) {
+        let k = 100;
+        while (k > 0 && (starId1 == starId2 || dist < 120 || dist > 1000)) {
             starId2 = MyMath.randomIntInRange(0, this._starPositions.length - 1);
             pos2 = this._starPositions[starId2];
             dist = pos1.distanceTo(pos2);
+            k--;
         }
+        if (k <= 0) return;
+        // debugger;
         let fly = new SmallFlyLine(this._parent, pos1, pos2, {
             spd: MyMath.randomInRange(0.3, 0.4) * 2.5,
             pointsCnt: MyMath.randomIntInRange(14, 16)

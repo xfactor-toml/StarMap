@@ -1,0 +1,164 @@
+.ViewsPanel {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  height: 100%;
+  max-height: 540px;
+  pointer-events: all;
+  cursor: default;
+  transition: ease-in-out transform 300ms;
+}
+
+.ViewsPanel.is-hidden {
+  transform: translateX(calc(-100% + 10px));
+}
+
+.ViewsPanel__toggle {
+  width: 10px;
+  height: 38px;
+  position: relative;
+  border: none;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-size: contain;
+  background-image: url(../gui/images/views/views-panel-toggle.svg);
+  cursor: pointer;
+  outline: none;
+  opacity: 0.8;
+  transition: ease opacity 200ms, ease transform 200ms;
+}
+
+.ViewsPanel__toggle::before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: -10px;
+  z-index: -1;
+  width: calc(100% + 20px);
+  height: calc(100% + 20px);
+  pointer-events: none;
+}
+
+.ViewsPanel.is-hidden .ViewsPanel__toggle {
+  transform: scale(-1);
+}
+
+.ViewsPanel__toggle:hover {
+  opacity: 1;
+}
+
+.ViewsPanel__group {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: 28px;
+  width: 104px;
+  height: 100%;
+  padding-right: 24px;
+  transition: ease opacity 200ms, ease visibility 200ms;
+}
+
+.ViewsPanel.is-hidden .ViewsPanel__group {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.ViewsPanel__group::before {
+  content: '';
+  width: 64px;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 0;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-size: contain;
+  background-image: url(../gui/images/views/views-panel-outline.svg);
+}
+
+.ViewsPanel__button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 78px;
+  padding-left: 20px;
+  position: relative;
+  border: none;
+  background-color: transparent;
+  color: #00ffff;
+  font-size: 14px;
+  text-transform: none;
+  cursor: pointer;
+  outline: none;
+}
+
+.ViewsPanel__button::before,
+.ViewsPanel__button::after {
+  content: '';
+  width: 60px;
+  height: 60px;
+  margin-bottom: 10px;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-size: contain;
+  opacity: 0.3;
+  transition: ease opacity 200ms;
+}
+
+.ViewsPanel__button::after {
+  width: 50px;
+  height: 27px;
+  margin-bottom: 0;
+  position: absolute;
+  left: -20px;
+  top: 18px;
+  opacity: 0;
+  background-image: url(../gui/images/modes/mode-active-marker.svg);
+  transform: rotate(90deg);
+}
+
+.ViewsPanel__button.is-galaxy::before {
+  background-image: url(../gui/images/views/view-galaxy.svg);
+}
+
+.ViewsPanel__button.is-star::before {
+  width: 83px;
+  height: 87px;
+  margin-top: -10px;
+  margin-bottom: 0;
+  background-image: url(../gui/images/views/view-star.svg);
+}
+
+.ViewsPanel__button.is-planet::before {
+  width: 82px;
+  height: 82px;
+  margin-top: -10px;
+  margin-bottom: 0;
+  background-image: url(../gui/images/views/view-planet.svg);
+}
+
+.ViewsPanel__button.is-disabled {
+  user-select: none;
+  pointer-events: none;
+  filter: grayscale() brightness(0.5);
+}
+
+.ViewsPanel__button.is-active {
+  cursor: default;
+}
+
+.ViewsPanel__button.is-active,
+.ViewsPanel__button:not(.is-clickable) {
+  user-select: none;
+  pointer-events: none;
+}
+
+.ViewsPanel__button:hover::before,
+.ViewsPanel__button.is-active::before,
+.ViewsPanel__button.is-active::after {
+  opacity: 1;
+}

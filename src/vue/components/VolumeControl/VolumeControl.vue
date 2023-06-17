@@ -4,8 +4,12 @@
       <span v-if="volume === 0" class="volume-control__icon is-mute" />
       <span v-else class="volume-control__icon" />
     </button>
-    <div class="volume-control__line" ref="line" @mousedown="handleMousedown($event), offset($event as any, 'click')"
-      @touchstart="handleMousedown($event as any), offset($event as any, 'click')">
+    <div
+      class="volume-control__line"
+      ref="line"
+      @mousedown="handleMousedown($event), offset($event as any, 'click')"
+      @touchstart="handleMousedown($event as any), offset($event as any, 'click')"
+    >
       <div class="volume-control__level" :style="`width: ${volume}%`" />
       <div class="volume-control__point" :style="`left: ${volume}%`" />
     </div>
@@ -14,7 +18,7 @@
 
 <script lang="ts">
 export default {
-  name: "VolumeControl",
+  name: 'VolumeControl',
   props: {
     initialVolume: {
       type: Number,
@@ -31,10 +35,10 @@ export default {
       muted: false,
       volume: this.initialVolume,
       states: [
-        { value: 0, icon: "volumeMute" },
-        { value: 1, icon: "volumeMin" },
-        { value: 50, icon: "volumeHalf" },
-        { value: 90, icon: "volumeFull" }
+        { value: 0, icon: 'volumeMute' },
+        { value: 1, icon: 'volumeMin' },
+        { value: 50, icon: 'volumeHalf' },
+        { value: 90, icon: 'volumeFull' }
       ],
       firstCoords: { x: 0, y: 0 },
       lastCoords: { x: 0, y: 0 }
@@ -49,15 +53,12 @@ export default {
       return value;
     },
     currentState() {
-      const currentIndex = this.states.reduce(
-        (findedIndex, item, index, list) => {
-          const currentValue = Math.abs(item.value - this.level);
-          const findedValue = Math.abs(list[findedIndex].value - this.level);
+      const currentIndex = this.states.reduce((findedIndex, item, index, list) => {
+        const currentValue = Math.abs(item.value - this.level);
+        const findedValue = Math.abs(list[findedIndex].value - this.level);
 
-          return currentValue < findedValue ? index : findedIndex;
-        },
-        0
-      );
+        return currentValue < findedValue ? index : findedIndex;
+      }, 0);
 
       return this.states[currentIndex];
     }
@@ -85,10 +86,10 @@ export default {
       }
 
       this.volume = Math.trunc(this.level);
-      this.$emit("change", this.volume);
+      this.$emit('change', this.volume);
     },
     offset({ offsetX = 0, first, last }, type) {
-      if (type === "drag") {
+      if (type === 'drag') {
         if (first || last) {
           this.position = this.position + this.drag;
           this.drag = 0;
@@ -97,12 +98,12 @@ export default {
         }
       }
 
-      if (type === "click") {
+      if (type === 'click') {
         this.position = offsetX;
       }
 
       this.volume = Math.trunc(this.level);
-      this.$emit("change", this.volume);
+      this.$emit('change', this.volume);
     },
     handleMousedown(event: MouseEvent) {
       const { clientX, clientY } = event;
@@ -119,7 +120,7 @@ export default {
           clientX,
           clientY
         },
-        "drag"
+        'drag'
       );
     },
     handleMousemove(event: MouseEvent) {
@@ -144,7 +145,7 @@ export default {
             clientX,
             clientY
           },
-          "drag"
+          'drag'
         );
 
         this.lastCoords = {
@@ -166,7 +167,7 @@ export default {
           clientX,
           clientY
         },
-        "drag"
+        'drag'
       );
 
       this.dragging = false;
@@ -174,34 +175,19 @@ export default {
     }
   },
   mounted() {
-    document.documentElement.addEventListener(
-      "mousemove",
-      this.handleMousemove
-    );
-    document.documentElement.addEventListener(
-      "touchmove",
-      this.handleMousemove
-    );
-    document.documentElement.addEventListener("mouseup", this.handleMouseup);
-    document.documentElement.addEventListener("touchend", this.handleMouseup);
+    document.documentElement.addEventListener('mousemove', this.handleMousemove);
+    document.documentElement.addEventListener('touchmove', this.handleMousemove);
+    document.documentElement.addEventListener('mouseup', this.handleMouseup);
+    document.documentElement.addEventListener('touchend', this.handleMouseup);
 
     this.lineWidth = this.$refs.line.clientWidth;
     this.position = this.volume;
   },
   unmounted() {
-    document.documentElement.removeEventListener(
-      "mousemove",
-      this.handleMousemove
-    );
-    document.documentElement.removeEventListener(
-      "touchmove",
-      this.handleMousemove
-    );
-    document.documentElement.removeEventListener("mouseup", this.handleMouseup);
-    document.documentElement.removeEventListener(
-      "touchend",
-      this.handleMouseup
-    );
+    document.documentElement.removeEventListener('mousemove', this.handleMousemove);
+    document.documentElement.removeEventListener('touchmove', this.handleMousemove);
+    document.documentElement.removeEventListener('mouseup', this.handleMouseup);
+    document.documentElement.removeEventListener('touchend', this.handleMouseup);
   }
 };
 </script>

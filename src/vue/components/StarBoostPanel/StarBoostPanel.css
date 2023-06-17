@@ -1,0 +1,234 @@
+.StarBoostPanel {
+  width: 307px;
+  position: absolute;
+  left: calc(50% - 144px);
+  top: calc(50% - 190px);
+  will-change: transform;
+  pointer-events: all;
+  cursor: default;
+}
+
+.StarBoostPanel__header,
+.StarBoostPanel__body {
+  height: 94px;
+  width: 100%;
+  padding: 26px 26px 0 10px;
+  background-image: url('../gui/images/star-tooltip/star-boost-panel.png');
+  background-repeat: no-repeat;
+  background-position: 0% 0%;
+  background-size: 100%;
+}
+
+.StarBoostPanel__header {
+  display: flex;
+}
+
+.StarBoostPanel__body {
+  height: auto;
+  min-height: 140px;
+  max-height: 382px;
+  padding: 2px 36px 10px 18px;
+  background-position: 0 100%;
+}
+
+.StarBoostPanel__close {
+  display: block;
+  width: 31px;
+  height: 31px;
+  position: absolute;
+  right: 11px;
+  top: 19px;
+  border: none;
+  background-color: transparent;
+  border-radius: 50%;
+}
+
+.StarBoostPanel__title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 12px;
+  color: #fff;
+  font-weight: 800;
+  font-size: 32px;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.StarBoostPanel__group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 0;
+}
+
+.StarBoostPanel__group + .StarBoostPanel__group {
+  border-top: 1px solid #47a8d1;
+}
+
+.StarBoostPanel__level,
+.StarBoostPanel__level-progress {
+  width: 100%;
+  height: 10px;
+  position: relative;
+  border-radius: 8px;
+  background-color: #66abc9;
+}
+
+.StarBoostPanel__level {
+  margin-bottom: 20px;
+}
+
+.StarBoostPanel__level-progress {
+  width: 0%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  position: relative;
+  color: #eaf5fa;
+  background-color: currentColor;
+}
+
+.StarBoostPanel__level-value {
+  padding-top: 2px;
+  position: absolute;
+  left: 100%;
+  top: calc(100% + 8px);
+  color: currentColor;
+  border-top: 1px solid currentColor;
+  font-size: 12px;
+  line-height: 1;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+
+.StarBoostPanel__level-value::before {
+  content: '';
+  display: block;
+  width: 10px;
+  height: 8px;
+  position: absolute;
+  bottom: 100%;
+  left: calc(50% - 5px);
+  background-image: url(../gui/images/boost-marker.svg);
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-size: contain;
+}
+
+.StarBoostPanel__label {
+  color: #000000;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.StarBoostPanel__slider {
+  margin-top: 2px;
+}
+
+.StarBoostPanel__label.is-white {
+  color: #fff;
+}
+
+.StarBoostPanel__wallet {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  color: #ffffff;
+}
+
+.StarBoostPanel__wallet.is-blocked {
+  color: #ed1c24;
+}
+
+.StarBoostPanel__price {
+  position: relative;
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.StarBoostPanel__currency {
+  position: relative;
+  font-size: 12px;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.StarBoostPanel__button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 64px;
+  background-color: #47a8d1;
+  border: none;
+  color: #333;
+  font-family: inherit;
+  font-weight: 800;
+  font-size: 18px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: ease background-color 200ms;
+}
+
+.StarBoostPanel__button:hover {
+  background-color: #5ab1d6;
+}
+
+.StarBoostPanel__button:active {
+  background-color: #47a8d1;
+}
+
+.StarBoostPanel__button.is-yellow {
+  background-color: #edbf1c;
+  color: #fff;
+  box-shadow: 0px 0px 19px #f7931e;
+}
+
+.StarBoostPanel__button.is-yellow:hover {
+  background-color: #f8d144;
+}
+
+.StarBoostPanel__button.is-yellow:active {
+  background-color: #edbf1c;
+}
+
+.StarBoostPanel__button[disabled] {
+  opacity: 0.2;
+  pointer-events: none;
+  user-select: none;
+}
+
+.StarBoostPanel__skeleton {
+  width: 100%;
+  background-color: #1e7fa9;
+  animation: pulse 2s infinite;
+}
+
+.StarBoostPanel__skeleton.is-level {
+  height: 12px;
+  margin-bottom: 18px;
+}
+
+.StarBoostPanel__skeleton.is-label {
+  width: 80px;
+  height: 14px;
+  margin-bottom: 8px;
+}
+
+.StarBoostPanel__skeleton.is-slider {
+  height: 18px;
+  margin-bottom: 24px;
+}
+
+.StarBoostPanel__skeleton.is-balance {
+  width: calc(100% - 40px);
+  height: 38px;
+  margin-bottom: -2px;
+}
+
+.StarBoostPanel__skeleton.is-button {
+  height: 64px;
+}

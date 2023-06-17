@@ -29,8 +29,9 @@ function ExtractRace ( str : string) : Race {
 }
 
 async function RequiredPlasmaToApprove (owner : account, level : number = 1) : Promise<number> {
-    const demand = await contract.methods.CalcCreationCost(level.toString()).call()
+    const demand = await GetCreationCost(level)
     const allowed = await GetAllowance(owner, nft)
+
     if (allowed > demand) {
         return 0
     }
@@ -223,12 +224,11 @@ async function IncreaseStarLevel (owner : account, starId : number) : Promise<St
     const CurrentData = await GetSingleStarData(starId)
     const starOwner = await contract.methods.ownerOf(starId).call()
     const newLevel = CurrentData.params.level + 1
-    if (newLevel > 3 || starOwner !== owner) {
+    if (newLevel > 3 || starOwner.toLowerCase() !== owner) {
         return null
     }
 
     const requireApprove = await RequiredPlasmaToApprove (owner, newLevel)
-    
     if (requireApprove > 0) {
         try {
             const allowed = await ApprovePlasma(owner, requireApprove, nft)
@@ -241,7 +241,7 @@ async function IncreaseStarLevel (owner : account, starId : number) : Promise<St
     }
 
     try {
-        const result = await contract.methods.IncreaseStarLevel(starId).send({
+        const result = await writeable.methods.IncreaseStarLevel(starId).send({
             from: owner
         })
         return await GetSingleStarData(starId)

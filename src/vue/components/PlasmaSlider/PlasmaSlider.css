@@ -1,0 +1,27 @@
+.PlasmaSlider {
+  padding: 4px 0 !important;
+  margin-bottom: 24px;
+}
+
+.PlasmaSlider__tooltip {
+  padding-top: 2px;
+  color: #eaf5fa;
+  border-top: 1px solid currentColor;
+  font-size: 12px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.PlasmaSlider__tooltip::before {
+  content: '';
+  display: block;
+  width: 10px;
+  height: 8px;
+  position: absolute;
+  bottom: 100%;
+  left: calc(50% - 5px);
+  background-image: url(../gui/images/boost-marker.svg);
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-size: contain;
+}

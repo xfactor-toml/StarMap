@@ -1,12 +1,13 @@
 import * as THREE from 'three';
 import { QTPoint } from '../systems/QuadTree';
 import { StarPoint } from "../objects/StarPoint";
-import { GalaxyStarParams } from '../scenes/Galaxy';
+import { GalaxyStarParams } from '~/data/Types';
 
 export class StarPointsMng {
 
     private _parent: THREE.Object3D;
     private _camera: THREE.PerspectiveCamera;
+    private _cameraTarget: THREE.Vector3;
     private _poolSize: number;
     private _dist: number;
     private _starPoints: StarPoint[];
@@ -14,17 +15,19 @@ export class StarPointsMng {
     constructor(aParams: {
         parent: THREE.Object3D,
         camera: THREE.PerspectiveCamera,
+        cameraTarget: THREE.Vector3,
         poolSize: number,
         dist: number
     }) {
         this._parent = aParams.parent;
         this._camera = aParams.camera;
+        this._cameraTarget = aParams.cameraTarget;
         this._poolSize = aParams.poolSize;
         this._dist = aParams.dist;
         this._starPoints = [];
     }
 
-    updatePoints(aPoints: QTPoint[]) {
+    updatePoints(aPoints: QTPoint[], aRadius: number, aIsPhantom: boolean) {
 
         let ids: number[] = [];
         let points: { 
@@ -33,15 +36,16 @@ export class StarPointsMng {
         }[] = [];
         let pDatas: GalaxyStarParams[] = [];
 
-        let camDir = new THREE.Vector3();
-        this._camera.getWorldDirection(camDir);
-        camDir.add(this._camera.position);
+        // let camDir = new THREE.Vector3();
+        // this._camera.getWorldDirection(camDir);
+        // camDir.add(this._camera.position);
 
         for (let i = 0; i < aPoints.length; i++) {
             const p = aPoints[i];
             let starParams = p.data.starData as GalaxyStarParams;
             let pos = new THREE.Vector3(starParams.pos.x, starParams.pos.y, starParams.pos.z);
-            let dist = pos.distanceTo(this._camera.position);
+            let camDist = pos.distanceTo(this._camera.position);
+            let centerDist = pos.distanceTo(this._cameraTarget);
 
             let wPos = pos.clone();
             this._parent.localToWorld(wPos);
@@ -50,13 +54,13 @@ export class StarPointsMng {
 
             pDir.subVectors(wPos, this._camera.position);
 
-            let dotProduct = camDir.dot(pDir);
-            if (dotProduct >= 0) continue;
+            // let dotProduct = camDir.dot(pDir);
+            // if (dotProduct >= 0) continue;
 
-            if (dist > this._dist) continue;
+            if (centerDist > aRadius) continue;
             points.push({
                 id: starParams.id,
-                dist: dist
+                dist: camDist
             });
             pDatas.push(starParams);
         }
@@ -76,7 +80,7 @@ export class StarPointsMng {
             const p = this._starPoints[i];
             if (!p?.params?.starParams) continue;
             let idPos = ids.indexOf(p.params.starParams.id);
-            if (idPos >= 0) {
+            if (idPos >= 0 && p.params.isPhantom == aIsPhantom) {
                 p.update();
                 // stay point, remove id
                 ids.splice(idPos, 1);
@@ -103,11 +107,12 @@ export class StarPointsMng {
             // test
             // if (pos.distanceTo(this._camera.position) > 60) continue;
             let starPointSprite = new StarPoint({
-                baseScale: 6,
+                baseScale: 3,
                 camera: this._camera,
                 maxAlpha: .7,
                 starParams: starParams,
-                scaleFactor: 0
+                scaleFactor: 0,
+                isPhantom: aIsPhantom
             });
             starPointSprite.position.copy(pos);
             starPointSprite.show(1);
