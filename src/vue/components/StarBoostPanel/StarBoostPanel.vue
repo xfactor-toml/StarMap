@@ -187,7 +187,10 @@ export default {
       this.levelUpPending = false;
 
       if (updatedStar) {
-        this.starsStore.updateStar(new Star(updatedStar));
+        const star = new Star(updatedStar);
+
+        this.starsStore.updateStar(star);
+        this.$client.onStarUpdated(star);
       }
 
       this.fetchData();

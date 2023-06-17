@@ -80,6 +80,10 @@ export class ClientService {
     this.dispatcher.onStarCreated.dispatch(star.toRaw());
   }
 
+  onStarUpdated(star: Star) {
+    this.dispatcher.onStarUpdated.dispatch(star.toRaw());
+  }
+
   static VuePlugin = {
     install: app => {
       app.config.globalProperties.$client = markRaw(new ClientService(FrontEvents));
