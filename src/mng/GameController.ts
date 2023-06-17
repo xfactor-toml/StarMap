@@ -49,7 +49,7 @@ export class GameController implements ILogger {
     }
 
     private onStarUpdated(aStarData: ServerStarData) {
-        
+        this.galaxy?.onStarUpdated(aStarData);
     }
 
     initGalaxy(aParams: {

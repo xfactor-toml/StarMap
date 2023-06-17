@@ -303,7 +303,7 @@ export class Galaxy implements ILogger {
             'testGetRace': () => {
                 LogMng.debug(`test getRandomRace(): ${Star.getRandomRace()}`);
             },
-            'createTestStar': () => {
+            'testCreateStar': () => {
                 this.onStarCreated({
                     id: 50000,
                     owner: '0x6296Ae279Bc23867a05AD10fa974E1C66B88460F',
@@ -318,13 +318,39 @@ export class Galaxy implements ILogger {
                         "fuelSpendings": 45662100456621,
                         "habitableZoneMin": 3,
                         "habitableZoneMax": 5,
-                        "planetSlots": 1,
+                        "planetSlots": 5,
                         "mass": 10000,
                         "race": "Waters",
                         "coords": {
-                            "X": 153.47487499995623,
-                            "Y": -0.0013559999642893672,
-                            "Z": -25.552350000012666
+                            "X": 55,
+                            "Y": 0,
+                            "Z": 55
+                        }
+                    }
+                });
+            },
+            'testUpStar': () => {
+                this.onStarUpdated({
+                    id: 50000,
+                    owner: '0x6296Ae279Bc23867a05AD10fa974E1C66B88460F',
+                    params: {
+                        "name": "Test Debug Star",
+                        "isLive": true,
+                        "creation": 1686761342,
+                        "updated": 1686761342,
+                        "level": 2,
+                        "fuel": 200000000000000000,
+                        "levelUpFuel": 0,
+                        "fuelSpendings": 45662100456621,
+                        "habitableZoneMin": 3,
+                        "habitableZoneMax": 5,
+                        "planetSlots": 5,
+                        "mass": 10000,
+                        "race": "Waters",
+                        "coords": {
+                            "X": 55,
+                            "Y": 0,
+                            "Z": 55
                         }
                     }
                 });
@@ -351,8 +377,9 @@ export class Galaxy implements ILogger {
 
         const gui = Settings.datGui;
 
-        gui.add(DEBUG_PARAMS, 'testGetRace');
-        gui.add(DEBUG_PARAMS, 'createTestStar');
+        // gui.add(DEBUG_PARAMS, 'testGetRace');
+        gui.add(DEBUG_PARAMS, 'testCreateStar');
+        gui.add(DEBUG_PARAMS, 'testUpStar');
 
         let galaxyFolder = gui.addFolder('Galaxy');
 
@@ -465,6 +492,38 @@ export class Galaxy implements ILogger {
 
     onStarCreated(aStarData: ServerStarData) {
         this._fsm.startState(States.createStar, aStarData);
+    }
+
+    onStarUpdated(aServerStarData: ServerStarData) {
+        // update star data
+        let updRealStars = StarGenerator.getInstance().getRealStarDataByServer({
+            alphaMin: Settings.galaxyData.alphaMin,
+            alphaMax: Settings.galaxyData.alphaMax,
+            scaleMin: Settings.galaxyData.scaleMin,
+            scaleMax: Settings.galaxyData.scaleMax
+        }, [aServerStarData]);
+
+        if (updRealStars.length <= 0) {
+            LogMng.warn('onStarUpdated(): updRealStars.length <= 0');
+            return;
+        }
+
+        const star = updRealStars[0];
+
+        for (let i = 0; i < this._realStarsData.length; i++) {
+            const rsd = this._realStarsData[i];
+            if (rsd.id == star.id) {
+                this._realStarsData[i] = star;
+            }
+        }
+
+        switch (this._fsm.getCurrentState().name) {
+            case States.star:
+                // update the star render
+                this.solarSystem?.onStarUpdated(star);
+                break;
+        }
+
     }
 
     private createGalaxyPlane(): THREE.Mesh {

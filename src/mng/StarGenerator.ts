@@ -280,7 +280,7 @@ export class StarGenerator implements ILogger {
             const serverStarParams = serverStar.params;
             const pos = serverStarParams.coords;
 
-            if (!pos.X || !pos.Y || !pos.Z) {
+            if (pos.X == null || pos.Y == null || pos.Z == null) {
                 this.logWarn(`getRealStarDataByServer(): !pos.X || !pos.Y || !pos.Z for serverStarData:`, serverStar);
                 continue;
             }

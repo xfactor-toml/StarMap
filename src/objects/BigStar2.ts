@@ -143,6 +143,17 @@ export class BigStar2 extends THREE.Group {
 
     }
 
+    updateStar(aParams: BigStar2Params) {
+        this._params = aParams;
+        if (!this._params.mainColor) this._params.mainColor = { r: .9, g: .6, b: .3 };
+        if (!this._params.coronaColor) this._params.coronaColor = { r: .9, g: .3, b: .1 };
+        // RGB
+        let centerClr = this._params.mainColor;
+        let coronaClr = this._params.coronaColor;
+        this._uniforms.centerColor.value = { x: centerClr.r, y: centerClr.g, z: centerClr.b };
+        this._uniforms.coronaColor.value = { x: coronaClr.r, y: coronaClr.g, z: coronaClr.b };
+    }
+
     free() {
         if (this._gui) {
             for (let i = 0; i < this._guiControllers.length; i++) {
