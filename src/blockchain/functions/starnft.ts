@@ -1,6 +1,6 @@
 import Web3 from "web3";
 import { contracts, env, reserveRpcs } from "../config";
-import { Coords, Race, StarData, StarList, StarParams, account, fuelTarget } from "../types";
+import { Coords, GameStats, Race, StarData, StarList, StarParams, account, fuelTarget } from "../types";
 import { ERC20ABI, StarNFTABI } from "../ABI";
 import { IsTrueNetwork, NetworkAuth } from "./auth";
 import { ApprovePlasma, GetAllowance } from "./plasma";
@@ -250,6 +250,23 @@ async function IncreaseStarLevel (owner : account, starId : number) : Promise<St
     }
 }
 
+async function GetStarStats ( starId : number) : Promise<GameStats> {
+    const contract = new reader.eth.Contract(StarNFTABI, nft)
+    try {
+        const stats : any[] = await contract.methods.StarStats(starId).call()
+        return( {
+            games: Number(stats[0]),
+            win: Number(stats[1])
+        })
+    } catch (e) {
+        console.log(e.message)
+        return( {
+            games: 0,
+            win: 0
+        })
+    }
+}
+
 export {
     RequiredPlasmaToApprove,
     GetAllStarData,
@@ -258,6 +275,7 @@ export {
     RefuelStar,
     IncreaseStarLevel,
     GetCreationCost,
+    GetStarStats,
     GetStarsCount
 }
 
