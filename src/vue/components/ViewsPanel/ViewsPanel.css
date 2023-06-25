@@ -162,3 +162,50 @@
 .ViewsPanel__button.is-active::after {
   opacity: 1;
 }
+
+@media (max-width: 980px) {
+  .ViewsPanel {
+    width: 100%;
+    max-width: 540px;
+    height: auto;
+    max-height: none;
+    flex-direction: column-reverse;
+    margin: auto;
+  }
+
+  .ViewsPanel.is-hidden {
+    transform: translateY(80%);
+  }
+
+  .ViewsPanel__group {
+    flex-direction: row;
+    width: 100%;
+    padding: 0;
+    padding-top: 24px;
+  }
+
+  .ViewsPanel__group::before {
+    width: 100%;
+    height: 64px;
+    left: 0;
+    z-index: -1;
+    background-image: url(../gui/images/modes/mode-panel-outline.svg);
+  }
+
+  .ViewsPanel__toggle {
+    width: 38px;
+    height: 10px;
+    background-image: url(../gui/images/modes/modes-toggle-button.svg);
+  }
+
+  .ViewsPanel__button {
+    padding: 0;
+  }
+
+  .ViewsPanel__button::after {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: rotate(0deg);
+  }
+}

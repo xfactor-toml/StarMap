@@ -30,6 +30,14 @@
   top: 20px;
 }
 
+.InterfaceScreen__panels {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
 .InterfaceScreen__views,
 .InterfaceScreen__levels {
   display: flex;
@@ -52,4 +60,29 @@
   position: absolute;
   left: 0;
   bottom: 28px;
+}
+
+@media (max-width: 980px) {
+  .InterfaceScreen__panels {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  .InterfaceScreen__levels {
+    order: -1;
+  }
+
+  .InterfaceScreen__views,
+  .InterfaceScreen__levels,
+  .InterfaceScreen__modes {
+    height: auto;
+    width: auto;
+    position: relative;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    top: auto;
+  }
 }

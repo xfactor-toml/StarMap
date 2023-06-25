@@ -81,3 +81,13 @@
   line-height: 1.1;
   color: #00ffff;
 }
+
+@media (max-width: 980px) {
+  .LevelsPanel {
+    width: 100%;
+  }
+
+  .LevelsPanel__group {
+    flex-direction: row-reverse;
+  }
+}

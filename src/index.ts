@@ -20,6 +20,6 @@ window.addEventListener('DOMContentLoaded', () => {
   app.mount('#gui')
 
   // threejs
-  let boot = new GameBoot();
-  boot.init();
+  // let boot = new GameBoot();
+  // boot.init();
 });

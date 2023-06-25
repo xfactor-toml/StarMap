@@ -149,3 +149,9 @@
 .ModesPanel__button.is-active::after {
   opacity: 1;
 }
+
+@media (max-width: 980px) {
+  .ModesPanel.is-hidden {
+    transform: translateY(80%);
+  }
+}
