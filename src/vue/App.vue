@@ -43,8 +43,6 @@ export default {
     document.body.addEventListener('fullscreenchange', () => {
       this.settingsStore.setFullscreenMode(!this.settingsStore.fullscreen);
     });
-
-    this.settingsStore.setScreen('interface');
   }
 };
 </script>
