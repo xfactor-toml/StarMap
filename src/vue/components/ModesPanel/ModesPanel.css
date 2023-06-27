@@ -151,7 +151,24 @@
 }
 
 @media (max-width: 980px) {
+  .ModesPanel {
+    max-width: calc(100% - 40px);
+    padding: 10px 0;
+    border-top: 1px solid rgba(0, 255, 255, 0.3);
+  }
+
   .ModesPanel.is-hidden {
-    transform: translateY(80%);
+    transition: none;
+    transform: none;
+  }
+
+  .ModesPanel.is-hidden .ModesPanel__group,
+  .ModesPanel__group::before {
+    display: none;
+  }
+
+  .ModesPanel__group {
+    gap: 16px;
+    padding-top: 4px;
   }
 }

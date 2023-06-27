@@ -166,30 +166,31 @@
 @media (max-width: 980px) {
   .ViewsPanel {
     width: 100%;
-    max-width: 540px;
+    max-width: calc(100% - 40px);
     height: auto;
     max-height: none;
     flex-direction: column-reverse;
     margin: auto;
+    padding: 10px 0 14px;
+    border-top: 1px solid rgba(0, 255, 255, 0.3);
   }
 
   .ViewsPanel.is-hidden {
-    transform: translateY(80%);
+    transition: none;
+    transform: none;
   }
 
   .ViewsPanel__group {
     flex-direction: row;
+    gap: 6px;
     width: 100%;
     padding: 0;
-    padding-top: 24px;
+    padding-top: 4px;
   }
 
+  .ViewsPanel.is-hidden .ViewsPanel__group,
   .ViewsPanel__group::before {
-    width: 100%;
-    height: 64px;
-    left: 0;
-    z-index: -1;
-    background-image: url(../gui/images/modes/mode-panel-outline.svg);
+    display: none;
   }
 
   .ViewsPanel__toggle {
@@ -203,9 +204,15 @@
   }
 
   .ViewsPanel__button::after {
+    margin-bottom: -12px;
     position: relative;
     left: auto;
     top: auto;
     transform: rotate(0deg);
+  }
+
+  .ViewsPanel__button.is-star::before,
+  .ViewsPanel__button.is-planet::before {
+    height: 80px;
   }
 }
