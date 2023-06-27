@@ -41,8 +41,8 @@ export default {
         top: `${this.starPosition.screen.y}px`,
         left: `${this.starPosition.screen.x}px`,
         transform: `
-          translateX(-10px)
-          translateY(-86px)
+          translateX(var(--offset-x))
+          translateY(var(--offset-y))
           scaleX(${this.computedScale * (this.intersection.x ? -1 : 1)})
         `
       };
