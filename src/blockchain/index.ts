@@ -22,3 +22,7 @@ export {
     GetStarStats,
     GetStarsCount
 } from './functions/starnft'
+
+export {
+    GameAuth
+} from './functions/gameplay'

@@ -1,6 +1,7 @@
 import { connectRpc } from "./types"
 
 export const mobileUrl = `https://metamask.app.link/dapp/${document.location.hostname}/`
+export const wsServerUrl = 'wss://staging-api.vorpal.finance/ws/'
 export const env = window.ethereum
 
 export const connect : connectRpc = {
