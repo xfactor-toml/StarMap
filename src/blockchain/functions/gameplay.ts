@@ -1,5 +1,5 @@
+import { w3cwebsocket as WebSocket } from 'websocket';
 import Web3 from "web3";
-import WebSocket from 'ws'
 import { wsServerUrl, env } from "../config";
 
 export async function GameAuth ( account : string ) : Promise<string> {
@@ -12,36 +12,33 @@ export async function GameAuth ( account : string ) : Promise<string> {
      const web3 = new Web3(env)
 
      return await new Promise(resolve => {
-        wss.on("open", (ws) => {
-            wss.on("message", async (message : string) =>{
+        wss.onopen = (ws : WebSocket) => {
+            wss.onmessage = async (message : any) => {
+
                 try {
-                    const msg = JSON.parse(message)
+                    const msg = JSON.parse(message.data)
 
                     if (msg.action === "auth" && msg.state === "success") {
+                        resolve(String(msg.playerId))
                         return String(msg.playerId)
-                    }
+                    } 
                     
                     const dt = new Date().getTime()
                     const signMsg = "auth_" + String(dt - (dt % 600000))
                     const signature = await web3.eth.personal.sign(signMsg, account, '')
-                    ws.send(JSON.stringify({
+                    wss.send(JSON.stringify({
                         action: "auth",
                         signature: signature
                     }))
                 } catch (e) {
                     console.log(e.message)
                 }
-            })
+            }
 
-            wss.on("close", () => {
+            wss.onclose = () => {
                 resolve('')
                 return ''
-            })
-        })
-
-        wss.on("error", () => {
-            resolve('')
-            return ''
-        })
+            }
+        }
      })
 }
