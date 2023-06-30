@@ -19,5 +19,10 @@ export {
     RefuelStar,
     IncreaseStarLevel,
     GetCreationCost,
+    GetStarStats,
     GetStarsCount
 } from './functions/starnft'
+
+export {
+    GameAuth
+} from './functions/gameplay'

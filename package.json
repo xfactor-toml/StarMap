@@ -46,6 +46,7 @@
         "ua-parser-js": "^1.0.33",
         "vue": "^3.2.47",
         "vue-slider-component": "^4.1.0-beta.7",
-        "web3": "1.8.1"
+        "web3": "1.8.1",
+        "websocket": "^1.0.34"
     }
 }

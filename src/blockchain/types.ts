@@ -12,6 +12,11 @@ export type Coords = {
 
 export type Race = "Waters" | "Humans" | "Insects" | "Lizards"
 
+export type GameStats = {
+   games: number,
+   win: number
+}
+
 export type StarParams = {
     name: string,
     isLive: boolean,

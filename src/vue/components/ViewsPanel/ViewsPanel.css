@@ -162,3 +162,57 @@
 .ViewsPanel__button.is-active::after {
   opacity: 1;
 }
+
+@media (max-width: 980px) {
+  .ViewsPanel {
+    width: 100%;
+    max-width: calc(100% - 40px);
+    height: auto;
+    max-height: none;
+    flex-direction: column-reverse;
+    margin: auto;
+    padding: 10px 0 14px;
+    border-top: 1px solid rgba(0, 255, 255, 0.3);
+  }
+
+  .ViewsPanel.is-hidden {
+    transition: none;
+    transform: none;
+  }
+
+  .ViewsPanel__group {
+    flex-direction: row;
+    gap: 6px;
+    width: 100%;
+    padding: 0;
+    padding-top: 4px;
+  }
+
+  .ViewsPanel.is-hidden .ViewsPanel__group,
+  .ViewsPanel__group::before {
+    display: none;
+  }
+
+  .ViewsPanel__toggle {
+    width: 38px;
+    height: 10px;
+    background-image: url(../gui/images/modes/modes-toggle-button.svg);
+  }
+
+  .ViewsPanel__button {
+    padding: 0;
+  }
+
+  .ViewsPanel__button::after {
+    margin-bottom: -12px;
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: rotate(0deg);
+  }
+
+  .ViewsPanel__button.is-star::before,
+  .ViewsPanel__button.is-planet::before {
+    height: 80px;
+  }
+}

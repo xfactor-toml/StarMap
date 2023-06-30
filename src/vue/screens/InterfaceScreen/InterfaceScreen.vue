@@ -9,20 +9,22 @@
     <div class="InterfaceScreen__userbar">
       <UserBar />
     </div>
-    <template v-if="settingsStore.mode.views.length">
-      <div class="InterfaceScreen__views">
-        <ViewsPanel />
-      </div>
-    </template>
-    <transition name="fade">
-      <template v-if="settingsStore.view === 'galaxy'">
-        <div class="InterfaceScreen__levels">
-          <LevelsPanel />
+    <div class="InterfaceScreen__panels">
+      <template v-if="settingsStore.mode.views.length">
+        <div class="InterfaceScreen__views">
+          <ViewsPanel />
         </div>
       </template>
-    </transition>
-    <div class="InterfaceScreen__modes">
-      <ModesPanel />
+      <transition name="fade">
+        <template v-if="settingsStore.view === 'galaxy'">
+          <div class="InterfaceScreen__levels">
+            <LevelsPanel />
+          </div>
+        </template>
+      </transition>
+      <div class="InterfaceScreen__modes">
+        <ModesPanel />
+      </div>
     </div>
   </div>
 </template>

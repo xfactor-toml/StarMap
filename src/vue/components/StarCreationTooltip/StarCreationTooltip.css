@@ -1,4 +1,7 @@
 .StarCreationTooltip {
+  --offset-x: -10px;
+  --offset-y: -86px;
+
   display: flex;
   align-items: center;
   width: 349px;
@@ -73,4 +76,36 @@
   right: 11px;
   top: 19px;
   border-radius: 50%;
+}
+
+@media (max-width: 980px) {
+  .StarCreationTooltip {
+    --offset-x: -124px;
+    --offset-y: -10px;
+
+    width: 308px;
+    height: 204px;
+    background-image: url('../gui/images/star-tooltip/star-create-tooltip-mobile.png');
+  }
+
+  .StarCreationTooltip.is-reflect {
+    --offset-x: 100px;
+    --offset-y: -10px;
+  }
+
+  .StarCreationTooltip__preview {
+    left: 21px;
+    top: auto;
+    bottom: 20px;
+  }
+
+  .StarCreationTooltip__close {
+    top: auto;
+    bottom: 86px;
+  }
+
+  .StarCreationTooltip__create {
+    top: auto;
+    bottom: 35px;
+  }
 }

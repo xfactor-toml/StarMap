@@ -203,6 +203,11 @@ export const StarNFTABI : any[] = [
 				"internalType": "address",
 				"name": "_plasma",
 				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_gameAdmin",
+				"type": "address"
 			}
 		],
 		"stateMutability": "nonpayable",
@@ -493,6 +498,68 @@ export const StarNFTABI : any[] = [
 		"inputs": [
 			{
 				"internalType": "uint256",
+				"name": "_winner",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_opponent",
+				"type": "uint256"
+			}
+		],
+		"name": "RegisterGameResult",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_starId",
+				"type": "uint256"
+			}
+		],
+		"name": "StarStats",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "games",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "win",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct StarNFT721.GameStats",
+				"name": "",
+				"type": "tuple"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_newAdmin",
+				"type": "address"
+			}
+		],
+		"name": "UpdateGameAdmin",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
 				"name": "tokenId",
 				"type": "uint256"
 			},
@@ -583,6 +650,19 @@ export const StarNFTABI : any[] = [
 				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "gameAdmin",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
 			}
 		],
 		"stateMutability": "view",

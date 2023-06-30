@@ -48,8 +48,8 @@ export default {
         top: `${this.position.y}px`,
         left: `${this.position.x}px`,
         transform: `
-          translateX(-12px)
-          translateY(-78px)
+          translateX(var(--offset-x))
+          translateY(var(--offset-y))
           scaleY(${this.computedScale})
           scaleX(${this.computedScale * (this.intersection.x ? -1 : 1)})
         `
@@ -97,7 +97,7 @@ export default {
   },
   mounted() {
     this.intersection = this.recalcIntersection();
-    this.computedScale = this.calcScale();
+    // this.computedScale = this.calcScale();
   }
 };
 </script>

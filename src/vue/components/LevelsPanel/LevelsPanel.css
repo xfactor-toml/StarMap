@@ -8,6 +8,42 @@
   cursor: default;
 }
 
+.LevelsPanel__toggle {
+  display: none;
+  width: 38px;
+  height: 10px;
+  position: relative;
+  border: none;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-size: contain;
+  background-image: url(../gui/images/modes/modes-toggle-button.svg);
+  cursor: pointer;
+  outline: none;
+  opacity: 0.8;
+  transition: ease opacity 200ms, ease transform 200ms;
+}
+
+.LevelsPanel__toggle::before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: -10px;
+  z-index: -1;
+  width: calc(100% + 20px);
+  height: calc(100% + 20px);
+  pointer-events: none;
+}
+
+.LevelsPanel.is-hidden .LevelsPanel__toggle {
+  transform: scale(-1);
+}
+
+.LevelsPanel__toggle:hover {
+  opacity: 1;
+}
+
 .LevelsPanel__group {
   display: flex;
   justify-content: center;
@@ -80,4 +116,37 @@
   font-size: 14px;
   line-height: 1.1;
   color: #00ffff;
+}
+
+@media (max-width: 980px) {
+  .LevelsPanel {
+    width: 100%;
+    max-width: calc(100% - 40px);
+    margin: auto;
+    padding: 10px 0 14px;
+    border-top: 1px solid rgba(0, 255, 255, 0.3);
+  }
+
+  .LevelsPanel__toggle {
+    display: block;
+  }
+
+  .LevelsPanel__group {
+    flex-direction: row-reverse;
+    align-items: flex-end;
+    gap: 24px;
+  }
+
+  .LevelsPanel.is-hidden .LevelsPanel__group,
+  .LevelsPanel.is-hidden .LevelsPanel__caption {
+    display: none;
+  }
+
+  .LevelsPanel__button.is-level-1::before,
+  .LevelsPanel__button.is-level-2::before,
+  .LevelsPanel__button.is-level-3::before,
+  .LevelsPanel__button.is-level-4::before,
+  .LevelsPanel__button.is-level-5::before {
+    height: 60px;
+  }
 }
