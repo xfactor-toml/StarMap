@@ -42,11 +42,11 @@ export default {
     },
     togglePanel() {
       this.hidden = !this.hidden;
-      localStorage.setItem('levelPanelHidden', this.hidden.toString());
+      localStorage.setItem('levelPanelHidden', this.hidden ? '1' : '0');
     }
   },
   created() {
-    this.hidden = Boolean(localStorage.getItem('levelPanelHidden'));
+    this.hidden = localStorage.getItem('levelPanelHidden') === '1';
   }
 };
 </script>

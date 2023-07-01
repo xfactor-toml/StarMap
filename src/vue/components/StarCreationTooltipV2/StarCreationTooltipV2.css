@@ -1,0 +1,118 @@
+.StarCreationTooltipV2 {
+  --accent-color: #47a8d1;
+  --dot-size: 20px;
+  --dot-radius: calc(var(--dot-size) / 2);
+  --body-shift: 120px;
+  --connect-line-width: 46px;
+  --connect-line-height: 30px;
+
+  display: flex;
+  margin-left: calc(var(--dot-radius) * -1);
+  margin-top: calc(var(--dot-radius) * -1);
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--accent-color);
+  cursor: default;
+}
+
+.StarCreationTooltipV2.horizontalIntersection {
+  --connect-line-height: 46px;
+
+  flex-direction: column;
+}
+
+.StarCreationTooltipV2__dot {
+  width: var(--dot-size);
+  height: var(--dot-size);
+  pointer-events: all;
+  z-index: 1;
+}
+
+.StarCreationTooltipV2__line {
+  width: var(--connect-line-width);
+  height: var(--connect-line-height);
+  margin-top: calc(var(--connect-line-height) / -1 + var(--dot-radius));
+  margin-left: calc(var(--dot-radius) * -1);
+  pointer-events: all;
+}
+
+.StarCreationTooltipV2.horizontalIntersection .StarCreationTooltipV2__line {
+  margin-top: calc(var(--dot-radius) * -1);
+  margin-left: calc(var(--connect-line-width) * -1 + var(--dot-radius));
+}
+
+.StarCreationTooltipV2__line svg {
+  width: 100%;
+  height: 100%;
+}
+
+.StarCreationTooltipV2__body {
+  width: 307px;
+  height: 136px;
+  margin-top: -90px;
+  position: relative;
+  pointer-events: all;
+}
+
+.StarCreationTooltipV2.horizontalIntersection .StarCreationTooltipV2__body {
+  margin-top: 0;
+  margin-left: calc(var(--body-shift) * -1);
+}
+
+.StarCreationTooltipV2__preview {
+  display: block;
+  width: 96px;
+  height: 96px;
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  border-radius: 50%;
+  background-color: #333;
+  overflow: hidden;
+}
+
+.StarCreationTooltipV2__create,
+.StarCreationTooltipV2__close {
+  display: block;
+  position: absolute;
+  border: none;
+  background-color: transparent;
+  pointer-events: all;
+  color: currentColor;
+}
+
+.StarCreationTooltipV2__create {
+  width: 150px;
+  height: 66px;
+  right: 30px;
+  top: 35px;
+  font-size: 14px;
+  text-transform: uppercase;
+  color: #000000;
+}
+
+.StarCreationTooltipV2__create::before {
+  content: '';
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  background-color: #fff;
+  opacity: 0;
+  transition: ease opacity 200ms;
+}
+
+.StarCreationTooltipV2__create:hover::before {
+  opacity: 0.15;
+}
+
+.StarCreationTooltipV2__close {
+  width: 27px;
+  height: 27px;
+  right: 13px;
+  top: 21px;
+  border-radius: 50%;
+}

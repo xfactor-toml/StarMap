@@ -6,6 +6,7 @@ export * from './SettingsPopup';
 export * from './StarBoostPanel';
 export * from './StarCreationPanel';
 export * from './StarCreationTooltip';
+export * from './StarCreationTooltipV2';
 export * from './StarPanel';
 export * from './StarTooltip';
 export * from './UserBar';
