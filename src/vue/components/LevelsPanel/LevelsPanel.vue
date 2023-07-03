@@ -1,6 +1,6 @@
 <template>
-  <div class="LevelsPanel" :class="{ 'is-hidden': hidden }">
-    <button class="LevelsPanel__toggle" @click="togglePanel" />
+  <div class="LevelsPanel" :class="{ 'is-hidden': settingsStore.levelsPanelHidden }">
+    <button class="LevelsPanel__toggle" @click="settingsStore.toggleLevelsPanel" />
     <div class="LevelsPanel__group">
       <template v-for="level in starsStore.availableFilterLevels">
         <button
@@ -25,9 +25,6 @@ import { mapStores } from 'pinia';
 
 export default {
   name: 'LevelsPanel',
-  data: () => ({
-    hidden: false
-  }),
   computed: {
     ...mapStores(useSettingsStore, useStarsStore)
   },
@@ -39,14 +36,7 @@ export default {
         : [...selectedLevels, selectedLevel];
 
       this.starsStore.setLevelsFilter(updatedLevels);
-    },
-    togglePanel() {
-      this.hidden = !this.hidden;
-      localStorage.setItem('levelPanelHidden', this.hidden ? '1' : '0');
     }
-  },
-  created() {
-    this.hidden = localStorage.getItem('levelPanelHidden') === '1';
   }
 };
 </script>

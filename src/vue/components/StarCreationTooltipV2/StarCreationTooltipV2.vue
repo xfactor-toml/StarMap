@@ -139,15 +139,13 @@
 </template>
 
 <script lang="ts">
+import { WINDOW_MOBILE_BREAKPOINT, WINDOW_MOBILE_SAFE_ZONE, WINDOW_SAFE_ZONE } from '@/constants';
 import { Star, StarScreenPosition } from '@/models';
 import { PropType } from 'vue';
 
 const DEFAULT_BODY_SHIFT = 100;
 const DOT_SIZE = 20;
 const LINE_OFFSET = 58;
-const WINDOW_SAFE_ZONE = 60;
-const WINDOW_MOBILE_SAFE_ZONE = 20;
-const WINDOW_MOBILE_BREAKPOINT = 980;
 
 export default {
   name: 'StarCreationTooltipV2',

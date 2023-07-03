@@ -12,10 +12,12 @@ import {
 import { MODES } from '@/constants';
 import { Star, StarPosition, StarScreenPosition } from '@/models';
 import { useStarsStore } from '@/stores/stars';
+import { WINDOW_MOBILE_BREAKPOINT } from '@/constants/global';
 
 type SettingsStoreState = {
   agreementAccepted: boolean;
   fullscreen: boolean;
+  levelsPanelHidden: boolean;
   mode: GuiMode;
   modesPanelHidden: boolean;
   musicVolume: number;
@@ -38,11 +40,13 @@ type SettingsStoreState = {
   } | null;
   view: GuiViewName;
   viewsPanelHidden: boolean;
+  windowWidth: number;
 };
 
 export const useSettingsStore = defineStore('settings', {
   state: (): SettingsStoreState => {
     const agreementAccepted = localStorage.getItem('agreementAccepted') === '1';
+    const levelsPanelHidden = localStorage.getItem('levelsPanelHidden') === '1';
     const modesPanelHidden = localStorage.getItem('modesPanelHidden') === '1';
     const musicVolume = Number(localStorage.getItem('musicVolume') ?? 0.5) * 100;
     const sfxVolume = Number(localStorage.getItem('sfxVolume') ?? 0.5) * 100;
@@ -51,6 +55,7 @@ export const useSettingsStore = defineStore('settings', {
     return {
       agreementAccepted,
       fullscreen: false,
+      levelsPanelHidden,
       mode: MODES['real'],
       modesPanelHidden,
       musicVolume,
@@ -62,10 +67,14 @@ export const useSettingsStore = defineStore('settings', {
       starPanel: null,
       starTooltip: null,
       view: 'galaxy',
-      viewsPanelHidden
+      viewsPanelHidden,
+      windowWidth: window.innerWidth
     };
   },
   actions: {
+    setWindowWidth(width: number) {
+      this.windowWidth = width;
+    },
     setMode(modeName: GuiModeName) {
       const mode = MODES[modeName];
       const view = mode.views.find(view => view.enabled);
@@ -87,13 +96,38 @@ export const useSettingsStore = defineStore('settings', {
       this.agreementAccepted = false;
       localStorage.removeItem('agreementAccepted');
     },
+    setModesPanelHidden(state: boolean) {
+      this.modesPanelHidden = state;
+    },
+    setViewsPanelHidden(state: boolean) {
+      this.viewsPanelHidden = state;
+    },
+    setLevelsPanelHidden(state: boolean) {
+      this.levelsPanelHidden = state;
+    },
     toggleModesPanel() {
       this.modesPanelHidden = !this.modesPanelHidden;
       localStorage.setItem('modesPanelHidden', `${Number(this.modesPanelHidden)}`);
+      if (this.isMobileViewport && !this.modesPanelHidden) {
+        this.setLevelsPanelHidden(true);
+        this.setViewsPanelHidden(true);
+      }
     },
     toggleViewsPanel() {
       this.viewsPanelHidden = !this.viewsPanelHidden;
       localStorage.setItem('viewsPanelHidden', `${Number(this.viewsPanelHidden)}`);
+      if (this.isMobileViewport && !this.viewsPanelHidden) {
+        this.setLevelsPanelHidden(true);
+        this.setModesPanelHidden(true);
+      }
+    },
+    toggleLevelsPanel() {
+      this.levelsPanelHidden = !this.levelsPanelHidden;
+      localStorage.setItem('levelsPanelHidden', `${Number(this.levelsPanelHidden)}`);
+      if (this.isMobileViewport && !this.levelsPanelHidden) {
+        this.setModesPanelHidden(true);
+        this.setViewsPanelHidden(true);
+      }
     },
     changeSfxVolume(volume: number) {
       this.sfxVolume = volume;
@@ -170,6 +204,11 @@ export const useSettingsStore = defineStore('settings', {
         starId,
         type
       };
+    }
+  },
+  getters: {
+    isMobileViewport() {
+      return this.windowWidth <= WINDOW_MOBILE_BREAKPOINT;
     }
   }
 });

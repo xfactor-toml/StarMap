@@ -36,7 +36,10 @@ export default {
     // Global Events
     window.addEventListener(
       'resize',
-      debounce(() => this.$client.onWindowResize(), 200)
+      debounce(() => {
+        this.$client.onWindowResize();
+        this.settingsStore.setWindowWidth(window.innerWidth);
+      }, 200)
     );
 
     // INFO: client didnt send event when press escape
