@@ -219,18 +219,18 @@ export default {
       const isMobileResolution = innerWidth <= WINDOW_MOBILE_BREAKPOINT;
       const safeZone = isMobileResolution ? WINDOW_MOBILE_SAFE_ZONE : WINDOW_SAFE_ZONE;
 
-      const intersaction = {
+      const intersection = {
         x: width - (innerWidth - safeZone - this.position.x),
         y: height - (innerHeight - safeZone - this.position.y)
       };
 
-      if (intersaction.x > 0) {
-        this.bodyShift = Math.max(intersaction.x - LINE_OFFSET, DEFAULT_BODY_SHIFT);
+      if (intersection.x > 0) {
+        this.bodyShift = Math.max(intersection.x - LINE_OFFSET, DEFAULT_BODY_SHIFT);
       }
 
       return {
-        x: intersaction.x > 0,
-        y: intersaction.y > 0
+        x: intersection.x > 0,
+        y: intersection.y > 0
       };
     },
     hide() {

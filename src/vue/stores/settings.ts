@@ -45,12 +45,14 @@ type SettingsStoreState = {
 
 export const useSettingsStore = defineStore('settings', {
   state: (): SettingsStoreState => {
+    const windowWidth = window.innerWidth;
+    const isMobile = windowWidth <= WINDOW_MOBILE_BREAKPOINT;
     const agreementAccepted = localStorage.getItem('agreementAccepted') === '1';
-    const levelsPanelHidden = localStorage.getItem('levelsPanelHidden') === '1';
-    const modesPanelHidden = localStorage.getItem('modesPanelHidden') === '1';
+    const levelsPanelHidden = isMobile ? true : localStorage.getItem('levelsPanelHidden') === '1';
+    const modesPanelHidden = isMobile ? true : localStorage.getItem('modesPanelHidden') === '1';
     const musicVolume = Number(localStorage.getItem('musicVolume') ?? 0.5) * 100;
     const sfxVolume = Number(localStorage.getItem('sfxVolume') ?? 0.5) * 100;
-    const viewsPanelHidden = localStorage.getItem('viewsPanelHidden') === '1';
+    const viewsPanelHidden = isMobile ? true : localStorage.getItem('viewsPanelHidden') === '1';
 
     return {
       agreementAccepted,
