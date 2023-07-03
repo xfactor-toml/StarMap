@@ -61,6 +61,7 @@ select {
   min-width: 360px;
   overflow: hidden;
   pointer-events: none;
+  touch-action: manipulation;
 }
 
 #game>canvas {
