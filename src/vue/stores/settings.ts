@@ -131,6 +131,11 @@ export const useSettingsStore = defineStore('settings', {
         this.setViewsPanelHidden(true);
       }
     },
+    closePanels() {
+      this.setModesPanelHidden(true);
+      this.setViewsPanelHidden(true);
+      this.setLevelsPanelHidden(true);
+    },
     changeSfxVolume(volume: number) {
       this.sfxVolume = volume;
       this.client.setSFXVolume(volume);
@@ -184,6 +189,10 @@ export const useSettingsStore = defineStore('settings', {
         position: new StarScreenPosition(pos2d),
         star
       };
+
+      if (this.isMobileViewport) {
+        this.closePanels();
+      }
     },
     showStarPanel({ starData, scale }: ShowStarGuiEvent) {
       const starsStore = useStarsStore();
@@ -198,6 +207,10 @@ export const useSettingsStore = defineStore('settings', {
       this.client.onClick();
       this.enableOverlay();
       this.newStarPosition = new StarPosition(pos2d, pos3d);
+
+      if (this.isMobileViewport) {
+        this.closePanels();
+      }
     },
     showStarBoostPanel({ starId, type }: SettingsStoreState['starBoostPanel']) {
       this.client.onClick();
