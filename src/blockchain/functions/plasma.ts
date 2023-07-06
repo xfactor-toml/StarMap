@@ -46,9 +46,11 @@ async function ApprovePlasma (owner: account, amount: number, spender : account 
         const w3 = new web3.eth.Contract(ERC20ABI, plasma)
         const num : number= amount * 1e18
         const amt =  BigInt(num).toString()
+        const gs = await web3.eth.getGasPrice()
         
         await w3.methods.approve(spender, amt).send({
-            from: owner
+            from: owner,
+            gasPrice: gs
           })
 
     } catch (e) {
