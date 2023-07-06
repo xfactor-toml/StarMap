@@ -1,7 +1,7 @@
 import { RACES } from '@/constants';
 import { Race, StarData } from '~/blockchain/types';
-import { ServerStarParams } from '~/data/Types';
-import { StarMath } from '~/math/StarMath';
+import { ServerStarParams } from '~/game/data/Types';
+import { StarMath } from '~/game/math/StarMath';
 
 export type StarHudParam = 'mass' | 'slots' | 'totalEnergy' | 'energyPerHour' | 'life';
 

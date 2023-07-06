@@ -1,6 +1,6 @@
 import { Star } from '@/models';
 import { markRaw } from 'vue';
-import { FrontEvents } from '~/events/FrontEvents';
+import { FrontEvents } from '~/game/events/FrontEvents';
 
 export class ClientService {
   constructor(private dispatcher: typeof FrontEvents) {}

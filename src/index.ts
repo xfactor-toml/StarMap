@@ -1,4 +1,4 @@
-import { GameBoot } from './scenes/GameBoot';
+import { GameBoot } from './game/scenes/GameBoot';
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import { default as App } from '@/App.vue';
@@ -7,6 +7,7 @@ import { ClientService, WalletService } from '@/services';
 import './css/style.css';
 
 window.addEventListener('DOMContentLoaded', () => {
+
   const app = createApp(App);
   const store = createPinia();
 
@@ -22,4 +23,5 @@ window.addEventListener('DOMContentLoaded', () => {
   // threejs
   let boot = new GameBoot();
   boot.init();
+  
 });

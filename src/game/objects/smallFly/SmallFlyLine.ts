@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { MyMath } from '../../utils/MyMath';
 
 const START_COLOR = {
     r: 1,

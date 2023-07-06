@@ -16,7 +16,7 @@ import { Galaxy } from "./Galaxy";
 import { FrontEvents } from "../events/FrontEvents";
 import { GameEvents } from "../events/GameEvents";
 import { GameUtils } from "../math/GameUtils";
-import { GameController } from "~/mng/GameController";
+import { GameController } from "~/game/mng/GameController";
 
 
 export class GameRender {

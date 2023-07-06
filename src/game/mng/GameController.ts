@@ -1,10 +1,10 @@
-import { Settings } from "~/data/Settings";
-import { ServerStarData } from "~/data/Types";
-import { FrontEvents } from "~/events/FrontEvents";
-import { ILogger } from "~/interfaces/ILogger";
-import { Galaxy } from "~/scenes/Galaxy";
-import { FSM } from "~/states/FSM";
-import { LogMng } from "~/utils/LogMng";
+import { Settings } from "~/game/data/Settings";
+import { ServerStarData } from "~/game/data/Types";
+import { FrontEvents } from "~/game/events/FrontEvents";
+import { ILogger } from "~/game/interfaces/ILogger";
+import { Galaxy } from "~/game/scenes/Galaxy";
+import { FSM } from "~/game/states/FSM";
+import { LogMng } from "../utils/LogMng";
 
 
 export class GameController implements ILogger {

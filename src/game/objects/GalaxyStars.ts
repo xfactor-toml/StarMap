@@ -1,13 +1,13 @@
 import * as THREE from "three";
-import { IBaseClass } from "../interfaces/IBaseClass";
-import { Settings } from "../data/Settings";
-import { Signal } from "../utils/events/Signal";
-import { GalaxyStarParams } from "~/data/Types";
+import { GalaxyStarParams } from "~/game/data/Types";
 
 import star1Vert from "../shaders/galaxy/star_v.glsl";
 import star1Frag from "../shaders/galaxy/star_f.glsl";
 import star2Vert from "../shaders/galaxy/star2_v.glsl";
 import star2Frag from "../shaders/galaxy/star2_f.glsl";
+import { Signal } from "~/game/utils/events/Signal";
+import { Settings } from "~/game/data/Settings";
+import { IBaseClass } from "~/game/interfaces/IBaseClass";
 
 const SHADER_1 = {
     vertex: star1Vert,

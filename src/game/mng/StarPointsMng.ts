@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { QTPoint } from '../systems/QuadTree';
 import { StarPoint } from "../objects/StarPoint";
-import { GalaxyStarParams } from '~/data/Types';
+import { GalaxyStarParams } from '~/game/data/Types';
 
 export class StarPointsMng {
 

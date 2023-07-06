@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { MyMath } from '../utils/MyMath';
-import { GalaxyStarParams } from '~/data/Types';
+import { GalaxyStarParams } from '~/game/data/Types';
 
 export class QTPoint {
     x: number;

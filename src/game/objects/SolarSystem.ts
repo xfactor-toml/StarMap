@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { Settings } from '../data/Settings';
 import { BigStar2, BigStar2Params } from './BigStar2';
-import { GalaxyStarParams } from '~/data/Types';
+import { GalaxyStarParams } from '~/game/data/Types';
+import { Settings } from '~/game/data/Settings';
 
 
 export type SolarSystemParams = {

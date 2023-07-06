@@ -1,5 +1,5 @@
-import { ServerStarData } from '~/data/Types';
-import { FrontEvents } from '~/events/FrontEvents';
+import { ServerStarData } from '~/game/data/Types';
+import { FrontEvents } from '~/game/events/FrontEvents';
 
 type ClientEventName =
   | 'GAME_LOADING'

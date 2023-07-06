@@ -1,6 +1,6 @@
-import { ServerStarParams } from "~/data/Types";
-import { LogMng } from "~/utils/LogMng";
-import { MyMath } from "~/utils/MyMath";
+import { ServerStarParams } from "~/game/data/Types";
+import { LogMng } from "../utils/LogMng";
+import { MyMath } from "../utils/MyMath";
 
 export class StarMath {
     

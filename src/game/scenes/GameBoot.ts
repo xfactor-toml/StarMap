@@ -8,8 +8,8 @@ import { FrontEvents } from "../events/FrontEvents";
 import { AudioMng } from "../audio/AudioMng";
 import { AudioData } from "../audio/AudioData";
 import { ILogger } from "../interfaces/ILogger";
-import { DB } from "~/data/DB";
-import { ServerStarData } from "~/data/Types";
+import { DB } from "../data/DB";
+import { ServerStarData } from "../data/Types";
 
 type InitParams = {
 

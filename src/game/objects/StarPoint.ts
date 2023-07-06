@@ -2,8 +2,8 @@ import * as THREE from "three";
 import { ThreeLoader } from "../loaders/ThreeLoader";
 import gsap from "gsap";
 import { Callbacks } from "../utils/events/Callbacks";
-import { GalaxyStarParams } from "~/data/Types";
-import { DB } from "~/data/DB";
+import { GalaxyStarParams } from "~/game/data/Types";
+import { DB } from "~/game/data/DB";
 
 export type StarPointParams = {
     baseScale: number;

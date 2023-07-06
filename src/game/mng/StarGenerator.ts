@@ -1,10 +1,10 @@
 import * as THREE from "three";
-import { PHANTOM_BIG_STAR_COLOR, PHANTOM_STAR_COLOR, RACES, STAR_COLOR_2 } from "~/data/DB";
-import { Settings } from "~/data/Settings";
-import { GalaxyCircleParams, GalaxyParams, GalaxySmallParams, GalaxyStarParams, ServerStarData } from "~/data/Types";
-import { ILogger } from "~/interfaces/ILogger";
-import { LogMng } from "~/utils/LogMng";
-import { MyMath } from "~/utils/MyMath";
+import { PHANTOM_BIG_STAR_COLOR, PHANTOM_STAR_COLOR, RACES, STAR_COLOR_2 } from "../data/DB";
+import { Settings } from "../data/Settings";
+import { GalaxyCircleParams, GalaxyParams, GalaxySmallParams, GalaxyStarParams, ServerStarData } from "../data/Types";
+import { ILogger } from "../interfaces/ILogger";
+import { LogMng } from "../utils/LogMng";
+import { MyMath } from "../utils/MyMath";
 
 export class StarGenerator implements ILogger {
     private static instance: StarGenerator = null;

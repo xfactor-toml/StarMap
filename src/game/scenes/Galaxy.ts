@@ -5,31 +5,30 @@ import { MyMath } from '../utils/MyMath';
 import gsap from 'gsap';
 import { Settings } from '../data/Settings';
 import { FarStars } from '../objects/FarStars';
-import { GalaxyStars } from '../objects/GalaxyStars';
 import { DeviceInfo } from '../utils/DeviceInfo';
 import { InputMng } from '../inputs/InputMng';
 import { FSM } from '../states/FSM';
 import { States } from '../states/States';
-import { SolarSystem } from '../objects/SolarSystem';
 import { FrontEvents } from '../events/FrontEvents';
 import { GameEvents } from '../events/GameEvents';
 import { SmallFlySystem } from '../objects/smallFly/SmallFlySystem';
 import { MyOrbitControls } from '../mythree/MyOrbitControls';
 import { AudioMng } from '../audio/AudioMng';
 import { AudioData } from '../audio/AudioData';
-import { StarPoint, StarPointParams } from '../objects/StarPoint';
 import { GameUtils } from '../math/GameUtils';
 import { QTCircle, QTDebugRender, QTPoint, QTRect, QuadTree } from '../systems/QuadTree';
 import { StarPointsMng } from '../mng/StarPointsMng';
 import { DB, FAR_STAR_COLORS, RACES } from '../data/DB';
 import { LogMng } from '../utils/LogMng';
 import { FileMng } from '../mng/FileMng';
-import { FarGalaxyParams, GalaxyStarParams, ServerStarData } from '~/data/Types';
-import { StarGenerator } from '~/mng/StarGenerator';
-import { StarMath } from '~/math/StarMath';
-import { ILogger } from '~/interfaces/ILogger';
+import { FarGalaxyParams, GalaxyStarParams, ServerStarData } from '~/game/data/Types';
+import { StarGenerator } from '~/game/mng/StarGenerator';
+import { StarMath } from '~/game/math/StarMath';
+import { ILogger } from '~/game/interfaces/ILogger';
 import { Star } from '@/models';
-import { NovaSprite } from '~/objects/NovaSprite';
+import { GalaxyStars } from '~/game/objects/GalaxyStars';
+import { StarPoint, StarPointParams } from '~/game/objects/StarPoint';
+import { SolarSystem } from '~/game/objects/SolarSystem';
 
 let debugObjects = {
     farStarsSphereMin: null,
