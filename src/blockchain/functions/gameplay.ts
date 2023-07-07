@@ -19,8 +19,8 @@ export async function GameAuth ( account : string ) : Promise<string> {
                     const msg = JSON.parse(message.data)
 
                     if (msg.action === "auth" && msg.state === "success") {
-                        resolve(String(msg.playerId))
-                        return String(msg.playerId)
+                        resolve(ws)
+                        return ws
                     } 
                     
                     const dt = new Date().getTime()
@@ -41,4 +41,15 @@ export async function GameAuth ( account : string ) : Promise<string> {
             }
         }
      })
+}
+
+export async function EnterGame (ws : WebSocket) {
+    return await new Promise(resolve =>{
+        ws.send(JSON.stringify({
+            action: "entergame"
+        })).then(() => {
+            resolve(true)
+        })
+    })
+
 }
