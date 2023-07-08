@@ -7,7 +7,7 @@
     </transition>
     <transition name="fade">
       <template v-if="settingsStore.newStarPosition !== null && !creationPanel">
-        <StarCreationTooltip
+        <StarCreationTooltipV2
           :starPosition="settingsStore.newStarPosition"
           @hide="settingsStore.hideStarTooltip"
           @hideButtonHover="$client.onHover()"
@@ -30,14 +30,14 @@
 
 <script lang="ts">
 import { useSettingsStore } from '@/stores';
-import { StarCreationPanel, StarCreationTooltip } from '@/components';
+import { StarCreationPanel, StarCreationTooltipV2 } from '@/components';
 import { mapStores } from 'pinia';
 
 export default {
   name: 'PhantomMode',
   components: {
     StarCreationPanel,
-    StarCreationTooltip
+    StarCreationTooltipV2
   },
   data: () => ({
     creationPanel: false

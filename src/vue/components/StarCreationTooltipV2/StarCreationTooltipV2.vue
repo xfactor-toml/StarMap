@@ -140,32 +140,36 @@
 
 <script lang="ts">
 import { WINDOW_MOBILE_BREAKPOINT, WINDOW_MOBILE_SAFE_ZONE, WINDOW_SAFE_ZONE } from '@/constants';
-import { Star, StarScreenPosition } from '@/models';
+import { StarPosition } from '@/models';
 import { PropType } from 'vue';
 
-const DEFAULT_BODY_SHIFT = 100;
+const DEFAULT_BODY_SHIFT = -120;
 const DOT_SIZE = 20;
 const LINE_OFFSET = 58;
 
 export default {
   name: 'StarCreationTooltipV2',
   props: {
-    star: {
-      type: Object as PropType<Star>
-    },
-    position: {
-      type: Object as PropType<StarScreenPosition>
+    starPosition: {
+      type: Object as PropType<StarPosition>
     }
   },
   data: () => ({
     preview: './gui/images/phantom-star.png',
-    intersection: { x: false, y: false },
+    intersection: {
+      x: false,
+      y: false
+    },
     dotSize: DOT_SIZE,
-    bodyShift: DEFAULT_BODY_SHIFT
+    bodyShift: 0,
+    intersected: {
+      x: false,
+      y: false
+    }
   }),
   computed: {
     connectLine() {
-      const size = Math.abs(this.bodyShift - LINE_OFFSET);
+      const size = Math.abs(this.bodyShift + LINE_OFFSET);
       const p = factor => Math.trunc(size / factor);
 
       const startPoint = {
@@ -180,7 +184,8 @@ export default {
 
       const curve = {
         horizontal: `L ${p(2.06)} 1 C ${p(3.44)} 1 ${p(3.87)} ${p(5.63)} ${p(5.16)} ${p(2.69)}`,
-        vertical: `L 1 ${p(1.73)} C 1 ${p(2.1)} ${p(20)} ${p(2.22)} ${p(5)} ${p(2.66)}`
+        vertical:
+          size > 10 ? `L 1 ${p(1.73)} C 1 ${p(2.1)} ${p(20)} ${p(2.22)} ${p(5)} ${p(2.66)}` : ``
       };
 
       const path = {
@@ -191,7 +196,7 @@ export default {
       return {
         size,
         viewBox: `0 0 ${size} ${size}`,
-        path: this.intersection.x ? path.vertical : path.horizontal
+        path: this.intersected.x || this.intersected.y ? path.vertical : path.horizontal
       };
     },
     tooltipStyle() {
@@ -205,33 +210,66 @@ export default {
     },
     tooltipClasses() {
       return {
-        [`is-level-${this.star.params.level}`]: true,
-        horizontalIntersection: this.intersection.x,
-        verticalIntersection: this.intersection.y
+        leftIntersection: this.intersection.left > Math.abs(DEFAULT_BODY_SHIFT) / 2,
+        rightIntersection: this.intersection.right > 0,
+        bottomIntersection: this.intersection.bottom > 0,
+        topIntersection: this.intersection.top > 0,
+        horizontalIntersection: this.intersected.x,
+        verticalIntersection: this.intersected.y
       };
+    },
+    position() {
+      return this.starPosition.screen;
     }
   },
   methods: {
-    recalcIntersection() {
+    getIntersection() {
       const { innerWidth, innerHeight } = window;
       const { width, height } = this.$refs.tooltip.getBoundingClientRect();
 
       const isMobileResolution = innerWidth <= WINDOW_MOBILE_BREAKPOINT;
       const safeZone = isMobileResolution ? WINDOW_MOBILE_SAFE_ZONE : WINDOW_SAFE_ZONE;
+      const bottomSafeZone = safeZone + (this.intersected.x && isMobileResolution ? 100 : 0);
 
-      const intersection = {
-        x: width - (innerWidth - safeZone - this.position.x),
-        y: height - (innerHeight - safeZone - this.position.y)
-      };
-
-      if (intersection.x > 0) {
-        this.bodyShift = Math.max(intersection.x - LINE_OFFSET, DEFAULT_BODY_SHIFT);
-      }
+      const left = safeZone - this.position.x - this.bodyShift;
+      const right = width - (innerWidth - safeZone - this.position.x);
+      const top = this.intersected.x ? 0 : (this.position.y - 100 - safeZone) * -1;
+      const bottom = height - (innerHeight - bottomSafeZone - this.position.y);
 
       return {
-        x: intersection.x > 0,
-        y: intersection.y > 0
+        top: Math.max(top, 0),
+        bottom: Math.max(bottom, 0),
+        left: Math.max(left, 0),
+        right: Math.max(right, 0)
       };
+    },
+    async recalcIntersection() {
+      this.intersection = this.getIntersection();
+
+      if (this.intersection.right > 0 || this.intersection.left > 0) {
+        this.bodyShift = DEFAULT_BODY_SHIFT;
+        this.intersected.x = true;
+      }
+
+      await this.$nextTick();
+
+      this.intersection = this.getIntersection();
+
+      if (this.intersection.bottom > 0) {
+        this.intersected.y = true;
+      }
+
+      if (this.intersection.right > 0) {
+        this.bodyShift = this.intersection.right * -1 + DEFAULT_BODY_SHIFT;
+      }
+
+      await this.$nextTick();
+
+      this.intersection = this.getIntersection();
+
+      if (this.intersection.left > 0) {
+        this.bodyShift = this.bodyShift + this.intersection.left;
+      }
     },
     hide() {
       this.$emit('hide');
@@ -247,7 +285,7 @@ export default {
     }
   },
   mounted() {
-    this.intersection = this.recalcIntersection();
+    this.recalcIntersection();
   }
 };
 </script>

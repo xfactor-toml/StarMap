@@ -16,7 +16,7 @@
     </transition>
     <transition name="fade">
       <template v-if="settingsStore.starTooltip !== null">
-        <StarCreationTooltipV2
+        <StarTooltip
           :star="settingsStore.starTooltip.star"
           :position="settingsStore.starTooltip.position"
           @hide="settingsStore.hideStarTooltip"
@@ -41,7 +41,7 @@
 
 <script lang="ts">
 import { useSettingsStore } from '@/stores';
-import { StarBoostPanel, StarPanel, StarCreationTooltipV2 } from '@/components';
+import { StarBoostPanel, StarPanel, StarTooltip } from '@/components';
 import { mapStores } from 'pinia';
 
 export default {
@@ -49,7 +49,7 @@ export default {
   components: {
     StarBoostPanel,
     StarPanel,
-    StarCreationTooltipV2
+    StarTooltip
   },
   computed: {
     ...mapStores(useSettingsStore)

@@ -2,7 +2,7 @@
   --accent-color: #47a8d1;
   --dot-size: 20px;
   --dot-radius: calc(var(--dot-size) / 2);
-  --body-shift: 120px;
+  --body-shift: -120px;
   --connect-line-width: 46px;
   --connect-line-height: 30px;
 
@@ -20,6 +20,11 @@
   --connect-line-height: 46px;
 
   flex-direction: column;
+}
+
+.StarCreationTooltipV2.horizontalIntersection.verticalIntersection {
+  flex-direction: column-reverse;
+  margin-top: -178px;
 }
 
 .StarCreationTooltipV2__dot {
@@ -42,6 +47,20 @@
   margin-left: calc(var(--connect-line-width) * -1 + var(--dot-radius));
 }
 
+.StarCreationTooltipV2.leftIntersection .StarCreationTooltipV2__line {
+  margin-left: var(--dot-radius);
+  transform: scaleX(-1);
+}
+
+.StarCreationTooltipV2.verticalIntersection .StarCreationTooltipV2__line {
+  margin-bottom: calc(var(--dot-radius) * -1);
+  transform: scaleY(-1);
+}
+
+.StarCreationTooltipV2.verticalIntersection.leftIntersection .StarCreationTooltipV2__line {
+  transform: scaleY(-1) scaleX(-1);
+}
+
 .StarCreationTooltipV2__line svg {
   width: 100%;
   height: 100%;
@@ -57,7 +76,7 @@
 
 .StarCreationTooltipV2.horizontalIntersection .StarCreationTooltipV2__body {
   margin-top: 0;
-  margin-left: calc(var(--body-shift) * -1);
+  margin-left: var(--body-shift);
 }
 
 .StarCreationTooltipV2__preview {
