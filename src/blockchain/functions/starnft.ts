@@ -153,9 +153,7 @@ async function CreateNewStar(owner: account, name: string, uri = `${document.loc
             if (allowed < requiredToAllow) {
                 return null
             }
-        }
-
-        try {
+            
             const coordX = String(Math.round(coords.X * 1000000))
             const coordY = String(Math.round(coords.Y * 1000000))
             const coordZ = String(Math.round(coords.Z * 1000000))
