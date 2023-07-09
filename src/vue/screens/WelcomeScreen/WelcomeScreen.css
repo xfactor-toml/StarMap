@@ -17,8 +17,10 @@
 }
 
 .WelcomeScreen__logo {
-  width: 440px;
-  height: 320px;
+  width: calc(100vw - 20px);
+  max-width: 440px;
+  min-width: 320px;
+  aspect-ratio: 1.375;
   background-image: url(../gui/images/preloader/logo.svg);
   background-position: 50% 50%;
   background-repeat: no-repeat;

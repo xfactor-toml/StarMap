@@ -530,7 +530,7 @@ export default {
     },
     panelStyle() {
       return {
-        transform: `scale(${this.scale})`
+        // transform: `scale(${this.scale})`
       };
     },
     expPercent() {

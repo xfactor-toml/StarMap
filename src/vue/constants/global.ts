@@ -1,0 +1,3 @@
+export const WINDOW_MOBILE_BREAKPOINT = 980;
+export const WINDOW_MOBILE_SAFE_ZONE = 20;
+export const WINDOW_SAFE_ZONE = 60;
