@@ -9,6 +9,7 @@ export * from './StarCreationTooltip';
 export * from './StarCreationTooltipV2';
 export * from './StarPanel';
 export * from './StarTooltip';
+export * from './StarTooltipV2';
 export * from './UserBar';
 export * from './ViewsPanel';
 export * from './VolumeControl';

@@ -1,0 +1,223 @@
+.StarTooltipV2 {
+  --accent-color: #ffff00;
+  --dot-size: 20px;
+  --dot-radius: calc(var(--dot-size) / 2);
+  --body-shift: -120px;
+  --connect-line-width: 46px;
+  --connect-line-height: 30px;
+  --bg-image: url('../gui/images/star-tooltip/star-tooltip-l1-v2.png');
+
+  display: flex;
+  margin-left: calc(var(--dot-radius) * -1);
+  margin-top: calc(var(--dot-radius) * -1);
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--accent-color);
+  cursor: default;
+}
+
+.StarTooltipV2.is-level-2 {
+  --accent-color: #f7931e;
+  --bg-image: url('../gui/images/star-tooltip/star-tooltip-l2-v2.png');
+}
+
+.StarTooltipV2.is-level-3 {
+  --accent-color: #30a2ff;
+  --bg-image: url('../gui/images/star-tooltip/star-tooltip-l3-v2.png');
+}
+
+.StarTooltipV2.is-level-4 {
+  --accent-color: #ffffff;
+  --bg-image: url('../gui/images/star-tooltip/star-tooltip-l4-v2.png');
+}
+
+.StarTooltipV2.is-level-5 {
+  --accent-color: #442dde;
+  --bg-image: url('../gui/images/star-tooltip/star-tooltip-l5-v2.png');
+}
+
+.StarTooltipV2.is-level-5 .StarTooltipV2__divein {
+  color: #fff;
+}
+
+.StarTooltipV2.horizontalIntersection {
+  --connect-line-height: 46px;
+
+  flex-direction: column;
+}
+
+.StarTooltipV2.horizontalIntersection.verticalIntersection {
+  flex-direction: column-reverse;
+  margin-top: -178px;
+}
+
+.StarTooltipV2__dot {
+  width: var(--dot-size);
+  height: var(--dot-size);
+  pointer-events: all;
+  z-index: 1;
+}
+
+.StarTooltipV2__line {
+  width: var(--connect-line-width);
+  height: var(--connect-line-height);
+  margin-top: calc(var(--connect-line-height) / -1 + var(--dot-radius));
+  margin-left: calc(var(--dot-radius) * -1);
+  pointer-events: all;
+}
+
+.StarTooltipV2.horizontalIntersection .StarTooltipV2__line {
+  margin-top: calc(var(--dot-radius) * -1);
+  margin-left: calc(var(--connect-line-width) * -1 + var(--dot-radius));
+}
+
+.StarTooltipV2.leftIntersection .StarTooltipV2__line {
+  margin-left: var(--dot-radius);
+  transform: scaleX(-1);
+}
+
+.StarTooltipV2.verticalIntersection .StarTooltipV2__line {
+  margin-bottom: calc(var(--dot-radius) * -1);
+  transform: scaleY(-1);
+}
+
+.StarTooltipV2.verticalIntersection.leftIntersection .StarTooltipV2__line {
+  transform: scaleY(-1) scaleX(-1);
+}
+
+.StarTooltipV2__line svg {
+  width: 100%;
+  height: 100%;
+}
+
+.StarTooltipV2__body {
+  width: 388px;
+  height: 126px;
+  margin-top: -90px;
+  position: relative;
+  pointer-events: all;
+  background-image: var(--bg-image);
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-size: contain;
+}
+
+.StarTooltipV2.horizontalIntersection .StarTooltipV2__body {
+  margin-top: 0;
+  margin-left: var(--body-shift);
+}
+
+.StarTooltipV2__preview {
+  display: block;
+  width: 90px;
+  height: 90px;
+  position: absolute;
+  left: 17px;
+  top: 17px;
+  border-radius: 50%;
+  background-color: #333;
+  overflow: hidden;
+}
+
+.StarTooltipV2__meta {
+  height: 56px;
+  max-width: 132px;
+  overflow: hidden;
+  position: absolute;
+  top: 34px;
+  left: 142px;
+  color: var(--accent-color);
+  pointer-events: all;
+}
+
+.StarTooltipV2__name,
+.StarTooltipV2__description,
+.StarTooltipV2__owner {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.36;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.StarTooltipV2__description {
+  margin-top: 2px;
+  font-size: 12px;
+  line-height: 1.1;
+}
+
+.StarTooltipV2__divein,
+.StarTooltipV2__close {
+  display: block;
+  position: absolute;
+  border: none;
+  background-color: transparent;
+  pointer-events: all;
+}
+
+.StarTooltipV2__divein {
+  width: 66px;
+  height: 66px;
+  right: 20px;
+  top: 32px;
+  font-weight: 700;
+  font-size: 14px;
+  text-transform: uppercase;
+  color: #000000;
+  border-radius: 10px;
+}
+
+.StarTooltipV2__close {
+  width: 31px;
+  height: 31px;
+  right: 2px;
+  top: 12px;
+  border-radius: 50%;
+}
+
+.StarTooltipV2.is-level-4 .StarTooltipV2__body {
+  width: 374px;
+  height: 126px;
+}
+.StarTooltipV2.is-level-4 .StarTooltipV2__preview {
+  left: 19px;
+}
+
+.StarTooltipV2.is-level-4 .StarTooltipV2__divein {
+  right: 22px;
+  top: 29px;
+}
+
+.StarTooltipV2.is-level-4 .StarTooltipV2__close {
+  right: 6px;
+}
+
+.StarTooltipV2.is-level-5 .StarTooltipV2__body {
+  width: 354px;
+  height: 126px;
+}
+
+.StarTooltipV2.is-level-5 .StarTooltipV2__preview {
+  width: 86px;
+  height: 86px;
+  left: 20px;
+  top: 20px;
+}
+
+.StarTooltipV2.is-level-5 .StarTooltipV2__meta {
+  top: 36px;
+  left: 136px;
+  color: #fff;
+}
+
+.StarTooltipV2.is-level-5 .StarTooltipV2__divein {
+  right: 21px;
+  top: 31px;
+}
+
+.StarTooltipV2.is-level-5 .StarTooltipV2__close {
+  right: 7px;
+  top: 17px;
+}
