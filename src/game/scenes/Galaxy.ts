@@ -1451,6 +1451,7 @@ export class Galaxy implements ILogger {
     private getYFOV(aCamera: THREE.PerspectiveCamera) {
         return aCamera.fov;
     }
+    
     /**
      * Absolute polar angle relative to the main galaxy plain
      * @returns 
@@ -1941,9 +1942,10 @@ export class Galaxy implements ILogger {
         }
 
         let aspect = GameUtils.getClientWidth() / h;
-        let guiScaleByW = this.guiGetScaleBigStarTooltipByWidth();
-        let d = innerHeight / (20 * aspect);
-        let starDist = MyMath.clamp(d * (0.6 / guiScaleByW), 40, 50);
+        // let guiScaleByW = this.guiGetScaleBigStarTooltipByWidth();
+        // let d = innerHeight / (20 * aspect);
+        // let starDist = MyMath.clamp(d * (0.6 / guiScaleByW), 40, 50);
+        let starDist = MyMath.clamp(35 / aspect, 40, 90);
 
         // LogMng.debug(`guiScaleByWidth: ${guiScaleByW}`);
         // LogMng.debug(`asRat: ${aspect}`);
