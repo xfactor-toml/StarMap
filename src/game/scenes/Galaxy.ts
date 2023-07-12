@@ -236,7 +236,7 @@ export class Galaxy implements ILogger {
             maxDist: 500,
             stopAngleTop: 10,
             stopAngleBot: 170,
-            enablePan: true,
+            // enablePan: true,
             panRadius: 160
         });
 
@@ -1281,7 +1281,6 @@ export class Galaxy implements ILogger {
                         }
 
                         LogMng.debug('onClick(): realStars: starParams:', starParams);
-                        // debugger;
                         // LogMng.debug('onClick(): realStars: GUI params:', StarMath.getEnergyPerHourValues(starParams.starInfo.serverData.params));
                         // LogMng.debug('onClick(): realStars: GUI params:', StarMath.getLifeValues(starParams.starInfo.serverData.params));
 
