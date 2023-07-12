@@ -13,22 +13,22 @@ reader.setProvider(new Web3.providers.HttpProvider(reserveRpcs[1]))
 const contract = new reader.eth.Contract(StarNFTABI, nft)
 const writeable = new web3.eth.Contract(StarNFTABI, nft)
 
-function ExtractRace(str: string): Race {
+function ExtractRace ( str : string) : Race {
     switch (str) {
-        case "Waters":
+        case "Waters" :
             return "Waters";
-        case "Humans":
+        case "Humans" :
             return "Waters";
-        case "Insects":
+        case "Insects" :
             return "Insects";
         case "Lizards":
             return "Lizards";
-        default:
-            throw new Error("wrong race")
+    default:
+        throw new Error("wrong race")
     }
 }
 
-async function RequiredPlasmaToApprove(owner: account, level: number = 1): Promise<number> {
+async function RequiredPlasmaToApprove (owner : account, level : number = 1) : Promise<number> {
     const demand = await GetCreationCost(level)
     const allowed = await GetAllowance(owner, nft)
 
@@ -38,24 +38,24 @@ async function RequiredPlasmaToApprove(owner: account, level: number = 1): Promi
     return Number(demand - allowed) / 1e18
 }
 
-async function GetCreationCost(level: number = 1): Promise<number> {
+async function GetCreationCost (level : number = 1) : Promise<number> {
     const demand = await contract.methods.CalcCreationCost(level.toString()).call()
-    return Number(demand) / 1e18
+    return Number( demand ) / 1e18
 }
 
 
-async function GetAllStarData(): Promise<StarList> {
-    const stars: StarList = []
-    let cntr = 0
-    const total = await GetStarsCount()
-    while (cntr < total) {
-        try {
-            const dt: any[] = await contract.methods.GetStarParams(cntr.toString()).call()
-            if (!dt[10]) {  // Planet slots always larger than zero
-                break;
+async function GetAllStarData () : Promise<StarList> {
+     const stars : StarList = []
+     let cntr = 0
+     const total = await GetStarsCount ()
+     while (cntr < total) {
+         try {
+            const dt : any[] = await contract.methods.GetStarParams(cntr.toString()).call()
+            if(!dt[10]) {  // Planet slots always larger than zero
+               break;
             }
 
-            const starParams: StarParams = {
+            const starParams : StarParams = {
                 name: String(dt[0]),
                 isLive: Boolean(dt[1]),
                 creation: Number(dt[2]),
@@ -75,34 +75,34 @@ async function GetAllStarData(): Promise<StarList> {
                     Z: (Number(dt[13][2]) / 1000000) - 1000000
                 }
             }
-            const owner: string = await contract.methods.ownerOf(cntr.toString()).call()
-            const starData: StarData = {
+            const owner : string = await contract.methods.ownerOf(cntr.toString()).call()
+            const starData : StarData = {
                 id: cntr,
                 owner: owner,
                 params: starParams
             }
             stars.push(starData)
             cntr += 1
-        } catch (e) {
+         } catch (e) {
             break;
-        }
-    }
-    return stars
+         }
+     }
+     return stars
 }
 
-async function GetStarsCount(): Promise<number> {
+async function GetStarsCount () : Promise<number> {
     const contract = new reader.eth.Contract(StarNFTABI, nft)
-    const count: number = Number(await contract.methods.GetTotalStarCount().call())
-    return count
+    const count : number = Number(await contract.methods.GetTotalStarCount().call())
+    return count 
 }
 
-async function GetSingleStarData(starId: number): Promise<StarData | null> {
+async function GetSingleStarData ( starId : number ) : Promise<StarData | null> {
     try {
-        const dt: any[] = await contract.methods.GetStarParams(starId.toString()).call()
-        if (!dt[10]) {
-            return null
+        const dt : any[] = await contract.methods.GetStarParams(starId.toString()).call()
+        if(!dt[10]) { 
+           return null
         }
-        const starParams: StarParams = {
+        const starParams : StarParams = {
             name: String(dt[0]),
             isLive: Boolean(dt[1]),
             creation: Number(dt[2]),
@@ -122,84 +122,73 @@ async function GetSingleStarData(starId: number): Promise<StarData | null> {
                 Z: (Number(dt[13][2]) / 1000000) - 1000000
             }
         }
-        const owner: string = await contract.methods.ownerOf(starId.toString()).call()
-        const starData: StarData = {
+        const owner : string = await contract.methods.ownerOf(starId.toString()).call()
+        const starData : StarData = {
             id: starId,
             owner: owner,
             params: starParams
         }
         return starData
-    } catch (e) {
+     } catch (e) {
         return null
-    }
+     }
 }
 
-async function CreateNewStar(owner: account, name: string, uri = `${document.location.hostname}`, race: Race, coords: Coords): Promise<StarData | null> {
-    if (!owner || !name || !env) {
-        return null
-    }
+async function CreateNewStar (owner : account, name : string, uri = `${document.location.hostname}`, race: Race, coords: Coords) : Promise<StarData | null> {
+        if (!owner || !name || !env) {
+           return null
+        }
 
-    coords = {
-        X: coords.X + 1000000,
-        Y: coords.Y + 1000000,
-        Z: coords.Z + 1000000
-    }
+        coords = {
+            X: coords.X + 1000000,
+            Y: coords.Y + 1000000,
+            Z: coords.Z + 1000000
+        }
 
-    const requiredToAllow = await RequiredPlasmaToApprove(owner)
+        const requiredToAllow = await RequiredPlasmaToApprove(owner)
 
-    if (requiredToAllow > 0) {
-        try {
-            const allowed = await ApprovePlasma(owner, requiredToAllow)
-            if (allowed < requiredToAllow) {
+        if (requiredToAllow > 0) {
+            try {
+                const allowed = await ApprovePlasma(owner, requiredToAllow)
+                if (allowed < requiredToAllow) {
+                    return null
+                }
+            } catch (e) {
                 return null
             }
-            
+        }
+
+        try {
             const coordX = String(Math.round(coords.X * 1000000))
             const coordY = String(Math.round(coords.Y * 1000000))
             const coordZ = String(Math.round(coords.Z * 1000000))
-            const gs = await web3.eth.getGasPrice()
+			const gs = await web3.eth.getGasPrice()
             await writeable.methods.safeMint(owner, uri, name, race, coordX, coordY, coordZ).send({
                 from: owner,
-                gasPrice: gs
+				gasPrice: gs
               })
             const count = await GetStarsCount ()
             if (count > 0) {
                return await GetSingleStarData(count - 1)
             }
         } catch (e) {
+            console.log(e.message)
             return null
         }
-    }
-
-    try {
-        const coordX = String(Math.round(coords.X * 1000000))
-        const coordY = String(Math.round(coords.Y * 1000000))
-        const coordZ = String(Math.round(coords.Z * 1000000))
-        await writeable.methods.safeMint(owner, uri, name, race, coordX, coordY, coordZ).send({
-            from: owner
-        })
-        const count = await GetStarsCount()
-        if (count > 0) {
-            return await GetSingleStarData(count - 1)
-        }
-    } catch (e) {
-        console.log(e.message)
-        return null
-    }
 
 }
 
-async function RefuelStar(account: account,
-    starId: number,
-    amount: number,
-    target: fuelTarget): Promise<StarData | null> {
-    if (amount == 0 || !account) {
-        return null
-    }
+async function RefuelStar ( account : account, 
+                            starId : number, 
+                            amount : number, 
+                            target : fuelTarget) : Promise<StarData | null> {
+      if (amount == 0 || !account) {
+          return null
+      }
 
-    const allowedAmount = await GetAllowance(account, nft)
+      const allowedAmount = await GetAllowance (account, nft)
 
-    if (allowedAmount < amount) {
+      if (allowedAmount < amount) {
         const demand = amount - allowedAmount
         try {
             const allowed = await ApprovePlasma(account, demand)
@@ -209,31 +198,31 @@ async function RefuelStar(account: account,
         } catch (e) {
             return null
         }
-    }
+      }
 
-    try {
+      try {
         const fuel = BigInt(amount * 1e18).toString()
-        const gs = await web3.eth.getGasPrice()
+		const gs = await web3.eth.getGasPrice()
         if (target === "existence") {
             await writeable.methods.UpdateStarFuel(starId, fuel).send({
                 from: account,
-                gasPrice: gs
+				gasPrice: gs
               })
         } else {
             await writeable.methods.UpdateStarLevelFuel(starId, fuel).send({
                 from: account,
-                gasPrice: gs
+				gasPrice: gs
               })
         }
 
         return await GetSingleStarData(starId)
-    } catch (e) {
+      } catch (e) {
         console.log(e.message)
         return null
-    }
+      }
 }
 
-async function IncreaseStarLevel(owner: account, starId: number): Promise<StarData | null> {
+async function IncreaseStarLevel (owner : account, starId : number) : Promise<StarData | null> {
     if (!owner) {
         return null
     }
@@ -244,7 +233,7 @@ async function IncreaseStarLevel(owner: account, starId: number): Promise<StarDa
         return null
     }
 
-    const requireApprove = await RequiredPlasmaToApprove(owner, newLevel)
+    const requireApprove = await RequiredPlasmaToApprove (owner, newLevel)
     if (requireApprove > 0) {
         try {
             const allowed = await ApprovePlasma(owner, requireApprove, nft)
@@ -257,10 +246,10 @@ async function IncreaseStarLevel(owner: account, starId: number): Promise<StarDa
     }
 
     try {
-        const gs = await web3.eth.getGasPrice()
+	    const gs = await web3.eth.getGasPrice()
         const result = await writeable.methods.IncreaseStarLevel(starId).send({
             from: owner,
-            gasPrice: gs
+			gasPrice: gs
         })
         return await GetSingleStarData(starId)
     } catch (e) {
