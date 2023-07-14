@@ -18,6 +18,15 @@ export const connect : connectRpc = {
 
 /* TESTNET! */
 export const networkParams = {
+   networkId: 5611,
+   networHexID: '0x15EB',
+   chainName: 'Binance Tsetnet opBNB',
+   ethSymbol: 'TBNB',
+   rpcUrl: "https://opbnb-testnet-rpc.bnbchain.org"
+}
+ 
+/* 
+  export const networkParams = {
    networkId: 97,
    networHexID: '0x61',
    chainName: 'Binance Tsetnet',
@@ -25,11 +34,18 @@ export const networkParams = {
    rpcUrl: "https://data-seed-prebsc-1-s1.binance.org:8545/"
  }
 
+*/
+
 export const contracts = {
-    plasma: "0x5291337c93a0c86E570F4189965BB9Cca48A474e",
-    starNFT: "0x7b6f4297A65453114112B3E51A7BD52405f2b4f1"
+    plasma: "0xE9497F5387074d5eEbb25e9D0a471E88797cb3FB",
+    starNFT: "0x0EE0275faCF743F774fC3aeF5F54eAF7e0E7072d"
 }
 
+export const reserveRpcs = [
+    "https://opbnb-testnet-rpc.bnbchain.org"
+]
+
+/*
 export const reserveRpcs = [
 	"https://data-seed-prebsc-1-s1.binance.org:8545/",
 	"https://data-seed-prebsc-2-s1.binance.org:8545/",
@@ -45,3 +61,5 @@ export const reserveRpcs = [
 	"https://data-seed-prebsc-2-s3.binance.org:8545/",
 	"http://data-seed-prebsc-2-s2.binance.org:8545/"
 ]
+
+*/

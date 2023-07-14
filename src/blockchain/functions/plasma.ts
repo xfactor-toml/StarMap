@@ -11,6 +11,31 @@ const reader = new Web3()
 
 reader.setProvider(new Web3.providers.HttpProvider(reserveRpcs[1]))
 
+async function MintPlasma (account : string, amount : number) : Promise<number> {
+
+        if (!env) {
+            return 0
+        }
+
+        if (!account) {
+            return 0
+        }
+
+        const GasPrice = await web3.eth.getGasPrice()
+        
+        try {
+            const contract = new web3.eth.Contract(ERC20ABI, plasma)
+            await contract.methods.Mint(String(BigInt(amount * 1e18)), account).send({
+                from: account,
+                gasPrice: Number(GasPrice) < 1600000000 ? '1600000000' : GasPrice
+            })
+            return await GetBalance(account)
+
+        } catch (e : any) {
+            alert(e.message)
+            return 0
+        }
+    }
 
 async function GetAllowance ( owner : account, spender : account = contracts.starNFT) : Promise<number> {
     if (!owner || !spender) {
@@ -61,6 +86,7 @@ async function ApprovePlasma (owner: account, amount: number, spender : account 
 }
 
 export {
+    MintPlasma,
     GetAllowance,
     GetBalance,
     ApprovePlasma

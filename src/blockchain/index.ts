@@ -6,6 +6,7 @@ export {
 } from './functions/auth'
 
 export {
+    MintPlasma,
     GetAllowance,
     GetBalance,
     ApprovePlasma
