@@ -42,6 +42,9 @@ export const contracts = {
 }
 
 export const reserveRpcs = [
+    "https://opbnb-testnet-rpc.bnbchain.org",
+    "https://opbnb-testnet-rpc.bnbchain.org",
+    "https://opbnb-testnet-rpc.bnbchain.org",
     "https://opbnb-testnet-rpc.bnbchain.org"
 ]
 
