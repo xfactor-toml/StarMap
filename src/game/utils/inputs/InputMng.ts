@@ -1,79 +1,119 @@
-import { LogMng } from "../utils/LogMng";
-import { Signal } from "../utils/events/Signal";
+import { LogMng } from "../LogMng";
+import { MyMath } from "../MyMath";
+import { Signal } from "../events/Signal";
+
+const DEFAULTS = {
+    clickDistDesktop: 10,
+    clickDistMobile: 20
+}
 
 type InitParams = {
     inputDomElement: HTMLElement;
     desktop: boolean;
     isRightClickProcessing: boolean;
+    clickDistDesktop?: number;
+    clickDistMobile?: number;
 };
 
 export class InputMng {
 
-    private static instance: InputMng = null;
-    private params: InitParams;
+    private static _instance: InputMng = null;
+    private _params: InitParams;
+    private _isDown = false;
+    private _downWasMoved = false;
 
-    isTouchDown = false;
+    // isTouchDown = false;
 
-    currInputClientX = 0;
-    currInputClientY = 0;
+    /**
+     * Current client input position
+     */
+    clientX = 0;
+    clientY = 0;
 
-    inputDownClientX = 0;
-    inputDownClientY = 0;
+    /**
+     * Down client input position
+     */
+    downClientX = 0;
+    downClientY = 0;
 
-    inputUpClientX = 0;
-    inputUpClientY = 0;
+    /**
+     * Up client input position
+     */
+    upClientX = 0;
+    upClientY = 0;
 
-    normalInputPos = {
+    /**
+     * Normalized current input position
+     */
+    normalPos = {
         x: 0,
         y: 0
     };
 
-    normalInputDown = {
+    /**
+     * Normalized down input position
+     */
+    normalDown = {
         x: 0,
         y: 0
     };
 
-    normalUpDown = {
+    /**
+     * Normalized up input position
+     */
+    normalUp = {
         x: 0,
         y: 0
     };
 
+    /**
+     * Set of keys down
+     */
     keysDown = {};
 
     /**
-     * keyCode: string, key: string
+     * (keyCode: string, key: string)
      */
     onKeyDownSignal = new Signal();
 
     /**
-     * keyCode: string, key: string
+     * (keyCode: string, key: string)
      */
     onKeyUpSignal = new Signal();
 
     /**
-     * x, y
+     * (client_x, client_y)
      */
     onInputDownSignal = new Signal();
 
     /**
-     * x, y
+     * (client_x, client_y)
      */
     onInputUpSignal = new Signal();
 
     /**
-     * x, y
+     * (client_x, client_y)
      */
     onInputMoveSignal = new Signal();
 
     /**
-     * x, y
+     * Fast Click or Tap
+     * (client_x, client_y)
+     */
+    onClickSignal = new Signal();
+
+    /**
+     * (client_x, client_y)
      */
     onContextMenuSignal = new Signal();
 
-    
+
     private constructor(aParams: InitParams) {
 
-        this.params = aParams;
+        this._params = aParams;
+
+        if (!this._params.clickDistDesktop) this._params.clickDistDesktop = DEFAULTS.clickDistDesktop;
+        if (!this._params.clickDistMobile) this._params.clickDistMobile = DEFAULTS.clickDistMobile;
 
         document.addEventListener('keydown', (event: KeyboardEvent) => {
             // LogMng.debug('keydown event code: ' + event.code);
@@ -88,7 +128,7 @@ export class InputMng {
             this.onKeyUpSignal.dispatch(event.code, event.key);
         }, false);
 
-        let dom = this.params.inputDomElement;
+        let dom = this._params.inputDomElement;
 
         if (dom) {
 
@@ -99,17 +139,26 @@ export class InputMng {
 
                 // LogMng.debug(`mousemove: x: ${e.clientX}, y: ${e.clientY}`);
 
-                this.currInputClientX = e.clientX;
-                this.currInputClientY = e.clientY;
+                this.clientX = e.clientX;
+                this.clientY = e.clientY;
 
                 // for 3d
-                this.normalInputPos = {
+                this.normalPos = {
                     x: (e.clientX / dom.clientWidth) * 2 - 1,
                     y: -(e.clientY / dom.clientHeight) * 2 + 1
                 }
 
-                if (this.params.desktop) {
-                    this.onInputMoveSignal.dispatch(this.currInputClientX, this.currInputClientY);
+                if (this._params.desktop) {
+                    this.onInputMoveSignal.dispatch(this.clientX, this.clientY);
+                }
+
+                if (this._isDown) {
+                    // click check
+                    let dist = MyMath.getVec2Length(this.downClientX, this.downClientY, this.clientX, this.clientY);
+                    let controlDist = this._params.desktop ? this._params.clickDistDesktop : this._params.clickDistMobile;
+                    if (dist > controlDist) {
+                        this._downWasMoved = true;
+                    }
                 }
 
             }, true);
@@ -121,36 +170,52 @@ export class InputMng {
                 // LogMng.debug(`mousedown: x: ${e.clientX}, y: ${e.clientY}`);
                 // LogMng.debug(`pointerdown: button == ${e.button}`);
 
-                if (this.params.desktop && e.button != 0) return;
+                if (this._params.desktop && e.button != 0) return;
 
-                this.inputDownClientX = e.clientX;
-                this.inputDownClientY = e.clientY;
+                this.downClientX = e.clientX;
+                this.downClientY = e.clientY;
 
                 // for 3d
-                this.normalInputDown = {
+                this.normalDown = {
                     x: (e.clientX / dom.clientWidth) * 2 - 1,
                     y: -(e.clientY / dom.clientHeight) * 2 + 1
                 }
 
-                this.onInputDownSignal.dispatch(this.inputDownClientX, this.inputDownClientY);
+                this._isDown = true;
+
+                this.onInputDownSignal.dispatch(this.downClientX, this.downClientY);
+
             }, true);
 
             dom.addEventListener("pointerup", (e: PointerEvent) => {
 
                 // LogMng.debug(`mouseup: x: ${e.clientX}, y: ${e.clientY}`);
 
-                if (this.params.desktop && e.button != 0) return;
+                if (this._params.desktop && e.button != 0) return;
 
-                this.inputUpClientX = e.clientX;
-                this.inputUpClientY = e.clientY;
+                this.upClientX = e.clientX;
+                this.upClientY = e.clientY;
 
                 // for 3d
-                this.normalUpDown = {
+                this.normalUp = {
                     x: (e.clientX / dom.clientWidth) * 2 - 1,
                     y: -(e.clientY / dom.clientHeight) * 2 + 1
                 }
 
-                this.onInputUpSignal.dispatch(e.clientX, e.clientY);
+                this.onInputUpSignal.dispatch(this.upClientX, this.upClientY);
+
+                // click check
+                if (!this._downWasMoved) {
+                    let dist = MyMath.getVec2Length(this.downClientX, this.downClientY, this.upClientX, this.upClientY);
+                    let controlDist = this._params.desktop ? this._params.clickDistDesktop : this._params.clickDistMobile;
+                    if (dist <= controlDist) {
+                        this.onClickSignal.dispatch(this.upClientX, this.upClientY);
+                    }
+                }
+
+                this._isDown = false;
+                this._downWasMoved = false;
+
             }, true);
 
             // }
@@ -187,32 +252,30 @@ export class InputMng {
             //     }, false);
             // }
 
-            if (this.params.desktop && aParams.isRightClickProcessing) {
+            if (this._params.desktop && aParams.isRightClickProcessing) {
                 window.oncontextmenu = () => {
-                    this.onContextMenuSignal.dispatch(this.currInputClientX, this.currInputClientY);
+                    this.onContextMenuSignal.dispatch(this.clientX, this.clientY);
                     return false; // cancel default menu
                 };
             }
 
         }
         else {
-            LogMng.warn(`InputMng => undefined input DOM element = ${this.params.inputDomElement}`);
-            console.log('InputMng => init params:', this.params);
+            LogMng.warn(`InputMng: undefined input DOM element = ${this._params.inputDomElement}`);
+            console.log('init params:', this._params);
         }
 
     }
 
     static getInstance(aParams?: InitParams): InputMng {
-        if (!InputMng.instance) {
-            if (aParams) {
-                if (InputMng.instance) throw new Error("Reinicialization of InputMng, use single inicialization point");
-                InputMng.instance = new InputMng(aParams);
-            }
-            else {
+        if (!InputMng._instance) {
+            if (!aParams) {
                 LogMng.error('InputMng.getInstance(): aParams = null!');
+                return null;
             }
+            InputMng._instance = new InputMng(aParams);
         }
-        return InputMng.instance;
+        return InputMng._instance;
     }
 
     isKeyDown(aKey: string): boolean {

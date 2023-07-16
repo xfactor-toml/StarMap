@@ -6,7 +6,7 @@ import gsap from 'gsap';
 import { Settings } from '../data/Settings';
 import { FarStars } from '../objects/FarStars';
 import { DeviceInfo } from '../utils/DeviceInfo';
-import { InputMng } from '../inputs/InputMng';
+import { InputMng } from '../utils/inputs/InputMng';
 import { FSM } from '../states/FSM';
 import { States } from '../states/States';
 import { FrontEvents } from '../events/FrontEvents';
@@ -253,8 +253,9 @@ export class Galaxy implements ILogger {
 
         // inputs
         let inputMng = InputMng.getInstance();
-        inputMng.onInputDownSignal.add(this.onInputDown, this);
-        inputMng.onInputUpSignal.add(this.onInputUp, this);
+        // inputMng.onInputDownSignal.add(this.onInputDown, this);
+        // inputMng.onInputUpSignal.add(this.onInputUp, this);
+        inputMng.onClickSignal.add(this.onClick, this);
 
         this._fsm = new FSM();
         this._fsm.addState(States.init, this, this.onStateInitEnter, this.onStateInitUpdate);
@@ -1203,66 +1204,39 @@ export class Galaxy implements ILogger {
 
     private updateInputMove() {
         let inMng = InputMng.getInstance();
-        this.checkStarUnderPoint(inMng.normalInputPos);
+        this.checkStarUnderPoint(inMng.normalPos);
         document.body.style.cursor = this.starPointSpriteHovered ? 'pointer' : 'default';
     }
 
-    private onInputDown(x: number, y: number) {
+    // private onInputDown(x: number, y: number) {
+    //     let inMng = InputMng.getInstance();
+    //     if (this.isStarPreviewState) {
+                // GameEvents.dispatchEvent(GameEvents.EVENT_HIDE_STAR_PREVIEW);
+                // if(!this._orbitControl.autoRotate) this._orbitControl.autoRotate = true;
+                // this._orbitControl.enableZoom = true;
+                // if (!this._orbitControl.enabled) this._orbitControl.enabled = true;
+    //     }
+    // }
 
+    private onClick(aClientX: number, aClientY: number) {
         let inMng = InputMng.getInstance();
-        this.checkStarUnderPoint(inMng.normalInputDown);
-
-        if (!this.isStarPreviewState && !this.starPointSpriteHovered) {
-
-            // window.dispatchEvent(new CustomEvent('gameEvent', { detail: { eventName: GameEvents.EVENT_HIDE_STAR_PREVIEW } }));
-            GameEvents.dispatchEvent(GameEvents.EVENT_HIDE_STAR_PREVIEW);
-
-            switch (this._fsm.getCurrentState().name) {
-                case States.realStars:
-                    if (!this._orbitControl.autoRotate) this._orbitControl.autoRotate = true;
-                    this._orbitControl.enableZoom = true;
-                    if (!this._orbitControl.enabled) this._orbitControl.enabled = true;
-                    break;
-            }
-
+        let pos = {
+            x: aClientX,
+            y: aClientY
         }
 
-    }
-
-    private onInputUp(x: number, y: number) {
-
-        const CLICK_DIST = DeviceInfo.getInstance().desktop ? 10 : 30;
-        let inMng = InputMng.getInstance();
-        let dist = MyMath.getVec2Length(inMng.inputDownClientX, inMng.inputDownClientY, x, y);
-        // LogMng.debug(`onInputUp: dist = ${dist}`);
-        // if (!DeviceInfo.getInstance().desktop) alert(`onInputUp: dist = ${dist}`);
-
-        if (dist <= CLICK_DIST) {
-            this.onClick({
-                down: {
-                    x: inMng.inputDownClientX,
-                    y: inMng.inputDownClientY
-                },
-                up: {
-                    x: x,
-                    y: y
-                }
-            });
-            return;
-        }
-
-    }
-
-    private onClick(aParams: {
-        down: { x: number, y: number },
-        up: { x: number, y: number }
-    }) {
-        let inMng = InputMng.getInstance();
+        this.checkStarUnderPoint(inMng.normalDown);
 
         switch (this._fsm.getCurrentState().name) {
 
             case States.realStars:
-                if (!this.isStarPreviewState) {
+                if (this.isStarPreviewState) {
+                    GameEvents.dispatchEvent(GameEvents.EVENT_HIDE_STAR_PREVIEW);
+                    if (!this._orbitControl.autoRotate) this._orbitControl.autoRotate = true;
+                    this._orbitControl.enableZoom = true;
+                    if (!this._orbitControl.enabled) this._orbitControl.enabled = true;
+                }
+                else {
 
                     if (this.starPointSpriteHovered) {
                         // star point clicked
@@ -1287,8 +1261,8 @@ export class Galaxy implements ILogger {
                         GameEvents.dispatchEvent(GameEvents.EVENT_SHOW_STAR_PREVIEW, {
                             starData: starParams.starInfo.serverData,
                             pos2d: {
-                                x: aParams.down.x,
-                                y: aParams.down.y
+                                x: pos.x,
+                                y: pos.y
                             }
                         });
 
@@ -1309,7 +1283,13 @@ export class Galaxy implements ILogger {
                 break;
 
             case States.phantomStars:
-                if (!this.isStarPreviewState) {
+                if (this.isStarPreviewState) {
+                    GameEvents.dispatchEvent(GameEvents.EVENT_HIDE_STAR_PREVIEW);
+                    if (!this._orbitControl.autoRotate) this._orbitControl.autoRotate = true;
+                    this._orbitControl.enableZoom = true;
+                    if (!this._orbitControl.enabled) this._orbitControl.enabled = true;
+                }
+                else {
 
                     if (this.starPointSpriteHovered) {
                         // star point clicked
@@ -1328,8 +1308,8 @@ export class Galaxy implements ILogger {
                         GameEvents.dispatchEvent(GameEvents.EVENT_PHANTOM_STAR_PREVIEW, {
                             pos3d: this._phantomStarPicked.pos,
                             pos2d: {
-                                x: aParams.down.x,
-                                y: aParams.down.y
+                                x: pos.x,
+                                y: pos.y
                             }
                         });
 
@@ -1356,7 +1336,7 @@ export class Galaxy implements ILogger {
     private onGalaxyPlaneClick() {
         const MOVE_DUR = 2;
         let inMng = InputMng.getInstance();
-        let plainPoint = this.getPlanePoint(inMng.normalInputPos);
+        let plainPoint = this.getPlanePoint(inMng.normalUp);
 
         if (plainPoint) {
 

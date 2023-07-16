@@ -8,7 +8,7 @@ import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass";
 import { SMAAPass } from "three/examples/jsm/postprocessing/SMAAPass";
 
 import * as datGui from "dat.gui";
-import { InputMng } from "../inputs/InputMng";
+import { InputMng } from "../utils/inputs/InputMng";
 import { DeviceInfo } from "../utils/DeviceInfo";
 import { LogMng } from "../utils/LogMng";
 import { Settings } from "../data/Settings";
@@ -81,7 +81,9 @@ export class GameRender {
             inputDomElement: Settings.domCanvasParent,
             // inputDomElement: Params.domTouchParent,
             desktop: DeviceInfo.getInstance().desktop,
-            isRightClickProcessing: false
+            isRightClickProcessing: false,
+            clickDistDesktop: 10,
+            clickDistMobile: 30
         });
 
         // DEBUG GUI INIT
