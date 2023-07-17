@@ -86,9 +86,6 @@ export default {
       this.settingsStore.setScreen('interface');
     }
   },
-  created() {
-    this.$wallet.connect();
-  }
 };
 </script>
 
