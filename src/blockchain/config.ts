@@ -19,7 +19,7 @@ export const connect : connectRpc = {
 /* TESTNET! */
 export const networkParams = {
    networkId: 5611,
-   networHexID: '0x15EB',
+   networkHexID: '0x15eb',
    chainName: 'Binance Tsetnet opBNB',
    ethSymbol: 'TBNB',
    rpcUrl: "https://opbnb-testnet-rpc.bnbchain.org"

@@ -3,7 +3,7 @@ import { account } from "../types";
 
 export function IsTrueNetwork (): boolean {
     if (!env) return false
-    return env.chainId === networkParams.networHexID
+    return env.chainId === networkParams.networkHexID
 }
 
 async function NetworkAuth (): Promise<account> {
@@ -15,19 +15,19 @@ async function NetworkAuth (): Promise<account> {
         const accs = await env.request({ method: "eth_requestAccounts" }, connect)
         const network = env.chainId
 
-        if (network !== networkParams.networHexID) {
+        if (network !== networkParams.networkHexID) {
 
             await env.request({
                 method: 'wallet_addEthereumChain',
                 params: [{ 
-                  chainId: networkParams.networHexID,
+                  chainId: networkParams.networkHexID,
                   chainName: networkParams.chainName,
                   nativeCurrency: {
                       name: networkParams.ethSymbol,
                       symbol: networkParams.ethSymbol,
                       decimals: 18
                   },
-                  rpcUrls: [networkParams.rpcUrl, reserveRpcs[0], reserveRpcs[1]]
+                  rpcUrls: [networkParams.rpcUrl] // , reserveRpcs[0], reserveRpcs[1]
                 }]
               })
         }
