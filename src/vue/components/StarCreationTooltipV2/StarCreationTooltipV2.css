@@ -135,3 +135,14 @@
   top: 21px;
   border-radius: 50%;
 }
+
+@media (max-width: 420px), (max-height: 420px) {
+  .StarCreationTooltipV2 {
+    transform: scale(0.75);
+    transform-origin: left top;
+  }
+
+  .StarCreationTooltipV2.verticalIntersection {
+    transform-origin: left bottom;
+  }
+}

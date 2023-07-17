@@ -3,11 +3,13 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
   position: absolute;
   left: 0;
   top: 0;
-  width: 100%;
-  height: 100%;
+  overflow: auto;
   z-index: 2;
   background-color: #040310;
   background-image: url(../gui/images/background.jpg);
@@ -17,9 +19,9 @@
 }
 
 .WelcomeScreen__logo {
-  width: calc(100vw - 20px);
+  width: calc(100vw - 40px);
   max-width: 440px;
-  min-width: 320px;
+  min-width: 260px;
   aspect-ratio: 1.375;
   background-image: url(../gui/images/preloader/logo.svg);
   background-position: 50% 50%;
@@ -29,7 +31,8 @@
 
 .WelcomeScreen__logo-text {
   width: 284px;
-  height: 92px;
+  aspect-ratio: 3.19;
+  flex-shrink: 0;
   margin-top: 48px;
   background-image: url(../gui/images/preloader/logo-text.svg);
   background-position: 50% 50%;
@@ -166,4 +169,21 @@
 
 .WelcomeScreen__checkbox-field:checked + .WelcomeScreen__checkbox-label::after {
   transform: scale(1);
+}
+
+@media (max-width: 420px), (max-height: 420px) {
+  .WelcomeScreen__logo-text {
+    width: 200px;
+    margin-top: 28px;
+  }
+
+  .WelcomeScreen__button {
+    margin-top: 12px;
+    font-size: 14px;
+  }
+
+  .WelcomeScreen__button.active {
+    margin-top: 16px;
+    font-size: 18px;
+  }
 }
