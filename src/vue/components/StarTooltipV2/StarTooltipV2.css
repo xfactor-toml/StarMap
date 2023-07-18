@@ -221,3 +221,14 @@
   right: 7px;
   top: 17px;
 }
+
+@media (max-width: 420px), (max-height: 420px) {
+  .StarTooltipV2 {
+    transform: scale(0.75);
+    transform-origin: left top;
+  }
+
+  .StarTooltipV2.verticalIntersection {
+    transform-origin: left bottom;
+  }
+}
