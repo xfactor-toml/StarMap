@@ -1,5 +1,20 @@
 <template>
-  <div class="UserBar" v-click-outside="hideSettings">
+  <div class="UserBar">
+    <div class="UserBar__search">
+      <div
+        class="UserBar__search-field"
+        v-if="searchVisible"
+        v-click-outside="hideSearchField"
+      >
+        <SearchInput v-model="searchKey"/>
+      </div>
+      <button
+        class="UserBar__button is-search"
+        :class="{ active: searchVisible }"
+        @mouseenter="$client.onHover()"
+        @click="toggleSearch"
+      />
+    </div>
     <button
       class="UserBar__button is-settings"
       :class="{ active: settingsVisible }"
@@ -13,7 +28,11 @@
       @mouseenter="$client.onHover()"
       @click="connect"
     />
-    <div class="UserBar__popup" v-if="settingsVisible">
+    <div
+      class="UserBar__popup"
+      v-if="settingsVisible"
+      v-click-outside="hideSettingsPopup"
+    >
       <SettingsPopup
         :fullscreen="settingsStore.fullscreen"
         :musicVolume="settingsStore.musicVolume"
@@ -32,6 +51,7 @@
 
 <script lang="ts">
 import { SettingsPopup } from '@/components/SettingsPopup';
+import { SearchInput } from '@/components/SearchInput';
 import { useSettingsStore } from '@/stores';
 import { default as vClickOutside } from 'click-outside-vue3';
 import { mapStores } from 'pinia';
@@ -39,14 +59,22 @@ import { mapStores } from 'pinia';
 export default {
   name: 'UserBar',
   components: {
-    SettingsPopup
+    SearchInput,
+    SettingsPopup,
   },
   directives: {
     clickOutside: vClickOutside.directive
   },
   data: () => ({
-    settingsVisible: false
+    settingsVisible: false,
+    searchVisible: false,
+    searchKey: ''
   }),
+  watch: {
+    searchKey() {
+      this.$client.search(this.searchKey);
+    }
+  },
   computed: {
     ...mapStores(useSettingsStore),
     connected() {
@@ -61,9 +89,17 @@ export default {
       this.$client.onClick();
       this.settingsVisible = !this.settingsVisible;
     },
-    hideSettings() {
+    toggleSearch() {
+      this.$client.onClick();
+      this.searchVisible = !this.searchVisible;
+    },
+    hideSettingsPopup() {
       this.settingsVisible = false;
-    }
+    },
+    hideSearchField() {
+      this.searchVisible = false;
+      this.searchKey = ''
+    },
   }
 };
 </script>

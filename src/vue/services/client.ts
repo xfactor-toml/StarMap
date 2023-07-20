@@ -1,6 +1,7 @@
 import { Star } from '@/models';
 import { markRaw } from 'vue';
 import { FrontEvents } from '~/game/events/FrontEvents';
+import { debounce } from "typescript-debounce-decorator";
 
 export class ClientService {
   constructor(private dispatcher: typeof FrontEvents) {}
@@ -42,6 +43,11 @@ export class ClientService {
 
   updateStarLevelFilter(levels: number[]) {
     this.dispatcher.starLevelFilterUpdate.dispatch(levels);
+  }
+
+  @debounce(200)
+  search(key: string) {
+    console.log(key);
   }
 
   onClick() {

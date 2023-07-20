@@ -7,8 +7,24 @@
   z-index: 2;
 }
 
+.UserBar__search {
+  position: relative;
+  width: 24px;
+  height: 24px;
+}
+
+.UserBar__search-field {
+  width: 320px;
+  min-width: 280px;
+  height: 40px;
+  position: absolute;
+  right: -8px;
+  top: -8px;
+  pointer-events: all;
+}
+
 .UserBar__button {
-  display: inline-block;
+  display: block;
   width: 24px;
   height: 24px;
   padding: 0;
@@ -20,6 +36,10 @@
   pointer-events: all;
   will-change: filter;
   transition: ease filter 200ms;
+}
+
+.UserBar__button.is-search {
+  background-image: url(../gui/images/search.svg);
 }
 
 .UserBar__button.is-settings {
@@ -49,4 +69,12 @@
   right: 0;
   top: calc(100% + 20px);
   pointer-events: all;
+}
+
+@media (max-width: 600px) {
+  .UserBar__search-field {
+    width: calc(100vw - 36px);
+    right: -82px;
+    top: 64px;
+  }
 }
