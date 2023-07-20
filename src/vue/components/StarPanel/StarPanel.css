@@ -14,7 +14,7 @@
 
 .StarPanel__svg {
   width: 100%;
-  max-height: calc(100vh - 80px);
+  max-height: calc(100% - 80px);
   color: var(--accent-color);
 }
 
@@ -93,7 +93,7 @@
   .StarPanel {
     width: calc(100vw - 20px);
     max-width: none;
-    height: 100vh;
+    height: 100%;
     margin: 0;
     margin-left: 10px;
   }
