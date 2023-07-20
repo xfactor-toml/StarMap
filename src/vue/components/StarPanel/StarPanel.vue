@@ -482,6 +482,7 @@ import { StarHudParam } from '@/models';
 import { useStarsStore } from '@/stores';
 import { formatNumber } from '@/utils';
 import { mapStores } from 'pinia';
+import { MyMath } from '~/game/utils/MyMath';
 
 export default {
   name: 'StarPanel',
@@ -545,9 +546,13 @@ export default {
   methods: {
     // value 0...1
     getParamProgressStyle(dasharray: number, value: number, negative = false) {
+      const min = negative ? dasharray * -1 : 0
+      const max = negative ? 0 : dasharray
+      const offset = (dasharray - dasharray * value) * (negative ? -1 : 1)
+
       return {
         'stroke-dasharray': `${dasharray}px`,
-        'stroke-dashoffset': `${(dasharray - dasharray * value) * (negative ? -1 : 1)}px`
+        'stroke-dashoffset': `${MyMath.clamp(offset, min, max)}px`
       };
     },
     selectParam(param: StarHudParam) {
