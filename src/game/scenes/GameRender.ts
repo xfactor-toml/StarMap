@@ -83,7 +83,7 @@ export class GameRender {
             desktop: DeviceInfo.getInstance().desktop,
             isRightClickProcessing: false,
             clickDistDesktop: 10,
-            clickDistMobile: 30
+            clickDistMobile: 40
         });
 
         // DEBUG GUI INIT

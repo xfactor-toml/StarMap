@@ -1339,11 +1339,13 @@ export class Galaxy implements ILogger {
         let plainPoint = this.getPlanePoint(inMng.normalUp);
 
         if (plainPoint) {
+            let starPos = this.getNearestStarPosition(plainPoint);
 
             let currDist = this._camera.position.distanceTo(this._cameraTarget);
             let currNewDist = this._camera.position.distanceTo(plainPoint);
             let resultDist = Math.min(Settings.POINTS_CAMERA_MAX_DIST / 2, currNewDist);
             let newCamPos = this._camera.position.clone().sub(plainPoint).normalize().multiplyScalar(resultDist).add(plainPoint);
+            
 
             // move camera to point
             this._orbitControl.enabled = false;
