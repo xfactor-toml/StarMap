@@ -2,6 +2,7 @@ export * from './LevelsPanel';
 export * from './Logo';
 export * from './ModesPanel';
 export * from './PlasmaSlider';
+export * from './SearchInput';
 export * from './SettingsPopup';
 export * from './StarBoostPanel';
 export * from './StarCreationPanel';

@@ -1,0 +1,22 @@
+.SearchInput {
+  width: 100%;
+  max-width: 620px;
+  height: 100%;
+  padding-left: 8px;
+  padding-right: 40px;
+  color: #00FFFF;
+  border: 1px solid currentColor;
+  border-radius: 8px;
+  background-color: transparent;
+  font-family: inherit;
+  text-align: center;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 300;
+}
+
+@media (max-width: 600px) {
+  .SearchInput {
+    padding-right: 8px;
+  }
+}

@@ -107,13 +107,12 @@ export class GameRender {
         FrontEvents.onWindowResizeSignal.add(this.onWindowResize, this);
 
         if (Settings.INIT_FULL_SCREEN) {
-            Settings.domCanvasParent.requestFullscreen();
+            document.body.requestFullscreen();
         }
 
         FrontEvents.toggleFullscreen.add(() => {
-            let elem = Settings.domCanvasParent;
             if (!document.fullscreenElement) {
-                elem.requestFullscreen();
+                document.body.requestFullscreen();
                 GameEvents.dispatchEvent(GameEvents.EVENT_GAME_FULSCREEN, { v: true });
             }
             else {

@@ -54,10 +54,10 @@ select {
 }
 
 #gui {
-  position: relative;
-  z-index: 1;
   width: 100%;
-  height: 100vh;
+  height: 100%;
+  position: absolute;
+  z-index: 1;
   min-width: 320px;
   overflow: hidden;
   pointer-events: none;
