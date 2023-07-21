@@ -14,7 +14,7 @@ import { GameEvents } from '../events/GameEvents';
 import { SmallFlySystem } from '../objects/smallFly/SmallFlySystem';
 import { MyOrbitControls } from '../mythree/MyOrbitControls';
 import { AudioMng } from '../audio/AudioMng';
-import { AudioData } from '../audio/AudioData';
+import { AudioAlias } from '../audio/AudioData';
 import { GameUtils } from '../math/GameUtils';
 import { QTCircle, QTDebugRender, QTPoint, QTRect, QuadTree } from '../systems/QuadTree';
 import { StarPointsMng } from '../mng/StarPointsMng';
@@ -143,7 +143,7 @@ export class Galaxy implements ILogger {
 
     init() {
 
-        AudioMng.getInstance().playSfx(AudioData.SFX_INIT_FLY);
+        AudioMng.getInstance().playSfx(AudioAlias.SFX_INIT_FLY);
 
         this._dummyGalaxy = new THREE.Group();
         this._scene.add(this._dummyGalaxy);
@@ -243,7 +243,7 @@ export class Galaxy implements ILogger {
         this._raycaster = new THREE.Raycaster();
 
         // start music
-        AudioMng.getInstance().playMusic(AudioData.MUSIC_MAIN);
+        AudioMng.getInstance().playMusic(AudioAlias.MUSIC_MAIN);
 
         // helpers
         if (Settings.isDebugMode) {
@@ -271,8 +271,7 @@ export class Galaxy implements ILogger {
 
         FrontEvents.setMusicVolume.add((aData: { v: number }) => {
             let am = AudioMng.getInstance();
-            let music = am.getSound(AudioData.MUSIC_MAIN);
-            am.musicVolume = music.volume = aData.v;
+            am.musicVolume = aData.v;
             localStorage.setItem(`musicVolume`, String(am.musicVolume));
         }, this);
         FrontEvents.setSFXVolume.add((aData: { v: number }) => {
@@ -1195,7 +1194,7 @@ export class Galaxy implements ILogger {
                     this.starPointSpriteHovered = newSpritePoint;
                     this.starPointHovered = newSpritePoint.parent as StarPoint;
                     if (!this.isStarPreviewState) {
-                        AudioMng.getInstance().playSfx(AudioData.SFX_HOVER);
+                        AudioMng.getInstance().playSfx(AudioAlias.SFX_HOVER);
                     }
                 }
                 isHover = true;
@@ -1259,7 +1258,7 @@ export class Galaxy implements ILogger {
 
                     if (this.starPointSpriteHovered) {
                         // star point clicked
-                        AudioMng.getInstance().playSfx(AudioData.SFX_CLICK);
+                        AudioMng.getInstance().playSfx(AudioAlias.SFX_CLICK);
 
                         this.isStarPreviewState = true;
                         this._orbitControl.autoRotate = false;
@@ -1305,7 +1304,7 @@ export class Galaxy implements ILogger {
 
                     if (this.starPointSpriteHovered) {
                         // star point clicked
-                        AudioMng.getInstance().playSfx(AudioData.SFX_CLICK);
+                        AudioMng.getInstance().playSfx(AudioAlias.SFX_CLICK);
 
                         this.isStarPreviewState = true;
                         this._orbitControl.autoRotate = false;
@@ -1349,7 +1348,6 @@ export class Galaxy implements ILogger {
         if (starPos) plainPoint.copy(starPos);
 
         if (plainPoint) {
-            // let currDist = this._camera.position.distanceTo(this._cameraTarget);
             let currNewDist = this._camera.position.distanceTo(plainPoint);
             let resultDist = Math.min(Settings.POINTS_CAMERA_MAX_DIST / 2, currNewDist);
             let newCamPos = this._camera.position.clone().sub(plainPoint).normalize().multiplyScalar(resultDist).add(plainPoint);
@@ -1530,7 +1528,7 @@ export class Galaxy implements ILogger {
 
             // this.rotSndStartTimer -= dt;
             if (this._rotSndStartTimer < 0) {
-                let snd = AudioMng.getInstance().getSound(AudioData.SFX_CAM_ROTATE);
+                let snd = AudioMng.getInstance().getSound(AudioAlias.SFX_CAM_ROTATE);
                 if (!snd.isPlaying) {
                     snd.loop = true;
                     snd.volume = AudioMng.getInstance().sfxVolume;
@@ -1544,10 +1542,8 @@ export class Galaxy implements ILogger {
         }
         else {
             this._rotSndStartTimer = 0.02;
-            let snd = AudioMng.getInstance().getSound(AudioData.SFX_CAM_ROTATE);
-            if (snd.isPlaying) {
-                snd.stop();
-            }
+            let snd = AudioMng.getInstance().getSound(AudioAlias.SFX_CAM_ROTATE);
+            if (snd.isPlaying) snd.stop();
         }
 
         this._rotSndStartTimer -= dt;
@@ -1996,10 +1992,10 @@ export class Galaxy implements ILogger {
 
         this.smallFlySystem.activeSpawn = false;
 
-        AudioMng.getInstance().playSfx(AudioData.SFX_DIVE_IN);
+        AudioMng.getInstance().playSfx(AudioAlias.SFX_DIVE_IN);
 
         setTimeout(() => {
-            let starSnd = AudioMng.getInstance().getSound(AudioData.SFX_STAR_FIRE);
+            let starSnd = AudioMng.getInstance().getSound(AudioAlias.SFX_STAR_FIRE);
             starSnd.loop = true;
             starSnd.volume = AudioMng.getInstance().sfxVolume;
             starSnd.play();
@@ -2245,9 +2241,9 @@ export class Galaxy implements ILogger {
 
         this.smallFlySystem.activeSpawn = true;
 
-        AudioMng.getInstance().playSfx(AudioData.SFX_DIVE_OUT);
+        AudioMng.getInstance().playSfx(AudioAlias.SFX_DIVE_OUT);
         setTimeout(() => {
-            AudioMng.getInstance().getSound(AudioData.SFX_STAR_FIRE).stop();
+            AudioMng.getInstance().getSound(AudioAlias.SFX_STAR_FIRE).stop();
         }, 1000 * DUR / 3);
 
         // GameEvents.dispatchEvent(GameEvents.EVENT_STAR_MODE);

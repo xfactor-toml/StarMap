@@ -6,10 +6,10 @@ import { GameRender } from "./GameRender";
 import { GameEvents } from "../events/GameEvents";
 import { FrontEvents } from "../events/FrontEvents";
 import { AudioMng } from "../audio/AudioMng";
-import { AudioData } from "../audio/AudioData";
 import { ILogger } from "../interfaces/ILogger";
 import { DB } from "../data/DB";
 import { ServerStarData } from "../data/Types";
+import { AudioAlias } from "../audio/AudioData";
 
 type InitParams = {
 
@@ -110,16 +110,16 @@ export class GameBoot implements ILogger {
     private initEvents() {
         FrontEvents.playInitScreenSfx.addOnce(() => {
             let am = AudioMng.getInstance();
-            am.playSfx(AudioData.SFX_INIT);
+            am.playSfx(AudioAlias.SFX_INIT);
         }, this);
 
         FrontEvents.onHover.add(() => {
             // LogMng.debug('onHover...');
-            AudioMng.getInstance().playSfx(AudioData.SFX_HOVER);
+            AudioMng.getInstance().playSfx(AudioAlias.SFX_HOVER);
         }, this);
 
         FrontEvents.onClick.add(() => {
-            AudioMng.getInstance().playSfx(AudioData.SFX_CLICK);
+            AudioMng.getInstance().playSfx(AudioAlias.SFX_CLICK);
         }, this);
     }
         

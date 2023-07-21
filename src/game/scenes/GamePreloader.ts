@@ -2,10 +2,10 @@ import { ThreeLoader } from '../loaders/ThreeLoader';
 import { LogMng } from '../utils/LogMng';
 import { Settings } from '../data/Settings';
 import { AudioMng } from '../audio/AudioMng';
-import { AudioData } from '../audio/AudioData';
 import { GameEvents } from '../events/GameEvents';
 import { FrontEvents } from '../events/FrontEvents';
 import { Signal } from '../utils/events/Signal';
+import { AudioAlias, MusicLoadList, SoundLoadList } from '../audio/AudioData';
 
 export class GamePreloader {
 
@@ -111,7 +111,10 @@ export class GamePreloader {
         // storage data
         am.musicVolume = Number(localStorage.getItem(`musicVolume`) || 1);
         am.sfxVolume = Number(localStorage.getItem(`sfxVolume`) || 1);
-        am.init(AudioData.SOUNDS);
+        am.init({
+            musicList: MusicLoadList,
+            soundList: SoundLoadList
+        });
 
     }
 
