@@ -295,6 +295,19 @@ export class Galaxy implements ILogger {
             }
         }, this);
 
+        FrontEvents.starPreviewClose.add(() => {
+            this.isStarPreviewState = false;
+            switch (this._fsm.getCurrentState().name) {
+                case States.realStars:
+                case States.phantomStars:
+                    // turn on orbit controller
+                    this._orbitControl.autoRotate = true;
+                    this._orbitControl.enableZoom = true;
+                    if (!this._orbitControl.enabled) this._orbitControl.enabled = true;
+                    break;
+            }
+        }, this);
+
     }
 
     initDebugGui() {
@@ -1266,13 +1279,6 @@ export class Galaxy implements ILogger {
                             }
                         });
 
-                        FrontEvents.starPreviewClose.addOnce(() => {
-                            this.isStarPreviewState = false;
-                            this._orbitControl.autoRotate = true;
-                            this._orbitControl.enableZoom = true;
-                            if (!this._orbitControl.enabled) this._orbitControl.enabled = true;
-                        }, this);
-
                     }
                     else {
                         // galaxy plane click
@@ -1313,13 +1319,6 @@ export class Galaxy implements ILogger {
                             }
                         });
 
-                        FrontEvents.starPreviewClose.addOnce(() => {
-                            this.isStarPreviewState = false;
-                            this._orbitControl.autoRotate = true;
-                            this._orbitControl.enableZoom = true;
-                            if (!this._orbitControl.enabled) this._orbitControl.enabled = true;
-                        }, this);
-
                     }
                     else {
                         // galaxy plane click
@@ -1336,10 +1335,13 @@ export class Galaxy implements ILogger {
     private onGalaxyPlaneClick() {
         const MOVE_DUR = 2;
         let inMng = InputMng.getInstance();
+
+        if ([States.realStars, States.phantomStars].indexOf(this._fsm.getCurrentState().name as States) < 0) return;
+
         let plainPoint = this.getPlanePoint(inMng.normalUp);
 
         if (plainPoint) {
-            let starPos = this.getNearestStarPosition(plainPoint);
+            // let starPos = this.getNearestStarPosition(plainPoint);
 
             let currDist = this._camera.position.distanceTo(this._cameraTarget);
             let currNewDist = this._camera.position.distanceTo(plainPoint);
@@ -1729,12 +1731,10 @@ export class Galaxy implements ILogger {
         //     }
         // }
 
-        // debugger;
-
         // let starParams = this.starPointParamsHovered.starParams;
         let starParams = aParams.starParams;
 
-        // LogMng.debug('onStateToStarEnter(): gsId:', gsId);
+        // disable orbit controller
         LogMng.debug('onStateToStarEnter(): starParams:', starParams);
         this._orbitControl.enabled = false;
         document.body.style.cursor = 'default';
@@ -2003,7 +2003,7 @@ export class Galaxy implements ILogger {
     }
 
     private onStateToStarUpdate(dt: number) {
-        this._orbitControl.update();
+        // this._orbitControl.update();
 
         if (this._cameraTarget && this._camera) {
             this._camera.lookAt(this._cameraTarget);

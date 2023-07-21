@@ -7,6 +7,7 @@ import {
     Vector2,
     Vector3
 } from 'three';
+import { LogMng } from '../utils/LogMng';
 
 // This set of controls performs orbiting, dollying (zooming), and panning.
 // Unlike TrackballControls, it maintains the "up" direction object.up (+Y by default).
@@ -910,7 +911,7 @@ export class MyOrbitControls extends EventDispatcher {
 
     object;
     domElement;
-    enabled = false;
+    private _enabled = false;
     target: Vector3;
     minDistance = 0;
     maxDistance = 0;
@@ -964,7 +965,7 @@ export class MyOrbitControls extends EventDispatcher {
         this.domElement.style.touchAction = 'none'; // disable touch scroll
 
         // Set to false to disable this control
-        this.enabled = true;
+        this._enabled = true;
 
         // "target" sets the location of focus, where the object orbits around
         this.target = new Vector3();
@@ -1045,6 +1046,14 @@ export class MyOrbitControls extends EventDispatcher {
 
         this.update();
 
+    }
+
+    public get enabled(): boolean {
+        return this._enabled;
+    }
+    
+    public set enabled(v: boolean) {
+        this._enabled = v;
     }
 
     isRotate(): boolean {
