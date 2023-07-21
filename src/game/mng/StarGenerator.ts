@@ -5,6 +5,8 @@ import { GalaxyCircleParams, GalaxyParams, GalaxySmallParams, GalaxyStarParams, 
 import { ILogger } from "../interfaces/ILogger";
 import { LogMng } from "../utils/LogMng";
 import { MyMath } from "../utils/MyMath";
+import { InterpolationUtils } from "../utils/InterpolateUtils";
+import { EaseUtils } from "../utils/EaseUtils";
 
 export class StarGenerator implements ILogger {
     private static instance: StarGenerator = null;
@@ -208,7 +210,7 @@ export class StarGenerator implements ILogger {
                     isFade: Math.random() > 0.5,
                     duration: dur,
                     progressTime: MyMath.randomInRange(0, dur),
-                    tweenFunction: MyMath.easeInOutSine
+                    tweenFunction: EaseUtils.easeInOutSine
                 }
             }
         }
@@ -264,7 +266,7 @@ export class StarGenerator implements ILogger {
                     isFade: Math.random() > 0.5,
                     duration: dur,
                     progressTime: MyMath.randomInRange(0, dur),
-                    tweenFunction: MyMath.easeInOutSine
+                    tweenFunction: EaseUtils.easeInOutSine
                 }
             }
 

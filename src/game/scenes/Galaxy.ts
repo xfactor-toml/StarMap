@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { ThreeLoader } from '../loaders/ThreeLoader';
 import * as datGui from "dat.gui";
-import { MyMath } from '../utils/MyMath';
+import { MyMath, Vec2 } from '../utils/MyMath';
 import gsap from 'gsap';
 import { Settings } from '../data/Settings';
 import { FarStars } from '../objects/FarStars';
@@ -1207,6 +1207,21 @@ export class Galaxy implements ILogger {
 
     }
 
+    private getNearestStarPosition(aPoint: THREE.Vector3): THREE.Vector3 {
+        let res: THREE.Vector3;
+        let minDist = Number.MAX_SAFE_INTEGER;
+        let stars = this._quadTreeReal.getPointsInCircle(new QTCircle(aPoint.x, aPoint.z, 200));
+        for (let i = 0; i < stars.length; i++) {
+            const star = stars[i];
+            let dist = MyMath.getVec2Length(aPoint.x, aPoint.z, star.x, star.y);
+            if (minDist > dist) {
+                minDist = dist;
+                res = new THREE.Vector3(star.x, aPoint.y, star.y);
+            }
+        }
+        return res;
+    }
+
     private getPlanePoint(normalCoords: any): THREE.Vector3 {
         this._raycaster.setFromCamera(normalCoords, this._camera);
         const intersects = this._raycaster.intersectObjects([this._galaxyPlane], true);
@@ -1221,16 +1236,6 @@ export class Galaxy implements ILogger {
         document.body.style.cursor = this.starPointSpriteHovered ? 'pointer' : 'default';
     }
 
-    // private onInputDown(x: number, y: number) {
-    //     let inMng = InputMng.getInstance();
-    //     if (this.isStarPreviewState) {
-                // GameEvents.dispatchEvent(GameEvents.EVENT_HIDE_STAR_PREVIEW);
-                // if(!this._orbitControl.autoRotate) this._orbitControl.autoRotate = true;
-                // this._orbitControl.enableZoom = true;
-                // if (!this._orbitControl.enabled) this._orbitControl.enabled = true;
-    //     }
-    // }
-
     private onClick(aClientX: number, aClientY: number) {
         let inMng = InputMng.getInstance();
         let pos = {
@@ -1243,6 +1248,7 @@ export class Galaxy implements ILogger {
         switch (this._fsm.getCurrentState().name) {
 
             case States.realStars:
+
                 if (this.isStarPreviewState) {
                     GameEvents.dispatchEvent(GameEvents.EVENT_HIDE_STAR_PREVIEW);
                     if (!this._orbitControl.autoRotate) this._orbitControl.autoRotate = true;
@@ -1339,15 +1345,14 @@ export class Galaxy implements ILogger {
         if ([States.realStars, States.phantomStars].indexOf(this._fsm.getCurrentState().name as States) < 0) return;
 
         let plainPoint = this.getPlanePoint(inMng.normalUp);
+        let starPos = this.getNearestStarPosition(plainPoint);
+        if (starPos) plainPoint.copy(starPos);
 
         if (plainPoint) {
-            // let starPos = this.getNearestStarPosition(plainPoint);
-
-            let currDist = this._camera.position.distanceTo(this._cameraTarget);
+            // let currDist = this._camera.position.distanceTo(this._cameraTarget);
             let currNewDist = this._camera.position.distanceTo(plainPoint);
             let resultDist = Math.min(Settings.POINTS_CAMERA_MAX_DIST / 2, currNewDist);
             let newCamPos = this._camera.position.clone().sub(plainPoint).normalize().multiplyScalar(resultDist).add(plainPoint);
-            
 
             // move camera to point
             this._orbitControl.enabled = false;

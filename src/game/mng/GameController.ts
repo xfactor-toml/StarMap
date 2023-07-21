@@ -3,12 +3,10 @@ import { ServerStarData } from "~/game/data/Types";
 import { FrontEvents } from "~/game/events/FrontEvents";
 import { ILogger } from "~/game/interfaces/ILogger";
 import { Galaxy } from "~/game/scenes/Galaxy";
-import { FSM } from "~/game/states/FSM";
 import { LogMng } from "../utils/LogMng";
 
 
 export class GameController implements ILogger {
-    private _fsm: FSM;
     private galaxy: Galaxy;
 
     constructor() {

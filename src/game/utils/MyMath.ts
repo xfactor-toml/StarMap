@@ -1,12 +1,58 @@
-﻿export type Vec2 = {
+﻿import { InterpolationUtils } from "./InterpolateUtils";
+
+export class Vec2 {
+
     x: number;
     y: number;
+
+    constructor(x = 0, y = 0) {
+        this.x = x;
+        this.y = y;
+    }
+
+    static getVec2(x = 0, y = 0): Vec2 {
+        return new Vec2(x, y);
+    }
+
+    public get length(): number {
+        return Math.sqrt(this.x * this.x + this.y * this.y);
+    }
+
+    public distanceTo(x: number, y: number): number {
+        let dx = x - this.x;
+        let dy = y - this.y;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
 };
 
-export type Vec3 = {
+export class Vec3 {
+
     x: number;
     y: number;
     z: number;
+
+    constructor(x = 0, y = 0, z = 0) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
+    static getVec3(x = 0, y = 0, z = 0): Vec3 {
+        return new Vec3(x, y, z);
+    }
+
+    public get length(): number {
+        return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+    }
+
+    public distanceTo(x: number, y: number, z: number): number {
+        let dx = x - this.x;
+        let dy = y - this.y;
+        let dz = z - this.z;
+        return Math.sqrt(dx * dx + dy * dy + dz * dz);
+    }
+
 };
 
 export class RectABCD {
@@ -21,17 +67,14 @@ export class RectABCD {
 
 export class MyMath {
 
-    public static randomInRange(aMin: number, aMax: number, auto = false): number {
-        if (auto && aMin > aMax) {
-            var tmp = aMin;
-            aMin = aMax;
-            aMax = tmp;
-        }
-        return Math.random() * Math.abs(aMax - aMin) + aMin;
+    public static randomInRange(min: number, max: number): number {
+        if (min > max) throw new Error("MyMath.randomInRange(): Min > Max!");
+        return Math.random() * Math.abs(max - min) + min;
     }
 
-    public static randomIntInRange(aMin: number, aMax: number): number {
-        return Math.round(MyMath.randomInRange(aMin, aMax));
+    public static randomIntInRange(min: number, max: number): number {
+        if (min > max) throw new Error("MyMath.randomIntInRange(): Min > Max!");
+        return Math.round(MyMath.randomInRange(min, max));
     }
 
     /**
@@ -42,7 +85,7 @@ export class MyMath {
         return res;
     }
 
-    public static shuffleArray(mas: any[], factor = 4) {
+    public static shuffleArray(mas: any[], factor = 2) {
         for (let i = 0; i < mas.length * factor; i++) {
             const id1 = this.randomIntInRange(0, mas.length - 1);
             const id2 = this.randomIntInRange(0, mas.length - 1);
@@ -52,117 +95,67 @@ export class MyMath {
         }
     }
 
+    /**
+     * Function restricts a given value between an upper and lower bound.
+     * @param x - target value
+     * @param min - minimum value
+     * @param max - maximum value
+     * @returns Cutted value between [min..max]
+     */
     public static clamp(x, min, max): number {
         return Math.min(Math.max(x, min), max);
     }
 
+    /**
+     * Saturation
+     * @param x - Target value
+     * @returns Cutted value between [0..1]
+     */
     public static sat(x: number): number {
         return this.clamp(x, 0, 1);
     }
 
-    public static lerp(t, a, b): number {
-        return a + (b - a) * t;
-    }
-
-    public static toRadian(aDeg: number): number {
-        return aDeg * Math.PI / 180;
-    }
-
-    public static toDeg(aRad: number): number {
-        return aRad * 180 / Math.PI;
-    }
-
-    public static easeInOutSine(t: number): number {
-        return -(Math.cos(Math.PI * t) - 1) / 2;
-    }
-
-    public static easeOutCirc(x: number): number {
-        return Math.sqrt(1 - Math.pow(x - 1, 2));
-    }
-
-    public static easeInExpo(x: number): number {
-        return x === 0 ? 0 : Math.pow(2, 10 * x - 10);
+    /**
+     * Re-maps a number from one range to another.
+     * Example: map(25, 0, 100, 0, 1000) = 250 the number 25 is converted from a value in the range of 0 to 100 into a value that ranges from the left edge of the window (0) to the right edge (width).
+     * @param value - value
+     * @param min1 
+     * @param max1 
+     * @param min2 
+     * @param max2 
+     */
+    public static map(value: number, min1: number, max1: number, min2: number, max2: number): number {
+        let p = (value - min1) / (max1 - min1);
+        return p * (max2 - min2);
     }
 
     /**
-     * Convert a hex string (#FFAA22 or #FA2) to RGB
-     * @param aHexColorStr 
-     * @returns 
+     * Liener Interpolated value
+     * @param a - Start value
+     * @param b - Finish value
+     * @param t - Time in [0..1]
+     * @returns Value by time
      */
-    public static strHexToRGB(aHexColorStr: string, aIsNormalize = false): { r: number, g: number, b: number } {
-        let newHex = aHexColorStr.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i, (m, r, g, b) => '#' + r + r + g + g + b + b);
-        let res: number[] = newHex.substring(1).match(/.{2}/g).map(x => parseInt(x, 16));
-        return res ? {
-            r: res[0] * (aIsNormalize ? 1 / 255 : 1),
-            g: res[1] * (aIsNormalize ? 1 / 255 : 1),
-            b: res[2] * (aIsNormalize ? 1 / 255 : 1)
-        } : null;
+    public static lerp(a: number, b: number, t: number): number {
+        return InterpolationUtils.linear(a, b, t);
     }
 
     /**
-     * Convert hex num (0x2266FF) to RGB
-     * @param aHexNum 
-     * @returns 
+     * Degrees to Radians
+     * @param deg - Angle in degrees
+     * @returns Angle in radians
      */
-    public static hexToRGB(aHexNum: number): { r: number, g: number, b: number } {
-        let res = {
-            r: (aHexNum >> 16) & 255,
-            g: (aHexNum >> 8) & 255,
-            b: aHexNum & 255
-        };
-        return res;
+    public static toRadian(deg: number): number {
+        return deg * Math.PI / 180;
     }
 
     /**
-     * 
-     * @param c number in 0-255 format
-     * @returns hex string like AF, D6 etc
+     * Radians to Degrees
+     * @param rad - Angle in radians
+     * @returns Angle in degrees
      */
-    static byteToHexStr(c: number): string {
-        let hex = c.toString(16);
-        //LogMng.debug(`componentToHex: c = ${c}, hex = ${hex}`);
-        return hex.length == 1 ? "0" + hex : hex;
-    }
-
-    /**
-     * Convert RGB to Hex string
-     * @param r Red in format 0 - 255
-     * @param g Green in format 0 - 255
-     * @param b Blue in format 0 - 255
-     * @returns 
-     */
-    public static rgbToHexStr(r: number, g: number, b: number) {
-        return "#" + this.byteToHexStr(r) + this.byteToHexStr(g) + this.byteToHexStr(b);
-    }
-
-    /**
-     * Lerp 2 colors in hex
-     * @param aColor1 
-     * @param aColor2 
-     * @param t 
-     * @returns rgb in 0..255 
-     */
-    public static lerpColors(aColor1: number, aColor2: number, t: number, isNormalize = false): {
-        r: number,
-        g: number,
-        b: number
-    } {
-
-        let rgb1 = this.hexToRGB(aColor1);
-        let rgb2 = this.hexToRGB(aColor2);
-        let rgb = {
-            r: Math.floor(this.lerp(rgb1.r, rgb2.r, t)),
-            g: Math.floor(this.lerp(rgb1.g, rgb2.g, t)),
-            b: Math.floor(this.lerp(rgb1.b, rgb2.b, t))
-        };
-
-        if (isNormalize) {
-            rgb.r /= 255;
-            rgb.g /= 255;
-            rgb.b /= 255;
-        }
-
-        return rgb;
+    public static toDeg(rad: number): number {
+        return rad * 180 / Math.PI;
     }
 
     public static getVec2Length(x1: number, y1: number, x2: number, y2: number): number {
@@ -179,19 +172,25 @@ export class MyMath {
     }
 
     /**
-     * Find the angle of a segment from (x1, y1) -> (x2, y2).
-     * @function Phaser.Math.Angle.Between
-     * @param {number} x1 - The x coordinate of the first point.
+     * Find the angle between 2 vectors (x1, y1) -> (x2, y2) via Math.atan2 function.
+     * @param x1 - The x coordinate of the first point.
      * @param {number} y1 - The y coordinate of the first point.
      * @param {number} x2 - The x coordinate of the second point.
      * @param {number} y2 - The y coordinate of the second point.
-     *
-     * @return {number} The angle in radians.
+     * @return The angle in radians.
      */
-    public static angleBetweenATan(x1: number, y1: number, x2: number, y2: number) {
+    public static angleBetweenATan(x1: number, y1: number, x2: number, y2: number): number {
         return Math.atan2(y2 - y1, x2 - x1);
     };
 
+    /**
+     * Angle between 2 vectors (x1, y1) -> (x2, y2) via Math.acos function.
+     * @param x1 - The x coordinate of the first vector.
+     * @param y1 - The y coordinate of the first vector.
+     * @param x2 - The x coordinate of the second vector.
+     * @param y2 - The y coordinate of the second vector.
+     * @return The angle in radians.
+     */
     public static angleBetweenACos(x1: number, y1: number, x2: number, y2: number) {
         let scalar = x1 * x2 + y1 * y2;
         let mod1 = Math.sqrt(x1 * x1 + y1 * y1);
@@ -199,6 +198,14 @@ export class MyMath {
         return Math.acos(scalar / (mod1 * mod2));
     };
 
+    /**
+     * Angle between 2 vectors (x1, y1) -> (x2, y2) via Math.asin function.
+     * @param x1 - The x coordinate of the first vector.
+     * @param y1 - The y coordinate of the first vector.
+     * @param x2 - The x coordinate of the second vector.
+     * @param y2 - The y coordinate of the second vector.
+     * @return The angle in radians.
+     */
     public static angleBetweenASin(x1: number, y1: number, x2: number, y2: number) {
         let scalar = x1 * x2 + y1 * y2;
         let mod1 = Math.sqrt(x1 * x1 + y1 * y1);
@@ -206,11 +213,11 @@ export class MyMath {
         return Math.asin(scalar / (mod1 * mod2));
     };
 
-    public static IsPointInTriangle(ax, ay, bx, by, cx, cy, px, py: number): boolean {
-        var b0x, b0y, c0x, c0y, p0x, p0y: number;
-        var m, l: number; // мю и лямбда
-        var res = false;
-        // переносим треугольник точкой А в (0;0).
+    public static isPointInTriangle(ax, ay, bx, by, cx, cy, px, py: number): boolean {
+        let b0x, b0y, c0x, c0y, p0x, p0y: number;
+        let m, l: number;
+        let res = false;
+        // move triangle А point to (0;0)
         b0x = bx - ax; b0y = by - ay;
         c0x = cx - ax; c0y = cy - ay;
         p0x = px - ax; p0y = py - ay;
@@ -225,8 +232,8 @@ export class MyMath {
     }
 
     public static isPointInRect(rect: RectABCD, p: Vec2): boolean {
-        return MyMath.IsPointInTriangle(rect.a.x, rect.a.y, rect.b.x, rect.b.y, rect.c.x, rect.c.y, p.x, p.y) &&
-            MyMath.IsPointInTriangle(rect.c.x, rect.c.y, rect.d.x, rect.d.y, rect.a.x, rect.a.y, p.x, p.y);
+        return MyMath.isPointInTriangle(rect.a.x, rect.a.y, rect.b.x, rect.b.y, rect.c.x, rect.c.y, p.x, p.y) &&
+            MyMath.isPointInTriangle(rect.c.x, rect.c.y, rect.d.x, rect.d.y, rect.a.x, rect.a.y, p.x, p.y);
     }
 
     public static isPointInCircle(x: number, y: number, cx: number, cy: number, r: number): boolean {
@@ -237,116 +244,17 @@ export class MyMath {
         return MyMath.getVec2Length(x1, y1, x2, y2) <= r1 + r2;
     }
 
-    // INTERPOLATION
-
-    /**
-     * Linear interpolation
-     * @param min 
-     * @param max 
-     * @param perc 
-     * @returns 
-     */
-    public static getValueBetween(min: number, max: number, perc: number): number {
-        return min + (max - min) * perc;
-    }
-
     /**
      * Calculates the factorial of a given number for integer values greater than 0.
-     * @param {number} aValue - A positive integer to calculate the factorial of.
-     * @return {number} The factorial of the given number.
+     * @param aValue - A positive integer to calculate the factorial of.
+     * @return The factorial of the given number.
      */
-    public static factorial(aValue: number) {
+    public static factorial(aValue: number): number {
         if (aValue === 0) return 1;
         let res = aValue;
-        while (--aValue) {
-            res *= aValue;
-        }
+        while (--aValue) res *= aValue;
         return res;
     };
 
-    /**
-     * Calculates the Bernstein basis from the three factorial coefficients.
-     * @param {number} n - The first value.
-     * @param {number} i - The second value.
-     *
-     * @return {number} The Bernstein basis of Factorial(n) / Factorial(i) / Factorial(n - i)
-     */
-    public static bernstein(n, i) {
-        return this.factorial(n) / this.factorial(i) / this.factorial(n - i);
-    };
-
-    /**
-    * A bezier interpolation method.
-    * @param {number[]} v - The input array of values to interpolate between.
-    * @param {number} k - The percentage of interpolation, between 0 and 1.
-    *
-    * @return {number} The interpolated value.
-    */
-    public static bezierInterpolation(v: number[], k: number) {
-        var b = 0;
-        var n = v.length - 1;
-        for (var i = 0; i <= n; i++) {
-            b += Math.pow(1 - k, n - i) * Math.pow(k, i) * v[i] * this.bernstein(n, i);
-        }
-        return b;
-    }
-
-}
-
-
-export class MyLinearSpline {
-
-    private _points: { val, t }[];
-    private _lerp: Function;
-
-    constructor(aLerp?: Function) {
-        this._points = [];
-        if (aLerp) {
-            this._lerp = aLerp;
-        }
-        else {
-            this._lerp = MyMath.lerp;
-        }
-    }
-
-    addPoint(val, t: number) {
-        this._points.push({ val: val, t: t });
-    }
-
-    get(t: number) {
-
-        let id1 = 0;
-
-        for (let i = 0; i < this._points.length; i++) {
-            id1 = i;
-            if (this._points[i].t >= t) break;
-
-        }
-
-        let id2 = id1;
-
-        for (let i = this._points.length - 1; i >= 0; i--) {
-            id2 = i;
-            if (this._points[i].t <= t) break;
-        }
-
-        if (id1 == id2) {
-            return this._points[id1].val;
-        }
-
-        // example:
-        // [ 0.1, 0.3, 0.5, 0.8 ]
-        // t = 0.05
-        // id1 = 0, id2 = 0
-        // t = 0.5
-        // id1 = 2, id2 = 2
-
-        return this._lerp(
-            this._points[id1].val,
-            this._points[id2].val,
-            (t - this._points[id1].t) / (this._points[id2].t - this._points[id1].t)
-        );
-
-    }
 
 }
