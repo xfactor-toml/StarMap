@@ -1,13 +1,17 @@
 .SearchInput {
+  position: relative;
+}
+
+.SearchInput__field {
   width: 100%;
   max-width: 620px;
-  height: 100%;
-  padding-left: 8px;
+  height: 40px;
+  padding: 4px 8px;
   padding-right: 40px;
   color: #00FFFF;
-  border: 1px solid currentColor;
+  border: 1px solid currentColor !important;
   border-radius: 8px;
-  background-color: transparent;
+  background-color: #000;
   font-family: inherit;
   text-align: center;
   font-size: 18px;
@@ -15,8 +19,16 @@
   font-weight: 300;
 }
 
-@media (max-width: 600px) {
-  .SearchInput {
-    padding-right: 8px;
-  }
+.SearchInput__button {
+  display: block;
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  border: none;
+  background-color: transparent;
+  background-image: url(../gui/images/close.svg);
+  background-repeat: no-repeat;
+  background-size: contain;
 }

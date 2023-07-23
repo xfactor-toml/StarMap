@@ -1,0 +1,110 @@
+.PlasmaMintPopup {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  pointer-events: all;
+}
+
+.PlasmaMintPopup__overlay {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.PlasmaMintPopup__box {
+  width: 340px;
+  min-height: 180px;
+  margin: auto;
+  padding: 10px;
+  position: relative;
+  z-index: 1;
+  background-color: #000;
+  border: 1px solid #00ffff;
+  border-radius: 10px;
+}
+
+.PlasmaMintPopup__box::before {
+  content: '';
+  display: block;
+  width: calc(100% + 12px);
+  height: calc(100% + 12px);
+  position: absolute;
+  left: -6px;
+  top: -6px;
+  z-index: -1;
+  border: 1px solid #00ffff;
+  border-radius: 14px;
+  opacity: 0.3;
+}
+
+.PlasmaMintPopup__close {
+  width: 14px;
+  height: 14px;
+  padding: 0;
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  border: none;
+  background-color: transparent;
+  background-image: url(../gui/images/close.svg);
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.PlasmaMintPopup__head {
+  padding: 4px 0 12px;
+  border-bottom: 1px solid rgba(0, 255, 255, 0.5);
+}
+
+.PlasmaMintPopup__title {
+  color: #00ffff;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.1;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+
+.PlasmaMintPopup__label {
+  margin-top: 16px;
+  color: #00ffff;
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.PlasmaMintPopup__field {
+  width: 100%;
+  height: 30px;
+  margin-top: 10px;
+  padding: 8px;
+  border: none;
+  background-color: #fff;
+  border-radius: 2px;
+}
+
+.PlasmaMintPopup__button {
+  width: 100%;
+  margin-top: 30px;
+  padding: 8px 10px;
+  color: #000;
+  background-color: #00ffff;
+  border: none;
+  border-radius: 2px;
+  font-size: 22px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.PlasmaMintPopup__button[disabled] {
+  opacity: 0.6;
+  user-select: none;
+  pointer-events: none;
+}

@@ -1,6 +1,7 @@
 .UserBar {
   display: flex;
   gap: 16px;
+  align-items: center;
   position: absolute;
   right: 0;
   top: 0;
@@ -15,11 +16,23 @@
 
 .UserBar__search-field {
   width: 320px;
-  min-width: 280px;
-  height: 40px;
   position: absolute;
   right: -8px;
   top: -8px;
+  z-index: 1;
+  pointer-events: all;
+}
+
+.UserBar__account {
+  width: auto;
+  height: auto;
+  padding: 4px 8px;
+  color: #00ffff;
+  border: 2px solid currentColor;
+  border-radius: 12px;
+  text-transform: uppercase;
+  font-size: 17px;
+  white-space: nowrap;
   pointer-events: all;
 }
 
@@ -36,6 +49,22 @@
   pointer-events: all;
   will-change: filter;
   transition: ease filter 200ms;
+}
+
+.UserBar__button.is-mint {
+  width: auto;
+  height: auto;
+  padding: 4px 8px;
+  color: #00ffff;
+  border: 2px solid currentColor;
+  border-radius: 12px;
+  text-transform: uppercase;
+  font-size: 17px;
+  white-space: nowrap;
+}
+
+.UserBar__button.is-mint::before {
+  display: none;
 }
 
 .UserBar__button.is-search {
@@ -73,8 +102,23 @@
 
 @media (max-width: 600px) {
   .UserBar__search-field {
-    width: calc(100vw - 36px);
-    right: -82px;
-    top: 64px;
+    width: calc(100% - 36px);
+    left: 18px;
+    top: 86px;
+    position: fixed;
+  }
+
+  .UserBar__button.is-mint {
+    position: fixed;
+    right: 20px;
+    top: 60px;
+  }
+
+  .UserBar.connected .UserBar__search-field {
+    top: 100px;
+  }
+
+  .UserBar.connected .UserBar__popup {
+    top: calc(100% + 50px);
   }
 }

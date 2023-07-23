@@ -3,7 +3,7 @@
     class="StarCreationPanel"
     :class="{
       'is-fetching': fetching,
-      'is-connected': connected
+      'is-connected': walletStore.connected
     }"
     ref="tooltip"
   >
@@ -19,7 +19,7 @@
       />
     </div>
     <div class="StarCreationPanel__body">
-      <template v-if="connected">
+      <template v-if="walletStore.connected">
         <input
           ref="input"
           v-model="starName"
@@ -95,7 +95,7 @@ import { mobileUrl } from '~/blockchain/config';
 import { roundNumber } from '@/utils';
 import { PropType } from 'vue';
 import { Star, StarPosition } from '@/models';
-import { useSettingsStore, useStarsStore } from '@/stores';
+import { useSettingsStore, useStarsStore, useWalletStore } from '@/stores';
 import { mapStores } from 'pinia';
 
 export default {
@@ -109,17 +109,15 @@ export default {
     approved: false,
     approving: false,
     balance: 0,
-    connected: true,
     creationCost: 0,
     createdStar: null,
     creating: false,
     fetching: false,
-    installed: false,
     preview: './gui/images/phantom-star.png',
     starName: ''
   }),
   computed: {
-    ...mapStores(useSettingsStore, useStarsStore),
+    ...mapStores(useSettingsStore, useStarsStore, useWalletStore),
     roundedBalance() {
       return roundNumber(this.balance, this.balance > 1000 ? 2 : 4);
     },
@@ -134,11 +132,11 @@ export default {
         return '';
       }
 
-      if (!this.installed) {
+      if (!this.walletStore.installed) {
         return `Wallet not installed<br><a href="${mobileUrl}" target="_blank">install</a>`;
       }
 
-      if (!this.connected) {
+      if (!this.walletStore.connected) {
         return 'Wallet not connected';
       }
 
@@ -191,10 +189,8 @@ export default {
     this.fetching = true;
     this.balance = await this.$wallet.getBalance();
     this.creationCost = await this.$wallet.getCreationCost();
-    this.installed = this.$wallet.installed;
-    this.connected = this.$wallet.connected;
 
-    if (this.connected) {
+    if (this.walletStore.connected) {
       this.$refs.input?.focus();
     }
 

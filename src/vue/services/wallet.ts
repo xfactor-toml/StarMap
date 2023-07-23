@@ -8,6 +8,7 @@ import {
   GetBalance,
   GetCreationCost,
   IncreaseStarLevel,
+  MintPlasma,
   NetworkAuth,
   RefuelStar,
   RequiredPlasmaToApprove,
@@ -16,12 +17,15 @@ import {
 import { fuelTarget } from '~/blockchain/types';
 import { Coords, StarList } from '~/blockchain/types';
 
+
 export class WalletService {
   account = '';
   connected = false;
   installed = false;
   currency = 'plasma';
   subscribed = false;
+
+  stateListeners = []
 
   async connect() {
     if (!this.subscribed) {
@@ -80,6 +84,10 @@ export class WalletService {
     return GetAllStarData();
   }
 
+  async mintPlasma(amount: number): Promise<number> {
+    return MintPlasma(this.account, amount);
+  }
+
   async requiredPlasmaToApprove() {
     return this.checkConnection(() => RequiredPlasmaToApprove(this.account));
   }
@@ -95,13 +103,32 @@ export class WalletService {
     this.installed = auth !== null;
 
     if (!auth) {
+      this.callListeners()
+
       return false;
     }
 
     this.connected = true;
     this.account = auth;
+    this.callListeners()
 
     return true;
+  }
+
+  onStateUpdate(listener: () => {}) {
+    this.stateListeners.push(listener)
+  }
+
+  callListeners() {
+    if (this.stateListeners.length) {
+      this.stateListeners.forEach(listener => {
+        listener({
+          account: this.account,
+          connected: this.connected,
+          installed: this.installed,
+        })
+      })
+    }
   }
 
   static VuePlugin = {

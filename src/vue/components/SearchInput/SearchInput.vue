@@ -1,9 +1,13 @@
 <template>
-  <input
-    class="SearchInput"
-    :value="modelValue"
-    @input="handleValueChange"
-  >
+  <div class="SearchInput">
+    <input
+    ref="input"
+      class="SearchInput__field"
+      :value="modelValue"
+      @input="handleValueChange"
+    >
+    <button class="SearchInput__button" @click="$emit('close')"/>
+  </div>
 </template>
 
 <script lang="ts">
@@ -21,7 +25,7 @@ export default {
     }
   },
   mounted() {
-    this.$el.focus()
+    this.$refs.input?.focus()
   }
 };
 </script>
