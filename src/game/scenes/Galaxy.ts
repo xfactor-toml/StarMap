@@ -1209,7 +1209,10 @@ export class Galaxy implements ILogger {
     private getNearestStarPosition(aPoint: THREE.Vector3): THREE.Vector3 {
         let res: THREE.Vector3;
         let minDist = Number.MAX_SAFE_INTEGER;
-        let stars = this._quadTreeReal.getPointsInCircle(new QTCircle(aPoint.x, aPoint.z, 200));
+        let quadTree = this._fsm.getCurrentState().name == States.realStars
+            ? this._quadTreeReal
+            : this._quadTreePhantom;
+        let stars = quadTree.getPointsInCircle(new QTCircle(aPoint.x, aPoint.z, 200));
         for (let i = 0; i < stars.length; i++) {
             const star = stars[i];
             let dist = MyMath.getVec2Length(aPoint.x, aPoint.z, star.x, star.y);
