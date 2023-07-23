@@ -1,7 +1,7 @@
 <template>
   <div class="StarBoostPanel" ref="tooltip">
     <div class="StarBoostPanel__header">
-      <div class="StarBoostPanel__title">Boost {{ label }}.</div>
+      <div class="StarBoostPanel__title">Boost {{ label }}</div>
       <button
         class="StarBoostPanel__close"
         type="button"
