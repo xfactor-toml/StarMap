@@ -1,4 +1,4 @@
-import { connect, env, networkParams, reserveRpcs } from "../config";
+import { connect, env, mobileUrl, networkParams, reserveRpcs } from "../config";
 import { account } from "../types";
 
 export function IsTrueNetwork (): boolean {
@@ -8,6 +8,13 @@ export function IsTrueNetwork (): boolean {
 
 async function NetworkAuth (): Promise<account> {
     if (!env) {
+
+        // Checking mobile device
+        if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+
+            document.location.href = mobileUrl
+        }
+
         return null
     }
 
