@@ -312,10 +312,10 @@
           />
         </transition>
         <path
-          :style="getParamProgressStyle(382, star.hud.totalEnergy.percent, true)"
+          :style="getParamProgressStyle(382, star.hud.totalEnergy.percent)"
           id="total-energy-level-line-progress"
           class="StarPanel__line is-progress"
-          d="M654.1,188.9c46,46,71.3,107.1,71.3,172.1s-25.3,126.2-71.3,172.1"
+          d="m654.1,532.89998c46,-45.94654 71.3,-106.97554 71.3,-171.9s-25.3,-126.05334 -71.3,-171.9"
         />
         <transition name="fade">
           <path
@@ -355,11 +355,10 @@
           />
         </transition>
         <path
-          :style="getParamProgressStyle(462, star.hud.energyPerHour.percent, true)"
+          :style="getParamProgressStyle(462, star.hud.energyPerHour.percent)"
           id="energy-per-hour-level-line-progress"
           class="StarPanel__line is-progress"
-          d="M689.5,153.5c55.4,55.4,85.9,129.1,85.9,207.5
-						s-30.5,152.1-85.9,207.5"
+          d="m689.5,568.50002c55.4,-55.26651 85.9,-128.78892 85.9,-207.00001s-30.5,-151.7335 -85.9,-207.00001"
         />
         <transition name="fade">
           <path
@@ -400,10 +399,10 @@
           />
         </transition>
         <path
-          :style="getParamProgressStyle(540, star.hud.life.percent, true)"
+          :style="getParamProgressStyle(540, star.hud.life.percent)"
           id="life-level-line-progress"
           class="StarPanel__line is-progress"
-          d="M724.9,118.1C789.7,183,825.4,269.3,825.4,361s-35.7,178-100.6,242.8"
+          d="m724.9,604.09984c64.8,-64.98015 100.5,-151.38674 100.5,-243.19999s-35.7,-178.21984 -100.6,-243.09987"
         />
         <transition name="fade">
           <path
@@ -545,14 +544,12 @@ export default {
   },
   methods: {
     // value 0...1
-    getParamProgressStyle(dasharray: number, value: number, negative = false) {
-      const min = negative ? dasharray * -1 : 0
-      const max = negative ? 0 : dasharray
-      const offset = (dasharray - dasharray * value) * (negative ? -1 : 1)
+    getParamProgressStyle(dasharray: number, value: number) {
+      const offset = dasharray - dasharray * value
 
       return {
         'stroke-dasharray': `${dasharray}px`,
-        'stroke-dashoffset': `${MyMath.clamp(offset, min, max)}px`
+        'stroke-dashoffset': `${MyMath.clamp(offset, 0, dasharray)}px`
       };
     },
     selectParam(param: StarHudParam) {
