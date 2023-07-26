@@ -479,7 +479,7 @@
 
 <script lang="ts">
 import { StarHudParam } from '@/models';
-import { useStarsStore } from '@/stores';
+import { useStarsStore, useWalletStore } from '@/stores';
 import { formatNumber } from '@/utils';
 import { mapStores } from 'pinia';
 import { MyMath } from '~/game/utils/MyMath';
@@ -504,12 +504,12 @@ export default {
     selectedParam: 'mass'
   }),
   computed: {
-    ...mapStores(useStarsStore),
+    ...mapStores(useStarsStore, useWalletStore),
     star() {
       return this.starsStore.getById(this.starId);
     },
     isOwner() {
-      return this.star.owner === this.$wallet.account;
+      return this.star.owner === this.walletStore.account;
     },
     description() {
       return `Federation of ${this.star.description.toLowerCase()}`;

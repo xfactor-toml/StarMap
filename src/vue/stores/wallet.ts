@@ -1,18 +1,4 @@
 import { defineStore } from 'pinia';
-import {
-  GuiMode,
-  GuiModeName,
-  GuiScreen,
-  GuiViewName,
-  PhantomStarPreviewEvent,
-  ShowStarGuiEvent,
-  ShowStarPreviewEvent,
-  StarBoostPanelType
-} from '@/types';
-import { MODES } from '@/constants';
-import { Star, StarPosition, StarScreenPosition } from '@/models';
-import { useStarsStore } from '@/stores/stars';
-import { WINDOW_MOBILE_BREAKPOINT } from '@/constants/global';
 
 type WalletStoreState = {
   account: string;

@@ -74,10 +74,10 @@
           <template v-else>
             <button
               class="StarBoostPanel__button is-yellow"
-              :disabled="!canLevelUp || levelUpPending"
+              :disabled="!canLevelUp || approving || levelUpPending"
               @click="levelUp"
             >
-              {{ levelUpPending ? 'Pending...' : 'Level up' }}
+              {{ levelUpLabel }}
             </button>
           </template>
         </div>
@@ -112,12 +112,12 @@ export default {
   },
   data: () => ({
     approved: false,
+    approving: false,
     allowed: 0,
     balance: 0,
     boostPercent: 50,
     creationCost: 0,
     fetching: false,
-    installed: false,
     pending: false,
     levelUpPending: false
   }),
@@ -125,6 +125,13 @@ export default {
     ...mapStores(useStarsStore),
     label() {
       return this.type === 'exp' ? 'exp.' : 'nrg.';
+    },
+    levelUpLabel() {
+      if (!this.approved && this.approving) {
+        return 'Approving...'
+      }
+
+      return this.levelUpPending ? 'Pending...' : 'Level up'
     },
     roundedBalance() {
       return roundNumber(this.balance, this.balance > 1000 ? 2 : 4);
@@ -180,6 +187,13 @@ export default {
       this.fetchData();
     },
     async levelUp() {
+      this.approving = true;
+
+      const approvedPlasma = await this.$wallet.approvePlasma(this.creationCost);
+
+      this.approving = false;
+      this.approved = approvedPlasma >= this.creationCost;
+
       this.levelUpPending = true;
 
       const updatedStar = await this.$wallet.increaseStarLevel(this.starId);
@@ -212,7 +226,6 @@ export default {
 
     await this.fetchData();
 
-    this.installed = this.$wallet.installed;
     this.fetching = false;
   }
 };
