@@ -148,14 +148,16 @@ async function CreateNewStar (owner : account, name : string, uri = `${document.
         const requiredToAllow = await RequiredPlasmaToApprove(owner)
 
         if (requiredToAllow > 0) {
-            try {
+            return null
+
+            /* try {
                 const allowed = await ApprovePlasma(owner, requiredToAllow)
                 if (allowed < requiredToAllow) {
                     return null
                 }
             } catch (e) {
                 return null
-            }
+            } */
         }
 
         try {
@@ -188,8 +190,10 @@ async function RefuelStar ( account : account,
 
       const allowedAmount = await GetAllowance (account, nft)
 
-      if (allowedAmount < amount) {
-        const demand = amount - allowedAmount
+    if (allowedAmount < amount) {
+          
+        return null
+        /* const demand = amount - allowedAmount
         try {
             const allowed = await ApprovePlasma(account, demand)
             if (allowed < amount) {
@@ -197,7 +201,7 @@ async function RefuelStar ( account : account,
             }
         } catch (e) {
             return null
-        }
+        } */
       }
 
       try {
@@ -235,14 +239,15 @@ async function IncreaseStarLevel (owner : account, starId : number) : Promise<St
 
     const requireApprove = await RequiredPlasmaToApprove (owner, newLevel)
     if (requireApprove > 0) {
-        try {
+        return null
+        /* try {
             const allowed = await ApprovePlasma(owner, requireApprove, nft)
             if (allowed < requireApprove) {
                 return null
             }
         } catch (e) {
             return null
-        }
+        } */
     }
 
     try {
