@@ -32,7 +32,7 @@ async function RequiredPlasmaToApprove (owner : account, level : number = 1) : P
     const demand = await GetCreationCost(level)
     const allowed = await GetAllowance(owner, nft)
 
-    if (allowed > demand) {
+    if (allowed >= demand) {
         return 0
     }
     return Number(demand - allowed) / 1e18
@@ -147,18 +147,18 @@ async function CreateNewStar (owner : account, name : string, uri = `${document.
 
         const requiredToAllow = await RequiredPlasmaToApprove(owner)
 
-        if (requiredToAllow > 0) {
-            return null
+        /* if (requiredToAllow > 0) {
+            // return null
 
-            /* try {
+            try {
                 const allowed = await ApprovePlasma(owner, requiredToAllow)
                 if (allowed < requiredToAllow) {
                     return null
                 }
             } catch (e) {
                 return null
-            } */
-        }
+            }
+        } */
 
         try {
             const coordX = String(Math.round(coords.X * 1000000))
@@ -190,10 +190,10 @@ async function RefuelStar ( account : account,
 
       const allowedAmount = await GetAllowance (account, nft)
 
-    if (allowedAmount < amount) {
+    /* if (allowedAmount < amount) {
           
-        return null
-        /* const demand = amount - allowedAmount
+        // return null
+         const demand = amount - allowedAmount
         try {
             const allowed = await ApprovePlasma(account, demand)
             if (allowed < amount) {
@@ -201,8 +201,8 @@ async function RefuelStar ( account : account,
             }
         } catch (e) {
             return null
-        } */
-      }
+        }
+      } */
 
       try {
         const fuel = BigInt(amount * 1e18).toString()
@@ -238,17 +238,17 @@ async function IncreaseStarLevel (owner : account, starId : number) : Promise<St
     }
 
     const requireApprove = await RequiredPlasmaToApprove (owner, newLevel)
-    if (requireApprove > 0) {
-        return null
-        /* try {
+    /* if (requireApprove > 0) {
+        // return null
+        try {
             const allowed = await ApprovePlasma(owner, requireApprove, nft)
             if (allowed < requireApprove) {
                 return null
             }
         } catch (e) {
             return null
-        } */
-    }
+        }
+    } */
 
     try {
 	    const gs = await web3.eth.getGasPrice()
