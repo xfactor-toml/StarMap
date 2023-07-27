@@ -15,7 +15,7 @@ import { ClientEventsService } from '@/services';
 export default {
   name: 'App',
   data: () => ({
-    version: 'v0.3'
+    version: 'v0.3.01'
   }),
   computed: {
     ...mapStores(useSettingsStore),
