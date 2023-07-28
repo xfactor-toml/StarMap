@@ -56,29 +56,59 @@
           </template>
         </div>
       </div>
+
       <div class="StarBoostPanel__group">
         <template v-if="fetching">
           <div class="StarBoostPanel__skeleton is-button" />
         </template>
         <template v-else>
-          <button class="StarBoostPanel__button" :disabled="canLevelUp || pending" @click="boost">
-            {{ pending ? 'Pending...' : `Boost ${label}` }}
-          </button>
+          <template v-if="type === 'energy' || !canLevelUp">
+            <template v-if="boostApproved">
+              <button
+                class="StarBoostPanel__button"
+                :disabled="pending"
+                @click="boost"
+              >
+                {{ pending ? 'Pending...' : `Boost ${label}` }}
+              </button>
+            </template>
+            <template v-else>
+              <button
+                class="StarBoostPanel__button"
+                :disabled="approving"
+                @click="approve(requiredPlasma)"
+              >
+                {{ approving ? 'Approving...' : 'Approve ' }}
+              </button>
+            </template>
+          </template>
         </template>
       </div>
+
       <template v-if="type === 'exp'">
         <div class="StarBoostPanel__group">
           <template v-if="fetching">
             <div class="StarBoostPanel__skeleton is-button" />
           </template>
           <template v-else>
-            <button
-              class="StarBoostPanel__button is-yellow"
-              :disabled="!canLevelUp || approving || levelUpPending"
-              @click="levelUp"
-            >
-              {{ levelUpLabel }}
-            </button>
+            <template v-if="canLevelUp && !levelUpApproved">
+              <button
+                class="StarBoostPanel__button is-yellow"
+                :disabled="!canLevelUp || approving"
+                @click="approve(creationCost)"
+              >
+                {{ approving ? 'Approving...' : 'Approve' }}
+              </button>
+            </template>
+            <template v-else>
+              <button
+                class="StarBoostPanel__button is-yellow"
+                :disabled="!canLevelUp || levelUpPending"
+                @click="levelUp"
+              >
+                {{ levelUpPending ? 'Pending...' : 'Level up' }}
+              </button>
+            </template>
           </template>
         </div>
       </template>
@@ -96,7 +126,7 @@ import { PropType } from 'vue';
 import { StarBoostPanelType } from '@/types';
 
 export default {
-  name: 'StarBoostPanel',
+  name: 'StarNrgBoostPanel',
   components: {
     PlasmaSlider
   },
@@ -111,7 +141,6 @@ export default {
     }
   },
   data: () => ({
-    approved: false,
     approving: false,
     allowed: 0,
     balance: 0,
@@ -125,13 +154,6 @@ export default {
     ...mapStores(useStarsStore),
     label() {
       return this.type === 'exp' ? 'exp.' : 'nrg.';
-    },
-    levelUpLabel() {
-      if (!this.approved && this.approving) {
-        return 'Approving...'
-      }
-
-      return this.levelUpPending ? 'Pending...' : 'Level up'
     },
     roundedBalance() {
       return roundNumber(this.balance, this.balance > 1000 ? 2 : 4);
@@ -160,11 +182,23 @@ export default {
     canBuy() {
       return this.balance > 0 && this.balance >= this.requiredAmount;
     },
+    boostApproved() {
+      return this.allowed >= this.requiredPlasma
+    },
     canLevelUp() {
       return this.requiredAmount === 0;
+    },
+    levelUpApproved() {
+      return this.allowed >= this.creationCost
     }
   },
   methods: {
+    async approve(plasmaAmount) {
+      this.approving = true;
+      await this.$wallet.approvePlasma(plasmaAmount);
+      await this.fetchData()
+      this.approving = false;
+    },
     async boost() {
       this.pending = true;
 
@@ -178,22 +212,16 @@ export default {
         this.requiredPlasma
       );
 
-      this.pending = false;
-
+      
       if (updatedStar) {
         this.starsStore.updateStar(new Star(updatedStar));
       }
+      
+      await this.fetchData();
 
-      this.fetchData();
+      this.pending = false;
     },
     async levelUp() {
-      this.approving = true;
-
-      const approvedPlasma = await this.$wallet.approvePlasma(this.creationCost);
-
-      this.approving = false;
-      this.approved = approvedPlasma >= this.creationCost;
-
       this.levelUpPending = true;
 
       const updatedStar = await this.$wallet.increaseStarLevel(this.starId);
@@ -223,9 +251,7 @@ export default {
   },
   async mounted() {
     this.fetching = true;
-
     await this.fetchData();
-
     this.fetching = false;
   }
 };
