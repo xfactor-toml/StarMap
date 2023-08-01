@@ -37,7 +37,7 @@ export const useStarsStore = defineStore('stars', {
     },
     setLevelsFilter(levels: number[]) {
       this.levelsFilter = levels;
-      this.client.updateStarLevelFilter(this.selectedLevels);
+      this.client.updateStarLevelFilter(this.levelsFilter);
     }
   },
   getters: {
