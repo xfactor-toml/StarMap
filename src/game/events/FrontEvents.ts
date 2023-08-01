@@ -29,7 +29,7 @@ export const FrontEvents = {
     // bot panel
     onBotPanelPhantomClick: new Signal(),
     onBotPanelRealClick: new Signal(),
-
+    
     /**
      * dispatch(levels), levels: [1, 2, 3, 4, 5]
      */

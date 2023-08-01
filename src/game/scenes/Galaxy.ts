@@ -268,12 +268,18 @@ export class Galaxy implements ILogger {
         this._fsm.startState(States.init);
 
         // front events
+        this.initFrontEvents();
+
+    }
+
+    private initFrontEvents() {
 
         FrontEvents.setMusicVolume.add((aData: { v: number }) => {
             let am = AudioMng.getInstance();
             am.musicVolume = aData.v;
             localStorage.setItem(`musicVolume`, String(am.musicVolume));
         }, this);
+
         FrontEvents.setSFXVolume.add((aData: { v: number }) => {
             let am = AudioMng.getInstance();
             am.sfxVolume = aData.v;
@@ -281,7 +287,7 @@ export class Galaxy implements ILogger {
         }, this);
 
         FrontEvents.diveIn.add((aData: { starId: number }) => {
-            this._fsm.startState(States.toStar, { 
+            this._fsm.startState(States.toStar, {
                 starId: aData.starId,
                 starParams: this.starPointParamsHovered.starParams
             });
@@ -306,6 +312,8 @@ export class Galaxy implements ILogger {
                     break;
             }
         }, this);
+
+        FrontEvents.starLevelFilterUpdate.add(this.onLevelFilterChanged, this);
 
     }
 
@@ -476,6 +484,10 @@ export class Galaxy implements ILogger {
             if (this._gridPlane) this._gridPlane.visible = v;
         });
 
+    }
+
+    private onLevelFilterChanged(aLevels: number[]) {
+        this._realStarsParticles.setLevelFilter(aLevels);
     }
 
     gotoGalaxy() {
@@ -659,7 +671,7 @@ export class Galaxy implements ILogger {
                 let dist = MyMath.getVec3Length(rsd.pos.x, rsd.pos.y, rsd.pos.z, sd.pos.x, sd.pos.y, sd.pos.z);
                 if (dist <= 0.01) {
                     // remove
-                    this.logWarn(`remove star for dist: ${dist}`);
+                    this.logDebug(`remove star for dist: ${dist}`);
                     this._phantomStarsData.splice(i, 1);
                     isDeleted = true;
                     break;
@@ -798,11 +810,7 @@ export class Galaxy implements ILogger {
     private recreateGalaxyStars(aLoadFromFile = false) {
 
         this.recreateRealStars();
-
-        // this.destroyGalaxyStars();
-        // StarGenerator.getInstance().resetStarId();
         this.destroyPhantomStarParticles();
-        // this.destroyRealStarParticles();
 
         Settings.galaxyData.starsCount = this._phantomStarsData.length;
 
@@ -965,7 +973,7 @@ export class Galaxy implements ILogger {
         this._scene.background = loader.getCubeTexture('skybox');
     }
 
-    // SMALL GALAXIES
+    // BG GALAXIES
 
     private createSmallGalaxies(aLoadFromFile = false) {
 
@@ -1454,6 +1462,8 @@ export class Galaxy implements ILogger {
         return an;
     }
 
+    // UPDATES
+
     private updateGalaxyPlane(dt: number) {
         const MIN_ALPHA = 0.0;
         const an = this.getAbsPolarAngle();
@@ -1476,7 +1486,7 @@ export class Galaxy implements ILogger {
         const MIN_ALPHA = 0.5;
         let starsOpacity = MIN_ALPHA + (1 - (an / (Math.PI / 2))) * (1 - MIN_ALPHA);
 
-        let camDist = this._camera.position.length()
+        let camDist = this._camera.position.length();
         this._info.cameraDistance = camDist;
         this._info.cameraDistanceStr = String(camDist.toFixed(0));
         this._info.camDistGui?.updateDisplay();

@@ -46,6 +46,7 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
     private _material: THREE.ShaderMaterial;
     private _stars: THREE.Points;
     private _alphaFactor = 1;
+    private _levelFilter = [1, 2, 3, 4, 5];
 
     private _type: Version;
 
@@ -249,13 +250,9 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
         };
     }
 
-    // public set azimutAngle(v: number) {
-    //     this._azimutAngle = v;
-    // }
-
-    // public set polarAngle(v: number) {
-    //     this._polarAngle = v;
-    // }
+    setLevelFilter(aLevels: number[]) {
+        this._levelFilter = aLevels;
+    }
 
     updateUniformValues() {
         this._material.uniforms.radiusMin.value = Settings.skyData.radiusMin;
@@ -307,8 +304,11 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
                     b.isFade = !b.isFade;
                     b.progressTime = 0;
                 }
-
                 
+            }
+
+            if (this._levelFilter.indexOf(sd.starInfo.level) < 0) {
+                a = .1;
             }
 
             let clrId = i * 4;
