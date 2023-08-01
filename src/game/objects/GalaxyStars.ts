@@ -47,6 +47,7 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
     private _stars: THREE.Points;
     private _alphaFactor = 1;
     private _levelFilter = [1, 2, 3, 4, 5];
+    private _nameFilter = '';
 
     private _type: Version;
 
@@ -254,6 +255,10 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
         this._levelFilter = aLevels;
     }
 
+    setNameFilter(aName: string) {
+        this._nameFilter = aName;
+    }
+
     updateUniformValues() {
         this._material.uniforms.radiusMin.value = Settings.skyData.radiusMin;
         this._material.uniforms.radiusMax.value = Settings.skyData.radiusMax;
@@ -308,6 +313,10 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
             }
 
             if (this._levelFilter.indexOf(sd.starInfo.level) < 0) {
+                a = .1;
+            }
+
+            if (this._nameFilter.length > 0 && !sd.starInfo.name.includes(this._nameFilter)) {
                 a = .1;
             }
 

@@ -247,7 +247,10 @@ export class QuadTree {
         return res;
     }
 
-    getPointsInCircle(aCircle: QTCircle): QTPoint[] {
+    getPointsInCircle(aCircle: QTCircle, params?: {
+        levels?: number[],
+        name?: string
+    }): QTPoint[] {
         let res: QTPoint[] = [];
 
         if (this._devided) {
@@ -258,6 +261,9 @@ export class QuadTree {
         else if (this._boundary.intersectCircle(aCircle)) {
             for (let i = 0; i < this._points.length; i++) {
                 const p = this._points[i];
+                const starInfo = p.data.starData.starInfo;
+                if (params?.levels?.indexOf(starInfo.level) < 0) continue;
+                if (params?.name?.length > 0 && !starInfo.name.includes(params.name)) continue;
                 if (aCircle.isPointContains(p)) res.push(p);
             }
         }

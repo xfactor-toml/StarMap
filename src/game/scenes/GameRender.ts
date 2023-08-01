@@ -90,6 +90,7 @@ export class GameRender {
 
         if (Settings.isDebugMode) {
             Settings.datGui = new datGui.GUI();
+            Settings.datGui.close();
         }
 
         // clock

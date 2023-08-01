@@ -103,14 +103,14 @@ export class Galaxy implements ILogger {
     private _quadTreePhantom: QuadTree;
     private _qtDebugRender: QTDebugRender;
 
-    private _info: {
-        cameraDistance: number,
-        cameraDistanceStr: string,
-        camDistGui?: datGui.GUIController
-    } = {
-            cameraDistance: 0,
-            cameraDistanceStr: '0'
-        }
+    private _info: { cameraDistance: number, cameraDistanceStr: string, camDistGui?: datGui.GUIController } = {
+        cameraDistance: 0,
+        cameraDistanceStr: '0'
+    }
+
+    // filters
+    private _levelFilter = [1, 2, 3, 4, 5];
+    private _nameFilter = '';
 
 
     constructor(aParams: any) {
@@ -313,7 +313,8 @@ export class Galaxy implements ILogger {
             }
         }, this);
 
-        FrontEvents.starLevelFilterUpdate.add(this.onLevelFilterChanged, this);
+        FrontEvents.starLevelFilterChanged.add(this.onLevelFilterChanged, this);
+        FrontEvents.starNameFilterChanged.add(this.onNameFilterChanged, this);
 
     }
 
@@ -487,7 +488,13 @@ export class Galaxy implements ILogger {
     }
 
     private onLevelFilterChanged(aLevels: number[]) {
-        this._realStarsParticles.setLevelFilter(aLevels);
+        this._levelFilter = aLevels;
+        this._realStarsParticles?.setLevelFilter(this._levelFilter);
+    }
+
+    private onNameFilterChanged(aName: string) {
+        this._nameFilter = aName;
+        this._realStarsParticles.setNameFilter(this._nameFilter);
     }
 
     gotoGalaxy() {
@@ -1579,7 +1586,10 @@ export class Galaxy implements ILogger {
         let points: QTPoint[] = [];
         switch (this._fsm.getCurrentState().name) {
             case States.realStars:
-                points = this._quadTreeReal.getPointsInCircle(new QTCircle(targetPos.x, targetPos.z, checkRadius));
+                points = this._quadTreeReal.getPointsInCircle(new QTCircle(targetPos.x, targetPos.z, checkRadius), {
+                    levels: this._levelFilter,
+                    name: this._nameFilter
+                });
                 break;
             case States.phantomStars:
                 points = this._quadTreePhantom.getPointsInCircle(new QTCircle(targetPos.x, targetPos.z, checkRadius));

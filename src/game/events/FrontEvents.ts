@@ -33,7 +33,12 @@ export const FrontEvents = {
     /**
      * dispatch(levels), levels: [1, 2, 3, 4, 5]
      */
-    starLevelFilterUpdate: new Signal(),
+    starLevelFilterChanged: new Signal(),
+
+    /**
+     * dispatch(name), name: string
+     */
+    starNameFilterChanged: new Signal(),
 
     /**
      * (aStarData: ServerStarData)

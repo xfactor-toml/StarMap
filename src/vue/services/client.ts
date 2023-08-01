@@ -42,12 +42,13 @@ export class ClientService {
   }
 
   updateStarLevelFilter(levels: number[]) {
-    this.dispatcher.starLevelFilterUpdate.dispatch(levels);
+    this.dispatcher.starLevelFilterChanged.dispatch(levels);
   }
 
   @debounce(200)
   search(key: string) {
-    console.log(key);
+    // console.log(key);
+    this.dispatcher.starNameFilterChanged.dispatch(key);
   }
 
   onClick() {
