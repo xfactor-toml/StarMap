@@ -312,18 +312,14 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
                 
             }
 
-            if (this._levelFilter.indexOf(sd.starInfo.level) < 0) {
-                a = .1;
-            }
-
-            if (this._nameFilter.length > 0 && !sd.starInfo.name.includes(this._nameFilter)) {
-                a = .1;
-            }
+            if (sd?.starInfo?.level != null && this._levelFilter.indexOf(sd.starInfo.level) < 0)
+                a = .05;
+            if (sd?.starInfo?.name != null && this._nameFilter.length > 0 && !sd.starInfo.name.includes(this._nameFilter))
+                a = .05;
 
             let clrId = i * 4;
             clr.array[clrId + 3] = a * this._alphaFactor;
             // clr[clrId + 3] = a * this._alphaFactor;
-            // LogMng.debug(`clr a: ${clr.array[clrId + 3]}`);
 
         }
 
