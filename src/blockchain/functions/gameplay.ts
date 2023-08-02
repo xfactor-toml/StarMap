@@ -1,6 +1,6 @@
 import { w3cwebsocket as WebSocket } from 'websocket';
 import Web3 from "web3";
-import { wsServerUrl, env } from "../config";
+import { wsServerUrl, env, pingPongDelay } from "../config";
 
 export async function GameAuth(account: string): Promise<WebSocket | null> {
   if (!env || !account) {
@@ -13,7 +13,11 @@ export async function GameAuth(account: string): Promise<WebSocket | null> {
   return await new Promise((resolve) => {
     wss.onopen = (ws: WebSocket) => {
       let isAuthRequested = false;
+	  const PingPong = setInterval(() => {
+                wss.send('ping');
+              }, pingPongDelay);
       wss.onmessage = async (message: any) => {
+
         try {
           const msg = JSON.parse(message.data);
 
@@ -45,20 +49,11 @@ export async function GameAuth(account: string): Promise<WebSocket | null> {
       };
 
       wss.onclose = () => {
+        console.log("closed");
+		clearInterval(PingPong)
         resolve(null);
         return null;
       };
     };
   });
-}
-
-export async function EnterGame (ws : WebSocket) {
-    return await new Promise(resolve =>{
-        ws.send(JSON.stringify({
-            action: "entergame"
-        })).then(() => {
-            resolve(true)
-        })
-    })
-
 }
