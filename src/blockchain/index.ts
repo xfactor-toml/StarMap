@@ -25,6 +25,5 @@ export {
 } from './functions/starnft'
 
 export {
-    GameAuth,
-    EnterGame
+    GameAuth
 } from './functions/gameplay'
