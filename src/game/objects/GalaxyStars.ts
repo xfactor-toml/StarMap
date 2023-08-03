@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import { GalaxyStarParams } from "~/game/data/Types";
-
 import star1Vert from "../shaders/galaxy/star_v.glsl";
 import star1Frag from "../shaders/galaxy/star_f.glsl";
 import star2Vert from "../shaders/galaxy/star2_v.glsl";
