@@ -1,7 +1,7 @@
 <template>
   <div class="SearchInput">
     <input
-    ref="input"
+      ref="input"
       class="SearchInput__field"
       :value="modelValue"
       @input="handleValueChange"

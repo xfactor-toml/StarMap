@@ -301,6 +301,7 @@ export class Galaxy implements ILogger {
         }, this);
 
         FrontEvents.starPreviewClose.add(() => {
+
             this.isStarPreviewState = false;
             switch (this._fsm.getCurrentState().name) {
                 case States.realStars:
@@ -311,6 +312,7 @@ export class Galaxy implements ILogger {
                     if (!this._orbitControl.enabled) this._orbitControl.enabled = true;
                     break;
             }
+
         }, this);
 
         FrontEvents.starLevelFilterChanged.add(this.onLevelFilterChanged, this);
@@ -1267,10 +1269,12 @@ export class Galaxy implements ILogger {
             case States.realStars:
 
                 if (this.isStarPreviewState) {
+
                     GameEvents.dispatchEvent(GameEvents.EVENT_HIDE_STAR_PREVIEW);
                     if (!this._orbitControl.autoRotate) this._orbitControl.autoRotate = true;
                     this._orbitControl.enableZoom = true;
                     if (!this._orbitControl.enabled) this._orbitControl.enabled = true;
+
                 }
                 else {
 
@@ -1291,8 +1295,6 @@ export class Galaxy implements ILogger {
                         }
 
                         LogMng.debug('onClick(): realStars: starParams:', starParams);
-                        // LogMng.debug('onClick(): realStars: GUI params:', StarMath.getEnergyPerHourValues(starParams.starInfo.serverData.params));
-                        // LogMng.debug('onClick(): realStars: GUI params:', StarMath.getLifeValues(starParams.starInfo.serverData.params));
 
                         GameEvents.dispatchEvent(GameEvents.EVENT_SHOW_STAR_PREVIEW, {
                             starData: starParams.starInfo.serverData,

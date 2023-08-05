@@ -50,6 +50,7 @@ export default {
       this.creationPanel = true;
     },
     closeStarCreationPanel() {
+      if (!this.settingsStore.overlayActive) return;
       this.settingsStore.hideStarTooltip();
       this.creationPanel = false;
     }

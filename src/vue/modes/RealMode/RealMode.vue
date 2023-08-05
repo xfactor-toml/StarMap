@@ -56,6 +56,7 @@ export default {
   },
   methods: {
     hideAllPanels() {
+      if (!this.settingsStore.overlayActive) return;
       this.settingsStore.hideStarBoostPanel();
       this.settingsStore.hideStarTooltip();
     }

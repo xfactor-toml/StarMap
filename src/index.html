@@ -1,58 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="pragma" content="no-cache" />
-    <meta
-      name="viewport"
-      content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"
-    />
-    <!-- Allow fullscreen app install in Android and IOS respectively -->
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta
-      name="apple-mobile-web-app-status-bar-style"
-      content="black-translucent"
-    />
-    <title>Vorpal - Starmap</title>
-    <link rel="icon" href="./favicon.ico" type="image/x-icon">
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <script src="./js/stats.min.js"></script>
 
-    <link rel="prefetch" href="/gui/images/views/view-galaxy.svg">
-    <link rel="prefetch" href="/gui/images/views/view-star.svg">
-    <link rel="prefetch" href="/gui/images/views/view-planet.svg">
-    <link rel="prefetch" href="/gui/images/views/views-panel-toggle.svg">
-    <link rel="prefetch" href="/gui/images/views/views-panel-outline.svg">
-    <link rel="prefetch" href="/gui/images/modes/mode-phantom.svg">
-    <link rel="prefetch" href="/gui/images/modes/mode-real.svg">
-    <link rel="prefetch" href="/gui/images/modes/mode-season.svg">
-    <link rel="prefetch" href="/gui/images/modes/mode-panel-outline.svg">
-    <link rel="prefetch" href="/gui/images/modes/mode-active-marker.svg">
-    <link rel="prefetch" href="/gui/images/modes/modes-toggle-button.svg">
-    <link rel="prefetch" href="/gui/images/levels/level-1.svg">
-    <link rel="prefetch" href="/gui/images/levels/level-2.svg">
-    <link rel="prefetch" href="/gui/images/levels/level-3.svg">
-    <link rel="prefetch" href="/gui/images/levels/level-4.svg">
-    <link rel="prefetch" href="/gui/images/levels/level-5.svg">
-    <link rel="prefetch" href="/gui/images/settings.svg">
-    <link rel="prefetch" href="/gui/images/wallet.svg">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="pragma" content="no-cache" />
+  <meta name="viewport"
+    content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+  <!-- Allow fullscreen app install in Android and IOS respectively -->
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Vorpal - Starmap</title>
+  <link rel="icon" href="./favicon.ico" type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <script src="./js/stats.min.js"></script>
 
-	<!-- Google tag (gtag.js) --> 
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-86DGWJ0YG6"></script> 
-    <script> 
-       window.dataLayer = window.dataLayer || []; 
-       function gtag(){dataLayer.push(arguments);} 
-       gtag('js', new Date()); 
-       gtag('config', 'G-86DGWJ0YG6'); 
-    </script>
-  </head>
-  <body>
-    <div id="game"></div>
-    <div id="gui"></div>
-  </body>
+  <link rel="prefetch" href="/gui/images/views/view-galaxy.svg">
+  <link rel="prefetch" href="/gui/images/views/view-star.svg">
+  <link rel="prefetch" href="/gui/images/views/view-planet.svg">
+  <link rel="prefetch" href="/gui/images/views/views-panel-toggle.svg">
+  <link rel="prefetch" href="/gui/images/views/views-panel-outline.svg">
+  <link rel="prefetch" href="/gui/images/modes/mode-phantom.svg">
+  <link rel="prefetch" href="/gui/images/modes/mode-real.svg">
+  <link rel="prefetch" href="/gui/images/modes/mode-season.svg">
+  <link rel="prefetch" href="/gui/images/modes/mode-panel-outline.svg">
+  <link rel="prefetch" href="/gui/images/modes/mode-active-marker.svg">
+  <link rel="prefetch" href="/gui/images/modes/modes-toggle-button.svg">
+  <link rel="prefetch" href="/gui/images/levels/level-1.svg">
+  <link rel="prefetch" href="/gui/images/levels/level-2.svg">
+  <link rel="prefetch" href="/gui/images/levels/level-3.svg">
+  <link rel="prefetch" href="/gui/images/levels/level-4.svg">
+  <link rel="prefetch" href="/gui/images/levels/level-5.svg">
+  <link rel="prefetch" href="/gui/images/settings.svg">
+  <link rel="prefetch" href="/gui/images/wallet.svg">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-86DGWJ0YG6"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-86DGWJ0YG6'); 
+  </script>
+
+  <!-- <script src="https://markknol.github.io/console-log-viewer/console-log-viewer.js"></script> -->
+
+</head>
+
+<body>
+  <div id="game"></div>
+  <div id="gui"></div>
+</body>
+
 </html>

@@ -30,7 +30,7 @@ export class ClientEventsService {
         break;
 
       case 'SHOW_STAR_PREVIEW':
-        settingsStore.showStarTooltip(clientEvent);
+        settingsStore.showStarTooltip(clientEvent, 500);
         break;
 
       case 'SHOW_STAR_GUI':
@@ -38,7 +38,7 @@ export class ClientEventsService {
         break;
 
       case 'PHANTOM_STAR_PREVIEW':
-        settingsStore.showPhantomStarTooltip(clientEvent);
+        settingsStore.showPhantomStarTooltip(clientEvent, 500);
         break;
 
       case 'SHOW_REAL_MODE':

@@ -23,6 +23,7 @@ type SettingsStoreState = {
   musicVolume: number;
   newStarPosition: StarPosition | null;
   overlay: boolean;
+  overlayActive: boolean;
   screen: GuiScreen;
   sfxVolume: number;
   starBoostPanel: {
@@ -63,6 +64,7 @@ export const useSettingsStore = defineStore('settings', {
       musicVolume,
       newStarPosition: null,
       overlay: false,
+      overlayActive: false,
       screen: 'preloader',
       sfxVolume,
       starBoostPanel: null,
@@ -144,10 +146,15 @@ export const useSettingsStore = defineStore('settings', {
       this.musicVolume = volume;
       this.client.setMusicVolume(volume);
     },
-    enableOverlay() {
+    enableOverlay(aActiveTimer) {
       this.overlay = true;
+      this.overlayActive = false;
+      setTimeout(() => {
+        this.overlayActive = true;
+      }, aActiveTimer);
     },
     disableOverlay() {
+      this.overlayActive = false;
       this.overlay = false;
     },
     diveIn() {
@@ -178,13 +185,13 @@ export const useSettingsStore = defineStore('settings', {
     setFullscreenMode(value: boolean) {
       this.fullscreen = value;
     },
-    showStarTooltip({ starData, pos2d }: ShowStarPreviewEvent) {
+    showStarTooltip({ starData, pos2d }: ShowStarPreviewEvent, aOverlayActionDelay: number) {
       this.client.onClick();
 
       const starsStore = useStarsStore();
       const star = starsStore.getById(starData.id) || new Star(starData);
 
-      this.enableOverlay();
+      this.enableOverlay(aOverlayActionDelay);
       this.starTooltip = {
         position: new StarScreenPosition(pos2d),
         star
@@ -203,9 +210,9 @@ export const useSettingsStore = defineStore('settings', {
         starId: star.id
       };
     },
-    showPhantomStarTooltip({ pos2d, pos3d }: PhantomStarPreviewEvent) {
+    showPhantomStarTooltip({ pos2d, pos3d }: PhantomStarPreviewEvent, aOverlayActionDelay: number) {
       this.client.onClick();
-      this.enableOverlay();
+      this.enableOverlay(aOverlayActionDelay);
       this.newStarPosition = new StarPosition(pos2d, pos3d);
 
       if (this.isMobileViewport) {
