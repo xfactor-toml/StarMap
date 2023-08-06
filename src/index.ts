@@ -1,10 +1,9 @@
+import './css/style.css';
 import { GameBoot } from './game/scenes/GameBoot';
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import { default as App } from '@/App.vue';
 import { ClientService, WalletService } from '@/services';
-
-import './css/style.css';
 
 window.addEventListener('DOMContentLoaded', () => {
 

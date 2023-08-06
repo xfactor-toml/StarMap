@@ -53,6 +53,21 @@
   pointer-events: all;
 }
 
+.WelcomeScreen__text a {
+  max-width: 640px;
+  margin: 48px 0;
+  color: #00f0ff;
+  font-family: 'Inter';
+  font-weight: 300;
+  font-size: 18px;
+  text-align: center;
+  text-shadow: 0px 0px 20px #000000;
+  line-height: 1.38;
+  pointer-events: all;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .WelcomeScreen__button {
   margin-top: 26px;
   padding: 4px 0 2px;

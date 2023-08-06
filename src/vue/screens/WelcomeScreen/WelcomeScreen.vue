@@ -3,10 +3,12 @@
     <template v-if="showAgreement">
       <div class="WelcomeScreen__logo-text" />
       <p class="WelcomeScreen__text">
-        Vel in dicant cetero phaedrum, usu populo interesset cu, eum ea facer nostrum pericula. Per
-        cu iracundia splendide. Nec labore cetero theophrastus no, ei vero facer veritus nec. Eu eam
-        dolores lobortis percipitur, quo te equidem deleniti disputando. Magna copiosae apeirian ius
-        at.
+        Welcome to the open beta test of the VORPAL Gameverse: stage I.<br>
+        To create stars in the universe, you will need a
+        <a target="_blank" href="https://metamask.io/download">MetaMask wallet</a> and
+        <a target="_blank" href="https://discord.gg/bnbchain">test BNB tokens</a>,
+        if you encounter problems, check out our guide or write to us on
+        <a target="_blank" href="https://discord.gg/epUsWEPaDA">discord</a>.
       </p>
       <button
         class="WelcomeScreen__button active"
@@ -49,6 +51,7 @@
 <script lang="ts">
 import { useSettingsStore, useStarsStore } from '@/stores';
 import { mapStores } from 'pinia';
+import { DeviceInfo } from '~/game/utils/DeviceInfo';
 
 export default {
   name: 'WelcomeScreen',
@@ -84,6 +87,15 @@ export default {
       this.$client.onClick();
       this.$client.run(this.preservedFullscreenRun, this.starsStore.stars);
       this.settingsStore.setScreen('interface');
+    },
+    onMetamaskClick() {
+      let url = 'https://metamask.io/download';
+      if (!DeviceInfo.getInstance().desktop) {
+        url = DeviceInfo.getInstance().android
+          ? 'https://play.google.com/store/apps/details?id=io.metamask'
+          : 'https://apps.apple.com/ru/app/metamask-blockchain-wallet/id1438144202'
+      }
+      window.open(url, '_blank');
     }
   },
 };

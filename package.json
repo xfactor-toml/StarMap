@@ -13,6 +13,12 @@
     "author": "Monax",
     "license": "ISC",
     "devDependencies": {
+        "@pixi/sound": "^4.2.0",
+        "@types/dat.gui": "^0.7.7",
+        "@types/stats": "^0.16.30",
+        "@types/three": "^0.144.0",
+        "@types/ua-parser-js": "^0.7.36",
+        "@types/web3": "^1.2.2",
         "clean-webpack-plugin": "^4.0.0",
         "copy-webpack-plugin": "^11.0.0",
         "css-loader": "^6.7.3",
@@ -29,12 +35,6 @@
         "webpack-merge": "^5.8.0"
     },
     "dependencies": {
-        "@pixi/sound": "^4.2.0",
-        "@types/dat.gui": "^0.7.7",
-        "@types/stats": "^0.16.30",
-        "@types/three": "^0.144.0",
-        "@types/ua-parser-js": "^0.7.36",
-        "@types/web3": "^1.2.2",
         "click-outside-vue3": "^4.0.1",
         "dat.gui": "^0.7.9",
         "debounce": "^1.2.1",
