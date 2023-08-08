@@ -66,6 +66,7 @@
 </template>
 
 <script lang="ts">
+
 import { SettingsPopup } from '@/components/SettingsPopup';
 import { SearchInput } from '@/components/SearchInput';
 import { useSettingsStore, useWalletStore } from '@/stores';
@@ -122,6 +123,7 @@ export default {
     },
   },
 };
+
 </script>
 
 <style scoped src="./UserBar.css"></style>

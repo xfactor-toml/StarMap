@@ -126,8 +126,10 @@ export class Settings {
     static POINTS_MAX_CHECK_RADIUS = 10;
 
     // audio
-    // static musicVolume = 1;
-    // static sfxVolume = 1;
+    static AUDIO = {
+        defaultMusicVolume: .3,
+        defaultSfxVolume: .3
+    };
 
     // debug
     static debugAxeHelperOn = false;

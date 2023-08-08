@@ -109,8 +109,8 @@ export class GamePreloader {
 
         let am = AudioMng.getInstance({});
         // storage data
-        am.musicVolume = Number(localStorage.getItem(`musicVolume`) || 1);
-        am.sfxVolume = Number(localStorage.getItem(`sfxVolume`) || 1);
+        am.musicVolume = Number(localStorage.getItem(`musicVolume`)) || Settings.AUDIO.defaultMusicVolume;
+        am.sfxVolume = Number(localStorage.getItem(`sfxVolume`)) || Settings.AUDIO.defaultSfxVolume;
         am.init({
             musicList: MusicLoadList,
             soundList: SoundLoadList

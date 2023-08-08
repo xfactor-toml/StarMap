@@ -13,6 +13,7 @@ import { MODES } from '@/constants';
 import { Star, StarPosition, StarScreenPosition } from '@/models';
 import { useStarsStore } from '@/stores/stars';
 import { WINDOW_MOBILE_BREAKPOINT } from '@/constants/global';
+import { Settings } from '~/game/data/Settings';
 
 type SettingsStoreState = {
   agreementAccepted: boolean;
@@ -51,8 +52,8 @@ export const useSettingsStore = defineStore('settings', {
     const agreementAccepted = localStorage.getItem('agreementAccepted') === '1';
     const levelsPanelHidden = isMobile ? true : localStorage.getItem('levelsPanelHidden') === '1';
     const modesPanelHidden = isMobile ? true : localStorage.getItem('modesPanelHidden') === '1';
-    const musicVolume = Number(localStorage.getItem('musicVolume') ?? 0.5) * 100;
-    const sfxVolume = Number(localStorage.getItem('sfxVolume') ?? 0.5) * 100;
+    const musicVolume = Number(localStorage.getItem('musicVolume') ?? Settings.AUDIO.defaultMusicVolume) * 100;
+    const sfxVolume = Number(localStorage.getItem('sfxVolume') ?? Settings.AUDIO.defaultSfxVolume) * 100;
     const viewsPanelHidden = isMobile ? true : localStorage.getItem('viewsPanelHidden') === '1';
 
     return {
