@@ -7,7 +7,9 @@
         To create stars in the universe, you will need a
         <a target="_blank" href="https://metamask.io/download">MetaMask wallet</a> and
         <a target="_blank" href="https://discord.gg/bnbchain">test BNB tokens</a>,
-        if you encounter problems, check out our guide or write to us on
+        if you encounter problems, check out our
+        <a target="_blank" href="https://teletype.in/@vorpal/xzbjyT7vPyl">guide</a>
+        or write to us on
         <a target="_blank" href="https://discord.gg/epUsWEPaDA">discord</a>.
       </p>
       <button

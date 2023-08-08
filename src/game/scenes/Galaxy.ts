@@ -1952,7 +1952,13 @@ export class Galaxy implements ILogger {
         // let guiScaleByW = this.guiGetScaleBigStarTooltipByWidth();
         // let d = innerHeight / (20 * aspect);
         // let starDist = MyMath.clamp(d * (0.6 / guiScaleByW), 40, 50);
-        let starDist = MyMath.clamp(35 / aspect, 40, 90);
+        let distFromRatio = 45 / aspect;
+        let starDist = MyMath.clamp(distFromRatio, 50, 95);
+        this.logDebug('Star dist:', {
+            aspect: aspect,
+            distFromRatio: distFromRatio,
+            starDist: starDist
+        });
 
         // LogMng.debug(`guiScaleByWidth: ${guiScaleByW}`);
         // LogMng.debug(`asRat: ${aspect}`);
