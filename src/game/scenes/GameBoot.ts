@@ -2,7 +2,7 @@ import { LogMng } from "../utils/LogMng";
 import { GamePreloader } from "./GamePreloader";
 import * as MyUtils from "../utils/MyUtils";
 import { Settings } from "../data/Settings";
-import { GameRender } from "./GameRender";
+import { GameRender } from "./GameRenderer";
 import { GameEvents } from "../events/GameEvents";
 import { FrontEvents } from "../events/FrontEvents";
 import { AudioMng } from "../audio/AudioMng";
@@ -10,6 +10,7 @@ import { ILogger } from "../interfaces/ILogger";
 import { DB } from "../data/DB";
 import { ServerStarData } from "../data/Types";
 import { AudioAlias } from "../audio/AudioData";
+import { GameEngine } from "../GameEngine";
 
 type InitParams = {
 
@@ -125,7 +126,7 @@ export class GameBoot implements ILogger {
         
     startGame(aRealStars: ServerStarData[]) {
         DB.realStars = aRealStars;
-        let gameEngine = new GameRender();
+        let gameEngine = new GameEngine();
         gameEngine.initGame();
         GameEvents.dispatchEvent(GameEvents.EVENT_GAME_CREATED);
     }
