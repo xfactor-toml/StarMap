@@ -9,11 +9,13 @@ import { GameRender as GameRenderer } from "./scenes/GameRenderer";
 import { InputMng } from "./utils/inputs/InputMng";
 import { DeviceInfo } from "./utils/DeviceInfo";
 import * as datGui from "dat.gui";
+import { BattleController } from "./battle/BattleController";
 
 
 export class GameEngine implements ILogger {
     private _renderer: GameRenderer;
     private _galaxy: Galaxy;
+    private _battle: BattleController;
     private clock: THREE.Clock;
     private stats: Stats;
 
@@ -66,25 +68,9 @@ export class GameEngine implements ILogger {
         this._renderer = new GameRenderer();
     }
 
-    private initGalaxy() {
-        // SCENES
-        this._galaxy = new Galaxy({
-            render: this._renderer.renderer,
-            scene: this._renderer.scene,
-            camera: this._renderer.camera
-        });
-        this._galaxy.init();
-
-        // DEBUG GUI
-        if (Settings.isDebugMode && Settings.datGui) {
-            this._galaxy.initDebugGui();
-        }
-    }
-
     private initInputs() {
         InputMng.getInstance({
             inputDomElement: Settings.domCanvasParent,
-            // inputDomElement: Params.domTouchParent,
             desktop: DeviceInfo.getInstance().desktop,
             isRightClickProcessing: false,
             clickDistDesktop: 10,
@@ -101,6 +87,31 @@ export class GameEngine implements ILogger {
     private initDebugGui() {
         Settings.datGui = new datGui.GUI();
         Settings.datGui.close();
+    }
+
+    private initGalaxy() {
+        // SCENES
+        this._galaxy = new Galaxy({
+            render: this._renderer.renderer,
+            scene: this._renderer.scene,
+            camera: this._renderer.camera
+        });
+        this._galaxy.init();
+
+        // DEBUG GUI
+        if (Settings.isDebugMode && Settings.datGui) {
+            this._galaxy.initDebugGui();
+        }
+    }
+
+    private initBattle() {
+        this._battle = new BattleController();
+
+        // DEBUG GUI
+        if (Settings.isDebugMode && Settings.datGui) {
+            this._battle.initDebugGui();
+        }
+
     }
 
     private update(dt: number) {
@@ -130,6 +141,7 @@ export class GameEngine implements ILogger {
             this.initDebugGui();
         }
         this.initGalaxy();
+        this.initBattle();
         this.animate();
     }
 

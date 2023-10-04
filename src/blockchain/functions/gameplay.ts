@@ -13,9 +13,9 @@ export async function GameAuth(account: string): Promise<WebSocket | null> {
   return await new Promise((resolve) => {
     wss.onopen = (ws: WebSocket) => {
       let isAuthRequested = false;
-	  const PingPong = setInterval(() => {
-                wss.send('ping');
-              }, pingPongDelay);
+      const PingPong = setInterval(() => {
+        wss.send('ping');
+      }, pingPongDelay);
       wss.onmessage = async (message: any) => {
 
         try {
@@ -50,7 +50,7 @@ export async function GameAuth(account: string): Promise<WebSocket | null> {
 
       wss.onclose = () => {
         console.log("closed");
-		clearInterval(PingPong)
+        clearInterval(PingPong)
         resolve(null);
         return null;
       };
