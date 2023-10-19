@@ -9,13 +9,14 @@ import { GameRender as GameRenderer } from "./scenes/GameRenderer";
 import { InputMng } from "./utils/inputs/InputMng";
 import { DeviceInfo } from "./utils/DeviceInfo";
 import * as datGui from "dat.gui";
-import { BattleController } from "./battle/BattleController";
+import { BattleSocket, BattleSocketEvent } from "./battle/BattleSocket";
 
 
 export class GameEngine implements ILogger {
+    private _className = 'GameEngine';
     private _renderer: GameRenderer;
     private _galaxy: Galaxy;
-    private _battle: BattleController;
+    private _battle: BattleSocket;
     private clock: THREE.Clock;
     private stats: Stats;
 
@@ -32,13 +33,13 @@ export class GameEngine implements ILogger {
     }
 
     logDebug(aMsg: string, aData?: any): void {
-        LogMng.debug(`GameEngine: ${aMsg}`, aData);
+        LogMng.debug(`${this._className}: ${aMsg}`, aData);
     }
     logWarn(aMsg: string, aData?: any): void {
-        LogMng.warn(`GameEngine: ${aMsg}`, aData);
+        LogMng.warn(`${this._className}: ${aMsg}`, aData);
     }
     logError(aMsg: string, aData?: any): void {
-        LogMng.error(`GameEngine: ${aMsg}`, aData);
+        LogMng.error(`${this._className}: ${aMsg}`, aData);
     }
 
     private onLeftPanelGalaxyClick() {
@@ -105,13 +106,32 @@ export class GameEngine implements ILogger {
     }
 
     private initBattle() {
-        this._battle = new BattleController();
+        this._battle = new BattleSocket();
+        this._battle.onEvent.add(this.onBattleSocketEvent, this);
 
         // DEBUG GUI
         if (Settings.isDebugMode && Settings.datGui) {
             this._battle.initDebugGui();
         }
 
+    }
+
+    private onBattleSocketEvent(aParams: { event: BattleSocketEvent }) {
+        switch (aParams.event) {
+            case BattleSocketEvent.enterGame:
+                this.logDebug(`entergame: hide galaxy...`);
+                this._galaxy.hide();
+                break;
+            case BattleSocketEvent.withdrawGame:
+                this.logDebug(`withdrawgame: show galaxy...`);
+                this._galaxy.show();
+                break;
+            
+        
+            default:
+                this.logWarn(`onBattleSocketEvent: unhandled packet:`, aParams);
+                break;
+        }
     }
 
     private update(dt: number) {

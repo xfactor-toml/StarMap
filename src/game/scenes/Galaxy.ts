@@ -2418,16 +2418,20 @@ export class Galaxy implements ILogger {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    hide() {
+        this._dummyGalaxy.visible = false;
+    }
+
+    show() {
+        this._dummyGalaxy.visible = true;
+    }
 
     /**
      * 
      * @param dt in sec
      */
     update(dt: number) {
-
         this._fsm.update(dt);
-
-
     }
 
 }
