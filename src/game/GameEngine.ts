@@ -1,68 +1,26 @@
 import * as THREE from "three";
 import { Settings } from "~/game/data/Settings";
-import { ServerStarData } from "~/game/data/Types";
-import { FrontEvents } from "~/game/events/FrontEvents";
-import { ILogger } from "~/game/interfaces/ILogger";
-import { Galaxy } from "~/game/scenes/Galaxy";
-import { LogMng } from "./utils/LogMng";
 import { GameRender as GameRenderer } from "./scenes/GameRenderer";
 import { InputMng } from "./utils/inputs/InputMng";
 import { DeviceInfo } from "./utils/DeviceInfo";
 import * as datGui from "dat.gui";
-import { BattleSocket, BattleSocketEvent } from "./battle/BattleSocket";
+import { BattleAction, BattleSocket, BattleSocketEvent } from "./battle/BattleSocket";
+import { GalaxyScene } from "./scenes/GalaxyScene";
+import { MyBasicClass } from "./basics/MyBasicClass";
+import { BattleScene } from "./scenes/BattleScene";
+import { ThreeLoader } from "./utils/threejs/ThreeLoader";
 
-
-export class GameEngine implements ILogger {
-    private _className = 'GameEngine';
+export class GameEngine extends MyBasicClass {
     private _renderer: GameRenderer;
-    private _galaxy: Galaxy;
+    private _galaxyScene: GalaxyScene;
     private _battle: BattleSocket;
+    private _battleScene: BattleScene;
     private clock: THREE.Clock;
     private stats: Stats;
 
     constructor() {
-
+        super('GameEngine');
         this.clock = new THREE.Clock();
-
-        // events
-        FrontEvents.onLeftPanelGalaxyClick.add(this.onLeftPanelGalaxyClick, this);
-        FrontEvents.onBotPanelPhantomClick.add(this.onBotPanelPhantomClick, this);
-        FrontEvents.onBotPanelRealClick.add(this.onBotPanelRealClick, this);
-        FrontEvents.onStarCreated.add(this.onStarCreated, this);
-        FrontEvents.onStarUpdated.add(this.onStarUpdated, this);
-    }
-
-    logDebug(aMsg: string, aData?: any): void {
-        LogMng.debug(`${this._className}: ${aMsg}`, aData);
-    }
-    logWarn(aMsg: string, aData?: any): void {
-        LogMng.warn(`${this._className}: ${aMsg}`, aData);
-    }
-    logError(aMsg: string, aData?: any): void {
-        LogMng.error(`${this._className}: ${aMsg}`, aData);
-    }
-
-    private onLeftPanelGalaxyClick() {
-        this.logDebug(`onLeftPanelGalaxyClick...`);
-        this._galaxy?.gotoGalaxy();
-    }
-
-    private onBotPanelPhantomClick() {
-        this.logDebug(`onBotPanelPhantomClick...`);
-        this._galaxy?.openPhantomMode();
-    }
-
-    private onBotPanelRealClick() {
-        this.logDebug(`onBotPanelRealClick...`);
-        this._galaxy?.openRealMode();
-    }
-
-    private onStarCreated(aStarData: ServerStarData) {
-        this._galaxy?.onStarCreated(aStarData);
-    }
-
-    private onStarUpdated(aStarData: ServerStarData) {
-        this._galaxy?.onStarUpdated(aStarData);
     }
 
     private initRender() {
@@ -90,24 +48,31 @@ export class GameEngine implements ILogger {
         Settings.datGui.close();
     }
 
+    private initSkybox() {
+        let loader = ThreeLoader.getInstance();
+        this._renderer.scene.background = loader.getCubeTexture('skybox');
+    }
+
     private initGalaxy() {
         // SCENES
-        this._galaxy = new Galaxy({
-            render: this._renderer.renderer,
+        this._galaxyScene = new GalaxyScene({
             scene: this._renderer.scene,
             camera: this._renderer.camera
         });
-        this._galaxy.init();
-
-        // DEBUG GUI
-        if (Settings.isDebugMode && Settings.datGui) {
-            this._galaxy.initDebugGui();
-        }
+        this._galaxyScene.initGalaxy();
     }
 
     private initBattle() {
+
+        this._battleScene = new BattleScene({
+            scene: this._renderer.scene,
+            camera: this._renderer.camera
+        }, true);
+
         this._battle = new BattleSocket();
-        this._battle.onEvent.add(this.onBattleSocketEvent, this);
+        // this._battle.on(BattleSocketEvent.enterGame, this.onBattleSocketEnterGame, this);
+        // this._battle.on(BattleSocketEvent.withdrawGame, this.onBattleSocketWithdrawGame, this);
+        this._battle.on(BattleSocketEvent.message, this.onBattleSocketMessage, this);
 
         // DEBUG GUI
         if (Settings.isDebugMode && Settings.datGui) {
@@ -116,26 +81,33 @@ export class GameEngine implements ILogger {
 
     }
 
-    private onBattleSocketEvent(aParams: { event: BattleSocketEvent }) {
-        switch (aParams.event) {
-            case BattleSocketEvent.enterGame:
-                this.logDebug(`entergame: hide galaxy...`);
-                this._galaxy.hide();
+    private onBattleEnterGame() {
+        this.logDebug(`entergame: hide galaxy...`);
+        this._galaxyScene.hide();
+    }
+
+    private onBattleWithdrawGame() {
+        this.logDebug(`withdrawgame: show galaxy...`);
+        this._galaxyScene.show();
+    }
+
+    private onBattleSocketMessage(aData: any) {
+        switch (aData.action) {
+            case BattleAction.entergame:
+                this.onBattleEnterGame();
                 break;
-            case BattleSocketEvent.withdrawGame:
-                this.logDebug(`withdrawgame: show galaxy...`);
-                this._galaxy.show();
+            case BattleAction.withdrawgame:
+                this.onBattleWithdrawGame();
                 break;
-            
-        
             default:
-                this.logWarn(`onBattleSocketEvent: unhandled packet:`, aParams);
+                this._battleScene.onSocketMessage(aData);
                 break;
         }
     }
 
     private update(dt: number) {
-        this._galaxy?.update(dt);
+        this._galaxyScene?.update(dt);
+        this._battleScene?.update(dt);
     }
 
     private render() {
@@ -160,6 +132,7 @@ export class GameEngine implements ILogger {
             this.initStats();
             this.initDebugGui();
         }
+        this.initSkybox();
         this.initGalaxy();
         this.initBattle();
         this.animate();

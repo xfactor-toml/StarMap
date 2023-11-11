@@ -1,18 +1,25 @@
 import { GameAuth, NetworkAuth, SubscribeOnAccountChanging } from "~/blockchain";
 import { Settings } from "../data/Settings";
-import { ILogger } from "../interfaces/ILogger";
-import { LogMng } from "../utils/LogMng";
-import { Signal } from "../utils/events/Signal";
+import { MyEventDispatcher } from "../basics/MyEventDispatcher";
 
 export enum BattleSocketEvent {
-    enterGame = 'enterGame',
-    withdrawGame = 'withdrawGame',
-    gameStart = 'gameStart'
+    // enterGame = 'enterGame',
+    // withdrawGame = 'withdrawGame',
+    // gameStart = 'gameStart',
+    message = 'packet'
 };
 
-export class BattleSocket implements ILogger {
-    private _className = 'BattleSocket';
+export enum BattleAction {
+    entergame = 'entergame',
+    withdrawgame = 'withdrawgame',
+    exitgame = 'exitgame',
+    gamestart = 'gamestart',
+    objectlist = 'objectlist',
+    objectcreate = 'objectcreate',
+    objectupdate = 'objectupdate'
+}
 
+export class BattleSocket extends MyEventDispatcher {
     // wallet
     private _subscribed = false;
     private _connected = false;
@@ -21,23 +28,8 @@ export class BattleSocket implements ILogger {
     private _wsConnected = false;
     private _ws: WebSocket;
 
-    /**
-     * ({ event: BattleControllerEvent })
-     */
-    onEvent = new Signal();
-
     constructor() {
-        
-    }
-
-    logDebug(aMsg: string, aData?: any): void {
-        LogMng.debug(`${this._className}: ${aMsg}`, aData);
-    }
-    logWarn(aMsg: string, aData?: any): void {
-        LogMng.warn(`${this._className}: ${aMsg}`, aData);
-    }
-    logError(aMsg: string, aData?: any): void {
-        LogMng.error(`${this._className}: ${aMsg}`, aData);
+        super('BattleSocket');
     }
 
     private updateState(auth: string | null) {
@@ -77,6 +69,7 @@ export class BattleSocket implements ILogger {
         console.log(this._ws);
 
         if (this._ws) {
+            this._wsConnected = true;
             this._ws.onmessage = (event) => {
                 this.onMessage(event);
             };
@@ -136,32 +129,8 @@ export class BattleSocket implements ILogger {
                 case 'ping':
                     this._ws.send( JSON.stringify({ action: 'pong' }) );
                     break;
-                
-                case 'entergame':
-                    this.onEvent.dispatch({
-                        event: BattleSocketEvent.enterGame
-                    });
-                    break;
-                
-                case 'withdrawgame':
-                    this.onEvent.dispatch({
-                        event: BattleSocketEvent.withdrawGame
-                    });
-                    break;
-
-                case 'gamestart':
-                    this.logDebug(`gamestart...`);
-                    this.onEvent.dispatch({
-                        event: BattleSocketEvent.gameStart
-                    });
-                    break;
-
-                case 'objectlist':
-                    this.logDebug(`objectlist...`);
-                    break;
-
                 default:
-                    this.logWarn(`onMessage: unhandled package:`, data);
+                    this.emit(BattleSocketEvent.message, data);
                     break;
             }
 
@@ -177,6 +146,7 @@ export class BattleSocket implements ILogger {
                 this.initConnection();
             },
             entergame: () => {
+                if (!this._wsConnected) this.initConnection();
                 this.enterGame();
             },
             withdrawgame: () => {

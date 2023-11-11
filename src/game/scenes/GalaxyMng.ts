@@ -1,14 +1,13 @@
 import * as THREE from 'three';
-import { ThreeLoader } from '../loaders/ThreeLoader';
 import * as datGui from "dat.gui";
-import { MyMath, Vec2 } from '../utils/MyMath';
+import { MyMath } from '../utils/MyMath';
 import gsap from 'gsap';
 import { Settings } from '../data/Settings';
 import { FarStars } from '../objects/FarStars';
 import { DeviceInfo } from '../utils/DeviceInfo';
 import { InputMng } from '../utils/inputs/InputMng';
 import { FSM } from '../states/FSM';
-import { States } from '../states/States';
+import { GalaxyStates } from '../states/States';
 import { FrontEvents } from '../events/FrontEvents';
 import { GameEvents } from '../events/GameEvents';
 import { SmallFlySystem } from '../objects/smallFly/SmallFlySystem';
@@ -23,23 +22,23 @@ import { LogMng } from '../utils/LogMng';
 import { FileMng } from '../mng/FileMng';
 import { FarGalaxyParams, GalaxyStarParams, ServerStarData } from '~/game/data/Types';
 import { StarGenerator } from '~/game/mng/StarGenerator';
-import { StarMath } from '~/game/math/StarMath';
 import { ILogger } from '~/game/interfaces/ILogger';
 import { Star } from '@/models';
 import { GalaxyStars } from '~/game/objects/GalaxyStars';
 import { StarPoint, StarPointParams } from '~/game/objects/StarPoint';
 import { SolarSystem } from '~/game/objects/SolarSystem';
+import { ThreeLoader } from '../utils/threejs/ThreeLoader';
 
 let debugObjects = {
     farStarsSphereMin: null,
     farStarsSphereMax: null,
 }
 
-export class Galaxy implements ILogger {
+export class GalaxyMng implements ILogger {
 
     private _fsm: FSM;
 
-    private _scene: THREE.Scene;
+    private _parent: THREE.Group;
     private _camera: THREE.PerspectiveCamera;
 
     private _cameraTarget: THREE.Vector3;
@@ -112,9 +111,15 @@ export class Galaxy implements ILogger {
     private _levelFilter = [1, 2, 3, 4, 5];
     private _nameFilter = '';
 
-
-    constructor(aParams: any) {
-        this._scene = aParams.scene;
+    // flags
+    private _disabled = false;
+    
+    constructor(aParams: {
+        // scene: THREE.Scene,
+        parent: THREE.Group,
+        camera: THREE.PerspectiveCamera
+    }) {
+        this._parent = aParams.parent;
         this._camera = aParams.camera;
         this._cameraTarget = new THREE.Vector3();
         this._orbitCenter = new THREE.Vector3();
@@ -146,9 +151,7 @@ export class Galaxy implements ILogger {
         AudioMng.getInstance().playSfx(AudioAlias.SFX_INIT_FLY);
 
         this._dummyGalaxy = new THREE.Group();
-        this._scene.add(this._dummyGalaxy);
-
-        this.createSkybox();
+        this._parent.add(this._dummyGalaxy);
 
         this.createSmallGalaxies(true);
 
@@ -169,8 +172,6 @@ export class Galaxy implements ILogger {
             })
         );
         this._galaxyCenterSprite.scale.set(Settings.GALAXY_CENTER_SCALE, Settings.GALAXY_CENTER_SCALE, Settings.GALAXY_CENTER_SCALE);
-        // this.galaxyCenterSprite.renderOrder = 999;
-        // this._dummyGalaxy.add(this._galaxyCenterSprite);
 
         this._galaxyCenterSprite2 = new THREE.Sprite(
             new THREE.SpriteMaterial({
@@ -184,8 +185,6 @@ export class Galaxy implements ILogger {
             })
         );
         this._galaxyCenterSprite2.scale.set(Settings.GALAXY_CENTER_SCALE_2, Settings.GALAXY_CENTER_SCALE_2, Settings.GALAXY_CENTER_SCALE_2);
-        // this.galaxyCenterSprite2.renderOrder = 999;
-        // this._dummyGalaxy.add(this._galaxyCenterSprite2);
 
         let planeGeom = new THREE.PlaneGeometry(1, 1);
         let planeMat = new THREE.MeshBasicMaterial({
@@ -205,7 +204,7 @@ export class Galaxy implements ILogger {
             this._gridPlane = new THREE.GridHelper(1000, 80, 0xaaaaaa, 0xffffff);
             (this._gridPlane.material as any).transparent = true;
             (this._gridPlane.material as any).opacity = .3;
-            this._scene.add(this._gridPlane);
+            this._parent.add(this._gridPlane);
         }
 
         this.createGalaxyStars(Settings.loadFromFile);
@@ -248,7 +247,7 @@ export class Galaxy implements ILogger {
         // helpers
         if (Settings.isDebugMode) {
             this.axiesHelper = new THREE.AxesHelper(150);
-            this._scene.add(this.axiesHelper);
+            this._parent.add(this.axiesHelper);
         }
 
         // inputs
@@ -258,14 +257,15 @@ export class Galaxy implements ILogger {
         inputMng.onClickSignal.add(this.onClick, this);
 
         this._fsm = new FSM();
-        this._fsm.addState(States.init, this, this.onStateInitEnter, this.onStateInitUpdate);
-        this._fsm.addState(States.realStars, this, this.onStateRealEnter, this.onStateRealUpdate);
-        this._fsm.addState(States.phantomStars, this, this.onStatePhantomEnter, this.onStatePhantomUpdate);
-        this._fsm.addState(States.toStar, this, this.onStateToStarEnter, this.onStateToStarUpdate);
-        this._fsm.addState(States.star, this, this.onStateStarEnter, this.onStateStarUpdate);
-        this._fsm.addState(States.fromStar, this, this.onStateFromStarEnter, this.onStateFromStarUpdate);
-        this._fsm.addState(States.createStar, this, this.onStateCreateStarEnter, this.onStateCreateStarUpdate);
-        this._fsm.startState(States.init);
+        this._fsm.addState(GalaxyStates.init, this, this.onStateInitEnter, this.onStateInitUpdate);
+        this._fsm.addState(GalaxyStates.realStars, this, this.onStateRealEnter, this.onStateRealUpdate);
+        this._fsm.addState(GalaxyStates.phantomStars, this, this.onStatePhantomEnter, this.onStatePhantomUpdate);
+        this._fsm.addState(GalaxyStates.toStar, this, this.onStateToStarEnter, this.onStateToStarUpdate);
+        this._fsm.addState(GalaxyStates.star, this, this.onStateStarEnter, this.onStateStarUpdate);
+        this._fsm.addState(GalaxyStates.fromStar, this, this.onStateFromStarEnter, this.onStateFromStarUpdate);
+        this._fsm.addState(GalaxyStates.createStar, this, this.onStateCreateStarEnter, this.onStateCreateStarUpdate);
+        this._fsm.addState(GalaxyStates.disabled, this, this.onStateDisabledEnter, this.onStateDisabledUpdate);
+        this._fsm.startState(GalaxyStates.init);
 
         // front events
         this.initFrontEvents();
@@ -287,7 +287,7 @@ export class Galaxy implements ILogger {
         }, this);
 
         FrontEvents.diveIn.add((aData: { starId: number }) => {
-            this._fsm.startState(States.toStar, {
+            this._fsm.startState(GalaxyStates.toStar, {
                 starId: aData.starId,
                 starParams: this.starPointParamsHovered.starParams
             });
@@ -295,8 +295,8 @@ export class Galaxy implements ILogger {
 
         FrontEvents.flyFromStar.add(() => {
             this.isStarPreviewState = false;
-            if (this._fsm.getCurrentState().name == States.star) {
-                this._fsm.startState(States.fromStar);
+            if (this._fsm.getCurrentState().name == GalaxyStates.star) {
+                this._fsm.startState(GalaxyStates.fromStar);
             }
         }, this);
 
@@ -304,8 +304,8 @@ export class Galaxy implements ILogger {
 
             this.isStarPreviewState = false;
             switch (this._fsm.getCurrentState().name) {
-                case States.realStars:
-                case States.phantomStars:
+                case GalaxyStates.realStars:
+                case GalaxyStates.phantomStars:
                     // turn on orbit controller
                     this._orbitControl.autoRotate = true;
                     this._orbitControl.enableZoom = true;
@@ -389,8 +389,8 @@ export class Galaxy implements ILogger {
                 FileMng.saveGalaxy(Settings.galaxyData, this._phantomStarsData, this._blinkStarsData, this._farGalaxiesData);
             },
             'flyFromStar': () => {
-                if (this._fsm.getCurrentState().name == States.star) {
-                    this._fsm.startState(States.fromStar);
+                if (this._fsm.getCurrentState().name == GalaxyStates.star) {
+                    this._fsm.startState(GalaxyStates.fromStar);
                 }
             },
             showSpheres: false,
@@ -501,30 +501,30 @@ export class Galaxy implements ILogger {
 
     gotoGalaxy() {
         switch (this._fsm.getCurrentState().name) {
-            case States.star:
-                this._fsm.startState(States.fromStar);
+            case GalaxyStates.star:
+                this._fsm.startState(GalaxyStates.fromStar);
                 break;
         }
     }
 
     openPhantomMode() {
         switch (this._fsm.getCurrentState().name) {
-            case States.realStars:
-                this._fsm.startState(States.phantomStars);
+            case GalaxyStates.realStars:
+                this._fsm.startState(GalaxyStates.phantomStars);
                 break;
         }
     }
 
     openRealMode() {
         switch (this._fsm.getCurrentState().name) {
-            case States.phantomStars:
-                this._fsm.startState(States.realStars);
+            case GalaxyStates.phantomStars:
+                this._fsm.startState(GalaxyStates.realStars);
                 break;
         }
     }
 
     onStarCreated(aStarData: ServerStarData) {
-        this._fsm.startState(States.createStar, aStarData);
+        this._fsm.startState(GalaxyStates.createStar, aStarData);
     }
 
     onStarUpdated(aServerStarData: ServerStarData) {
@@ -554,7 +554,7 @@ export class Galaxy implements ILogger {
         this.recreateRealStars();
 
         switch (this._fsm.getCurrentState().name) {
-            case States.star:
+            case GalaxyStates.star:
                 // update the star render
                 this.solarSystem?.onStarUpdated(star);
                 break;
@@ -926,7 +926,7 @@ export class Galaxy implements ILogger {
     private createFarStars() {
 
         if (this._farStars) {
-            this._scene.remove(this._farStars);
+            this._parent.remove(this._farStars);
             this._farStars.free();
             this._farStars = null;
         }
@@ -944,26 +944,26 @@ export class Galaxy implements ILogger {
 
     private createDebugFarStarsMinSphere() {
         if (debugObjects.farStarsSphereMin) {
-            this._scene.remove(debugObjects.farStarsSphereMin);
+            this._parent.remove(debugObjects.farStarsSphereMin);
         }
         let geom = new THREE.SphereGeometry(Settings.skyData.radiusMin, 10, 10);
         let mat = new THREE.MeshNormalMaterial({
             wireframe: true
         });
         debugObjects.farStarsSphereMin = new THREE.Mesh(geom, mat);
-        this._scene.add(debugObjects.farStarsSphereMin);
+        this._parent.add(debugObjects.farStarsSphereMin);
     }
 
     private createDebugFarStarsMaxSphere() {
         if (debugObjects.farStarsSphereMax) {
-            this._scene.remove(debugObjects.farStarsSphereMax);
+            this._parent.remove(debugObjects.farStarsSphereMax);
         }
         let geom = new THREE.SphereGeometry(Settings.skyData.radiusMax, 20, 20);
         let mat = new THREE.MeshNormalMaterial({
             wireframe: true
         });
         debugObjects.farStarsSphereMax = new THREE.Mesh(geom, mat);
-        this._scene.add(debugObjects.farStarsSphereMax);
+        this._parent.add(debugObjects.farStarsSphereMax);
     }
 
     private createStarPoints() {
@@ -975,11 +975,6 @@ export class Galaxy implements ILogger {
             poolSize: 400,
             dist: 20
         });
-    }
-
-    private createSkybox() {
-        let loader = ThreeLoader.getInstance();
-        this._scene.background = loader.getCubeTexture('skybox');
     }
 
     // BG GALAXIES
@@ -1008,7 +1003,7 @@ export class Galaxy implements ILogger {
         for (let i = 0; i < this._farGalaxiesData.length; i++) {
             const galaxy = this.createSmallGalaxy(this._farGalaxiesData[i]);
             this._smallGalaxies.push(galaxy);
-            this._scene.add(galaxy);
+            this._parent.add(galaxy);
             // this.dummyGalaxy.add(galaxy);
         }
 
@@ -1017,7 +1012,7 @@ export class Galaxy implements ILogger {
     private destroySmallGalaxies() {
         if (this._smallGalaxies)
             for (let i = this._smallGalaxies.length - 1; i >= 0; i--) {
-                this._scene.remove(this._smallGalaxies[i]);
+                this._parent.remove(this._smallGalaxies[i]);
             }
         this._smallGalaxies = [];
         this._farGalaxiesData = [];
@@ -1167,11 +1162,6 @@ export class Galaxy implements ILogger {
         this._orbitControl.maxDistance = aParams.maxDist || 100;
         this._orbitControl.minPolarAngle = MyMath.toRadian(aParams.stopAngleTop || 0);
         this._orbitControl.maxPolarAngle = MyMath.toRadian(aParams.stopAngleBot || 0);
-        // if (aParams.pos) {
-        //     this.orbitControl.target.x = aParams.pos.x || 0;
-        //     this.orbitControl.target.y = aParams.pos.y || 0;
-        //     this.orbitControl.target.z = aParams.pos.z || 0;
-        // }
         this._orbitControl.autoRotateSpeed = 0.05;
         this._orbitControl.autoRotate = true;
 
@@ -1226,7 +1216,7 @@ export class Galaxy implements ILogger {
     private getNearestStarPosition(aPoint: THREE.Vector3): THREE.Vector3 {
         let res: THREE.Vector3;
         let minDist = Number.MAX_SAFE_INTEGER;
-        let quadTree = this._fsm.getCurrentState().name == States.realStars
+        let quadTree = this._fsm.getCurrentState().name == GalaxyStates.realStars
             ? this._quadTreeReal
             : this._quadTreePhantom;
         let stars = quadTree.getPointsInCircle(new QTCircle(aPoint.x, aPoint.z, 200));
@@ -1250,12 +1240,16 @@ export class Galaxy implements ILogger {
     }
 
     private updateInputMove() {
+        if (this._disabled) return;
         let inMng = InputMng.getInstance();
         this.checkStarUnderPoint(inMng.normalPos);
         document.body.style.cursor = this.starPointSpriteHovered ? 'pointer' : 'default';
     }
 
     private onClick(aClientX: number, aClientY: number) {
+
+        if (this._disabled) return;
+
         let inMng = InputMng.getInstance();
         let pos = {
             x: aClientX,
@@ -1266,7 +1260,7 @@ export class Galaxy implements ILogger {
 
         switch (this._fsm.getCurrentState().name) {
 
-            case States.realStars:
+            case GalaxyStates.realStars:
 
                 if (this.isStarPreviewState) {
 
@@ -1313,7 +1307,7 @@ export class Galaxy implements ILogger {
                 }
                 break;
 
-            case States.phantomStars:
+            case GalaxyStates.phantomStars:
                 if (this.isStarPreviewState) {
                     GameEvents.dispatchEvent(GameEvents.EVENT_HIDE_STAR_PREVIEW);
                     if (!this._orbitControl.autoRotate) this._orbitControl.autoRotate = true;
@@ -1361,7 +1355,7 @@ export class Galaxy implements ILogger {
         const MOVE_DUR = 2;
         let inMng = InputMng.getInstance();
 
-        if ([States.realStars, States.phantomStars].indexOf(this._fsm.getCurrentState().name as States) < 0) return;
+        if ([GalaxyStates.realStars, GalaxyStates.phantomStars].indexOf(this._fsm.getCurrentState().name as GalaxyStates) < 0) return;
 
         let plainPoint = this.getPlanePoint(inMng.normalUp);
         let starPos = this.getNearestStarPosition(plainPoint);
@@ -1576,7 +1570,7 @@ export class Galaxy implements ILogger {
     private updateStarPoints() {
 
         if (!Settings.STAR_CLICK_POINTS) return;
-        const isPhantomMode = this._fsm.getCurrentState().name == States.phantomStars;
+        const isPhantomMode = this._fsm.getCurrentState().name == GalaxyStates.phantomStars;
 
         // new dynamic points
         const MaxCheckRadius = Settings.POINTS_CAMERA_MAX_DIST;
@@ -1587,13 +1581,13 @@ export class Galaxy implements ILogger {
         // let checkRadius = 10;
         let points: QTPoint[] = [];
         switch (this._fsm.getCurrentState().name) {
-            case States.realStars:
+            case GalaxyStates.realStars:
                 points = this._quadTreeReal.getPointsInCircle(new QTCircle(targetPos.x, targetPos.z, checkRadius), {
                     levels: this._levelFilter,
                     name: this._nameFilter
                 });
                 break;
-            case States.phantomStars:
+            case GalaxyStates.phantomStars:
                 points = this._quadTreePhantom.getPointsInCircle(new QTCircle(targetPos.x, targetPos.z, checkRadius));
                 break;
         }
@@ -1620,7 +1614,7 @@ export class Galaxy implements ILogger {
             // delay: 0.1,
             ease: 'sine.inOut',
             onComplete: () => {
-                this._fsm.startState(States.realStars);
+                this._fsm.startState(GalaxyStates.realStars);
                 this._orbitControl.maxDistance = Settings.galaxyData.camDistMax;
             }
         });
@@ -1793,13 +1787,13 @@ export class Galaxy implements ILogger {
         this.solarSystem.position.copy(starPos);
         this.solarSystem.scale.set(0, 0, 0);
         this.solarSystem.visible = false;
-        this._scene.add(this.solarSystem);
+        this._parent.add(this.solarSystem);
 
         // this.solarSystemBlinkStarsParticles.position.set(0, 0, 0);
         this._solarSystemBlinkStarsParticles.position.copy(starPos);
         this._solarSystemBlinkStarsParticles.scale.set(0.1, 0.1, 0.1);
         // this.solarSystem.add(this.solarSystemBlinkStarsParticles);
-        this._scene.add(this._solarSystemBlinkStarsParticles);
+        this._parent.add(this._solarSystemBlinkStarsParticles);
         this._solarSystemBlinkStarsParticles.visible = false;
         this._solarSystemBlinkStarsParticles.alphaFactor = 0;
 
@@ -1836,7 +1830,7 @@ export class Galaxy implements ILogger {
         let sc = 5;
         this.bigStarSprite.scale.set(sc, sc, sc);
         this.bigStarSprite.position.copy(starPos);
-        this._scene.add(this.bigStarSprite);
+        this._parent.add(this.bigStarSprite);
 
         gsap.to(this.bigStarSprite.scale, {
             x: 50,
@@ -2017,7 +2011,7 @@ export class Galaxy implements ILogger {
                 this.solarSystem.visible = true;
             },
             onComplete: () => {
-                this._fsm.startState(States.star, aParams);
+                this._fsm.startState(GalaxyStates.star, aParams);
             }
         });
 
@@ -2215,7 +2209,7 @@ export class Galaxy implements ILogger {
             duration: DUR * 1.5,
             ease: 'sine.inOut',
             onComplete: () => {
-                this._scene.remove(this.bigStarSprite);
+                this._parent.remove(this.bigStarSprite);
                 this.bigStarSprite = null;
             }
         });
@@ -2244,7 +2238,7 @@ export class Galaxy implements ILogger {
             onComplete: () => {
                 this.solarSystem.visible = false;
                 this.solarSystem.free();
-                this._scene.remove(this.solarSystem);
+                this._parent.remove(this.solarSystem);
                 this.solarSystem = null;
             }
         });
@@ -2264,7 +2258,7 @@ export class Galaxy implements ILogger {
             duration: DUR,
             ease: 'sine.inOut',
             onComplete: () => {
-                this._fsm.startState(States.realStars);
+                this._fsm.startState(GalaxyStates.realStars);
             }
         });
 
@@ -2393,14 +2387,12 @@ export class Galaxy implements ILogger {
             ease: 'sine.in',
             onComplete: () => {
                 // goto this star
-                this._fsm.startState(States.toStar, {
+                this._fsm.startState(GalaxyStates.toStar, {
                     starId: aServerStarData.id,
                     starParams: star
                 });
             }
         });
-
-        
 
     }
 
@@ -2416,14 +2408,60 @@ export class Galaxy implements ILogger {
         }
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    private onStateDisabledEnter() {
+        const LOOK_DUR = 2;
+        const DUR = 3;
 
-    hide() {
-        this._dummyGalaxy.visible = false;
+        this._orbitControl.enabled = false;
+        document.body.style.cursor = 'default';
+
+        // move camera target to center of Star
+        gsap.to(this._cameraTarget, {
+            x: 0,
+            y: 0,
+            z: 0,
+            duration: DUR / 1.5,
+            ease: 'sine.out',
+            onUpdate: () => {
+                this._orbitCenter.copy(this._cameraTarget);
+            }
+        });
+
+        this.galaxySaveAnimData.cameraPosition = this._camera.position.clone();
+
+        // move camera
+
+        // let newCameraPos = this._camera.position.clone().sub(starPos).normalize().
+        //     multiplyScalar(starDist).add(starPos);
+        // gsap.to(this._camera.position, {
+        //     x: newCameraPos.x,
+        //     y: newCameraPos.y,
+        //     z: newCameraPos.z,
+        //     duration: DUR,
+        //     ease: 'sine.inOut'
+        // });
+
+        this.smallFlySystem.activeSpawn = false;
     }
 
-    show() {
-        this._dummyGalaxy.visible = true;
+    private onStateDisabledUpdate() {
+        
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public get disabled() {
+        return this._disabled;
+    }
+    
+    public set disabled(value) {
+        this._disabled = value;
+        if (this._disabled) {
+            this._fsm.startState(GalaxyStates.disabled);
+        }
+        else {
+            this._fsm.startState(GalaxyStates.realStars);
+        }
     }
 
     /**

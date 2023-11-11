@@ -36,7 +36,7 @@ export class GameBoot implements ILogger {
     logError(aMsg: string, aData?: any): void {
         LogMng.error(`GameBoot -> ${aMsg}`, aData);
     }
-
+    
     init(aParams?: InitParams) {
         if (this.inited) {
             this.logWarn('game is already inited!');

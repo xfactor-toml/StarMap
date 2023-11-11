@@ -1,8 +1,8 @@
 import * as THREE from "three";
-import { ThreeLoader } from "../loaders/ThreeLoader";
 import * as datGui from "dat.gui";
 import vsSun from '../shaders/sunTextured/vert.glsl';
 import fsSun from '../shaders/sunTextured/frag.glsl';
+import { ThreeLoader } from "../utils/threejs/ThreeLoader";
 
 export type BigStar2Params = {
     starSize: number;
