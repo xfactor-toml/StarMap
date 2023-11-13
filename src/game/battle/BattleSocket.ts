@@ -1,11 +1,9 @@
 import { GameAuth, NetworkAuth, SubscribeOnAccountChanging } from "~/blockchain";
 import { Settings } from "../data/Settings";
 import { MyEventDispatcher } from "../basics/MyEventDispatcher";
+import { GUI } from "dat.gui";
 
 export enum BattleSocketEvent {
-    // enterGame = 'enterGame',
-    // withdrawGame = 'withdrawGame',
-    // gameStart = 'gameStart',
     message = 'packet'
 };
 
@@ -16,7 +14,11 @@ export enum BattleAction {
     gamestart = 'gamestart',
     objectlist = 'objectlist',
     objectcreate = 'objectcreate',
-    objectupdate = 'objectupdate'
+    objectupdate = 'objectupdate',
+    attack = 'attack',
+    objectdestroy = 'objectdestroy',
+    gameend = 'gameend',
+
 }
 
 export class BattleSocket extends MyEventDispatcher {
@@ -65,14 +67,17 @@ export class BattleSocket extends MyEventDispatcher {
 
         this._ws = await GameAuth(this._account);
 
-        this.logDebug(`WS connection:`)
-        console.log(this._ws);
+        this.logDebug(`WS connection:`, this._ws);
 
         if (this._ws) {
             this._wsConnected = true;
             this._ws.onmessage = (event) => {
                 this.onMessage(event);
             };
+            this._ws.onclose = () => {
+                this._wsConnected = false;
+                this._ws = null;
+            }
         }
     }
 
@@ -140,7 +145,7 @@ export class BattleSocket extends MyEventDispatcher {
 
     }
 
-    initDebugGui() {
+    initDebugGui(aFolder: GUI) {
         const DATA = {
             connect: () => {
                 this.initConnection();
@@ -157,8 +162,7 @@ export class BattleSocket extends MyEventDispatcher {
             },
         }
 
-        let gui = Settings.datGui;
-        let f = gui.addFolder('Gameplay');
+        const f = aFolder;
         f.add(DATA, 'connect');
         f.add(DATA, 'entergame');
         f.add(DATA, 'withdrawgame');

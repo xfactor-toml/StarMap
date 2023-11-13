@@ -13,7 +13,7 @@ import { ThreeLoader } from "./utils/threejs/ThreeLoader";
 export class GameEngine extends MyBasicClass {
     private _renderer: GameRenderer;
     private _galaxyScene: GalaxyScene;
-    private _battle: BattleSocket;
+    private _battleSocket: BattleSocket;
     private _battleScene: BattleScene;
     private clock: THREE.Clock;
     private stats: Stats;
@@ -69,14 +69,17 @@ export class GameEngine extends MyBasicClass {
             camera: this._renderer.camera
         }, true);
 
-        this._battle = new BattleSocket();
+        this._battleSocket = new BattleSocket();
         // this._battle.on(BattleSocketEvent.enterGame, this.onBattleSocketEnterGame, this);
         // this._battle.on(BattleSocketEvent.withdrawGame, this.onBattleSocketWithdrawGame, this);
-        this._battle.on(BattleSocketEvent.message, this.onBattleSocketMessage, this);
+        this._battleSocket.on(BattleSocketEvent.message, this.onBattleSocketMessage, this);
 
         // DEBUG GUI
         if (Settings.isDebugMode && Settings.datGui) {
-            this._battle.initDebugGui();
+            let gui = Settings.datGui;
+            let f = gui.addFolder('Battle');
+            this._battleSocket.initDebugGui(f);
+            this._battleScene.initDebugGui(f);
         }
 
     }
@@ -91,6 +94,12 @@ export class GameEngine extends MyBasicClass {
         this._galaxyScene.show();
     }
 
+    private onBattleExit() {
+        this._battleScene.hide();
+        this._battleScene.clear();
+        this._galaxyScene.show();
+    }
+
     private onBattleSocketMessage(aData: any) {
         switch (aData.action) {
             case BattleAction.entergame:
@@ -98,6 +107,9 @@ export class GameEngine extends MyBasicClass {
                 break;
             case BattleAction.withdrawgame:
                 this.onBattleWithdrawGame();
+                break;
+            case BattleAction.gameend:
+                this.onBattleExit();
                 break;
             default:
                 this._battleScene.onSocketMessage(aData);

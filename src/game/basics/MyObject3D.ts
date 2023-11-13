@@ -23,6 +23,10 @@ export class MyObject3D extends THREE.Group implements ILogger, IUpdatable {
         LogMng.error(`${this._className}: ${aMsg}`, aData);
     }
 
+    free() {
+
+    }
+    
     update(dt: number) {
         
     }

@@ -13,5 +13,4 @@ export class BattleObject extends MyObject3D {
         return this._objId;
     }
     
-
 }

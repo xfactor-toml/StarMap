@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { MyObject3D } from "~/game/basics/MyObject3D";
 import { BattleObject } from './BattleObject';
 
 export class BattlePlanet extends BattleObject {
@@ -15,6 +14,14 @@ export class BattlePlanet extends BattleObject {
         this._mesh = new THREE.Mesh(g, m);
         this.add(this._mesh);
 
+    }
+
+    free() {
+        if (this._mesh) {
+            this.remove(this._mesh);
+            this._mesh = null;
+        }
+        super.free();
     }
 
 }
