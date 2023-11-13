@@ -24,7 +24,8 @@ export class MyObject3D extends THREE.Group implements ILogger, IUpdatable {
     }
 
     free() {
-
+        this.clear();
+        this.parent?.remove(this);
     }
     
     update(dt: number) {

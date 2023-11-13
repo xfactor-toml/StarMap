@@ -33,10 +33,7 @@ export class BattleShip1 extends BattleObject {
     }
 
     free() {
-        if (this._model) {
-            this.remove(this._model);
-            this._model = null;
-        }
+        this._model = null;
         super.free();
     }
 

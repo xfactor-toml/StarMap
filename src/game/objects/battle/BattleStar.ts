@@ -1,10 +1,13 @@
 import * as THREE from 'three';
 import { BattleObject } from './BattleObject';
+import { BigStar2 } from '../BigStar2';
+import { Settings } from '~/game/data/Settings';
 
 export class BattleStar extends BattleObject {
     protected _mesh: THREE.Mesh;
+    protected _star: BigStar2;
 
-    constructor(aId: string) {
+    constructor(aId: string, aCamera) {
         super(aId, 'BattleSun');
 
         let g = new THREE.SphereGeometry(2);
@@ -12,7 +15,16 @@ export class BattleStar extends BattleObject {
             color: 0xffdd00
         });
         this._mesh = new THREE.Mesh(g, m);
-        this.add(this._mesh);
+        // this.add(this._mesh);
+
+        this._star = new BigStar2(this.position, aCamera, 1, {
+            starSize: 10,
+            galaxyColor: { r: .9, g: .6, b: .3 }
+        });
+        if (Settings.isDebugMode) {
+            // this._star.createDebugGui(Settings.datGui);
+        }
+        this.add(this._star);
 
     }
 
@@ -22,6 +34,10 @@ export class BattleStar extends BattleObject {
             this._mesh = null;
         }
         super.free();
+    }
+
+    update(dt: number) {
+        this._star?.update(dt);
     }
 
 }

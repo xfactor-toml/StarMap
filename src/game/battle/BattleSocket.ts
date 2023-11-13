@@ -4,7 +4,7 @@ import { MyEventDispatcher } from "../basics/MyEventDispatcher";
 import { GUI } from "dat.gui";
 
 export enum BattleSocketEvent {
-    message = 'packet'
+    message = 'message'
 };
 
 export enum BattleAction {
@@ -15,7 +15,7 @@ export enum BattleAction {
     objectlist = 'objectlist',
     objectcreate = 'objectcreate',
     objectupdate = 'objectupdate',
-    attack = 'attack',
+    event = 'event',
     objectdestroy = 'objectdestroy',
     gameend = 'gameend',
 
@@ -23,9 +23,9 @@ export enum BattleAction {
 
 export class BattleSocket extends MyEventDispatcher {
     // wallet
-    private _subscribed = false;
-    private _connected = false;
-    private _account: string;
+    private _walletSubscribed = false;
+    private _walletConnected = false;
+    private _walletAccount: string;
     // ws
     private _wsConnected = false;
     private _ws: WebSocket;
@@ -36,18 +36,18 @@ export class BattleSocket extends MyEventDispatcher {
 
     private updateState(auth: string | null) {
         if (!auth) return false;
-        this._connected = true;
-        this._account = auth;
+        this._walletConnected = true;
+        this._walletAccount = auth;
         return true;
     }
 
     private async walletSubscribe() {
-        this._subscribed = true;
+        this._walletSubscribed = true;
         return this.updateState(await SubscribeOnAccountChanging());
     }
 
     private async walletConnect() {
-        if (!this._subscribed) {
+        if (!this._walletSubscribed) {
             this.walletSubscribe();
         }
         return this.updateState(await NetworkAuth());
@@ -58,14 +58,14 @@ export class BattleSocket extends MyEventDispatcher {
             this.logWarn(`wsConnect: already connected!`);
             return;
         }
-        if (!this._connected) {
+        if (!this._walletConnected) {
             this.logWarn(`wsConnect: wallet doesn't connected!`);
             return;
         }
 
-        this.logDebug(`wsConnect wallet: ${this._account}`)
+        this.logDebug(`wsConnect wallet: ${this._walletAccount}`)
 
-        this._ws = await GameAuth(this._account);
+        this._ws = await GameAuth(this._walletAccount);
 
         this.logDebug(`WS connection:`, this._ws);
 
@@ -74,7 +74,12 @@ export class BattleSocket extends MyEventDispatcher {
             this._ws.onmessage = (event) => {
                 this.onMessage(event);
             };
-            this._ws.onclose = () => {
+            // this._ws.onclose = () => {
+            //     this._wsConnected = false;
+            //     this._ws = null;
+            // }
+            (this._ws as any).onClientCloseContext = this;
+            (this._ws as any).onClientCloseEvent = () => {
                 this._wsConnected = false;
                 this._ws = null;
             }
@@ -84,35 +89,6 @@ export class BattleSocket extends MyEventDispatcher {
     private sendPacket(aData: any) {
         this.logDebug(`sendPacket:`, aData);
         this._ws?.send(JSON.stringify(aData));
-    }
-
-    private initConnection() {
-        if (this._connected) {
-            this.wsConnect();
-        }
-        else {
-            this.walletConnect().then((value: boolean) => {
-                this.wsConnect();
-            });
-        }
-    }
-
-    private enterGame() {
-        this.sendPacket({
-            action: "entergame"
-        });
-    }
-
-    private withdrawGame() {
-        this.sendPacket({
-            action: "withdrawgame"
-        });
-    }
-
-    private exitGame() {
-        this.sendPacket({
-            action: "exitgame"
-        });
     }
 
     private onMessage(event) {
@@ -145,28 +121,37 @@ export class BattleSocket extends MyEventDispatcher {
 
     }
 
-    initDebugGui(aFolder: GUI) {
-        const DATA = {
-            connect: () => {
-                this.initConnection();
-            },
-            entergame: () => {
-                if (!this._wsConnected) this.initConnection();
-                this.enterGame();
-            },
-            withdrawgame: () => {
-                this.withdrawGame();
-            },
-            exitgame: () => {
-                this.exitGame();
-            },
-        }
+    public get connected(): boolean {
+        return this._wsConnected;
+    }
 
-        const f = aFolder;
-        f.add(DATA, 'connect');
-        f.add(DATA, 'entergame');
-        f.add(DATA, 'withdrawgame');
-        f.add(DATA, 'exitgame');
+    initConnection() {
+        if (this._walletConnected) {
+            if (!this._wsConnected) this.wsConnect();
+        }
+        else {
+            this.walletConnect().then((value: boolean) => {
+                if (!this._wsConnected) this.wsConnect();
+            });
+        }
+    }
+
+    sendEnterGame() {
+        this.sendPacket({
+            action: "entergame"
+        });
+    }
+
+    sendWithdrawGame() {
+        this.sendPacket({
+            action: "withdrawgame"
+        });
+    }
+
+    sendExitGame() {
+        this.sendPacket({
+            action: "exitgame"
+        });
     }
 
 }

@@ -31,8 +31,8 @@ export class LaserLine extends MyObject3D {
         let pos1 = aPosStart;
         let pos2 = aPosEnd;
 
-        let newPos1 = pos1.clone(); // .add(norm1.multiplyScalar(130));
-        let newPos2 = pos2.clone(); // .add(norm2.multiplyScalar(130));
+        let newPos1 = pos1.clone();
+        let newPos2 = pos2.clone();
 
         let distance = newPos1.distanceTo(newPos2);
 
@@ -130,6 +130,7 @@ export class LaserLine extends MyObject3D {
                 const mat = this.materials[i];
                 mat.opacity = 0;
             }
+            aParams.cb?.call(aParams.ctx);
         }
         else {
             for (let i = 0; i < this.materials.length; i++) {
@@ -139,6 +140,9 @@ export class LaserLine extends MyObject3D {
                     duration: aParams.dur || 1000,
                     delay: aParams.delay || 0,
                     ease: aParams.easing,
+                    onComplete: () => {
+                        aParams.cb?.call(aParams.ctx);
+                    }
                 });
                 this.tweens.push(tw);
             }
@@ -241,6 +245,20 @@ export class LaserLine extends MyObject3D {
             }
         }
 
+    }
+
+    free() {
+
+        for (let i = 0; i < this.tweens.length; i++) {
+            const tw = this.tweens[i];
+            tw.kill();
+        }
+        this.tweens = [];
+        this.materials = [];
+        this.meshes = [];
+        this._points = [];
+
+        super.free();
     }
 
     update(dt: number) {

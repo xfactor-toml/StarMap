@@ -1,19 +1,17 @@
 import * as THREE from "three";
+import * as datGui from "dat.gui";
 import { Settings } from "~/game/data/Settings";
 import { GameRender as GameRenderer } from "./scenes/GameRenderer";
 import { InputMng } from "./utils/inputs/InputMng";
 import { DeviceInfo } from "./utils/DeviceInfo";
-import * as datGui from "dat.gui";
-import { BattleAction, BattleSocket, BattleSocketEvent } from "./battle/BattleSocket";
 import { GalaxyScene } from "./scenes/GalaxyScene";
 import { MyBasicClass } from "./basics/MyBasicClass";
-import { BattleScene } from "./scenes/BattleScene";
 import { ThreeLoader } from "./utils/threejs/ThreeLoader";
+import { BattleScene, BattleSceneEvent } from "./scenes/BattleScene";
 
 export class GameEngine extends MyBasicClass {
     private _renderer: GameRenderer;
     private _galaxyScene: GalaxyScene;
-    private _battleSocket: BattleSocket;
     private _battleScene: BattleScene;
     private clock: THREE.Clock;
     private stats: Stats;
@@ -63,58 +61,33 @@ export class GameEngine extends MyBasicClass {
     }
 
     private initBattle() {
-
         this._battleScene = new BattleScene({
             scene: this._renderer.scene,
             camera: this._renderer.camera
-        }, true);
-
-        this._battleSocket = new BattleSocket();
-        // this._battle.on(BattleSocketEvent.enterGame, this.onBattleSocketEnterGame, this);
-        // this._battle.on(BattleSocketEvent.withdrawGame, this.onBattleSocketWithdrawGame, this);
-        this._battleSocket.on(BattleSocketEvent.message, this.onBattleSocketMessage, this);
-
-        // DEBUG GUI
-        if (Settings.isDebugMode && Settings.datGui) {
-            let gui = Settings.datGui;
-            let f = gui.addFolder('Battle');
-            this._battleSocket.initDebugGui(f);
-            this._battleScene.initDebugGui(f);
-        }
-
+        });
+        this._battleScene.hide();
+        this._battleScene.on(BattleSceneEvent.onEnterGame, this.onBattleEnterGame, this);
+        this._battleScene.on(BattleSceneEvent.onWithdraw, this.onBattleWithdrawGame, this);
+        this._battleScene.on(BattleSceneEvent.onGameComplete, this.onBattleComplete, this);
     }
 
     private onBattleEnterGame() {
-        this.logDebug(`entergame: hide galaxy...`);
+        this.logDebug(`onBattleEnterGame...`);
         this._galaxyScene.hide();
+        this._battleScene.show();
     }
 
     private onBattleWithdrawGame() {
-        this.logDebug(`withdrawgame: show galaxy...`);
+        this.logDebug(`onBattleWithdrawGame...`);
+        this._galaxyScene.hide();
         this._galaxyScene.show();
     }
 
-    private onBattleExit() {
+    private onBattleComplete() {
+        this.logDebug(`onBattleComplete...`);
         this._battleScene.hide();
         this._battleScene.clear();
         this._galaxyScene.show();
-    }
-
-    private onBattleSocketMessage(aData: any) {
-        switch (aData.action) {
-            case BattleAction.entergame:
-                this.onBattleEnterGame();
-                break;
-            case BattleAction.withdrawgame:
-                this.onBattleWithdrawGame();
-                break;
-            case BattleAction.gameend:
-                this.onBattleExit();
-                break;
-            default:
-                this._battleScene.onSocketMessage(aData);
-                break;
-        }
     }
 
     private update(dt: number) {

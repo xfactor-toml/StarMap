@@ -9,7 +9,7 @@ export class BattlePlanet extends BattleObject {
 
         let g = new THREE.SphereGeometry(1);
         let m = new THREE.MeshBasicMaterial({
-            color: 0x21ad00
+            color: 0xaaaaaa
         });
         this._mesh = new THREE.Mesh(g, m);
         this.add(this._mesh);

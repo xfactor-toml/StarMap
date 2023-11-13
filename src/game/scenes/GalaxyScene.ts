@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { MyEventDispatcher } from "../basics/MyEventDispatcher";
-import { GalaxyMng } from "./GalaxyMng";
+import { GalaxyMng } from "../galaxy/Galaxy";
 import { FrontEvents } from '../events/FrontEvents';
 import { ServerStarData } from '../data/Types';
 import { Settings } from '../data/Settings';
@@ -28,7 +28,6 @@ export class GalaxyScene extends MyEventDispatcher implements IUpdatable {
     }
 
     private initEvents() {
-        // events
         FrontEvents.onLeftPanelGalaxyClick.add(this.onLeftPanelGalaxyClick, this);
         FrontEvents.onBotPanelPhantomClick.add(this.onBotPanelPhantomClick, this);
         FrontEvents.onBotPanelRealClick.add(this.onBotPanelRealClick, this);

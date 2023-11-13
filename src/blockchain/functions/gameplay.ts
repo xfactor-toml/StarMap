@@ -51,6 +51,7 @@ export async function GameAuth(account: string): Promise<WebSocket | null> {
       wss.onclose = () => {
         console.log("closed");
         clearInterval(PingPong)
+        wss.onClientCloseEvent?.apply(wss.onClientCloseContext);
         resolve(null);
         return null;
       };
