@@ -18,6 +18,7 @@ export enum BattleAction {
     event = 'event',
     objectdestroy = 'objectdestroy',
     gameend = 'gameend',
+    log = 'log'
 
 }
 
@@ -92,31 +93,35 @@ export class BattleSocket extends MyEventDispatcher {
     }
 
     private onMessage(event) {
-        // this.logDebug(`onWSMessage: event:`, event);
+        
         let recvData = event.data;
         if (!recvData) {
             this.logDebug(`onWSMessage: data == null`);
             return;
         }
-        // this.logDebug(`onWSMessage: data:`, recvData);
+        // this.logDebug(`recv data: ${recvData}`);
+
+        let data: any;
 
         try {
             if (['p', 'pong', 'ping'].indexOf(recvData) >= 0) return;
-
-            let data = JSON.parse(recvData);
-            this.logDebug(`onWSMessage: data:`, data);
-
-            switch (data.action) {
-                case 'ping':
-                    this._ws.send( JSON.stringify({ action: 'pong' }) );
-                    break;
-                default:
-                    this.emit(BattleSocketEvent.message, data);
-                    break;
-            }
-
+            data = JSON.parse(recvData);
+            this.logDebug(`Parsed Data:`, data);
         } catch (error) {
-            this.logError(`onMessage: ${error.message}`);
+            this.logWarn(`recvData: ${recvData}`);
+            this.logWarn(`onMessage parsed data:`, data);
+            this.logError(`${error.message}`);
+        }
+
+        if (!data) return;
+
+        switch (data.action) {
+            case 'ping':
+                this._ws.send(JSON.stringify({ action: 'pong' }));
+                break;
+            default:
+                this.emit(BattleSocketEvent.message, data);
+                break;
         }
 
     }

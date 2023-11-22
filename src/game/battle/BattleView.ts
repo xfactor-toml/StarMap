@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import gsap from 'gsap';
+import gsap, { Linear, Sine } from 'gsap';
 import { GUI } from 'dat.gui';
 import { MyEventDispatcher } from "../basics/MyEventDispatcher";
 import { BattleAction } from "./BattleSocket";
@@ -11,6 +11,7 @@ import { BattleShip1 } from '../objects/battle/BattleShip1';
 import { LaserLine } from '../objects/battle/LaserLine';
 import { MyMath } from '../utils/MyMath';
 import { BattleCameraMng } from './BattleCameraMng';
+import { BattlePosition } from '../objects/battle/BattlePosition';
 
 const SETTINGS = {
 
@@ -37,12 +38,19 @@ const SETTINGS = {
 type ServerObjectData = {
     id: string,
     owner: string,
-    class: string,
-    mirror: boolean,
+    class: 'star' | 'planet' | 'ship',
     position: {
         x: number,
         y: number
-    }
+    },
+    radius?: number, // object radius
+    orbitRadius?: number, // planet orbit radius
+    rotationSpeed?: number, // planet rad/sec
+    year?: number, // planet period in sec
+    orbitCenter?: { x: number, y: number }, // planet orbit center
+    orbitSpeed?: number, // planet orbit speed in rad/sec
+    startAngle?: number
+
 }
 
 export class BattleView extends MyEventDispatcher implements IUpdatable {
@@ -95,15 +103,25 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         // this._gridBot.position.z = SETTINGS.client.field.size.h / 4;
         // this._dummyMain.add(this._gridBot);
 
+        this._gridBot = new THREE.GridHelper(fw, fw / 10, 0x999999, 0x333333);
+        this._gridBot.position.y = -1;
+        this._gridBot.position.z = 0;
+        this._dummyMain.add(this._gridBot);
+
     }
 
     private initCameraPosition(aIsTop: boolean) {
         let zFactor = aIsTop ? -1 : 1;
         this._cameraMng.moveTo({
-            aCamPos: { x: 0, y: 120, z: 50 * zFactor },
+            aCamPos: { x: 0, y: 120, z: 5 * zFactor },
+            aTargetPos: { x: 0, y: 0, z: 1 * zFactor },
             duration: 2,
-            aTargetPos: { x: 0, y: 0, z: 10 * zFactor },
         });
+    }
+
+    private serverValueToClient(aServerValue: number): number {
+        const factor = SETTINGS.client.field.size.w / SETTINGS.server.field.size.w;
+        return aServerValue * factor;
     }
 
     private serverToClientX(aServerX: number): number {
@@ -118,11 +136,11 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         return aServerY * factor - h;
     }
 
-    private getPositionByServer(aData: ServerObjectData): THREE.Vector3 {
+    private getPositionByServer(aServerPos: {x: number, y: number}): THREE.Vector3 {
         return new THREE.Vector3(
-            this.serverToClientX(aData.position.x),
+            this.serverToClientX(aServerPos.x),
             0,
-            this.serverToClientY(aData.position.y),
+            this.serverToClientY(aServerPos.y),
         );
     }
 
@@ -132,26 +150,42 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         switch (aData.class) {
 
             case 'star':
-                obj = new BattleStar(aData.id, this._camera);
-                obj.position.copy(this.getPositionByServer(aData));
+                obj = new BattleStar(aData.id, this._camera, {
+                    radius: this.serverValueToClient(aData.radius)
+                });
+                obj.position.copy(this.getPositionByServer({ x: aData.position.x, y: aData.position.y }));
                 break;
             
             case 'planet':
-                obj = new BattlePlanet(aData.id);
-                obj.position.copy(this.getPositionByServer(aData));
+                let oCenter = this.getPositionByServer(aData.orbitCenter);
+                obj = new BattlePlanet(aData.id, {
+                    orbitCenter: {
+                        x: oCenter.x,
+                        y: oCenter.z
+                    },
+                    orbitRadius: this.serverValueToClient(aData.orbitRadius),
+                    orbitSpeed: aData.orbitSpeed,
+                    radius: this.serverValueToClient(aData.radius),
+                    rotationSpeed: aData.rotationSpeed,
+                    year: aData.year,
+                    startAngle: aData.startAngle
+                });
+                // obj.position.copy(this.getPositionByServer(aData));
                 break;
             
             case 'ship':
-                obj = new BattleShip1(aData.id);
-                obj.position.copy(this.getPositionByServer(aData));
+                let r = this.serverValueToClient(aData.radius);
+                obj = new BattleShip1(aData.id, r);
+                obj.createDebugSphere(r);
+                obj.position.copy(this.getPositionByServer({ x: aData.position.x, y: aData.position.y }));
                 if (aData.position.y > 500) {
                     obj.rotation.y = Math.PI;
                 }
-                this.logDebug(`ship created id=${aData.id}`);
+                // this.logDebug(`ship created id=${aData.id}`);
                 break;
             
             default:
-                this.logWarn(`createObject(): unhandled package:`, aData);
+                this.logWarn(`createObject(): unknown class:`, aData);
                 break;
             
         }
@@ -180,11 +214,14 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     private updateObject(aParams: {
         id: string,
         data: {
-            event?: 'startmoving',
+            event?: 'startmoving' | 'starAttackPositions' | 'stopmoving',
             target?: { x: number, y: number },
-            timeTo?: number
+            position?: { x: number, y: number },
+            timeTo?: number,
+            list?: any[]
         }
     }) {
+        const data = aParams.data;
 
         let obj = this.getObjectById(aParams.id);
         if (!obj) {
@@ -192,20 +229,55 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             return;
         }
 
-        let eventName = aParams.data?.event;
+        let eventName = data?.event;
         switch (eventName) {
 
-            case 'startmoving':
+            case 'starAttackPositions':
+                let posList: {
+                    center: { x, y },
+                    hold: boolean
+                }[] = data.list;
+                
+                for (let i = 0; i < posList.length; i++) {
+                    const pos = posList[i];
+                    // let p = new BattlePosition();
+                }
+
+                break;
+            
+            case 'startmoving': {
                 let targetPos = {
-                    x: this.serverToClientX(aParams.data.target.x),
-                    z: this.serverToClientX(aParams.data.target.y),
+                    x: this.serverToClientX(data.target.x),
+                    z: this.serverToClientX(data.target.y),
                 }
                 gsap.to(obj.position, {
                     x: targetPos.x,
                     z: targetPos.z,
-                    duration: aParams.data.timeTo * 0.001
+                    duration: data.timeTo * 0.001,
+                    ease: Linear.easeNone
                 })
                 break;
+            }
+            
+            case 'stopmoving': {
+                let targetPos = {
+                    x: this.serverToClientX(data.position.x),
+                    z: this.serverToClientX(data.position.y),
+                }
+
+                gsap.killTweensOf(obj.position);
+
+                gsap.to(obj.position, {
+                    x: targetPos.x,
+                    z: targetPos.z,
+                    duration: .5,
+                    ease: Sine.easeOut
+                })
+
+                // obj.position.x = targetPos.x;
+                // obj.position.z = targetPos.z;
+                break;
+            }
             
             default:
                 this.logWarn(`updateObject(): unknown event (${eventName}):`, aParams);
@@ -269,7 +341,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             randomLaserRed: () => {
                 let ship1 = this.getRandomShip();
                 let ship2 = this.getRandomShip();
-                if (ship1.objId == ship2.objId) return;
+                if (!ship1 || !ship2 || ship1.objId == ship2.objId) return;
                 this.attack({
                     from: ship1.objId,
                     to: ship2.objId,
@@ -282,7 +354,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             randomLaserBlue: () => {
                 let ship1 = this.getRandomShip();
                 let ship2 = this.getRandomShip();
-                if (ship1.objId == ship2.objId) return;
+                if (!ship1 || !ship2 || ship1.objId == ship2.objId) return;
                 this.attack({
                     from: ship1.objId,
                     to: ship2.objId,
@@ -315,6 +387,11 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         data?: any,
     } & any) {
         switch (aData.action) {
+
+            case BattleAction.log:
+                
+                break;
+                
             /**
              * action: gamestart,
              * data: {
@@ -323,16 +400,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
              */
             case BattleAction.gamestart:
                 this.onGameStartPacket(aData.data || {});
-                // this.show();
                 break;
-            
-            // case BattleAction.objectlist: {
-            //     let objList = aData.list;
-            //     for (let i = 0; i < objList.length; i++) {
-            //         const objData = objList[i];
-            //         this.createObject(objData);
-            //     }
-            // } break;
 
             /**
              * action: objectcreate,
@@ -356,6 +424,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
              * }
              */
             case BattleAction.objectupdate:
+                
                 if (aData.data?.from != undefined && aData.data?.to != undefined) {
                     this.attack(aData.data);
                 }
@@ -367,15 +436,15 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 }
                 break;
             
-            case BattleAction.event:
-                switch (aData.type) {
-                    case 'attack':
-                        // this.attack(aData);
-                        break;
-                    default:
-                        break;
-                }
-                break;
+            // case BattleAction.event:
+            //     switch (aData.type) {
+            //         case 'attack':
+            //             // this.attack(aData);
+            //             break;
+            //         default:
+            //             break;
+            //     }
+            //     break;
             
             case BattleAction.objectdestroy:
                 this.destroyObject(aData.data.id);

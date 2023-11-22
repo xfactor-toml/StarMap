@@ -3,17 +3,48 @@ import { BattleObject } from './BattleObject';
 
 export class BattlePlanet extends BattleObject {
     protected _mesh: THREE.Mesh;
+    private _radius;
+    private _orbitRadius;
+    private _rotationSpeed;
+    private _orbitCenter;
+    private _orbitSpeed;
+    private _orbitAngle;
 
-    constructor(aId: string) {
-        super(aId, 'BattleSun');
+    constructor(aId: string, aParams: {
+        radius: number, // object radius
+        orbitRadius: number, // planet orbit radius
+        rotationSpeed: number, // planet rad/sec
+        year: number, // planet period in sec
+        orbitCenter: { x: number, y: number }, // planet orbit center
+        orbitSpeed: number, // planet orbit speed in rad/sec
+        startAngle: number
+    }) {
+        super(aId, 'BattlePlanet');
 
-        let g = new THREE.SphereGeometry(1);
+        this.logDebug(`params:`, aParams);
+
+        this._radius = aParams.radius;
+        this._orbitRadius = aParams.orbitRadius;
+        this._rotationSpeed = aParams.rotationSpeed;
+        this._orbitCenter = aParams.orbitCenter;
+        this._orbitSpeed = aParams.orbitSpeed;
+        this._orbitAngle = aParams.startAngle;
+
+        this.updatePosition();
+
+        let g = new THREE.SphereGeometry(this._radius);
         let m = new THREE.MeshBasicMaterial({
             color: 0xaaaaaa
         });
         this._mesh = new THREE.Mesh(g, m);
         this.add(this._mesh);
+        
+    }
 
+    private updatePosition() {
+        this.position.x = this._orbitCenter.x + Math.cos(this._orbitAngle) * this._orbitRadius;
+        this.position.y = 0;
+        this.position.z = this._orbitCenter.y + Math.sin(this._orbitAngle) * this._orbitRadius;
     }
 
     free() {
@@ -22,6 +53,11 @@ export class BattlePlanet extends BattleObject {
             this._mesh = null;
         }
         super.free();
+    }
+
+    update(dt: number) {
+        this._orbitAngle += this._orbitSpeed * dt;
+        this.updatePosition();
     }
 
 }

@@ -7,7 +7,7 @@ import { TextureAlias } from '~/game/data/TextureData';
 export class BattleShip1 extends BattleObject {
     protected _model: THREE.Group;
 
-    constructor(aId: string) {
+    constructor(aId: string, aRadius: number) {
         super(aId, 'BattleShip1');
 
         this._model = ThreeLoader.getInstance().getModel(ModelAlias.Ship1);
@@ -25,7 +25,7 @@ export class BattleShip1 extends BattleObject {
             }
         })
 
-        const sc = 0.002;
+        const sc = aRadius * 0.001;
         this._model.scale.set(sc, sc, sc);
 
         this.add(this._model);

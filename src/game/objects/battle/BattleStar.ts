@@ -7,32 +7,44 @@ export class BattleStar extends BattleObject {
     protected _mesh: THREE.Mesh;
     protected _star: BigStar2;
 
-    constructor(aId: string, aCamera) {
-        super(aId, 'BattleSun');
+    constructor(aId: string, aCamera, aParams: {
+        radius: number
+    }) {
+        super(aId, 'BattleStar');
 
-        let g = new THREE.SphereGeometry(2);
+        this.logDebug(`params:`, aParams);
+
+        let g = new THREE.SphereGeometry(aParams.radius);
         let m = new THREE.MeshBasicMaterial({
             color: 0xffdd00
         });
         this._mesh = new THREE.Mesh(g, m);
-        // this.add(this._mesh);
+        this.add(this._mesh);
 
-        this._star = new BigStar2(this.position, aCamera, 1, {
-            starSize: 10,
-            galaxyColor: { r: .9, g: .6, b: .3 }
-        });
+        // this._star = new BigStar2(this.position, aCamera, 1, {
+        //     starSize: 10,
+        //     galaxyColor: { r: .9, g: .6, b: .3 }
+        // });
         if (Settings.isDebugMode) {
             // this._star.createDebugGui(Settings.datGui);
         }
-        this.add(this._star);
+        // this.add(this._star);
 
     }
 
     free() {
+        this.clear();
+        
         if (this._mesh) {
             this.remove(this._mesh);
             this._mesh = null;
         }
+
+        if (this._star) {
+            this._star.free();
+        }
+        this._star = null;
+
         super.free();
     }
 
