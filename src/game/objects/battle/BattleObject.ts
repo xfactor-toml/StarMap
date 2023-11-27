@@ -4,6 +4,7 @@ import { MyObject3D } from "~/game/basics/MyObject3D";
 export class BattleObject extends MyObject3D {
     private _objId: string;
     private _debugSphere: THREE.Mesh;
+    targetPosition: { x: number, z: number };
 
     constructor(aId: string, aClassName?: string) {
         super(aClassName || 'BattleObject');
@@ -30,6 +31,13 @@ export class BattleObject extends MyObject3D {
     free() {
         this._debugSphere = null;
         super.free();
+    }
+
+    update(dt: number) {
+        if (this.targetPosition) {
+            this.position.x += (this.targetPosition.x - this.position.x) * dt;
+            this.position.z += (this.targetPosition.z - this.position.z) * dt;
+        }
     }
 
 }

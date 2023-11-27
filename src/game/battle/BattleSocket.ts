@@ -159,4 +159,10 @@ export class BattleSocket extends MyEventDispatcher {
         });
     }
 
+    sendPlanetFire() {
+        this.sendPacket({
+            action: "planetFire"
+        });
+    }
+
 }

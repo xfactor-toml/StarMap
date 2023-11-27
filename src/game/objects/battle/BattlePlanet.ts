@@ -3,6 +3,7 @@ import { BattleObject } from './BattleObject';
 
 export class BattlePlanet extends BattleObject {
     protected _mesh: THREE.Mesh;
+    protected _settelite: THREE.Mesh;
     private _radius;
     private _orbitRadius;
     private _rotationSpeed;
@@ -38,6 +39,14 @@ export class BattlePlanet extends BattleObject {
         });
         this._mesh = new THREE.Mesh(g, m);
         this.add(this._mesh);
+
+        g = new THREE.SphereGeometry(this._radius / 3);
+        m = new THREE.MeshBasicMaterial({
+            color: 0xff0000
+        });
+        this._settelite = new THREE.Mesh(g, m);
+        this._settelite.position.z = this._radius * 1.7;
+        this.add(this._settelite);
         
     }
 
@@ -45,6 +54,10 @@ export class BattlePlanet extends BattleObject {
         this.position.x = this._orbitCenter.x + Math.cos(this._orbitAngle) * this._orbitRadius;
         this.position.y = 0;
         this.position.z = this._orbitCenter.y + Math.sin(this._orbitAngle) * this._orbitRadius;
+    }
+
+    private updateRotation(dt: number) {
+        this.rotation.y += this._rotationSpeed * dt;
     }
 
     free() {
@@ -58,6 +71,7 @@ export class BattlePlanet extends BattleObject {
     update(dt: number) {
         this._orbitAngle += this._orbitSpeed * dt;
         this.updatePosition();
+        this.updateRotation(dt);
     }
 
 }

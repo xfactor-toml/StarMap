@@ -65,7 +65,8 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
                 this._socket.initConnection();
             },
             entergame: () => {
-                if (!this._socket.connected) this._socket.initConnection();
+                // if (!this._socket.connected) this._socket.initConnection();
+                if (!this._socket.connected) return;
                 FrontEvents.onBattleSearch.dispatch();
             },
             withdrawgame: () => {
@@ -74,13 +75,21 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
             exitgame: () => {
                 this._socket.sendExitGame();
             },
+            planetFire: () => {
+                this._socket.sendPlanetFire();
+            },
+            planetFireClient: () => {
+                
+            }
         }
 
         const f = aFolder;
-        f.add(DATA, 'connect');
-        f.add(DATA, 'entergame');
-        f.add(DATA, 'withdrawgame');
-        f.add(DATA, 'exitgame');
+        f.add(DATA, 'connect').name('Connect');
+        f.add(DATA, 'entergame').name('Enter Game');
+        f.add(DATA, 'withdrawgame').name('Withdraw');
+        f.add(DATA, 'exitgame').name('Exit Game');
+        f.add(DATA, 'planetFire').name('Planet Fire');
+        f.add(DATA, 'planetFireClient').name('Planet Fire - Client');
     }
 
     private onFrontStarBattleSearch() {

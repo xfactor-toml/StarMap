@@ -225,7 +225,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
         let obj = this.getObjectById(aParams.id);
         if (!obj) {
-            this.logError(`updateObject(): !obj`, aParams);
+            this.logError(`updateObject: !obj`, aParams);
             return;
         }
 
@@ -280,7 +280,17 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             }
             
             default:
-                this.logWarn(`updateObject(): unknown event (${eventName}):`, aParams);
+                // this.logWarn(`updateObject(): unknown event (${eventName}):`, aParams);
+                
+                // universal update
+                if (data?.position) {
+                    // update position
+                    obj.targetPosition = {
+                        x: this.serverToClientX(data.position.x),
+                        z: this.serverToClientX(data.position.y)
+                    }
+                }
+
                 break;
             
         }
@@ -370,6 +380,9 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     }
 
     destroyAllObjects() {
+        this._objects.forEach(obj => {
+            obj.free();
+        });
         this._objects.clear();
     }
 
@@ -447,7 +460,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             //     break;
             
             case BattleAction.objectdestroy:
-                this.destroyObject(aData.data.id);
+                this.destroyObject(aData.id);
                 break;
             
             default:
