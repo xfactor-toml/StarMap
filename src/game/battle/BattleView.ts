@@ -68,6 +68,8 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
     private _objects: Map<string, BattleObject>;
     private _shipEnergyViewer: ShipEnergyViewer;
+
+    private _isTopPosition = false;
     
     constructor(aParams: {
         scene: THREE.Scene,
@@ -147,6 +149,15 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             0,
             this.serverToClientY(aServerPos.y),
         );
+    }
+
+    private onGameStartPacket(aData: {
+        playerPosition?: 'top' | 'bottom'
+    }) {
+        this.initField();
+        this._isTopPosition = aData.playerPosition == 'top';
+        this._shipEnergyViewer.isTopViewPosition = this._isTopPosition;
+        this.initCameraPosition(this._isTopPosition);
     }
 
     private createObject(aData: ServerObjectData) {
@@ -420,13 +431,6 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         this._objects.clear();
     }
 
-    private onGameStartPacket(aData: {
-        playerPosition?: 'top' | 'bottom'
-    }) {
-        this.initField();
-        this.initCameraPosition(aData.playerPosition == 'top');
-    }
-
     onSocketMessage(aData: {
         action: string,
         // opponent?: string,
@@ -444,7 +448,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
              * }
              */
             case BattleAction.gamestart:
-                this.onGameStartPacket(aData.data || {});
+                this.onGameStartPacket(aData || {});
                 break;
 
             /**

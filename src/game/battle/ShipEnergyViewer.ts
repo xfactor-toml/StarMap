@@ -10,7 +10,8 @@ export class ShipEnergyViewer implements ILogger, IUpdatable {
     private _parent: THREE.Group;
     private _objects: Map<string, BattleObject>;
     private _bars: Map<string, ShipEnergyBar>;
-
+    private _isTopViewPosition = false;
+    
     constructor(aParent: THREE.Group) {
         this._parent = aParent;
         this._objects = new Map<string, BattleObject>();
@@ -27,6 +28,13 @@ export class ShipEnergyViewer implements ILogger, IUpdatable {
 
     logError(aMsg: string, aData?: any): void {
         LogMng.error(`ShipEnergyViewer: ${aMsg}`, aData);
+    }
+
+    public get isTopViewPosition() {
+        return this._isTopViewPosition;
+    }
+    public set isTopViewPosition(value) {
+        this._isTopViewPosition = value;
     }
 
     addBar(aObject: BattleObject) {
@@ -53,7 +61,7 @@ export class ShipEnergyViewer implements ILogger, IUpdatable {
             bar.progress = p;
             bar.position.x = obj.position.x;
             bar.position.y = obj.position.y;
-            bar.position.z = obj.position.z + obj.radius + 1;
+            bar.position.z = obj.position.z + obj.radius + (this._isTopViewPosition ? -1 : 1);
         });
     }
 
