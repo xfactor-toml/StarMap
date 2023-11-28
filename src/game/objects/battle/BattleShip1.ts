@@ -6,15 +6,19 @@ import { TextureAlias } from '~/game/data/TextureData';
 
 export class BattleShip1 extends BattleObject {
     protected _model: THREE.Group;
-
-    constructor(aId: string, aRadius: number) {
-        super(aId, 'BattleShip1');
+    
+    constructor(aParams: {
+        id: string,
+        radius?: number,
+        maxHp?: number
+    }) {
+        super(aParams, 'BattleShip1');
 
         this._model = ThreeLoader.getInstance().getModel(ModelAlias.Ship1);
         let tMap = ThreeLoader.getInstance().getTexture(TextureAlias.Ship1Color);
         
         let m = new THREE.MeshBasicMaterial({
-            // color: 0xaaaaaa
+            // color: 0xaaaaaa,
             map: tMap
         });
 
@@ -25,7 +29,7 @@ export class BattleShip1 extends BattleObject {
             }
         })
 
-        const sc = aRadius * 0.001;
+        const sc = this.radius * 0.001;
         this._model.scale.set(sc, sc, sc);
 
         this.add(this._model);

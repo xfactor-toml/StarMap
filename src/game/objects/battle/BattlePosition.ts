@@ -3,14 +3,14 @@ import { BattleObject } from './BattleObject';
 
 export class BattlePosition extends BattleObject {
     protected _mesh: THREE.Mesh;
-    private _radius;
 
-    constructor(aId: string, aRadius: number) {
-        super(aId, 'BattlePlanet');
+    constructor(aParams: {
+        id: string,
+        radius?: number
+    }) {
+        super(aParams, 'BattlePosition');
 
-        this._radius = aRadius;
-
-        let g = new THREE.SphereGeometry(this._radius);
+        let g = new THREE.SphereGeometry(this.radius);
         let m = new THREE.MeshBasicMaterial({
             color: 0xff0000,
             transparent: true,

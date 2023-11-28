@@ -4,7 +4,6 @@ import { BattleObject } from './BattleObject';
 export class BattlePlanet extends BattleObject {
     protected _mesh: THREE.Mesh;
     protected _settelite: THREE.Mesh;
-    private _radius;
     private _orbitRadius;
     private _rotationSpeed;
     private _orbitCenter;
@@ -20,11 +19,10 @@ export class BattlePlanet extends BattleObject {
         orbitSpeed: number, // planet orbit speed in rad/sec
         startAngle: number
     }) {
-        super(aId, 'BattlePlanet');
+        super({ id: aId, radius: aParams.radius }, 'BattlePlanet');
 
         this.logDebug(`params:`, aParams);
 
-        this._radius = aParams.radius;
         this._orbitRadius = aParams.orbitRadius;
         this._rotationSpeed = aParams.rotationSpeed;
         this._orbitCenter = aParams.orbitCenter;
@@ -33,19 +31,19 @@ export class BattlePlanet extends BattleObject {
 
         this.updatePosition();
 
-        let g = new THREE.SphereGeometry(this._radius);
+        let g = new THREE.SphereGeometry(this.radius);
         let m = new THREE.MeshBasicMaterial({
             color: 0xaaaaaa
         });
         this._mesh = new THREE.Mesh(g, m);
         this.add(this._mesh);
 
-        g = new THREE.SphereGeometry(this._radius / 3);
+        g = new THREE.SphereGeometry(this.radius / 3);
         m = new THREE.MeshBasicMaterial({
             color: 0xff0000
         });
         this._settelite = new THREE.Mesh(g, m);
-        this._settelite.position.z = this._radius * 1.7;
+        this._settelite.position.z = this.radius * 1.7;
         this.add(this._settelite);
         
     }

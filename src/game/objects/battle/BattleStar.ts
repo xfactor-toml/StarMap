@@ -7,12 +7,13 @@ export class BattleStar extends BattleObject {
     protected _mesh: THREE.Mesh;
     protected _star: BigStar2;
 
-    constructor(aId: string, aCamera, aParams: {
-        radius: number
+    constructor(aParams: {
+        id: string,
+        camera: THREE.Camera,
+        radius: number,
+        maxHp: number
     }) {
-        super(aId, 'BattleStar');
-
-        this.logDebug(`params:`, aParams);
+        super(aParams, 'BattleStar');
 
         let g = new THREE.SphereGeometry(aParams.radius);
         let m = new THREE.MeshBasicMaterial({
