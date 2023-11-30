@@ -7,6 +7,7 @@ import { BattleObject } from '../objects/battle/BattleObject';
 
 export class ShipEnergyViewer implements ILogger, IUpdatable {
 
+    private _className = 'ShipEnergyViewer';
     private _parent: THREE.Group;
     private _objects: Map<string, BattleObject>;
     private _bars: Map<string, ShipEnergyBar>;
@@ -19,15 +20,15 @@ export class ShipEnergyViewer implements ILogger, IUpdatable {
     }
 
     logDebug(aMsg: string, aData?: any): void {
-        LogMng.debug(`ShipEnergyViewer: ${aMsg}`, aData);
+        LogMng.debug(`${this._className}: ${aMsg}`, aData);
     }
 
     logWarn(aMsg: string, aData?: any): void {
-        LogMng.warn(`ShipEnergyViewer: ${aMsg}`, aData);
+        LogMng.warn(`${this._className}: ${aMsg}`, aData);
     }
 
     logError(aMsg: string, aData?: any): void {
-        LogMng.error(`ShipEnergyViewer: ${aMsg}`, aData);
+        LogMng.error(`${this._className}: ${aMsg}`, aData);
     }
 
     public get isTopViewPosition() {
@@ -54,14 +55,23 @@ export class ShipEnergyViewer implements ILogger, IUpdatable {
         bar.free();
     }
 
+    clear() {
+        this._objects.clear();
+        this._bars.forEach(bar => {
+            bar.free();
+        });
+        this._bars.clear();
+    }
+
     update(dt: number) {
+        const f = this._isTopViewPosition ? -1 : 1;
         this._objects.forEach(obj => {
             let bar = this._bars.get(obj.objId);
             let p = obj.hp / obj.maxHp;
             bar.progress = p;
             bar.position.x = obj.position.x;
             bar.position.y = obj.position.y;
-            bar.position.z = obj.position.z + obj.radius + (this._isTopViewPosition ? -1 : 1);
+            bar.position.z = obj.position.z + f * (obj.radius + 1);
         });
     }
 

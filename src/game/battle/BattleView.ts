@@ -273,40 +273,6 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
                 break;
             
-            case 'startmoving': {
-                let targetPos = {
-                    x: this.serverToClientX(data.target.x),
-                    z: this.serverToClientX(data.target.y),
-                }
-                gsap.to(obj.position, {
-                    x: targetPos.x,
-                    z: targetPos.z,
-                    duration: data.timeTo * 0.001,
-                    ease: Linear.easeNone
-                })
-                break;
-            }
-            
-            case 'stopmoving': {
-                let targetPos = {
-                    x: this.serverToClientX(data.position.x),
-                    z: this.serverToClientX(data.position.y),
-                }
-
-                gsap.killTweensOf(obj.position);
-
-                gsap.to(obj.position, {
-                    x: targetPos.x,
-                    z: targetPos.z,
-                    duration: .5,
-                    ease: Sine.easeOut
-                })
-
-                // obj.position.x = targetPos.x;
-                // obj.position.z = targetPos.z;
-                break;
-            }
-            
             default:
                 
                 // universal update
@@ -315,7 +281,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                     // update position
                     obj.targetPosition = {
                         x: this.serverToClientX(data.position.x),
-                        z: this.serverToClientX(data.position.y)
+                        z: this.serverToClientY(data.position.y)
                     }
                 }
 
@@ -436,6 +402,8 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         // opponent?: string,
         // list?: ServerObjectData[],
         data?: any,
+        class?: 'ship',
+        list?: any[]
     } & any) {
         switch (aData.action) {
 
@@ -474,17 +442,36 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
              */
             case BattleAction.objectupdate:
                 
-                if (aData.data?.from != undefined && aData.data?.to != undefined) {
-                    this.attack(aData.data);
+                switch (aData.class) {
+
+                    case 'ship':
+                        let list = aData.data.list || [];
+                        for (let i = 0; i < list.length; i++) {
+                            const e = list[i];
+                            this.updateObject({
+                                id: e.id,
+                                data: e
+                            });
+                        }
+                        break;
+                    
+                    default:
+
+                        if (aData.data?.from != undefined && aData.data?.to != undefined) {
+                            this.attack(aData.data);
+                        }
+                        else {
+                            this.updateObject({
+                                id: aData.id,
+                                data: aData.data
+                            });
+                        }
+                        break;
+                    
                 }
-                else {
-                    this.updateObject({
-                        id: aData.id,
-                        data: aData.data
-                    });
-                }
+                
                 break;
-            
+                
             // case BattleAction.event:
             //     switch (aData.type) {
             //         case 'attack':
@@ -514,6 +501,8 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     }
 
     clear() {
+        //
+        this._shipEnergyViewer.clear();
         // clear all objects
         this.destroyAllObjects();
         // destroy grids
