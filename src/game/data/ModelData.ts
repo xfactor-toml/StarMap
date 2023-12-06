@@ -1,14 +1,14 @@
 
 export enum ModelAlias {
-    // AliasDemo = 'AliasDemo',
-    Ship1 = 'Ship1'
+    Fighter = 'Fighter',
+    BattleShip = 'BattleShip',
 };
 
 /**
  * Parent dirrectory is ./assets/models/
  */
 export const MODEL_LOAD_LIST = [
-    // { alias: ModelAlias.AliasDemo, file: 'ModelDemo.fbx' },
-    { alias: ModelAlias.Ship1, file: 'battle/space11/fbx/spch3.fbx' },
+    { alias: ModelAlias.Fighter, file: 'battle/space11/fbx/spch3.fbx' },
+    // { alias: ModelAlias.BattleShip, file: 'battle/space44/fbx/spaceship444.obj' },
 
 ];

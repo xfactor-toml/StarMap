@@ -8,6 +8,7 @@ export class BattleObject extends MyObject3D {
     private _hp: number;
     private _debugSphere: THREE.Mesh;
     targetPosition: { x: number, z: number };
+    targetRotation: number = 0;
 
     constructor(aParams: {
         id: string,
@@ -71,6 +72,7 @@ export class BattleObject extends MyObject3D {
             this.position.x += (this.targetPosition.x - this.position.x) * dt;
             this.position.z += (this.targetPosition.z - this.position.z) * dt;
         }
+        this.rotation.y += (this.targetRotation - this.rotation.y) * dt;
     }
 
 }

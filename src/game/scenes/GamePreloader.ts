@@ -180,7 +180,9 @@ export class GamePreloader {
         this._isLoadingInProcess = false;
         this.onLoadCompleteSignal.dispatch();
 
-        GameEvents.dispatchEvent(GameEvents.EVENT_LOADED, { frontEvents: FrontEvents });
+        GameEvents.dispatchEvent(GameEvents.EVENT_LOADED, {
+            frontEvents: FrontEvents
+        });
 
     }
 

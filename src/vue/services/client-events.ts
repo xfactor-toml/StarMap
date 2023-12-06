@@ -1,5 +1,6 @@
 import { useSettingsStore, useStarsStore } from '@/stores';
 import { ClientEvent } from '@/types';
+import { Settings } from '~/game/data/Settings';
 
 export class ClientEventsService {
   static async handleEvent({ detail: clientEvent }: Event & { detail: ClientEvent }) {
@@ -11,7 +12,9 @@ export class ClientEventsService {
         break;
 
       case 'GAME_LOADED':
-        await starsStore.fetchStars();
+        if (!Settings.isDebugMode) {
+          await starsStore.fetchStars();
+        }
         settingsStore.setScreen('welcome');
         break;
 

@@ -609,7 +609,7 @@ export class GalaxyMng implements ILogger {
 
         // real star particles
 
-        if (DB.realStars[0].id == 0) {
+        if (DB.realStars[0]?.id == 0) {
             DB.realStars.splice(0, 1);
         }
         else {

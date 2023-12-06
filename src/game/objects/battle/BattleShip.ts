@@ -4,7 +4,7 @@ import { ThreeLoader } from '~/game/utils/threejs/ThreeLoader';
 import { ModelAlias } from '~/game/data/ModelData';
 import { TextureAlias } from '~/game/data/TextureData';
 
-export class BattleShip1 extends BattleObject {
+export class BattleShip extends BattleObject {
     protected _mesh: THREE.Mesh;
     protected _model: THREE.Group;
 
@@ -13,13 +13,14 @@ export class BattleShip1 extends BattleObject {
         radius?: number,
         maxHp?: number
     }) {
-        super(aParams, 'BattleShip1');
-        // this.initSimpleModel();
-        this.initShipModel();
+        super(aParams, 'BattleShip');
+        this.initSimpleModel();
+        // this.initShipModel();
     }
 
     private initSimpleModel() {
-        let g = new THREE.OctahedronGeometry(this.radius);
+        let r = this.radius;
+        let g = new THREE.BoxGeometry(r, r, r * 2);
         let m = new THREE.MeshBasicMaterial({
             color: 0xaaaaaa
         });
@@ -28,7 +29,7 @@ export class BattleShip1 extends BattleObject {
     }
 
     private initShipModel() {
-        this._model = ThreeLoader.getInstance().getModel(ModelAlias.Ship1);
+        this._model = ThreeLoader.getInstance().getModel(ModelAlias.BattleShip);
         let tMap = ThreeLoader.getInstance().getTexture(TextureAlias.Ship1Color);
 
         let m = new THREE.MeshBasicMaterial({
@@ -42,7 +43,7 @@ export class BattleShip1 extends BattleObject {
             }
         })
 
-        const sc = this.radius * 0.001;
+        const sc = this.radius * 1;
         this._model.scale.set(sc, sc, sc);
 
         this.add(this._model);

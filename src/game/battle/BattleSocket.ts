@@ -7,14 +7,14 @@ export enum BattleSocketEvent {
     message = 'message'
 };
 
-export enum BattleAction {
+export enum PackTitle {
     entergame = 'entergame',
     withdrawgame = 'withdrawgame',
     exitgame = 'exitgame',
     gamestart = 'gamestart',
     objectlist = 'objectlist',
     objectcreate = 'objectcreate',
-    objectupdate = 'objectupdate',
+    objectUpdate = 'objectUpdate',
     event = 'event',
     objectdestroy = 'objectdestroy',
     gameend = 'gameend',

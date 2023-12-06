@@ -3,7 +3,7 @@ import { MyEventDispatcher } from "../basics/MyEventDispatcher";
 import { GalaxyMng } from "../galaxy/Galaxy";
 import { Settings } from '../data/Settings';
 import { IUpdatable } from '../interfaces/IUpdatable';
-import { BattleAction, BattleSocket, BattleSocketEvent } from '../battle/BattleSocket';
+import { PackTitle, BattleSocket, BattleSocketEvent } from '../battle/BattleSocket';
 import { BattleView } from '../battle/BattleView';
 import { FrontEvents } from '../events/FrontEvents';
 import { GUI } from 'dat.gui';
@@ -106,13 +106,19 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
 
     private onBattleSocketMessage(aData: any) {
         switch (aData.action) {
-            case BattleAction.entergame:
+            case PackTitle.entergame:
                 this.emit(BattleSceneEvent.onEnterGame);
                 break;
-            case BattleAction.withdrawgame:
+            case PackTitle.withdrawgame:
                 this.emit(BattleSceneEvent.onWithdraw);
                 break;
-            case BattleAction.gameend:
+            case PackTitle.gameend:
+                if (aData.win) {
+                    alert(`You Win!`);
+                }
+                else {
+                    alert(`You Loose...`);
+                }
                 this.emit(BattleSceneEvent.onGameComplete);
                 break;
             default:
