@@ -17,7 +17,7 @@ export class BattlePlanet extends BattleObject {
         year: number, // planet period in sec
         orbitCenter: { x: number, y: number }, // planet orbit center
         orbitSpeed: number, // planet orbit speed in rad/sec
-        startAngle: number
+        startOrbitAngle: number
     }) {
         super({ id: aId, radius: aParams.radius }, 'BattlePlanet');
 
@@ -27,7 +27,7 @@ export class BattlePlanet extends BattleObject {
         this._rotationSpeed = aParams.rotationSpeed;
         this._orbitCenter = aParams.orbitCenter;
         this._orbitSpeed = aParams.orbitSpeed;
-        this._orbitAngle = aParams.startAngle;
+        this._orbitAngle = aParams.startOrbitAngle;
 
         this.updatePosition();
 

@@ -13,13 +13,21 @@ export enum PackTitle {
     exitgame = 'exitgame',
     gamestart = 'gamestart',
     objectlist = 'objectlist',
-    objectcreate = 'objectcreate',
+    objectCreate = 'objectCreate',
     objectUpdate = 'objectUpdate',
     event = 'event',
     objectdestroy = 'objectdestroy',
     gameend = 'gameend',
     log = 'log'
 
+}
+
+export enum ObjectClass {
+    star = 'star',
+    planet = 'planet',
+    ship = 'ship',
+    battleship = 'battleship',
+    shell = 'shell'
 }
 
 export class BattleSocket extends MyEventDispatcher {

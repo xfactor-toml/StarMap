@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import gsap, { Linear, Sine } from 'gsap';
 import { GUI } from 'dat.gui';
 import { MyEventDispatcher } from "../basics/MyEventDispatcher";
-import { PackTitle } from "./BattleSocket";
+import { ObjectClass, PackTitle } from "./BattleSocket";
 import { IUpdatable } from "../interfaces/IUpdatable";
 import { BattleObject } from '../objects/battle/BattleObject';
 import { BattleStar } from '../objects/battle/BattleStar';
@@ -142,33 +142,35 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     }
 
     private createObject(aData: {
+        // common params
         id: string,
         owner: string,
-        class: 'star' | 'planet' | 'ship' | 'battleship',
-        position: {
-            x: number,
-            y: number
-        },
+        class: ObjectClass,
+        radius?: number,
+        position?: { x: number, y: number },
         rotation?: number,
-        radius?: number, // object radius
-        energy?: number,
         hp?: number,
-        orbitRadius?: number, // planet orbit radius
-        rotationSpeed?: number, // planet rad/sec
-        year?: number, // planet period in sec
-        orbitCenter?: { x: number, y: number }, // planet orbit center
-        orbitSpeed?: number, // planet orbit speed in rad/sec
-        startAngle?: number
+        /**
+         * special data for planets
+         */
+        planetData?: {
+            orbitRadius?: number,
+            orbitCenter?: { x: number, y: number },
+            startOrbitAngle?: number,
+            year?: number,
+            rotationSpeed?: number,
+            orbitSpeed?: number,
+        }
     }) {
         let obj: BattleObject;
 
         switch (aData.class) {
 
-            case 'star':
+            case ObjectClass.star:
                 obj = new BattleStar({
                     id: aData.id,
                     radius: this.serverValueToClient(aData.radius),
-                    maxHp: aData.energy,
+                    maxHp: aData.hp,
                     camera: this._camera,
                 });
                 obj.position.copy(this.getPositionByServer({ x: aData.position.x, y: aData.position.y }));
@@ -176,24 +178,23 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 this._shipEnergyViewer.addBar(obj);
                 break;
             
-            case 'planet':
-                let oCenter = this.getPositionByServer(aData.orbitCenter);
+            case ObjectClass.planet:
+                let oCenter = this.getPositionByServer(aData.planetData.orbitCenter);
                 obj = new BattlePlanet(aData.id, {
                     orbitCenter: {
                         x: oCenter.x,
                         y: oCenter.z
                     },
-                    orbitRadius: this.serverValueToClient(aData.orbitRadius),
-                    orbitSpeed: aData.orbitSpeed,
+                    orbitRadius: this.serverValueToClient(aData.planetData.orbitRadius),
+                    orbitSpeed: aData.planetData.orbitSpeed,
                     radius: this.serverValueToClient(aData.radius),
-                    rotationSpeed: aData.rotationSpeed,
-                    year: aData.year,
-                    startAngle: aData.startAngle
+                    rotationSpeed: aData.planetData.rotationSpeed,
+                    year: aData.planetData.year,
+                    startOrbitAngle: aData.planetData.startOrbitAngle
                 });
-                // obj.position.copy(this.getPositionByServer(aData));
                 break;
             
-            case 'ship': {
+            case ObjectClass.ship: {
                 let r = this.serverValueToClient(aData.radius);
                 obj = new BattleFighter({
                     id: aData.id,
@@ -205,10 +206,9 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 if (aData.rotation) obj.rotation.y = aData.rotation;
                 // add hp bar
                 this._shipEnergyViewer.addBar(obj);
-            }
-                break;
+            } break;
             
-            case 'battleship': {
+            case ObjectClass.battleship: {
                 let r = this.serverValueToClient(aData.radius);
                 obj = new BattleShip({
                     id: aData.id,
@@ -220,8 +220,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 if (aData.rotation) obj.rotation.y = aData.rotation;
                 // add hp bar
                 this._shipEnergyViewer.addBar(obj);
-            }
-                break;
+            } break;
             
             default:
                 this.logWarn(`createObject(): unknown class:`, aData);
@@ -437,7 +436,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
              *      objects: {...fields}[]
              * }
              */
-            case PackTitle.objectcreate: {
+            case PackTitle.objectCreate: {
                 let objList = aData.list;
                 if (objList)
                 for (let i = 0; i < objList.length; i++) {
