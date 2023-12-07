@@ -51,7 +51,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     private _shipEnergyViewer: ShipEnergyViewer;
 
     private _isTopPosition = false;
-    
+
     constructor(aParams: {
         scene: THREE.Scene,
         camera: THREE.PerspectiveCamera,
@@ -124,7 +124,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         return aServerY * factor - h;
     }
 
-    private getPositionByServer(aServerPos: {x: number, y: number}): THREE.Vector3 {
+    private getPositionByServer(aServerPos: { x: number, y: number }): THREE.Vector3 {
         return new THREE.Vector3(
             this.serverToClientX(aServerPos.x),
             0,
@@ -177,7 +177,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 // add hp bar
                 this._shipEnergyViewer.addBar(obj);
                 break;
-            
+
             case ObjectClass.planet:
                 let oCenter = this.getPositionByServer(aData.planetData.orbitCenter);
                 obj = new BattlePlanet(aData.id, {
@@ -193,7 +193,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                     startOrbitAngle: aData.planetData.startOrbitAngle
                 });
                 break;
-            
+
             case ObjectClass.ship: {
                 let r = this.serverValueToClient(aData.radius);
                 obj = new BattleFighter({
@@ -207,7 +207,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 // add hp bar
                 this._shipEnergyViewer.addBar(obj);
             } break;
-            
+
             case ObjectClass.battleship: {
                 let r = this.serverValueToClient(aData.radius);
                 obj = new BattleShip({
@@ -221,11 +221,11 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 // add hp bar
                 this._shipEnergyViewer.addBar(obj);
             } break;
-            
+
             default:
                 this.logWarn(`createObject(): unknown class:`, aData);
                 break;
-            
+
         }
 
         if (obj) {
@@ -274,14 +274,14 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                     center: { x, y },
                     hold: boolean
                 }[] = aParams.data.list;
-                
+
                 for (let i = 0; i < posList.length; i++) {
                     const pos = posList[i];
                     // let p = new BattlePosition();
                 }
 
                 break;
-            
+
             default:
 
                 if (aParams.position) {
@@ -303,37 +303,50 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 }
 
                 break;
-            
+
         }
 
     }
 
-    private attack(aData: {
-        from: string,
-        to: string,
-        wasHP: number,
-        damage: number,
-        hit: boolean,
-        isRed?: boolean
+    private attack(aParams: {
+        type: 'laser' | 'ray',
+        data: {
+            idFrom: string,
+            idTo: string,
+            damage?: number,
+            isMiss?: boolean,
+            state?: 'start' | 'end'
+        }
     }) {
 
-        let fromObj = this.getObjectById(aData.from);
-        if (!fromObj) {
-            this.logWarn(`attack: !fromObj`, aData);
+        let objFrom = this.getObjectById(aParams.data.idFrom);
+        if (!objFrom) {
+            this.logWarn(`attack: !fromObj`, aParams);
             return;
         }
 
-        let toObj = this.getObjectById(aData.to);
-        if (!toObj) {
-            this.logWarn(`attack: !toObj`, aData);
+        let objTo = this.getObjectById(aParams.data.idTo);
+        if (!objTo) {
+            this.logWarn(`attack: !toObj`, aParams);
             return;
+        }
+
+        // TODO: logic
+        switch (aParams.type) {
+            case 'ray':
+
+                break;
+
+            default:
+
+                break;
         }
 
         // create laser
         const redLaserColor = '#ff0000';
         const blueLaserColor = '#0072ff';
         const purpleLaserColor = '#5e48ff';
-        let laser = new LaserLine(fromObj.position.clone(), toObj.position.clone(), aData.isRed ? redLaserColor : blueLaserColor);
+        let laser = new LaserLine(objFrom.position.clone(), objTo.position.clone(), blueLaserColor);
         this._dummyMain.add(laser);
         laser.hide({
             dur: 1,
@@ -344,8 +357,8 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             ctx: this
         });
 
-        if (aData.hit) {
-            toObj.hp -= aData.damage;
+        if (!aParams.data.isMiss) {
+            objTo.hp -= aParams.data.damage;
         }
 
     }
@@ -371,12 +384,12 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 let ship2 = this.getRandomShip();
                 if (!ship1 || !ship2 || ship1.objId == ship2.objId) return;
                 this.attack({
-                    from: ship1.objId,
-                    to: ship2.objId,
-                    damage: 10,
-                    wasHP: 100,
-                    hit: true,
-                    isRed: true
+                    type: 'laser',
+                    data: {
+                        idFrom: ship1.objId,
+                        idTo: ship2.objId,
+                        damage: 10
+                    }
                 });
             },
             randomLaserBlue: () => {
@@ -384,11 +397,12 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 let ship2 = this.getRandomShip();
                 if (!ship1 || !ship2 || ship1.objId == ship2.objId) return;
                 this.attack({
-                    from: ship1.objId,
-                    to: ship2.objId,
-                    damage: 10,
-                    wasHP: 100,
-                    hit: true
+                    type: 'laser',
+                    data: {
+                        idFrom: ship1.objId,
+                        idTo: ship2.objId,
+                        damage: 10
+                    }
                 });
             }
         }
@@ -419,7 +433,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         switch (packTitle) {
 
             case PackTitle.log: break;
-                
+
             /**
              * action: gamestart,
              * data: {
@@ -439,12 +453,12 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             case PackTitle.objectCreate: {
                 let objList = aData.list;
                 if (objList)
-                for (let i = 0; i < objList.length; i++) {
-                    const objData = objList[i];
-                    this.createObject(objData);
-                }
+                    for (let i = 0; i < objList.length; i++) {
+                        const objData = objList[i];
+                        this.createObject(objData);
+                    }
             } break;
-            
+
             /**
              * action: objectupdate,
              * data: {
@@ -452,11 +466,6 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
              * }
              */
             case PackTitle.objectUpdate:
-                
-                if (aData.data?.from != undefined && aData.data?.to != undefined) {
-                    this.attack(aData.data);
-                    return;
-                }
 
                 let list: {
                     id: string,
@@ -476,11 +485,15 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 }
 
                 break;
-            
+
             case PackTitle.objectdestroy:
                 this.destroyObject(aData.id);
                 break;
             
+            case PackTitle.attack:
+                this.attack(aData);
+                break;
+
             default:
                 this.logWarn(`onSocketMessage(): unhandled package (${packTitle}):`, aData);
                 break;

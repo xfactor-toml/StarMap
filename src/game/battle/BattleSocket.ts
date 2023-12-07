@@ -1,7 +1,5 @@
 import { GameAuth, NetworkAuth, SubscribeOnAccountChanging } from "~/blockchain";
-import { Settings } from "../data/Settings";
 import { MyEventDispatcher } from "../basics/MyEventDispatcher";
-import { GUI } from "dat.gui";
 
 export enum BattleSocketEvent {
     message = 'message'
@@ -15,8 +13,9 @@ export enum PackTitle {
     objectlist = 'objectlist',
     objectCreate = 'objectCreate',
     objectUpdate = 'objectUpdate',
-    event = 'event',
     objectdestroy = 'objectdestroy',
+    attack = 'attack',
+    event = 'event',
     gameend = 'gameend',
     log = 'log'
 
