@@ -136,6 +136,10 @@ export class BattleSocket extends MyEventDispatcher {
     public get connected(): boolean {
         return this._wsConnected;
     }
+    
+    public get walletAccount(): string {
+        return this._walletAccount;
+    }
 
     initConnection() {
         if (this._walletConnected) {

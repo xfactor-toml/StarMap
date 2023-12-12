@@ -11,7 +11,8 @@ export class BattleShip extends BattleObject {
     constructor(aParams: {
         id: string,
         radius?: number,
-        maxHp?: number
+        maxHp?: number,
+        owner?: string
     }) {
         super(aParams, 'BattleShip');
         this.initSimpleModel();
@@ -25,6 +26,8 @@ export class BattleShip extends BattleObject {
             color: 0xaaaaaa
         });
         this._mesh = new THREE.Mesh(g, m);
+        // basic rotation
+        this._mesh.rotation.y = Math.PI / 2;
         this.add(this._mesh);
     }
 
@@ -41,7 +44,10 @@ export class BattleShip extends BattleObject {
                 let mesh = aObj as THREE.Mesh;
                 mesh.material = m;
             }
-        })
+        });
+
+        // basic rotation
+        this._model.rotation.y = Math.PI / 2;
 
         const sc = this.radius * 1;
         this._model.scale.set(sc, sc, sc);

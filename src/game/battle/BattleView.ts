@@ -14,6 +14,7 @@ import { BattleCameraMng } from './BattleCameraMng';
 import { BattlePosition } from '../objects/battle/BattlePosition';
 import { ShipEnergyViewer } from './ShipEnergyViewer';
 import { BattleShip } from '../objects/battle/BattleShip';
+import { Settings } from '../data/Settings';
 
 const SETTINGS = {
 
@@ -38,6 +39,7 @@ const SETTINGS = {
 }
 
 export class BattleView extends MyEventDispatcher implements IUpdatable {
+    private _walletNumber: string;
     private _scene: THREE.Scene;
     private _camera: THREE.PerspectiveCamera;
     private _cameraTarget: THREE.Vector3;
@@ -69,6 +71,10 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
         this._dummyMain = new THREE.Group();
         // this._dummyMain.visible = !aIsHided;
+        if (Settings.isDebugMode) {
+            let axiesHelper = new THREE.AxesHelper(150);
+            this._dummyMain.add(axiesHelper);
+        }
         this._scene.add(this._dummyMain);
 
         this._objects = new Map<string, BattleObject>;
@@ -77,9 +83,6 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     }
 
     private initField() {
-
-        // _axiesHelper = new THREE.AxesHelper(150);
-        // this._dummyMain.add(axiesHelper);
 
         const fw = SETTINGS.client.field.size.w;
 
@@ -199,11 +202,12 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 obj = new BattleFighter({
                     id: aData.id,
                     radius: r,
-                    maxHp: aData.hp
+                    maxHp: aData.hp,
+                    owner: aData.owner
                 });
                 obj.createDebugSphere(r);
                 obj.position.copy(this.getPositionByServer({ x: aData.position.x, y: aData.position.y }));
-                if (aData.rotation) obj.rotation.y = aData.rotation;
+                if (aData.rotation) obj.targetRotation = obj.rotation.y = aData.rotation;
                 // add hp bar
                 this._shipEnergyViewer.addBar(obj);
             } break;
@@ -213,11 +217,12 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 obj = new BattleShip({
                     id: aData.id,
                     radius: r,
-                    maxHp: aData.hp
+                    maxHp: aData.hp,
+                    owner: aData.owner
                 });
                 obj.createDebugSphere(r);
                 obj.position.copy(this.getPositionByServer({ x: aData.position.x, y: aData.position.y }));
-                if (aData.rotation) obj.rotation.y = aData.rotation;
+                if (aData.rotation) obj.targetRotation = obj.rotation.y = aData.rotation;
                 // add hp bar
                 this._shipEnergyViewer.addBar(obj);
             } break;
@@ -292,12 +297,12 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                     }
                 }
 
-                if (aParams.rotation) {
+                if (aParams.rotation != undefined) {
                     // update position
                     obj.targetRotation = aParams.rotation;
                 }
 
-                if (aParams.hp) {
+                if (aParams.hp != undefined) {
                     // update hp
                     obj.hp = aParams.hp;
                 }
@@ -331,31 +336,39 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             return;
         }
 
-        // TODO: logic
-        switch (aParams.type) {
-            case 'ray':
-
-                break;
-
-            default:
-
-                break;
+        let laserColor = '#0072ff';
+        // const purpleLaserColor = '#5e48ff';
+        if (objFrom.owner.length > 0 && objFrom.owner != this._walletNumber) {
+            laserColor = '#ff0000';
         }
 
-        // create laser
-        const redLaserColor = '#ff0000';
-        const blueLaserColor = '#0072ff';
-        const purpleLaserColor = '#5e48ff';
-        let laser = new LaserLine(objFrom.position.clone(), objTo.position.clone(), blueLaserColor);
-        this._dummyMain.add(laser);
-        laser.hide({
-            dur: 1,
-            cb: () => {
-                // this._dummyMain.remove(laser);
-                laser.free();
-            },
-            ctx: this
-        });
+        switch (aParams.type) {
+            case 'ray': {
+                // create laser
+                let laser = new LaserLine(objFrom.position.clone(), objTo.position.clone(), laserColor);
+                this._dummyMain.add(laser);
+                laser.hide({
+                    dur: 1,
+                    cb: () => {
+                        laser.free();
+                    },
+                    ctx: this
+                });
+            } break;
+
+            default:
+                // create laser
+                let laser = new LaserLine(objFrom.position.clone(), objTo.position.clone(), laserColor);
+                this._dummyMain.add(laser);
+                laser.hide({
+                    dur: 1,
+                    cb: () => {
+                        laser.free();
+                    },
+                    ctx: this
+                });
+                break;
+        }
 
         if (!aParams.data.isMiss) {
             objTo.hp -= aParams.data.damage;
@@ -373,8 +386,15 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             return;
         }
         obj.free();
-        // this._dummyMain.remove(obj);
         this._objects.delete(aId);
+    }
+
+    public get walletNumber(): string {
+        return this._walletNumber;
+    }
+
+    public set walletNumber(value: string) {
+        this._walletNumber = value;
     }
 
     initDebugGui(aFolder: GUI) {
@@ -434,62 +454,30 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
             case PackTitle.log: break;
 
-            /**
-             * action: gamestart,
-             * data: {
-             *      playerPosition: 'top' | 'bottom',
-             * }
-             */
             case PackTitle.gamestart:
                 this.onGameStartPacket(aData || {});
                 break;
 
-            /**
-             * action: objectcreate,
-             * data: {
-             *      objects: {...fields}[]
-             * }
-             */
             case PackTitle.objectCreate: {
-                let objList = aData.list;
-                if (objList)
-                    for (let i = 0; i < objList.length; i++) {
-                        const objData = objList[i];
-                        this.createObject(objData);
-                    }
+                let list = aData.list;
+                for (let i = 0; i < list.length; i++) {
+                    const objData = list[i];
+                    this.createObject(objData);
+                }
             } break;
 
-            /**
-             * action: objectupdate,
-             * data: {
-             *      objects: {...fields}[]
-             * }
-             */
             case PackTitle.objectUpdate:
-
-                let list: {
-                    id: string,
-                    event?: 'starAttackPositions',
-                    position?: { x: number, y: number },
-                    rotation?: number,
-                    hp?: number,
-                    /**
-                     * Any other data
-                     */
-                    data?: any
-                }[] = aData.list;
-
+                let list: any[] = aData.list;
                 for (let i = 0; i < list.length; i++) {
                     const objData = list[i];
                     this.updateObject(objData);
                 }
-
                 break;
 
             case PackTitle.objectdestroy:
                 this.destroyObject(aData.id);
                 break;
-            
+
             case PackTitle.attack:
                 this.attack(aData);
                 break;

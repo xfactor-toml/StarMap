@@ -6,30 +6,33 @@ export class BattleObject extends MyObject3D {
     private _radius: number;
     private _maxHp: number;
     private _hp: number;
+    private _owner: string;
     private _debugSphere: THREE.Mesh;
     targetPosition: { x: number, z: number };
-    targetRotation: number = 0;
+    targetRotation = 0;
 
     constructor(aParams: {
         id: string,
         radius?: number,
-        maxHp?: number
+        maxHp?: number,
+        owner?: string
     }, aClassName?: string) {
         super(aClassName || 'BattleObject');
         this._objId = aParams.id;
         this._radius = aParams.radius;
         this._hp = this._maxHp = aParams.maxHp;
+        this._owner = aParams.owner || '';
     }
 
     public get objId(): string {
         return this._objId;
     }
 
-    get radius(): number {
+    public get radius(): number {
         return this._radius;
     }
 
-    set radius(value: number) {
+    public set radius(value: number) {
         this._radius = value;
     }
 
@@ -47,6 +50,10 @@ export class BattleObject extends MyObject3D {
     
     public set hp(value: number) {
         this._hp = value;
+    }
+
+    public get owner(): string {
+        return this._owner;
     }
 
     createDebugSphere(aRadius: number) {
@@ -72,7 +79,9 @@ export class BattleObject extends MyObject3D {
             this.position.x += (this.targetPosition.x - this.position.x) * dt;
             this.position.z += (this.targetPosition.z - this.position.z) * dt;
         }
-        this.rotation.y += (this.targetRotation - this.rotation.y) * dt;
+        // this.rotation.y += (this.targetRotation - this.rotation.y) * dt;
+        this.rotation.y = this.targetRotation;
+        // this.rotation.y = 0;
     }
 
 }

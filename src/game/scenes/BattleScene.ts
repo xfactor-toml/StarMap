@@ -107,6 +107,8 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
     private onBattleSocketMessage(aData: any) {
         switch (aData.action) {
             case PackTitle.entergame:
+                this._view.walletNumber = this._socket.walletAccount;
+
                 this.emit(BattleSceneEvent.onEnterGame);
                 break;
             case PackTitle.withdrawgame:
