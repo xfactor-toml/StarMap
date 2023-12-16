@@ -1,7 +1,7 @@
 import * as THREE from "three";
+import { GameRenderer } from "./scenes/GameRenderer";
 import * as datGui from "dat.gui";
 import { Settings } from "~/game/data/Settings";
-import { GameRender as GameRenderer } from "./scenes/GameRenderer";
 import { InputMng } from "./utils/inputs/InputMng";
 import { DeviceInfo } from "./utils/DeviceInfo";
 import { GalaxyScene } from "./scenes/GalaxyScene";
@@ -66,9 +66,15 @@ export class GameEngine extends MyBasicClass {
             camera: this._renderer.camera
         });
         this._battleScene.hide();
+        this._battleScene.on(BattleSceneEvent.onGameSearchStart, this.onBattleSearchStart, this);
         this._battleScene.on(BattleSceneEvent.onEnterGame, this.onBattleEnterGame, this);
         this._battleScene.on(BattleSceneEvent.onWithdraw, this.onBattleWithdrawGame, this);
         this._battleScene.on(BattleSceneEvent.onGameComplete, this.onBattleComplete, this);
+    }
+
+    private onBattleSearchStart() {
+        this.logDebug(`onBattleSearchStart...`);
+        this._galaxyScene.hide();
     }
 
     private onBattleEnterGame() {

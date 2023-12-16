@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import gsap, { Linear, Sine } from 'gsap';
 import { GUI } from 'dat.gui';
 import { MyEventDispatcher } from "../basics/MyEventDispatcher";
-import { ObjectClass, PackTitle } from "./BattleSocket";
+import { ObjectClass, PackTitle } from "./BattleConnection";
 import { IUpdatable } from "../interfaces/IUpdatable";
 import { BattleObject } from '../objects/battle/BattleObject';
 import { BattleStar } from '../objects/battle/BattleStar';
@@ -452,11 +452,9 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
         switch (packTitle) {
 
-            case PackTitle.log: break;
-
-            case PackTitle.gamestart:
-                this.onGameStartPacket(aData || {});
-                break;
+            // case PackTitle.gamestart:
+            //     this.onGameStartPacket(aData || {});
+            //     break;
 
             case PackTitle.objectCreate: {
                 let list = aData.list;
@@ -474,9 +472,9 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 }
                 break;
 
-            case PackTitle.objectdestroy:
-                this.destroyObject(aData.id);
-                break;
+            // case PackTitle.objectdestroy:
+            //     this.destroyObject(aData.id);
+            //     break;
 
             case PackTitle.attack:
                 this.attack(aData);

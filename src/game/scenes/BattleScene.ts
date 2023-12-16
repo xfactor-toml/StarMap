@@ -1,21 +1,21 @@
 import * as THREE from 'three';
 import { MyEventDispatcher } from "../basics/MyEventDispatcher";
-import { GalaxyMng } from "../galaxy/Galaxy";
 import { Settings } from '../data/Settings';
 import { IUpdatable } from '../interfaces/IUpdatable';
-import { PackTitle, BattleSocket, BattleSocketEvent } from '../battle/BattleSocket';
 import { BattleView } from '../battle/BattleView';
 import { FrontEvents } from '../events/FrontEvents';
 import { GUI } from 'dat.gui';
+import { BattleConnection, PackTitle } from '../battle/BattleConnection';
 
 export enum BattleSceneEvent {
+    onGameSearchStart = 'onGameSearchStart',
     onEnterGame = 'onEnterGame',
     onWithdraw = 'onWithdraw',
     onGameComplete = 'onGameComplete'
 }
 
 export class BattleScene extends MyEventDispatcher implements IUpdatable {
-    private _socket: BattleSocket;
+    private _connection: BattleConnection;
     private _view: BattleView;
 
     constructor(aParams: {
@@ -30,8 +30,10 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
     }
 
     private initSocket() {
-        this._socket = new BattleSocket();
-        this._socket.on(BattleSocketEvent.message, this.onBattleSocketMessage, this);
+        this._connection = new BattleConnection();
+        // this._connection.on(BattleConnectionEvent.message, this.onBattleSocketMessage, this);
+        this._connection.on(PackTitle.gameSearching, this.onGameSearchPack, this);
+
     }
 
     private initView(aParams: {
@@ -61,22 +63,24 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
 
     private initSocketDebugGui(aFolder: GUI) {
         const DATA = {
-            connect: () => {
-                this._socket.initConnection();
+            connectLocal: () => {
+                this._connection.connectLocal();
             },
-            entergame: () => {
-                // if (!this._socket.connected) this._socket.initConnection();
-                if (!this._socket.connected) return;
+            searchGame: () => {
+                if (!this._connection.connected) {
+                    alert('Wrong Step! You need connect first...');
+                    return;
+                }
                 FrontEvents.onBattleSearch.dispatch();
             },
             withdrawgame: () => {
-                this._socket.sendWithdrawGame();
+                this._connection.sendWithdrawGame();
             },
             exitgame: () => {
-                this._socket.sendExitGame();
+                this._connection.sendExitGame();
             },
             planetFire: () => {
-                this._socket.sendPlanetFire();
+                this._connection.sendPlanetFire();
             },
             planetFireClient: () => {
                 
@@ -84,8 +88,8 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
         }
 
         const f = aFolder;
-        f.add(DATA, 'connect').name('Connect');
-        f.add(DATA, 'entergame').name('Enter Game');
+        f.add(DATA, 'connectLocal').name('Connect Local');
+        f.add(DATA, 'searchGame').name('Search Game');
         f.add(DATA, 'withdrawgame').name('Withdraw');
         f.add(DATA, 'exitgame').name('Exit Game');
         f.add(DATA, 'planetFire').name('Planet Fire');
@@ -93,38 +97,55 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
     }
 
     private onFrontStarBattleSearch() {
-        this._socket.sendEnterGame();
+        this._connection.sendSearchGame();
     }
 
     private onFrontWithdrawSearch() {
-        this._socket.sendWithdrawGame();
+        this._connection.sendWithdrawGame();
     }
 
     private onFrontExitBattle() {
-        this._socket.sendEnterGame();
+        this._connection.sendSearchGame();
     }
 
     private onBattleSocketMessage(aData: any) {
         switch (aData.action) {
-            case PackTitle.entergame:
-                this._view.walletNumber = this._socket.walletAccount;
+            // case PackTitle.entergame:
+            //     this._view.walletNumber = this._socket.walletAccount;
 
-                this.emit(BattleSceneEvent.onEnterGame);
-                break;
-            case PackTitle.withdrawgame:
-                this.emit(BattleSceneEvent.onWithdraw);
-                break;
-            case PackTitle.gameend:
-                if (aData.win) {
-                    alert(`You Win!`);
-                }
-                else {
-                    alert(`You Loose...`);
-                }
-                this.emit(BattleSceneEvent.onGameComplete);
-                break;
+            //     this.emit(BattleSceneEvent.onEnterGame);
+            //     break;
+            
+            // case PackTitle.withdrawgame:
+            //     this.emit(BattleSceneEvent.onWithdraw);
+            //     break;
+            
+            // case PackTitle.gameend:
+            //     if (aData.win) {
+            //         alert(`You Win!`);
+            //     }
+            //     else {
+            //         alert(`You Loose...`);
+            //     }
+            //     this.emit(BattleSceneEvent.onGameComplete);
+            //     break;
+            
             default:
                 this._view.onSocketMessage(aData);
+                break;
+        }
+    }
+
+    onGameSearchPack(aData: {
+        cmd: 'start'
+    }) {
+        switch (aData.cmd) {
+            case 'start':
+                this.emit(BattleSceneEvent.onGameSearchStart);
+                break;
+        
+            default:
+                this.logDebug(`onGameSearchPack(): unknown cmd`, aData);
                 break;
         }
     }

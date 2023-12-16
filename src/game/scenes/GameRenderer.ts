@@ -14,7 +14,7 @@ import { GameEvents } from "../events/GameEvents";
 import { GameUtils } from "../math/GameUtils";
 
 
-export class GameRender {
+export class GameRenderer {
     
     private _renderer: THREE.WebGLRenderer;
     private _fxaaPass: ShaderPass;

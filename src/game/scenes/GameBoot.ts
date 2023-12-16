@@ -2,7 +2,7 @@ import { LogMng } from "../utils/LogMng";
 import { GamePreloader } from "./GamePreloader";
 import * as MyUtils from "../utils/MyUtils";
 import { Settings } from "../data/Settings";
-import { GameRender } from "./GameRenderer";
+import { GameRenderer } from "./GameRenderer";
 import { GameEvents } from "../events/GameEvents";
 import { FrontEvents } from "../events/FrontEvents";
 import { AudioMng } from "../audio/AudioMng";
