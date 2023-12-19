@@ -1,4 +1,4 @@
-import { connect, env, mobileUrl, networkParams, reserveRpcs } from "../config";
+import { connect, env, mobileUrl, networkParams, reserveRpcs, walletChangingEventName } from "../config";
 import { account } from "../types";
 
 export function IsTrueNetwork (): boolean {
@@ -67,7 +67,32 @@ async function SubscribeOnAccountChanging (): Promise<account> {
     })
 }
 
+function EmitAccountEvent(eventName = walletChangingEventName, account: account): void {
+    const eventOptions: CustomEventInit = { detail: { account: account} };
+    const event = new CustomEvent(eventName, eventOptions);
+    window.dispatchEvent(event);
+  }
+
+function SubscribeOnWalletChangesAuto () {
+    if (!env) {
+        throw new Error("Wallet not found");
+    }
+
+    env.on('accountsChanged', function () {
+        NetworkAuth ().then(account => {
+            EmitAccountEvent(walletChangingEventName, account)
+        })
+      })
+      
+    env.on('chainChanged', function () {
+        NetworkAuth ().then(account => {
+            EmitAccountEvent(walletChangingEventName, account)
+        })
+     })
+}
+
 export {
     NetworkAuth,
-    SubscribeOnAccountChanging
+    SubscribeOnAccountChanging,
+    SubscribeOnWalletChangesAuto
 }
