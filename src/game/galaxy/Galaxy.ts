@@ -17,7 +17,7 @@ import { AudioAlias } from '../audio/AudioData';
 import { GameUtils } from '../math/GameUtils';
 import { QTCircle, QTDebugRender, QTPoint, QTRect, QuadTree } from '../systems/QuadTree';
 import { StarPointsMng } from '../mng/StarPointsMng';
-import { DB, FAR_STAR_COLORS, RACES } from '../data/DB';
+import { DB, FAR_STAR_COLORS } from '../data/DB';
 import { LogMng } from '../utils/LogMng';
 import { FileMng } from '../mng/FileMng';
 import { FarGalaxyParams, GalaxyStarParams, ServerStarData } from '~/game/data/Types';
@@ -577,8 +577,6 @@ export class GalaxyMng implements ILogger {
         );
         galaxy.rotation.x = -Math.PI / 2;
         galaxy.rotation.z = -1.2;
-        // galaxyPlane.position.y = -1;
-        // galaxyPlane.position.z = 9;
         return galaxy;
     }
 
