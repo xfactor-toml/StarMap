@@ -69,7 +69,14 @@ export class GameBoot implements ILogger {
                 keys: ['loadfromfile'],
                 onReadHandler: (aValue: string) => {
                     Settings.loadFromFile = aValue == '1';
-                    LogMng.debug('Config.loadFromFile = ' + Settings.loadFromFile);
+                    LogMng.debug(`Config.loadFromFile = ${Settings.loadFromFile}`);
+                }
+            },
+            {
+                keys: ['blc'],
+                onReadHandler: (aValue: string) => {
+                    Settings.BATTLE.localConnect = aValue == '1';
+                    LogMng.debug(`Settings.BATTLE.localConnect = ${Settings.BATTLE.localConnect}`);
                 }
             }
         ];

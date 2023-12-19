@@ -2,6 +2,7 @@ import { NetworkAuth, SubscribeOnAccountChanging } from "~/blockchain";
 import { MyEventDispatcher } from "../basics/MyEventDispatcher";
 import { newGameAuth } from "~/blockchain/functions/gameplay";
 import { Socket, io } from "socket.io-client";
+import { Settings } from "../data/Settings";
 
 export enum PackTitle {
     // for lobby
@@ -28,14 +29,31 @@ export class BattleConnection extends MyEventDispatcher {
     // wallet
     private _walletConnected = false;
     private _walletSubscribed = false;
-    // private _isWalletSigned = false;
-    // private _isWalletAuth = false;
     private _walletAccount: string;
     // socket
     private _socket: Socket;
 
     constructor() {
         super('BattleConnection');
+        // auto connection
+        if (Settings.BATTLE.localConnect) {
+            this.connectLocal();
+        }
+        else {
+            this.connectServer();
+        }
+    }
+
+    private connectLocal() {
+        this.closeConnection();
+        this._socket = io('localhost:3078');
+        this.initListeners();
+    }
+
+    private connectServer() {
+        this.closeConnection();
+        this._socket = io(Settings.BATTLE.serverAddr);
+        this.initListeners();
     }
 
     private updateState(auth: string | null) {
@@ -134,12 +152,6 @@ export class BattleConnection extends MyEventDispatcher {
             this._socket.close();
             this._socket = null;
         }
-    }
-
-    connectLocal() {
-        this.closeConnection();
-        this._socket = io('localhost:3078');
-        this.initListeners();
     }
 
     sendSearchGame() {

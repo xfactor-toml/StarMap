@@ -64,7 +64,7 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
     private initSocketDebugGui(aFolder: GUI) {
         const DATA = {
             connectLocal: () => {
-                this._connection.connectLocal();
+                // this._connection.connectLocal();
             },
             searchGame: () => {
                 if (!this._connection.connected) {
@@ -88,7 +88,7 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
         }
 
         const f = aFolder;
-        f.add(DATA, 'connectLocal').name('Connect Local');
+        // f.add(DATA, 'connectLocal').name('Connect Local');
         f.add(DATA, 'searchGame').name('Search Game');
         f.add(DATA, 'withdrawgame').name('Withdraw');
         f.add(DATA, 'exitgame').name('Exit Game');

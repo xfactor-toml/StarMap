@@ -1,20 +1,17 @@
 import { connect, env, mobileUrl, networkParams, reserveRpcs } from "../config";
 import { account } from "../types";
 
-export function IsTrueNetwork (): boolean {
+export function IsTrueNetwork(): boolean {
     if (!env) return false
-    return env.chainId === networkParams.networkHexID
+    return env.chainId === networkParams.networkHexID;
 }
 
-async function NetworkAuth (): Promise<account> {
+async function NetworkAuth(): Promise<account> {
     if (!env) {
-
         // Checking mobile device
-        if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
-
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
             document.location.href = mobileUrl
         }
-
         return null
     }
 
@@ -26,20 +23,20 @@ async function NetworkAuth (): Promise<account> {
 
             await env.request({
                 method: 'wallet_addEthereumChain',
-                params: [{ 
-                  chainId: networkParams.networkHexID,
-                  chainName: networkParams.chainName,
-                  nativeCurrency: {
-                      name: networkParams.ethSymbol,
-                      symbol: networkParams.ethSymbol,
-                      decimals: 18
-                  },
-                  rpcUrls: [networkParams.rpcUrl] // , reserveRpcs[0], reserveRpcs[1]
+                params: [{
+                    chainId: networkParams.networkHexID,
+                    chainName: networkParams.chainName,
+                    nativeCurrency: {
+                        name: networkParams.ethSymbol,
+                        symbol: networkParams.ethSymbol,
+                        decimals: 18
+                    },
+                    rpcUrls: [networkParams.rpcUrl] // , reserveRpcs[0], reserveRpcs[1]
                 }]
-              })
+            })
         }
 
-        if (!IsTrueNetwork ()) {
+        if (!IsTrueNetwork()) {
             return ""
         }
 
@@ -51,19 +48,17 @@ async function NetworkAuth (): Promise<account> {
 
 }
 
-async function SubscribeOnAccountChanging (): Promise<account> {
+async function SubscribeOnAccountChanging(): Promise<account> {
     if (!env) {
-        return null
+        return null;
     }
-
     return await new Promise((resolve) => {
         env.on('accountsChanged', function () {
-            resolve(NetworkAuth ())
-          })
-          
+            resolve(NetworkAuth());
+        });
         env.on('chainChanged', function () {
-            resolve(NetworkAuth ())
-         })
+            resolve(NetworkAuth());
+        });
     })
 }
 
