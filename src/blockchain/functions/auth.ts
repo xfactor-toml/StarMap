@@ -49,10 +49,11 @@ async function NetworkAuth(): Promise<account> {
 }
 
 async function SubscribeOnAccountChanging(): Promise<account> {
-    if (!env) {
-        return null;
-    }
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
+        if (!env) {
+            reject("Wallet not found");
+        }
+
         env.on('accountsChanged', function () {
             resolve(NetworkAuth());
         });
@@ -68,7 +69,7 @@ function EmitAccountEvent(eventName = walletChangingEventName, account: account)
     window.dispatchEvent(event);
   }
 
-function SubscribeOnWalletChangesAuto () {
+function SubscribeOnWalletChangesAuto (): void {
     if (!env) {
         throw new Error("Wallet not found");
     }
