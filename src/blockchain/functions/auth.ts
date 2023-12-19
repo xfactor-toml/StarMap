@@ -51,12 +51,12 @@ async function NetworkAuth (): Promise<account> {
 
 }
 
-async function SubscribeOnAccountChanging (): Promise<account> {
+function SubscribeOnAccountChanging (): Promise<account> {
     if (!env) {
         return null
     }
 
-    return await new Promise((resolve) => {
+    return new Promise((resolve) => {
         env.on('accountsChanged', function () {
             resolve(NetworkAuth ())
           })
