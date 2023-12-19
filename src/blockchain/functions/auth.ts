@@ -53,11 +53,10 @@ async function SubscribeOnAccountChanging(): Promise<account> {
         if (!env) {
             reject("Wallet not found");
         }
-
-        env.on('accountsChanged', function () {
+        env.on('accountsChanged', () => {
             resolve(NetworkAuth());
         });
-        env.on('chainChanged', function () {
+        env.on('chainChanged', () => {
             resolve(NetworkAuth());
         });
     })
