@@ -1,13 +1,13 @@
 <template>
-  <div class="InterfaceScreen">
-    <div class="InterfaceScreen__content">
+  <div class="GalaxyScreen">
+    <div class="GalaxyScreen__content">
       <component :is="mode" />
     </div>
-    <div class="InterfaceScreen__header">
-      <div class="InterfaceScreen__headerColumn">
+    <div class="GalaxyScreen__header">
+      <div class="GalaxyScreen__headerColumn">
         <Logo />
       </div>
-      <div class="InterfaceScreen__headerColumn is-center">
+      <div class="GalaxyScreen__headerColumn is-center">
         <StartGameButton
           v-if="settingsStore.battle.state === 'initial'"
           @click="$client.onGameStart"
@@ -19,26 +19,26 @@
           @expired="$client.onSearchingExpired"
         />
       </div>
-      <div class="InterfaceScreen__headerColumn is-right">
-        <div class="InterfaceScreen__userbar">
+      <div class="GalaxyScreen__headerColumn is-right">
+        <div class="GalaxyScreen__userbar">
           <UserBar @openPlasmaMintPopup="openPlasmaMintPopup"/>
         </div>
       </div>
     </div>
-    <div class="InterfaceScreen__panels">
+    <div class="GalaxyScreen__panels">
       <template v-if="settingsStore.mode.selected.views.length">
-        <div class="InterfaceScreen__views">
+        <div class="GalaxyScreen__views">
           <ViewsPanel />
         </div>
       </template>
       <transition name="fade">
         <template v-if="settingsStore.view.selected === 'galaxy'">
-          <div class="InterfaceScreen__levels">
+          <div class="GalaxyScreen__levels">
             <LevelsPanel />
           </div>
         </template>
       </transition>
-      <div class="InterfaceScreen__modes">
+      <div class="GalaxyScreen__modes">
         <ModesPanel />
       </div>
     </div>
@@ -69,7 +69,7 @@ import { Component } from 'vue';
 import { default as vClickOutside } from 'click-outside-vue3';
 
 export default {
-  name: 'InterfaceScreen',
+  name: 'GalaxyScreen',
   components: {
     LevelsPanel,
     Logo,
@@ -116,4 +116,4 @@ export default {
 };
 </script>
 
-<style scoped src="./InterfaceScreen.css"></style>
+<style scoped src="./GalaxyScreen.css"></style>

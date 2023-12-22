@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia';
-import { GuiScreen } from '@/types';
+import { GuiScreenName } from '@/types';
 
 import { ref } from 'vue';
 
 export const useSettingsScreenStore = defineStore('settingsScreen', () => {
-  const selected = ref<GuiScreen>('preloader')
+  const selected = ref<GuiScreenName>('preloader')
 
-  const setScreen = (screen: GuiScreen) => {
+  const setScreen = (screen: GuiScreenName) => {
     selected.value = screen;
   }
 

@@ -1,4 +1,4 @@
-export type GuiScreen = 'preloader' | 'welcome' | 'interface';
+export type GuiScreenName = 'preloader' | 'welcome' | 'interface';
 
 export type GuiModeName = 'phantom' | 'real' | 'season';
 

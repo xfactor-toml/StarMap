@@ -8,21 +8,21 @@ export const useSettingsVolumeStore = defineStore('settingsVolume', () => {
   const music = ref(Number(localStorage.getItem(LOCAL_STORAGE_KEYS.musicVolume) ?? Settings.AUDIO.defaultMusicVolume) * 100)
   const sfx = ref(Number(localStorage.getItem(LOCAL_STORAGE_KEYS.sfxVolume) ?? Settings.AUDIO.defaultSfxVolume) * 100)
   const client = useClient()
-  
-    const changeSfxVolume = (volume: number) => {
-      sfx.value = volume;
-      client.setSFXVolume(volume);
-    }
 
-    const changeMusicVolume = (volume: number) => {
-      music.value = volume;
-      client.setMusicVolume(volume);
-    }
+  const changeSfxVolume = (volume: number) => {
+    sfx.value = volume;
+    client.setSFXVolume(volume);
+  }
 
-    return {
-      music,
-      sfx,
-      changeSfxVolume,
-      changeMusicVolume
-    }
+  const changeMusicVolume = (volume: number) => {
+    music.value = volume;
+    client.setMusicVolume(volume);
+  }
+
+  return {
+    music,
+    sfx,
+    changeSfxVolume,
+    changeMusicVolume
+  }
 });

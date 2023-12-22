@@ -7,8 +7,8 @@
 import { Component } from 'vue';
 import { mapStores } from 'pinia';
 import { debounce } from 'debounce';
-import { InterfaceScreen, PreloaderScreen, WelcomeScreen } from '@/screens';
-import { GuiScreen } from '@/types';
+import { GalaxyScreen, PreloaderScreen, WelcomeScreen } from '@/screens';
+import { GuiScreenName } from '@/types';
 import { useSettingsStore, useUiStore } from '@/stores';
 import { ClientEventsService } from '@/services';
 
@@ -20,10 +20,10 @@ export default {
   computed: {
     ...mapStores(useSettingsStore, useUiStore),
     screen() {
-      const screens: Record<GuiScreen, Component> = {
+      const screens: Record<GuiScreenName, Component> = {
         preloader: PreloaderScreen,
         welcome: WelcomeScreen,
-        interface: InterfaceScreen
+        interface: GalaxyScreen
       };
 
       return screens[this.settingsStore.screen.selected];

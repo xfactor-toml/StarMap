@@ -1,2 +1,1 @@
-export * from './PhantomMode';
-export * from './RealMode';
+export * from './galaxy'
