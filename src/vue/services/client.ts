@@ -47,7 +47,6 @@ export class ClientService {
 
   @debounce(200)
   search(key: string) {
-    // console.log(key);
     this.dispatcher.starNameFilterChanged.dispatch(key);
   }
 
@@ -89,6 +88,10 @@ export class ClientService {
 
   onStarUpdated(star: Star) {
     this.dispatcher.onStarUpdated.dispatch(star.toRaw());
+  }
+
+  onGameStart() {
+    console.log('start game')
   }
 
   static VuePlugin = {

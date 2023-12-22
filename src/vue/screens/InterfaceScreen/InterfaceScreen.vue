@@ -3,11 +3,20 @@
     <div class="InterfaceScreen__content">
       <component :is="mode" />
     </div>
-    <div class="InterfaceScreen__logo">
-      <Logo />
-    </div>
-    <div class="InterfaceScreen__userbar">
-      <UserBar @openPlasmaMintPopup="openPlasmaMintPopup"/>
+    <div class="InterfaceScreen__header">
+      <div class="InterfaceScreen__headerColumn">
+        <Logo />
+      </div>
+      <div class="InterfaceScreen__headerColumn is-center">
+        <div class="InterfaceScreen__button">
+          <StartGameButton @click="startGame"/>
+        </div>
+      </div>
+      <div class="InterfaceScreen__headerColumn is-right">
+        <div class="InterfaceScreen__userbar">
+          <UserBar @openPlasmaMintPopup="openPlasmaMintPopup"/>
+        </div>
+      </div>
     </div>
     <div class="InterfaceScreen__panels">
       <template v-if="settingsStore.mode.views.length">
@@ -35,7 +44,15 @@
 </template>
 
 <script lang="ts">
-import { LevelsPanel, Logo, ModesPanel, UserBar, ViewsPanel, PlasmaMintPopup } from '@/components';
+import {
+  LevelsPanel,
+  Logo,
+  ModesPanel,
+  PlasmaMintPopup,
+  StartGameButton,
+  UserBar,
+  ViewsPanel,
+} from '@/components';
 import { PhantomMode, RealMode } from '@/modes';
 import { useSettingsStore, useWalletStore } from '@/stores';
 import { mapStores } from 'pinia';
@@ -49,9 +66,10 @@ export default {
     LevelsPanel,
     Logo,
     ModesPanel,
+    PlasmaMintPopup,
+    StartGameButton,
     UserBar,
     ViewsPanel,
-    PlasmaMintPopup
   },
   data: () => {
     return {
@@ -80,9 +98,11 @@ export default {
     closePlasmaMintPopup() {
       this.showPlasmaMintPopup = false
     },
+    startGame() {
+      this.$client.onGameStart()
+    }
   },
   created() {
-
     this.$wallet.onStateUpdate((state) => {
       this.walletStore.setState(state)
     })

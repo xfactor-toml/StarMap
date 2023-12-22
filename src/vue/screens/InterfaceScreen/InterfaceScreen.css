@@ -16,18 +16,34 @@
   top: 0;
 }
 
-.InterfaceScreen__logo {
+.InterfaceScreen__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
   position: absolute;
   left: 20px;
+  right: 20px;
   top: 20px;
 }
 
+.InterfaceScreen__headerColumn {
+  display: flex;
+  flex: 1;
+}
+
+.InterfaceScreen__headerColumn.is-center {
+  justify-content: center;
+}
+
+.InterfaceScreen__headerColumn.is-right {
+  justify-content: flex-end;
+}
+
 .InterfaceScreen__userbar {
-  width: 24px;
   height: 24px;
-  position: absolute;
-  right: 20px;
-  top: 20px;
+  position: relative;
+  align-self: flex-start;
 }
 
 .InterfaceScreen__panels {

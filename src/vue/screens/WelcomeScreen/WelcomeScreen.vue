@@ -53,7 +53,6 @@
 <script lang="ts">
 import { useSettingsStore, useStarsStore } from '@/stores';
 import { mapStores } from 'pinia';
-import { DeviceInfo } from '~/game/utils/DeviceInfo';
 
 export default {
   name: 'WelcomeScreen',
@@ -90,15 +89,6 @@ export default {
       this.$client.run(this.preservedFullscreenRun, this.starsStore.stars);
       this.settingsStore.setScreen('interface');
     },
-    onMetamaskClick() {
-      let url = 'https://metamask.io/download';
-      if (!DeviceInfo.getInstance().desktop) {
-        url = DeviceInfo.getInstance().android
-          ? 'https://play.google.com/store/apps/details?id=io.metamask'
-          : 'https://apps.apple.com/ru/app/metamask-blockchain-wallet/id1438144202'
-      }
-      window.open(url, '_blank');
-    }
   },
 };
 </script>
