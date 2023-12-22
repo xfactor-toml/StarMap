@@ -95,7 +95,7 @@ import { mobileUrl } from '~/blockchain/config';
 import { roundNumber } from '@/utils';
 import { PropType } from 'vue';
 import { Star, StarPosition } from '@/models';
-import { useSettingsStore, useStarsStore, useWalletStore } from '@/stores';
+import { useSettingsStore, useStarsStore, useUiStore, useWalletStore } from '@/stores';
 import { mapStores } from 'pinia';
 
 export default {
@@ -117,7 +117,7 @@ export default {
     starName: ''
   }),
   computed: {
-    ...mapStores(useSettingsStore, useStarsStore, useWalletStore),
+    ...mapStores(useSettingsStore, useStarsStore, useUiStore, useWalletStore),
     roundedBalance() {
       return roundNumber(this.balance, this.balance > 1000 ? 2 : 4);
     },
@@ -180,7 +180,7 @@ export default {
 
       this.createdStar = new Star(createdStar);
       this.starsStore.addStar(this.createdStar);
-      this.settingsStore.hideStarTooltip();
+      this.uiStore.star.hideStarTooltip();
 
       this.$client.onStarCreated(this.createdStar);
     }
@@ -191,7 +191,7 @@ export default {
     this.creationCost = await this.$wallet.getCreationCost();
 
     if (this.walletStore.connected) {
-      this.$refs.input?.focus();
+      (this.$refs.input as HTMLElement)?.focus();
     }
 
     this.fetching = false;

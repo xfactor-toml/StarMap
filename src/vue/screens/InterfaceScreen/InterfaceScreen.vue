@@ -19,13 +19,13 @@
       </div>
     </div>
     <div class="InterfaceScreen__panels">
-      <template v-if="settingsStore.mode.views.length">
+      <template v-if="settingsStore.mode.selected.views.length">
         <div class="InterfaceScreen__views">
           <ViewsPanel />
         </div>
       </template>
       <transition name="fade">
-        <template v-if="settingsStore.view === 'galaxy'">
+        <template v-if="settingsStore.view.selected === 'galaxy'">
           <div class="InterfaceScreen__levels">
             <LevelsPanel />
           </div>
@@ -88,7 +88,7 @@ export default {
         season: null
       };
 
-      return modes[this.settingsStore.mode.name];
+      return modes[this.settingsStore.mode.selected.name];
     }
   },
   methods: {

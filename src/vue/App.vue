@@ -9,7 +9,7 @@ import { mapStores } from 'pinia';
 import { debounce } from 'debounce';
 import { InterfaceScreen, PreloaderScreen, WelcomeScreen } from '@/screens';
 import { GuiScreen } from '@/types';
-import { useSettingsStore } from '@/stores';
+import { useSettingsStore, useUiStore } from '@/stores';
 import { ClientEventsService } from '@/services';
 
 export default {
@@ -18,7 +18,7 @@ export default {
     version: 'v0.3.3'
   }),
   computed: {
-    ...mapStores(useSettingsStore),
+    ...mapStores(useSettingsStore, useUiStore),
     screen() {
       const screens: Record<GuiScreen, Component> = {
         preloader: PreloaderScreen,
@@ -26,7 +26,7 @@ export default {
         interface: InterfaceScreen
       };
 
-      return screens[this.settingsStore.screen];
+      return screens[this.settingsStore.screen.selected];
     }
   },
   created() {
@@ -38,13 +38,15 @@ export default {
       'resize',
       debounce(() => {
         this.$client.onWindowResize();
-        this.settingsStore.setWindowWidth(window.innerWidth);
+        this.uiStore.viewport.setWindowWidth(window.innerWidth);
       }, 200)
     );
 
     // INFO: client didnt send event when press escape
     document.body.addEventListener('fullscreenchange', () => {
-      this.settingsStore.setFullscreenMode(!this.settingsStore.fullscreen);
+      this.uiStore.fullscreen.active
+        ? this.uiStore.fullscreen.disable()
+        : this.uiStore.fullscreen.enable()
     });
   }
 };

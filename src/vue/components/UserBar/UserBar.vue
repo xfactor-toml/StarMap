@@ -50,11 +50,11 @@
       v-click-outside="hideSettingsPopup"
     >
       <SettingsPopup
-        :fullscreen="settingsStore.fullscreen"
-        :musicVolume="settingsStore.musicVolume"
-        :sfxVolume="settingsStore.sfxVolume"
-        @setMusicVolume="settingsStore.changeMusicVolume"
-        @setSfxVolume="settingsStore.changeSfxVolume"
+        :fullscreen="uiStore.fullscreen.active"
+        :musicVolume="settingsStore.volume.music"
+        :sfxVolume="settingsStore.volume.sfx"
+        @setMusicVolume="settingsStore.volume.changeMusicVolume"
+        @setSfxVolume="settingsStore.volume.changeSfxVolume"
         @toggleFullscreen="$client.toggleFullscreen()"
         @volumeButtonClick="$client.onClick()"
         @volumeButtonHover="$client.onHover()"
@@ -69,7 +69,7 @@
 
 import { SettingsPopup } from '@/components/SettingsPopup';
 import { SearchInput } from '@/components/SearchInput';
-import { useSettingsStore, useWalletStore } from '@/stores';
+import { useSettingsStore, useUiStore, useWalletStore } from '@/stores';
 import { default as vClickOutside } from 'click-outside-vue3';
 import { mapStores } from 'pinia';
 
@@ -93,7 +93,7 @@ export default {
     }
   },
   computed: {
-    ...mapStores(useSettingsStore, useWalletStore),
+    ...mapStores(useSettingsStore, useUiStore, useWalletStore),
   },
   methods: {
     connect() {

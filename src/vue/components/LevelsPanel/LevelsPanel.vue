@@ -1,6 +1,6 @@
 <template>
-  <div class="LevelsPanel" :class="{ 'is-hidden': settingsStore.levelsPanelHidden }">
-    <button class="LevelsPanel__toggle" @click="settingsStore.toggleLevelsPanel" />
+  <div class="LevelsPanel" :class="{ 'is-hidden': !uiStore.panels.visibility.levels }">
+    <button class="LevelsPanel__toggle" @click="uiStore.panels.togglePanel('levels')" />
     <div class="LevelsPanel__group">
       <template v-for="level in starsStore.availableFilterLevels">
         <button
@@ -20,13 +20,13 @@
 </template>
 
 <script lang="ts">
-import { useSettingsStore, useStarsStore } from '@/stores';
+import { useStarsStore, useUiStore } from '@/stores';
 import { mapStores } from 'pinia';
 
 export default {
   name: 'LevelsPanel',
   computed: {
-    ...mapStores(useSettingsStore, useStarsStore)
+    ...mapStores(useStarsStore, useUiStore)
   },
   methods: {
     select(selectedLevel: number) {

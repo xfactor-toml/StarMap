@@ -1,37 +1,37 @@
 <template>
   <div class="RealMode">
     <transition name="fade">
-      <template v-if="settingsStore.starPanel !== null">
+      <template v-if="uiStore.star.starPanel !== null">
         <StarPanel
-          :starId="settingsStore.starPanel.starId"
-          :scale="settingsStore.starPanel.scale"
-          @callStarBoost="settingsStore.showStarBoostPanel"
+          :starId="uiStore.star.starPanel.starId"
+          :scale="uiStore.star.starPanel.scale"
+          @callStarBoost="uiStore.star.showStarBoostPanel"
         />
       </template>
     </transition>
     <transition name="fade">
-      <template v-if="settingsStore.overlay">
+      <template v-if="uiStore.overlay.visible">
         <div class="gui-overlay" @click="hideAllPanels" />
       </template>
     </transition>
     <transition name="fade">
-      <template v-if="settingsStore.starTooltip !== null">
+      <template v-if="uiStore.star.starTooltip !== null">
         <StarTooltipV2
-          :star="settingsStore.starTooltip.star"
-          :position="settingsStore.starTooltip.position"
-          @hide="settingsStore.hideStarTooltip"
+          :star="uiStore.star.starTooltip.star"
+          :position="uiStore.star.starTooltip.position"
+          @hide="uiStore.star.hideStarTooltip"
           @hideButtonHover="$client.onHover()"
-          @diveIn="settingsStore.diveIn"
+          @diveIn="uiStore.star.diveIn"
           @diveInButtonHover="$client.onHover()"
         />
       </template>
     </transition>
     <transition name="fade">
-      <template v-if="settingsStore.starBoostPanel !== null">
+      <template v-if="uiStore.star.starBoostPanel !== null">
         <StarBoostPanel
-          :starId="settingsStore.starBoostPanel.starId"
-          :type="settingsStore.starBoostPanel.type"
-          @hide="settingsStore.hideStarBoostPanel"
+          :starId="uiStore.star.starBoostPanel.starId"
+          :type="uiStore.star.starBoostPanel.type"
+          @hide="uiStore.star.hideStarBoostPanel"
           @hover="$client.onHover()"
         />
       </template>
@@ -40,7 +40,7 @@
 </template>
 
 <script lang="ts">
-import { useSettingsStore } from '@/stores';
+import { useUiStore } from '@/stores';
 import { StarBoostPanel, StarPanel, StarTooltipV2 } from '@/components';
 import { mapStores } from 'pinia';
 
@@ -52,17 +52,17 @@ export default {
     StarTooltipV2
   },
   computed: {
-    ...mapStores(useSettingsStore)
+    ...mapStores(useUiStore)
   },
   methods: {
     hideAllPanels() {
-      if (!this.settingsStore.overlayActive) return;
-      this.settingsStore.hideStarBoostPanel();
-      this.settingsStore.hideStarTooltip();
+      if (!this.uiStore.overlay.active) return;
+      this.uiStore.star.hideStarBoostPanel();
+      this.uiStore.star.hideStarTooltip();
     }
   },
   unmounted() {
-    this.settingsStore.hideStarPanel();
+    this.uiStore.star.hideStarPanel();
     this.hideAllPanels();
   }
 };

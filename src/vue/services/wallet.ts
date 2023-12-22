@@ -1,4 +1,5 @@
 import { Star } from '@/models';
+import { WalletStoreState } from '@/stores';
 import { markRaw } from 'vue';
 import {
   ApprovePlasma,
@@ -17,6 +18,7 @@ import {
 import { fuelTarget } from '~/blockchain/types';
 import { Coords, StarList } from '~/blockchain/types';
 
+let walletInstance: WalletService | null = null
 
 export class WalletService {
   account = '';
@@ -26,6 +28,14 @@ export class WalletService {
   subscribed = false;
 
   stateListeners = []
+
+  get state(): WalletStoreState {
+    return {
+      account: this.account,
+      connected: this.connected,
+      installed: this.installed,
+    }
+  }
 
   async connect() {
     if (!this.subscribed) {
@@ -115,29 +125,32 @@ export class WalletService {
     return true;
   }
 
-  onStateUpdate(listener: () => {}) {
+  onStateUpdate(listener: (state: WalletStoreState) => void) {
     this.stateListeners.push(listener)
   }
 
   callListeners() {
     if (this.stateListeners.length) {
       this.stateListeners.forEach(listener => {
-        listener({
-          account: this.account,
-          connected: this.connected,
-          installed: this.installed,
-        })
+        listener(this.state)
       })
     }
   }
 
+  static getWalletInstance() {
+    const instance = walletInstance || new WalletService()
+    return instance
+  }
+
   static VuePlugin = {
     install: app => {
-      app.config.globalProperties.$wallet = markRaw(new WalletService());
+      app.config.globalProperties.$wallet = markRaw(WalletService.getWalletInstance());
     }
   };
 
   static StorePlugin = () => ({
-    wallet: markRaw(new WalletService())
+    wallet: markRaw(WalletService.getWalletInstance())
   });
 }
+
+export const useWallet = () => WalletService.getWalletInstance()

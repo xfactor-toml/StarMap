@@ -23,7 +23,7 @@
         <input
           type="checkbox"
           class="WelcomeScreen__checkbox-field"
-          :value="settingsStore.agreementAccepted"
+          :value="settingsStore.agreement.accepted"
           @change="handleAgreementClick"
         />
         <span class="WelcomeScreen__checkbox-label">don’t show me again</span>
@@ -67,10 +67,10 @@ export default {
   },
   methods: {
     handleRunClick(fullscreen = false) {
-      if (this.settingsStore.agreementAccepted) {
+      if (this.settingsStore.agreement.accepted) {
         this.$client.onClick();
         this.$client.run(fullscreen, this.starsStore.stars);
-        this.settingsStore.setScreen('interface');
+        this.settingsStore.screen.setScreen('interface');
       } else {
         this.preservedFullscreenRun = fullscreen;
         this.showAgreement = true;
@@ -78,16 +78,16 @@ export default {
       }
     },
     handleAgreementClick() {
-      if (this.settingsStore.agreementAccepted) {
-        this.settingsStore.revokeAgreement();
+      if (this.settingsStore.agreement.accepted) {
+        this.settingsStore.agreement.revoke();
       } else {
-        this.settingsStore.acceptAgreement();
+        this.settingsStore.agreement.accept();
       }
     },
     handleAgreementRunClick() {
       this.$client.onClick();
       this.$client.run(this.preservedFullscreenRun, this.starsStore.stars);
-      this.settingsStore.setScreen('interface');
+      this.settingsStore.screen.setScreen('interface');
     },
   },
 };

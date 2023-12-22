@@ -1,6 +1,6 @@
 <template>
-  <div class="ModesPanel" :class="{ 'is-hidden': settingsStore.modesPanelHidden }">
-    <button class="ModesPanel__toggle" @click="settingsStore.toggleModesPanel" />
+  <div class="ModesPanel" :class="{ 'is-hidden': !uiStore.panels.visibility.modes }">
+    <button class="ModesPanel__toggle" @click="uiStore.panels.togglePanel('modes')" />
     <div class="ModesPanel__group">
       <template v-for="mode in modes">
         <button
@@ -8,7 +8,7 @@
           :class="[
             `is-${mode.name}`,
             {
-              'is-active': mode.name === settingsStore.mode.name,
+              'is-active': mode.name === settingsStore.mode.selected.name,
               'is-disabled': isDisabled(mode)
             }
           ]"
@@ -23,7 +23,7 @@
 
 <script lang="ts">
 import { MODES } from '@/constants';
-import { useSettingsStore } from '@/stores';
+import { useSettingsStore, useUiStore } from '@/stores';
 import { GuiMode, GuiModeName } from '@/types';
 import { mapStores } from 'pinia';
 
@@ -33,11 +33,11 @@ export default {
     modes: Object.values(MODES)
   }),
   computed: {
-    ...mapStores(useSettingsStore)
+    ...mapStores(useSettingsStore, useUiStore)
   },
   methods: {
     isDisabled(mode: GuiMode) {
-      if (mode.name !== 'real' && this.settingsStore.view === 'star') {
+      if (mode.name !== 'real' && this.settingsStore.view.selected === 'star') {
         return true;
       }
 
@@ -55,7 +55,7 @@ export default {
           break;
       }
 
-      this.settingsStore.setMode(modeName);
+      this.settingsStore.mode.setMode(modeName);
     }
   }
 };

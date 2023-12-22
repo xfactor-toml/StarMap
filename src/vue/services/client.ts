@@ -104,3 +104,5 @@ export class ClientService {
     client: markRaw(new ClientService(FrontEvents))
   });
 }
+
+export const useClient = () => new ClientService(FrontEvents)

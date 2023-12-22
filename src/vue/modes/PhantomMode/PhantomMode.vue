@@ -1,15 +1,15 @@
 <template>
   <div class="PhantomMode">
     <transition name="fade">
-      <template v-if="settingsStore.overlay">
+      <template v-if="uiStore.overlay.visible">
         <div class="gui-overlay" @click="closeStarCreationPanel" />
       </template>
     </transition>
     <transition name="fade">
-      <template v-if="settingsStore.newStarPosition !== null && !creationPanel">
+      <template v-if="uiStore.star.newStarPosition !== null && !creationPanel">
         <StarCreationTooltipV2
-          :starPosition="settingsStore.newStarPosition"
-          @hide="settingsStore.hideStarTooltip"
+          :starPosition="uiStore.star.newStarPosition"
+          @hide="uiStore.star.hideStarTooltip"
           @hideButtonHover="$client.onHover()"
           @create="openStarCreationPanel"
           @createButtonHover="$client.onHover()"
@@ -17,9 +17,9 @@
       </template>
     </transition>
     <transition name="fade">
-      <template v-if="settingsStore.newStarPosition !== null && creationPanel">
+      <template v-if="uiStore.star.newStarPosition !== null && creationPanel">
         <StarCreationPanel
-          :starPosition="settingsStore.newStarPosition"
+          :starPosition="uiStore.star.newStarPosition"
           @hide="closeStarCreationPanel"
           @hover="$client.onHover()"
         />
@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { useSettingsStore } from '@/stores';
+import { useUiStore } from '@/stores';
 import { StarCreationPanel, StarCreationTooltipV2 } from '@/components';
 import { mapStores } from 'pinia';
 
@@ -43,15 +43,15 @@ export default {
     creationPanel: false
   }),
   computed: {
-    ...mapStores(useSettingsStore)
+    ...mapStores(useUiStore)
   },
   methods: {
     openStarCreationPanel() {
       this.creationPanel = true;
     },
     closeStarCreationPanel() {
-      if (!this.settingsStore.overlayActive) return;
-      this.settingsStore.hideStarTooltip();
+      if (!this.uiStore.overlay.active) return;
+      this.uiStore.star.hideStarTooltip();
       this.creationPanel = false;
     }
   },
