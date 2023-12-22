@@ -8,7 +8,7 @@
           :class="[
             `is-${mode.name}`,
             {
-              'is-active': mode.name === settingsStore.mode.selected.name,
+              'is-active': mode.name === screensStore.current.mode?.name,
               'is-disabled': isDisabled(mode)
             }
           ]"
@@ -22,22 +22,21 @@
 </template>
 
 <script lang="ts">
-import { MODES } from '@/constants';
-import { useSettingsStore, useUiStore } from '@/stores';
+import { useScreensStore, useUiStore } from '@/stores';
 import { GuiMode, GuiModeName } from '@/types';
 import { mapStores } from 'pinia';
 
 export default {
   name: 'ModesPanel',
-  data: () => ({
-    modes: Object.values(MODES)
-  }),
   computed: {
-    ...mapStores(useSettingsStore, useUiStore)
+    ...mapStores(useScreensStore, useUiStore),
+    modes() {
+      return this.screensStore.current.screen.modes || []
+    }
   },
   methods: {
     isDisabled(mode: GuiMode) {
-      if (mode.name !== 'real' && this.settingsStore.view.selected === 'star') {
+      if (mode.name !== 'real' && this.screensStore.current.view?.name === 'star') {
         return true;
       }
 
@@ -55,7 +54,7 @@ export default {
           break;
       }
 
-      this.settingsStore.mode.setMode(modeName);
+      this.screensStore.setScreenMode(modeName);
     }
   }
 };

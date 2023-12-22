@@ -1,15 +1,12 @@
 <template>
-  <component :is="screen" />
+  <component :is="screensStore.current.screen.getComponent()" />
   <div class="version">{{ version }}</div>
 </template>
 
 <script lang="ts">
-import { Component } from 'vue';
 import { mapStores } from 'pinia';
 import { debounce } from 'debounce';
-import { GalaxyScreen, PreloaderScreen, WelcomeScreen } from '@/screens';
-import { GuiScreenName } from '@/types';
-import { useSettingsStore, useUiStore } from '@/stores';
+import { useScreensStore, useSettingsStore, useUiStore } from '@/stores';
 import { ClientEventsService } from '@/services';
 
 export default {
@@ -17,18 +14,7 @@ export default {
   data: () => ({
     version: 'v0.3.3'
   }),
-  computed: {
-    ...mapStores(useSettingsStore, useUiStore),
-    screen() {
-      const screens: Record<GuiScreenName, Component> = {
-        preloader: PreloaderScreen,
-        welcome: WelcomeScreen,
-        interface: GalaxyScreen
-      };
-
-      return screens[this.settingsStore.screen.selected];
-    }
-  },
+  computed: mapStores(useScreensStore, useSettingsStore, useUiStore),
   created() {
     // Game Events
     window.addEventListener('gameEvent', ClientEventsService.handleEvent);

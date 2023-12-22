@@ -1,11 +1,13 @@
-export type GuiScreenName = 'preloader' | 'welcome' | 'interface';
+import { DefineComponent } from 'vue';
+
+export type GuiScreenName = 'preloader' | 'welcome' | 'galaxy';
 
 export type GuiModeName = 'phantom' | 'real' | 'season';
 
-export type GuiViewName = 'galaxy' | 'star' | 'planet';
+export type ClientViewName = 'galaxy' | 'star' | 'planet';
 
-export type GuiView = {
-  name: GuiViewName;
+export type ClientView = {
+  name: ClientViewName;
   label: string;
   enabled: boolean;
   clickable: boolean;
@@ -14,8 +16,16 @@ export type GuiView = {
 export type GuiMode<T extends GuiModeName = GuiModeName> = {
   name: T;
   label: string;
-  views: GuiView[];
+  views: ClientView[];
   enabled: boolean;
+  getComponent: () => DefineComponent<{}, {}, any> | null
+};
+
+export type GuiScreen<T extends GuiScreenName = GuiScreenName> = {
+  name: T;
+  modes?: GuiMode[];
+  defaultMode?: GuiModeName;
+  getComponent: () => DefineComponent<{}, {}, any>
 };
 
 export type GuiLevel = {

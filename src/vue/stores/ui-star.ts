@@ -9,10 +9,10 @@ import { Star, StarPosition, StarScreenPosition } from '@/models';
 import { useStarsStore } from '@/stores/stars';
 import { ref } from 'vue';
 import { useClient } from '@/services';
-import { useSettingsStore } from '@/stores/settings';
 import { useUiOverlayStore } from '@/stores/ui-overlay';
 import { useUiViewportStore } from '@/stores/ui-viewport';
 import { useUiPanelsStore } from '@/stores/ui-panels';
+import { useScreensStore } from '@/stores/screens';
 
 type StarBoostPanel = {
   starId: number;
@@ -32,7 +32,7 @@ type StarTooltip = {
 
 export const useUiStarStore = defineStore('uiStar', () => {
   const client = useClient()
-  const settings = useSettingsStore()
+  const screens = useScreensStore()
   const overlay = useUiOverlayStore()
   const panels = useUiPanelsStore()
   const viewport = useUiViewportStore()
@@ -110,7 +110,7 @@ export const useUiStarStore = defineStore('uiStar', () => {
     client.onClick();
     client.diveIn(starTooltip.value.star.id);
     hideStarTooltip();
-    settings.view.setView('star');
+    screens.setClientView('star');
   }
 
   const returnToGalaxy = () => {

@@ -3,7 +3,7 @@ import { BattleState } from '@/types';
 
 import { ref } from 'vue';
 
-export const useSettingsBattleStore = defineStore('settingsBattle', () => {
+export const useBattleStore = defineStore('battle', () => {
   const state = ref<BattleState>('initial')
 
   const setState = (nextState: BattleState) => {

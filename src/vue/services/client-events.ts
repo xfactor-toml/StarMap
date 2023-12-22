@@ -1,9 +1,11 @@
-import { useSettingsStore, useStarsStore, useUiStore } from '@/stores';
+import { useBattleStore, useScreensStore, useSettingsStore, useStarsStore, useUiStore } from '@/stores';
 import { ClientEvent } from '@/types';
 import { Settings } from '~/game/data/Settings';
 
 export class ClientEventsService {
   static async handleEvent({ detail: clientEvent }: Event & { detail: ClientEvent }) {
+    const battleStore = useBattleStore();
+    const screensStore = useScreensStore();
     const settingsStore = useSettingsStore();
     const starsStore = useStarsStore();
     const uiStore = useUiStore();
@@ -16,7 +18,7 @@ export class ClientEventsService {
         if (!Settings.isDebugMode) {
           await starsStore.fetchStars();
         }
-        settingsStore.screen.setScreen('welcome');
+        screensStore.setScreen('welcome');
         break;
 
       case 'GAME_CREATED':
@@ -46,27 +48,27 @@ export class ClientEventsService {
         break;
 
       case 'SHOW_REAL_MODE':
-        settingsStore.mode.setMode('real');
+        screensStore.setScreenMode('real');
         break;
 
       case 'SHOW_PHANTOM_MODE':
-        settingsStore.mode.setMode('phantom');
+        screensStore.setScreenMode('phantom');
         break;
 
       case 'EVENT_STAR_MODE':
-        settingsStore.view.setView('star');
+        screensStore.setClientView('star');
         break;
 
       case 'EVENT_GALAXY_MODE':
-        settingsStore.view.setView('galaxy');
+        screensStore.setClientView('galaxy');
         break;
 
       // case 'GAME_SEARCHING_START':
-      //   settingsStore.battle.setState('searching');
+      //   battleStore.setState('searching');
       //   break;
 
       // case 'GAME_SEARCHING_END':
-      //   settingsStore.battle.setState('initial');
+      //   battleStore.setState('initial');
       //   break;
     }
   }

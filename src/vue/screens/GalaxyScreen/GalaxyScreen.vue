@@ -1,7 +1,7 @@
 <template>
   <div class="GalaxyScreen">
-    <div class="GalaxyScreen__content">
-      <component :is="mode" />
+    <div v-if="screensStore.current.mode" class="GalaxyScreen__content">
+      <component :is="screensStore.current.mode.getComponent()" />
     </div>
     <div class="GalaxyScreen__header">
       <div class="GalaxyScreen__headerColumn">
@@ -9,11 +9,11 @@
       </div>
       <div class="GalaxyScreen__headerColumn is-center">
         <StartGameButton
-          v-if="settingsStore.battle.state === 'initial'"
+          v-if="battleStore.state === 'initial'"
           @click="$client.onGameStart"
         />
         <SearchingIndicator
-          v-if="settingsStore.battle.state === 'searching'"
+          v-if="battleStore.state === 'searching'"
           :duration="60 * 1000"
           @click="$client.onSearchingClick"
           @expired="$client.onSearchingExpired"
@@ -26,13 +26,13 @@
       </div>
     </div>
     <div class="GalaxyScreen__panels">
-      <template v-if="settingsStore.mode.selected.views.length">
+      <template v-if="screensStore.current.mode?.views.length">
         <div class="GalaxyScreen__views">
           <ViewsPanel />
         </div>
       </template>
       <transition name="fade">
-        <template v-if="settingsStore.view.selected === 'galaxy'">
+        <template v-if="screensStore.current.view?.name === 'galaxy'">
           <div class="GalaxyScreen__levels">
             <LevelsPanel />
           </div>
@@ -61,11 +61,8 @@ import {
   UserBar,
   ViewsPanel,
 } from '@/components';
-import { PhantomMode, RealMode } from '@/modes';
-import { useSettingsStore, useWalletStore } from '@/stores';
+import { useBattleStore, useScreensStore, useSettingsStore, useWalletStore } from '@/stores';
 import { mapStores } from 'pinia';
-import { GuiModeName } from '@/types';
-import { Component } from 'vue';
 import { default as vClickOutside } from 'click-outside-vue3';
 
 export default {
@@ -88,18 +85,7 @@ export default {
   directives: {
     clickOutside: vClickOutside.directive
   },
-  computed: {
-    ...mapStores(useSettingsStore, useWalletStore),
-    mode() {
-      const modes: Record<GuiModeName, Component | null> = {
-        phantom: PhantomMode,
-        real: RealMode,
-        season: null
-      };
-
-      return modes[this.settingsStore.mode.selected.name];
-    }
-  },
+  computed: mapStores(useBattleStore, useScreensStore, useSettingsStore, useWalletStore),
   methods: {
     openPlasmaMintPopup() {
       this.showPlasmaMintPopup = true

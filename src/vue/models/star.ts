@@ -9,6 +9,7 @@ export type StarHudParams = {
   [K in StarHudParam]: {
     percent: number;
     value: number;
+    unit: string
   };
 };
 

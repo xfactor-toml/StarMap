@@ -51,7 +51,7 @@
 </template>
 
 <script lang="ts">
-import { useSettingsStore, useStarsStore } from '@/stores';
+import { useScreensStore, useSettingsStore, useStarsStore } from '@/stores';
 import { mapStores } from 'pinia';
 
 export default {
@@ -63,14 +63,14 @@ export default {
     };
   },
   computed: {
-    ...mapStores(useSettingsStore, useStarsStore)
+    ...mapStores(useScreensStore, useSettingsStore, useStarsStore)
   },
   methods: {
     handleRunClick(fullscreen = false) {
       if (this.settingsStore.agreement.accepted) {
         this.$client.onClick();
         this.$client.run(fullscreen, this.starsStore.stars);
-        this.settingsStore.screen.setScreen('interface');
+        this.screensStore.setScreen('galaxy');
       } else {
         this.preservedFullscreenRun = fullscreen;
         this.showAgreement = true;
@@ -87,7 +87,7 @@ export default {
     handleAgreementRunClick() {
       this.$client.onClick();
       this.$client.run(this.preservedFullscreenRun, this.starsStore.stars);
-      this.settingsStore.screen.setScreen('interface');
+      this.screensStore.setScreen('galaxy');
     },
   },
 };

@@ -1,13 +1,13 @@
 <template>
   <div class="ViewsPanel" :class="{ 'is-hidden': !uiStore.panels.visibility.views }">
     <div class="ViewsPanel__group">
-      <template v-for="view in settingsStore.mode.selected.views">
+      <template v-for="view in screensStore.current.mode?.views">
         <button
           class="ViewsPanel__button"
           :class="[
             `is-${view.name}`,
             {
-              'is-active': view.name === settingsStore.view.selected,
+              'is-active': view.name === screensStore.current.view.name,
               'is-disabled': !view.enabled,
               'is-clickable': view.clickable
             }
@@ -24,17 +24,17 @@
 </template>
 
 <script lang="ts">
-import { useSettingsStore, useUiStore } from '@/stores';
-import { GuiViewName } from '@/types';
+import { useScreensStore, useUiStore } from '@/stores';
+import { ClientViewName } from '@/types';
 import { mapStores } from 'pinia';
 
 export default {
   name: 'ViewsPanel',
   computed: {
-    ...mapStores(useSettingsStore, useUiStore)
+    ...mapStores(useScreensStore, useUiStore)
   },
   methods: {
-    changeView(viewName: GuiViewName) {
+    changeView(viewName: ClientViewName) {
       this.$client.onClick();
 
       switch (viewName) {
@@ -50,7 +50,7 @@ export default {
           break;
       }
 
-      this.settingsStore.view.setView(viewName);
+      this.screensStore.setClientView(viewName);
     }
   }
 };
