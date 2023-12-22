@@ -4,6 +4,7 @@ export * from './ModesPanel';
 export * from './PlasmaMintPopup';
 export * from './PlasmaSlider';
 export * from './SearchInput';
+export * from './SearchingIndicator';
 export * from './SettingsPopup';
 export * from './StarBoostPanel';
 export * from './StarCreationPanel';

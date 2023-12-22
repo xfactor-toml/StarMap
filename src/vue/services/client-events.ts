@@ -60,6 +60,14 @@ export class ClientEventsService {
       case 'EVENT_GALAXY_MODE':
         settingsStore.view.setView('galaxy');
         break;
+
+      // case 'GAME_SEARCHING_START':
+      //   settingsStore.battle.setState('searching');
+      //   break;
+
+      // case 'GAME_SEARCHING_END':
+      //   settingsStore.battle.setState('initial');
+      //   break;
     }
   }
 }

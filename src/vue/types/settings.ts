@@ -24,3 +24,5 @@ export type GuiLevel = {
 };
 
 export type StarBoostPanelType = 'energy' | 'exp';
+
+export type BattleState = 'initial' | 'searching';

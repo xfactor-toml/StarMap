@@ -98,7 +98,7 @@
   pointer-events: all;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 800px) {
   .UserBar__search-field {
     width: calc(100% - 36px);
     left: 18px;
@@ -109,7 +109,7 @@
   .UserBar__button.is-mint {
     position: fixed;
     right: 20px;
-    top: 60px;
+    top: 80px;
   }
 
   .UserBar.connected .UserBar__search-field {

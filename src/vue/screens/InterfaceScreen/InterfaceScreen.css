@@ -30,6 +30,7 @@
 .InterfaceScreen__headerColumn {
   display: flex;
   flex: 1;
+  min-width: 0;
 }
 
 .InterfaceScreen__headerColumn.is-center {

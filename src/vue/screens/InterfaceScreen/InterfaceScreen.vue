@@ -8,9 +8,16 @@
         <Logo />
       </div>
       <div class="InterfaceScreen__headerColumn is-center">
-        <div class="InterfaceScreen__button">
-          <StartGameButton @click="startGame"/>
-        </div>
+        <StartGameButton
+          v-if="settingsStore.battle.state === 'initial'"
+          @click="$client.onGameStart"
+        />
+        <SearchingIndicator
+          v-if="settingsStore.battle.state === 'searching'"
+          :duration="60 * 1000"
+          @click="$client.onSearchingClick"
+          @expired="$client.onSearchingExpired"
+        />
       </div>
       <div class="InterfaceScreen__headerColumn is-right">
         <div class="InterfaceScreen__userbar">
@@ -49,6 +56,7 @@ import {
   Logo,
   ModesPanel,
   PlasmaMintPopup,
+  SearchingIndicator,
   StartGameButton,
   UserBar,
   ViewsPanel,
@@ -67,6 +75,7 @@ export default {
     Logo,
     ModesPanel,
     PlasmaMintPopup,
+    SearchingIndicator,
     StartGameButton,
     UserBar,
     ViewsPanel,
@@ -98,9 +107,6 @@ export default {
     closePlasmaMintPopup() {
       this.showPlasmaMintPopup = false
     },
-    startGame() {
-      this.$client.onGameStart()
-    }
   },
   created() {
     this.$wallet.onStateUpdate((state) => {
