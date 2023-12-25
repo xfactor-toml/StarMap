@@ -70,6 +70,10 @@ export class ClientEventsService {
       // case 'GAME_SEARCHING_END':
       //   battleStore.setState('initial');
       //   break;
+
+      // case 'GAME_SEARCHING_ERROR':
+      //   battleStore.setState('initial');
+      //   break;
     }
   }
 }

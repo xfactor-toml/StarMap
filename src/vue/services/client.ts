@@ -93,15 +93,11 @@ export class ClientService {
   }
 
   onGameStart() {
-    console.log('start game')
+    logger.log('start game')
   }
   
   onSearchingClick() {
-    console.log('searching click')
-  }
-  
-  onSearchingExpired() {
-    console.log('searching expired')
+    logger.log('searching click')
   }
 
   static VuePlugin = {

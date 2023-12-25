@@ -14,9 +14,7 @@
         />
         <SearchingIndicator
           v-if="battleStore.state === 'searching'"
-          :duration="60 * 1000"
           @click="$client.onSearchingClick"
-          @expired="$client.onSearchingExpired"
         />
       </div>
       <div class="GalaxyScene__headerColumn is-right">

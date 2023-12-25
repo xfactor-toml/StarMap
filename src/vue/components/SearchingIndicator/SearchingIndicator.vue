@@ -23,12 +23,8 @@ import { formatDuration } from '@/utils';
 
 export default {
   name: 'SearchingIndicator',
-  emits: ['click', 'expired'],
+  emits: ['click'],
   props: {
-    duration: {
-      type: Number,
-      required: true
-    },
     updateInterval: {
       type: Number,
       default: 200
@@ -37,38 +33,20 @@ export default {
   data: () => ({
     activeDot: 1,
     dotsAmount: 7,
-    timeLeft: 0,
+    initialTime: Date.now(),
     interval: null,
+    passedTime: 0,
   }),
   computed: {
-    expiredDate() {
-      return Date.now() + this.duration
-    },
     formattedDuration() {
-      return formatDuration(this.timeLeft)
-    }
-  },
-  methods: {
-    getTimeLeft() {
-      return this.expiredDate - Date.now()
+      return formatDuration(this.passedTime)
     }
   },
   mounted() {
-    this.timeLeft = this.getTimeLeft()
     this.interval = setInterval(() => {
       const nextDot = this.activeDot + 1
+      this.passedTime = Date.now() - this.initialTime
       this.activeDot = nextDot > this.dotsAmount ? 1 : nextDot 
-
-      if (this.timeLeft > 0) {
-        this.timeLeft = this.getTimeLeft()
-      } else {
-        if (this.activeDot === 1) {
-          clearInterval(this.interval)
-          this.interval = null
-          this.$emit('expired')
-        }
-      }
-
     }, this.updateInterval);
   },
   unmounted() {
