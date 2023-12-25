@@ -1,4 +1,4 @@
-.GalaxyScreen {
+.GalaxyScene {
   display: flex;
   width: 100%;
   height: 100%;
@@ -8,7 +8,7 @@
   z-index: 2;
 }
 
-.GalaxyScreen__content {
+.GalaxyScene__content {
   width: 100%;
   height: 100%;
   position: absolute;
@@ -16,7 +16,7 @@
   top: 0;
 }
 
-.GalaxyScreen__header {
+.GalaxyScene__header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -27,27 +27,27 @@
   top: 20px;
 }
 
-.GalaxyScreen__headerColumn {
+.GalaxyScene__headerColumn {
   display: flex;
   flex: 1;
   min-width: 0;
 }
 
-.GalaxyScreen__headerColumn.is-center {
+.GalaxyScene__headerColumn.is-center {
   justify-content: center;
 }
 
-.GalaxyScreen__headerColumn.is-right {
+.GalaxyScene__headerColumn.is-right {
   justify-content: flex-end;
 }
 
-.GalaxyScreen__userbar {
+.GalaxyScene__userbar {
   height: 24px;
   position: relative;
   align-self: flex-start;
 }
 
-.GalaxyScreen__panels {
+.GalaxyScene__panels {
   position: absolute;
   left: 0;
   top: 0;
@@ -55,8 +55,8 @@
   height: 100%;
 }
 
-.GalaxyScreen__views,
-.GalaxyScreen__levels {
+.GalaxyScene__views,
+.GalaxyScene__levels {
   display: flex;
   align-items: center;
   height: 100%;
@@ -65,12 +65,12 @@
   top: 0;
 }
 
-.GalaxyScreen__levels {
+.GalaxyScene__levels {
   left: auto;
   right: 20px;
 }
 
-.GalaxyScreen__modes {
+.GalaxyScene__modes {
   display: flex;
   justify-content: center;
   width: 100%;
@@ -80,20 +80,20 @@
 }
 
 @media (max-width: 980px) {
-  .GalaxyScreen__panels {
+  .GalaxyScene__panels {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     padding-bottom: 10px;
   }
 
-  .GalaxyScreen__levels {
+  .GalaxyScene__levels {
     order: -1;
   }
 
-  .GalaxyScreen__views,
-  .GalaxyScreen__levels,
-  .GalaxyScreen__modes {
+  .GalaxyScene__views,
+  .GalaxyScene__levels,
+  .GalaxyScene__modes {
     height: auto;
     width: auto;
     position: relative;

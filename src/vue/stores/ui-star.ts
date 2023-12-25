@@ -12,7 +12,7 @@ import { useClient } from '@/services';
 import { useUiOverlayStore } from '@/stores/ui-overlay';
 import { useUiViewportStore } from '@/stores/ui-viewport';
 import { useUiPanelsStore } from '@/stores/ui-panels';
-import { useScreensStore } from '@/stores/screens';
+import { useScenesStore } from '@/stores/scenes';
 
 type StarBoostPanel = {
   starId: number;
@@ -32,7 +32,7 @@ type StarTooltip = {
 
 export const useUiStarStore = defineStore('uiStar', () => {
   const client = useClient()
-  const screens = useScreensStore()
+  const screens = useScenesStore()
   const overlay = useUiOverlayStore()
   const panels = useUiPanelsStore()
   const viewport = useUiViewportStore()
@@ -110,7 +110,7 @@ export const useUiStarStore = defineStore('uiStar', () => {
     client.onClick();
     client.diveIn(starTooltip.value.star.id);
     hideStarTooltip();
-    screens.setClientView('star');
+    screens.setClientScene('star');
   }
 
   const returnToGalaxy = () => {

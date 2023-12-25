@@ -1,13 +1,13 @@
 <template>
-  <div class="GalaxyScreen">
-    <div v-if="screensStore.current.mode" class="GalaxyScreen__content">
-      <component :is="screensStore.current.mode.getComponent()" />
+  <div class="GalaxyScene">
+    <div v-if="scenesStore.current.mode" class="GalaxyScene__content">
+      <component :is="scenesStore.current.mode.getComponent()" />
     </div>
-    <div class="GalaxyScreen__header">
-      <div class="GalaxyScreen__headerColumn">
+    <div class="GalaxyScene__header">
+      <div class="GalaxyScene__headerColumn">
         <Logo />
       </div>
-      <div class="GalaxyScreen__headerColumn is-center">
+      <div class="GalaxyScene__headerColumn is-center">
         <StartGameButton
           v-if="battleStore.state === 'initial'"
           @click="$client.onGameStart"
@@ -19,26 +19,26 @@
           @expired="$client.onSearchingExpired"
         />
       </div>
-      <div class="GalaxyScreen__headerColumn is-right">
-        <div class="GalaxyScreen__userbar">
+      <div class="GalaxyScene__headerColumn is-right">
+        <div class="GalaxyScene__userbar">
           <UserBar @openPlasmaMintPopup="openPlasmaMintPopup"/>
         </div>
       </div>
     </div>
-    <div class="GalaxyScreen__panels">
-      <template v-if="screensStore.current.mode?.views.length">
-        <div class="GalaxyScreen__views">
+    <div class="GalaxyScene__panels">
+      <template v-if="scenesStore.current.mode?.clientScenes?.length">
+        <div class="GalaxyScene__views">
           <ViewsPanel />
         </div>
       </template>
       <transition name="fade">
-        <template v-if="screensStore.current.view?.name === 'galaxy'">
-          <div class="GalaxyScreen__levels">
+        <template v-if="scenesStore.current.clientScene?.name === 'galaxy'">
+          <div class="GalaxyScene__levels">
             <LevelsPanel />
           </div>
         </template>
       </transition>
-      <div class="GalaxyScreen__modes">
+      <div class="GalaxyScene__modes">
         <ModesPanel />
       </div>
     </div>
@@ -61,12 +61,12 @@ import {
   UserBar,
   ViewsPanel,
 } from '@/components';
-import { useBattleStore, useScreensStore, useSettingsStore, useWalletStore } from '@/stores';
+import { useBattleStore, useScenesStore, useSettingsStore, useWalletStore } from '@/stores';
 import { mapStores } from 'pinia';
 import { default as vClickOutside } from 'click-outside-vue3';
 
 export default {
-  name: 'GalaxyScreen',
+  name: 'GalaxyScene',
   components: {
     LevelsPanel,
     Logo,
@@ -85,7 +85,7 @@ export default {
   directives: {
     clickOutside: vClickOutside.directive
   },
-  computed: mapStores(useBattleStore, useScreensStore, useSettingsStore, useWalletStore),
+  computed: mapStores(useBattleStore, useScenesStore, useSettingsStore, useWalletStore),
   methods: {
     openPlasmaMintPopup() {
       this.showPlasmaMintPopup = true
@@ -102,4 +102,4 @@ export default {
 };
 </script>
 
-<style scoped src="./GalaxyScreen.css"></style>
+<style scoped src="./GalaxyScene.css"></style>

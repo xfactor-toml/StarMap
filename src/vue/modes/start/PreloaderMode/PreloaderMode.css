@@ -1,4 +1,4 @@
-.PreloaderScreen {
+.PreloaderMode {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -16,7 +16,7 @@
   background-size: cover;
 }
 
-.PreloaderScreen__logo {
+.PreloaderScene__logo {
   width: 284px;
   height: 92px;
   background-image: url(../gui/images/preloader/logo-text.svg);
@@ -25,13 +25,13 @@
   background-size: contain;
 }
 
-.PreloaderScreen__circles {
+.PreloaderScene__circles {
   width: 220px;
   height: 220px;
   margin-top: 16px;
 }
 
-.PreloaderScreen__text {
+.PreloaderScene__text {
   width: 170px;
   margin-top: 44px;
   color: #00f0ff;

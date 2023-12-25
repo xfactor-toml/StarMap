@@ -1,12 +1,12 @@
 <template>
-  <component :is="screensStore.current.screen.getComponent()" />
+  <component :is="scenesStore.current.scene.getComponent()" />
   <div class="version">{{ version }}</div>
 </template>
 
 <script lang="ts">
 import { mapStores } from 'pinia';
 import { debounce } from 'debounce';
-import { useScreensStore, useSettingsStore, useUiStore } from '@/stores';
+import { useScenesStore, useSettingsStore, useUiStore } from '@/stores';
 import { ClientEventsService } from '@/services';
 
 export default {
@@ -14,7 +14,7 @@ export default {
   data: () => ({
     version: 'v0.3.3'
   }),
-  computed: mapStores(useScreensStore, useSettingsStore, useUiStore),
+  computed: mapStores(useScenesStore, useSettingsStore, useUiStore),
   created() {
     // Game Events
     window.addEventListener('gameEvent', ClientEventsService.handleEvent);

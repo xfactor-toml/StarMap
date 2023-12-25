@@ -227,7 +227,7 @@ export default {
   methods: {
     getIntersection() {
       const { innerWidth, innerHeight } = window;
-      const { width, height } = this.$refs.tooltip.getBoundingClientRect();
+      const { width, height } = (this.$refs.tooltip as HTMLElement).getBoundingClientRect();
 
       const isMobileResolution = innerWidth <= WINDOW_MOBILE_BREAKPOINT;
       const safeZone = isMobileResolution ? WINDOW_MOBILE_SAFE_ZONE : WINDOW_SAFE_ZONE;

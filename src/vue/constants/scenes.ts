@@ -1,39 +1,38 @@
-import { GuiScreen, GuiScreenName } from '@/types';
-import { GalaxyScreen, PreloaderScreen, WelcomeScreen } from '@/screens';
-import { PhantomMode, RealMode } from '@/modes';
+import { GuiScene, GuiSceneName } from '@/types';
+import { GalaxyScene, StartScene } from '@/scenes';
+import { PhantomMode, PreloaderMode, RealMode, WelcomeMode } from '@/modes';
 
-export const SCREENS: { [K in GuiScreenName]: GuiScreen<K> } = {
-  preloader: {
-    name: 'preloader',
-    getComponent: () => PreloaderScreen,
-  },
-  welcome: {
-    name: 'welcome',
-    getComponent: () => WelcomeScreen,
+export const SCENES: Record<GuiSceneName, GuiScene> = {
+  start: {
+    name: 'start',
+    getComponent: () => StartScene,
+    modes: [
+      {
+        name: 'preloader',
+        getComponent: () => PreloaderMode,
+      },
+      {
+        name: 'welcome',
+        getComponent: () => WelcomeMode,
+      },
+    ],
+    initialMode: 'preloader'
   },
   galaxy: {
     name: 'galaxy',
-    getComponent: () => GalaxyScreen,
+    getComponent: () => GalaxyScene,
     modes: [
       {
         name: 'phantom',
         label: 'Phantom',
         getComponent: () => PhantomMode,
-        views: [
-          {
-            name: 'galaxy',
-            label: 'Galaxy',
-            enabled: true,
-            clickable: true
-          }
-        ],
         enabled: true,
       },
       {
         name: 'real',
         label: 'Real',
         getComponent: () => RealMode,
-        views: [
+        clientScenes: [
           {
             name: 'galaxy',
             label: 'Galaxy',
@@ -59,10 +58,9 @@ export const SCREENS: { [K in GuiScreenName]: GuiScreen<K> } = {
         name: 'season',
         label: 'Season',
         getComponent: () => null,
-        views: [],
         enabled: false
       }
     ],
-    defaultMode: 'real'
+    initialMode: 'real'
   },
 };

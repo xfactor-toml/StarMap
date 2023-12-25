@@ -1,11 +1,11 @@
-import { useBattleStore, useScreensStore, useSettingsStore, useStarsStore, useUiStore } from '@/stores';
+import { useBattleStore, useScenesStore, useSettingsStore, useStarsStore, useUiStore } from '@/stores';
 import { ClientEvent } from '@/types';
 import { Settings } from '~/game/data/Settings';
 
 export class ClientEventsService {
   static async handleEvent({ detail: clientEvent }: Event & { detail: ClientEvent }) {
     const battleStore = useBattleStore();
-    const screensStore = useScreensStore();
+    const scenesStore = useScenesStore();
     const settingsStore = useSettingsStore();
     const starsStore = useStarsStore();
     const uiStore = useUiStore();
@@ -18,7 +18,7 @@ export class ClientEventsService {
         if (!Settings.isDebugMode) {
           await starsStore.fetchStars();
         }
-        screensStore.setScreen('welcome');
+        scenesStore.setSceneMode('welcome');
         break;
 
       case 'GAME_CREATED':
@@ -48,19 +48,19 @@ export class ClientEventsService {
         break;
 
       case 'SHOW_REAL_MODE':
-        screensStore.setScreenMode('real');
+        scenesStore.setSceneMode('real');
         break;
 
       case 'SHOW_PHANTOM_MODE':
-        screensStore.setScreenMode('phantom');
+        scenesStore.setSceneMode('phantom');
         break;
 
       case 'EVENT_STAR_MODE':
-        screensStore.setClientView('star');
+        scenesStore.setClientScene('star');
         break;
 
       case 'EVENT_GALAXY_MODE':
-        screensStore.setClientView('galaxy');
+        scenesStore.setClientScene('galaxy');
         break;
 
       // case 'GAME_SEARCHING_START':

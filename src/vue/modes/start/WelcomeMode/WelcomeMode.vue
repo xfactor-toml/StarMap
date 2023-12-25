@@ -1,8 +1,8 @@
 <template>
-  <div class="WelcomeScreen">
+  <div class="WelcomeMode">
     <template v-if="showAgreement">
-      <div class="WelcomeScreen__logo-text" />
-      <p class="WelcomeScreen__text">
+      <div class="WelcomeScene__logo-text" />
+      <p class="WelcomeScene__text">
         Welcome to the open beta test of the VORPAL Gameverse: stage I.<br>
         To create stars in the universe, you will need a
         <a target="_blank" href="https://metamask.io/download">MetaMask wallet</a> and
@@ -13,34 +13,34 @@
         <a target="_blank" href="https://discord.gg/epUsWEPaDA">discord</a>.
       </p>
       <button
-        class="WelcomeScreen__button active"
+        class="WelcomeScene__button active"
         @mouseenter="$client.onHover()"
         @click="handleAgreementRunClick"
       >
         Run
       </button>
-      <label class="WelcomeScreen__checkbox" @mouseenter="$client.onHover()">
+      <label class="WelcomeScene__checkbox" @mouseenter="$client.onHover()">
         <input
           type="checkbox"
-          class="WelcomeScreen__checkbox-field"
+          class="WelcomeScene__checkbox-field"
           :value="settingsStore.agreement.accepted"
           @change="handleAgreementClick"
         />
-        <span class="WelcomeScreen__checkbox-label">don’t show me again</span>
+        <span class="WelcomeScene__checkbox-label">don’t show me again</span>
       </label>
     </template>
     <template v-else>
-      <div class="WelcomeScreen__logo" />
-      <div class="WelcomeScreen__logo-text" />
+      <div class="WelcomeScene__logo" />
+      <div class="WelcomeScene__logo-text" />
       <button
-        class="WelcomeScreen__button active"
+        class="WelcomeScene__button active"
         @mouseenter="$client.onHover()"
         @click="handleRunClick(true)"
       >
         Run fullscreen
       </button>
       <button
-        class="WelcomeScreen__button"
+        class="WelcomeScene__button"
         @mouseenter="$client.onHover()"
         @click="handleRunClick(false)"
       >
@@ -51,11 +51,11 @@
 </template>
 
 <script lang="ts">
-import { useScreensStore, useSettingsStore, useStarsStore } from '@/stores';
+import { useScenesStore, useSettingsStore, useStarsStore } from '@/stores';
 import { mapStores } from 'pinia';
 
 export default {
-  name: 'WelcomeScreen',
+  name: 'WelcomeMode',
   data() {
     return {
       showAgreement: false,
@@ -63,18 +63,18 @@ export default {
     };
   },
   computed: {
-    ...mapStores(useScreensStore, useSettingsStore, useStarsStore)
+    ...mapStores(useScenesStore, useSettingsStore, useStarsStore)
   },
   methods: {
     handleRunClick(fullscreen = false) {
       if (this.settingsStore.agreement.accepted) {
         this.$client.onClick();
         this.$client.run(fullscreen, this.starsStore.stars);
-        this.screensStore.setScreen('galaxy');
+        this.scenesStore.setScene('galaxy');
       } else {
         this.preservedFullscreenRun = fullscreen;
         this.showAgreement = true;
-        this.$client.playInitScreenSfx();
+        this.$client.playInitSceneSfx();
       }
     },
     handleAgreementClick() {
@@ -87,10 +87,10 @@ export default {
     handleAgreementRunClick() {
       this.$client.onClick();
       this.$client.run(this.preservedFullscreenRun, this.starsStore.stars);
-      this.screensStore.setScreen('galaxy');
+      this.scenesStore.setScene('galaxy');
     },
   },
 };
 </script>
 
-<style scoped src="./WelcomeScreen.css"></style>
+<style scoped src="./WelcomeMode.css"></style>

@@ -2,6 +2,7 @@ import { Star } from '@/models';
 import { markRaw } from 'vue';
 import { FrontEvents } from '~/game/events/FrontEvents';
 import { debounce } from "typescript-debounce-decorator";
+import { logger } from '@/services/logger';
 
 export class ClientService {
   constructor(private dispatcher: typeof FrontEvents) {}
@@ -13,7 +14,7 @@ export class ClientService {
     );
   }
 
-  playInitScreenSfx() {
+  playInitSceneSfx() {
     this.dispatcher.playInitScreenSfx.dispatch();
   }
 
@@ -42,6 +43,7 @@ export class ClientService {
   }
 
   updateStarLevelFilter(levels: number[]) {
+    logger.log({ levels });
     this.dispatcher.starLevelFilterChanged.dispatch(levels);
   }
 

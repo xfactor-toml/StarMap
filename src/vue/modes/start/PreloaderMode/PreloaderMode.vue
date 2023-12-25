@@ -1,7 +1,7 @@
 <template>
-  <div class="PreloaderScreen">
-    <div class="PreloaderScreen__logo" />
-    <div class="PreloaderScreen__circles">
+  <div class="PreloaderMode">
+    <div class="PreloaderScene__logo" />
+    <div class="PreloaderScene__circles">
       <svg width="226" height="226" viewBox="0 0 246 274" fill="none">
         <circle cx="123" cy="148" r="122" stroke="#00F0FF" stroke-width="2" />
         <circle cx="123" cy="148" r="49" fill="black" stroke="#00F0FF" stroke-width="2" />
@@ -54,14 +54,14 @@
         </defs>
       </svg>
     </div>
-    <div class="PreloaderScreen__text dots">Interface loading</div>
+    <div class="PreloaderScene__text dots">Interface loading</div>
   </div>
 </template>
 
 <script lang="ts">
 export default {
-  name: 'PreloaderScreen'
+  name: 'PreloaderMode'
 };
 </script>
 
-<style scoped src="./PreloaderScreen.css"></style>
+<style scoped src="./PreloaderMode.css"></style>
