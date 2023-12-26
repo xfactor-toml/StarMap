@@ -1,5 +1,5 @@
 import Web3 from "web3";
-import { contracts, env, reserveRpcs } from "../config";
+import { contracts, env, plasmaDecimals, reserveRpcs } from "../config";
 import { account } from "../types";
 import { ERC20ABI } from "../ABI";
 import { IsTrueNetwork, NetworkAuth } from "./auth";
@@ -12,60 +12,62 @@ const reader = new Web3()
 reader.setProvider(new Web3.providers.HttpProvider(reserveRpcs[1]))
 
 async function MintPlasma (account : string, amount : number) : Promise<number> {
-
+    return new Promise(async (resolve, reject) => {
         if (!env) {
-            return 0
+            reject("Wallet not found")
         }
 
         if (!account) {
-            return 0
+            reject("Account not specified")
         }
-
         const GasPrice = await web3.eth.getGasPrice()
-        
         try {
             const contract = new web3.eth.Contract(ERC20ABI, plasma)
             await contract.methods.Mint(String(BigInt(amount * 1e18)), account).send({
                 from: account,
                 gasPrice: Number(GasPrice) < 1600000000 ? '1600000000' : GasPrice
             })
-            return await GetBalance(account)
+            resolve(await GetBalance(account))
 
         } catch (e : any) {
-            alert(e.message)
-            return 0
+            reject(e.message)
         }
-    }
+    })
+  }
 
 async function GetAllowance ( owner : account, spender : account = contracts.starNFT) : Promise<number> {
-    if (!owner || !spender) {
-        return 0
-    }
+    return new Promise(async (resolve, reject) => {
+        if (!owner || !spender) {
+            reject("Wrong entry")
+        }
 
-    const w3 = new reader.eth.Contract(ERC20ABI, plasma)
-    const allowance = await w3.methods.allowance(owner, spender).call()
-
-    return Number(allowance) / 1e18
+        const w3 = new reader.eth.Contract(ERC20ABI, plasma)
+        const allowance = await w3.methods.allowance(owner, spender).call()
+    
+        resolve(Number(allowance) / (10 ** plasmaDecimals))
+    })
 
 }
 
 async function GetBalance ( owner : account ) : Promise<number> {
-    if (!owner) {
-        return 0
-    }
+    return new Promise(async (resolve, reject) => {
+        if (!owner) {
+            reject("Owner not specified")
+        }
 
     const w3 = new reader.eth.Contract(ERC20ABI, plasma)
     const balance = await w3.methods.balanceOf(owner).call()
-    return Number(balance) / 1e18
+    resolve(Number(balance) / (10 ** plasmaDecimals))
+    })
 }
 
 async function ApprovePlasma (owner: account, amount: number, spender : account = contracts.starNFT) : Promise<number> {
-    if (!owner || !IsTrueNetwork ()) owner = await NetworkAuth ()
-
+    return new Promise(async (resolve, reject) => {
+        if (!owner || !IsTrueNetwork ()) owner = await NetworkAuth ();
+        
     if (!owner || !env || !spender || !IsTrueNetwork()) {
-        return 0
+        reject("User auth failed")
     }
-
     try {
 
         const w3 = new web3.eth.Contract(ERC20ABI, plasma)
@@ -79,10 +81,12 @@ async function ApprovePlasma (owner: account, amount: number, spender : account 
           })
 
     } catch (e) {
-        return GetAllowance(owner, spender)
+        reject("Approve transaction failed")
     }
 
-    return GetAllowance(owner, spender)
+    resolve(await GetAllowance(owner, spender));
+    })
+
 }
 
 export {
