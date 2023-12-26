@@ -3,6 +3,7 @@ import { markRaw } from 'vue';
 import { FrontEvents } from '~/game/events/FrontEvents';
 import { debounce } from "typescript-debounce-decorator";
 import { logger } from '@/services/logger';
+import { useBattleStore, useScenesStore } from '@/stores';
 
 export class ClientService {
   constructor(private dispatcher: typeof FrontEvents) {}
@@ -94,6 +95,19 @@ export class ClientService {
 
   onGameStart() {
     logger.log('start game')
+    useScenesStore().setScene('battle')
+    useBattleStore().setMembers([
+      {
+        address: '0xA089D195D994e8145dda68993A91C4a6D1704538',
+        name: 'Kepler',
+        race: 'Humans',
+      },
+      {
+        address: '0xA089D195D994e8145dda68993A91C4a6D1704538',
+        name: 'Anthares',
+        race: 'Insects',
+      },
+    ])
   }
   
   onSearchingClick() {

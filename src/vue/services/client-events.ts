@@ -64,15 +64,19 @@ export class ClientEventsService {
         break;
 
       // case 'GAME_SEARCHING_START':
-      //   battleStore.setState('searching');
+      //   battleStore.setRunningState('searching');
       //   break;
 
       // case 'GAME_SEARCHING_END':
-      //   battleStore.setState('initial');
+      //   battleStore.setRunningState('initial');
       //   break;
 
       // case 'GAME_SEARCHING_ERROR':
-      //   battleStore.setState('initial');
+      //   battleStore.setRunningState('initial');
+      //   break;
+
+      // case 'GAME_BATTLE_START':
+      //   scenesStore.setScene('battle');
       //   break;
     }
   }

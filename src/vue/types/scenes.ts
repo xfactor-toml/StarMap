@@ -45,7 +45,11 @@ type GalaxyScene = Scene<'galaxy', [
   Mode<'season'>
 ]>
 
-export type GuiScene = StartScene | GalaxyScene
+type BattleScene = Scene<'battle', [
+  Mode<'prepare'>
+]>
+
+export type GuiScene = StartScene | GalaxyScene | BattleScene
 
 export type GuiSceneName = GuiScene['name']
 

@@ -1,8 +1,9 @@
-import { GuiScene, GuiSceneName } from '@/types';
-import { GalaxyScene, StartScene } from '@/scenes';
+import { GuiScene } from '@/types';
+import { BattleScene, GalaxyScene, StartScene } from '@/scenes';
 import { PhantomMode, PreloaderMode, RealMode, WelcomeMode } from '@/modes';
+import { PrepareMode } from '@/modes/battle';
 
-export const SCENES: Record<GuiSceneName, GuiScene> = {
+export const SCENES: Record<GuiScene['name'], GuiScene> = {
   start: {
     name: 'start',
     getComponent: () => StartScene,
@@ -62,5 +63,16 @@ export const SCENES: Record<GuiSceneName, GuiScene> = {
       }
     ],
     initialMode: 'real'
+  },
+  battle: {
+    name: 'battle',
+    getComponent: () => BattleScene,
+    modes: [
+      {
+        name: 'prepare',
+        getComponent: () => PrepareMode,
+      },
+    ],
+    initialMode: 'prepare'
   },
 };

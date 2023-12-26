@@ -94,3 +94,8 @@ export type ClientEvent =
   | PhantomStarPreviewEvent
   | GalaxyModeEvent
   | StarModeEvent;
+
+export type GuiLevel = {
+  value: number;
+  label: string;
+};

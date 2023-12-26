@@ -9,11 +9,11 @@
       </div>
       <div class="GalaxyScene__headerColumn is-center">
         <StartGameButton
-          v-if="battleStore.state === 'initial'"
+          v-if="battleStore.runningState === 'initial'"
           @click="$client.onGameStart"
         />
         <SearchingIndicator
-          v-if="battleStore.state === 'searching'"
+          v-if="battleStore.runningState === 'searching'"
           @click="$client.onSearchingClick"
         />
       </div>

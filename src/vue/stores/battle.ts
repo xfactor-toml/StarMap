@@ -1,17 +1,25 @@
 import { defineStore } from 'pinia';
-import { BattleState } from '@/types';
+import { BattleMember, BattleRunningState } from '@/types';
 
 import { ref } from 'vue';
 
 export const useBattleStore = defineStore('battle', () => {
-  const state = ref<BattleState>('searching')
+  const runningState = ref<BattleRunningState>('initial')
 
-  const setState = (nextState: BattleState) => {
-    state.value = nextState;
+  const members = ref<[BattleMember, BattleMember] | null>(null)
+
+  const setRunningState = (nextState: BattleRunningState) => {
+    runningState.value = nextState;
+  }
+
+  const setMembers = (value: [BattleMember, BattleMember]) => {
+    members.value = value;
   }
 
   return {
-    state,
-    setState,
+    runningState,
+    members,
+    setRunningState,
+    setMembers
   }
 });
