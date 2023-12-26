@@ -1,11 +1,12 @@
-import { GuiScene } from '@/types';
+import { GuiScenes, SceneName } from '@/types';
 import { BattleScene, GalaxyScene, StartScene } from '@/scenes';
 import { PhantomMode, PreloaderMode, RealMode, WelcomeMode } from '@/modes';
-import { PrepareMode } from '@/modes/battle';
+import { BattleInitMode, BattleProcessMode } from '@/modes';
+import { wait } from '@/utils';
 
-export const SCENES: Record<GuiScene['name'], GuiScene> = {
+export const SCENES: GuiScenes = {
   start: {
-    name: 'start',
+    name: SceneName.Start,
     getComponent: () => StartScene,
     modes: [
       {
@@ -20,7 +21,7 @@ export const SCENES: Record<GuiScene['name'], GuiScene> = {
     initialMode: 'preloader'
   },
   galaxy: {
-    name: 'galaxy',
+    name: SceneName.Galaxy,
     getComponent: () => GalaxyScene,
     modes: [
       {
@@ -65,14 +66,19 @@ export const SCENES: Record<GuiScene['name'], GuiScene> = {
     initialMode: 'real'
   },
   battle: {
-    name: 'battle',
+    name: SceneName.Battle,
     getComponent: () => BattleScene,
     modes: [
       {
-        name: 'prepare',
-        getComponent: () => PrepareMode,
+        name: 'init',
+        getComponent: () => BattleInitMode,
+        beforeLeave: () => wait(),
+      },
+      {
+        name: 'process',
+        getComponent: () => BattleProcessMode,
       },
     ],
-    initialMode: 'prepare'
+    initialMode: 'init'
   },
 };

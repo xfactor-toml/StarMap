@@ -15,6 +15,7 @@ type Mode<
   label?: string;
   clientScenes?: K;
   enabled?: boolean;
+  beforeLeave?: () => Promise<void>
   getComponent: () => DefineComponent<{}, {}, any> | null
 };
 
@@ -28,35 +29,40 @@ type Scene<
   getComponent: () => DefineComponent<{}, {}, any>
 };
 
-type StartScene = Scene<'start', [
-  Mode<'preloader'>,
-  Mode<'welcome'>
-]>
+export enum SceneName {
+  Start = 'start',
+  Galaxy = 'galaxy',
+  Battle = 'battle',
+}
 
-type GalaxyScene = Scene<'galaxy', [
-  Mode<'phantom', [
-    ClientScene<'galaxy'>
+export type GuiScenes = {
+  [SceneName.Start]: Scene<SceneName.Start, [
+    Mode<'preloader'>,
+    Mode<'welcome'>
+  ]>
+  [SceneName.Galaxy]: Scene<SceneName.Galaxy, [
+    Mode<'phantom', [
+      ClientScene<'galaxy'>
+    ]>,
+    Mode<'real', [
+      ClientScene<'galaxy'>,
+      ClientScene<'star'>,
+      ClientScene<'planet'>
+    ]>,
+    Mode<'season'>
   ]>,
-  Mode<'real', [
-    ClientScene<'galaxy'>,
-    ClientScene<'star'>,
-    ClientScene<'planet'>
-  ]>,
-  Mode<'season'>
-]>
+  [SceneName.Battle]: Scene<SceneName.Battle, [
+    Mode<'init'>,
+    Mode<'process'>
+  ]>
+}
 
-type BattleScene = Scene<'battle', [
-  Mode<'prepare'>
-]>
+export type GuiScene = GuiScenes[keyof GuiScenes]
 
-export type GuiScene = StartScene | GalaxyScene | BattleScene
+export type GuiMode<T extends SceneName = SceneName> = GuiScenes[T]['modes'][number]
 
-export type GuiSceneName = GuiScene['name']
+export type GuiModeName<T extends SceneName = SceneName> = GuiMode<T>['name']
 
-export type GuiMode = GuiScene['modes'][number]
+export type GuiClientSceneView<T extends SceneName = SceneName> = GuiMode<T>['clientScenes'][number]
 
-export type GuiModeName = GuiMode['name']
-
-export type GuiClientSceneView = GuiMode['clientScenes'][number]
-
-export type GuiClientSceneName = GuiClientSceneView['name']
+export type GuiClientSceneName<T extends SceneName = SceneName> = GuiClientSceneView<T>['name']

@@ -4,6 +4,8 @@ import { FrontEvents } from '~/game/events/FrontEvents';
 import { debounce } from "typescript-debounce-decorator";
 import { logger } from '@/services/logger';
 import { useBattleStore, useScenesStore } from '@/stores';
+import { SceneName } from '@/types';
+import { wait } from '@/utils';
 
 export class ClientService {
   constructor(private dispatcher: typeof FrontEvents) {}
@@ -93,10 +95,20 @@ export class ClientService {
     this.dispatcher.onStarUpdated.dispatch(star.toRaw());
   }
 
-  onGameStart() {
+  async onGameStart() {
     logger.log('start game')
-    useScenesStore().setScene('battle')
-    useBattleStore().setMembers([
+
+    // MOCK START
+    const scenes = useScenesStore()
+    const battle = useBattleStore()
+
+    battle.setRunningState('searching');
+    
+    await wait(2000)
+    
+    scenes.setScene(SceneName.Battle)
+    battle.setRunningState('initial');
+    battle.setMembers([
       {
         address: '0xA089D195D994e8145dda68993A91C4a6D1704538',
         name: 'Kepler',
@@ -108,6 +120,13 @@ export class ClientService {
         race: 'Insects',
       },
     ])
+
+    await wait(2000)
+
+    scenes.setScene(SceneName.Battle, {
+      mode: 'process'
+    })
+    // MOCK END
   }
   
   onSearchingClick() {

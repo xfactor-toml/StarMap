@@ -8,6 +8,8 @@ import { mapStores } from 'pinia';
 import { debounce } from 'debounce';
 import { useScenesStore, useSettingsStore, useUiStore } from '@/stores';
 import { ClientEventsService } from '@/services';
+import { SCENES } from '@/settings';
+import { SceneName } from '@/types';
 
 export default {
   name: 'App',
@@ -16,6 +18,8 @@ export default {
   }),
   computed: mapStores(useScenesStore, useSettingsStore, useUiStore),
   created() {
+    this.scenesStore.setScenes(SCENES, SceneName.Start)
+
     // Game Events
     window.addEventListener('gameEvent', ClientEventsService.handleEvent);
 

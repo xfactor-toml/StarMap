@@ -1,5 +1,5 @@
 import { useBattleStore, useScenesStore, useSettingsStore, useStarsStore, useUiStore } from '@/stores';
-import { ClientEvent } from '@/types';
+import { ClientEvent, SceneName } from '@/types';
 import { Settings } from '~/game/data/Settings';
 
 export class ClientEventsService {
@@ -75,8 +75,12 @@ export class ClientEventsService {
       //   battleStore.setRunningState('initial');
       //   break;
 
+      // case 'GAME_BATTLE_PREPARE':
+      //   scenesStore.setScene(SceneName.Battle);
+      //   break;
+
       // case 'GAME_BATTLE_START':
-      //   scenesStore.setScene('battle');
+      //   scenesStore.setSceneMode('process');
       //   break;
     }
   }

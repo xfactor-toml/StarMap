@@ -1,3 +1,4 @@
+import { getShortAddress } from '@/utils';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 
@@ -13,7 +14,7 @@ export const useWalletStore = defineStore('wallet', () => {
   const installed = ref(false)
 
   const shortAddress = computed(() => {
-    return `${account.value.slice(0, 2)}...${account.value.slice(-4)}`
+    return getShortAddress(account.value)
   })
 
   const setState = (state: WalletStoreState) => {

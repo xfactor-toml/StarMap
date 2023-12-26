@@ -27,7 +27,7 @@ export default {
   props: {
     updateInterval: {
       type: Number,
-      default: 200
+      default: 143 // second / dots amount
     }
   },
   data: () => ({

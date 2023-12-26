@@ -52,6 +52,7 @@
 
 <script lang="ts">
 import { useScenesStore, useSettingsStore, useStarsStore } from '@/stores';
+import { SceneName } from '@/types';
 import { mapStores } from 'pinia';
 
 export default {
@@ -70,7 +71,7 @@ export default {
       if (this.settingsStore.agreement.accepted) {
         this.$client.onClick();
         this.$client.run(fullscreen, this.starsStore.stars);
-        this.scenesStore.setScene('galaxy');
+        this.scenesStore.setScene(SceneName.Galaxy);
       } else {
         this.preservedFullscreenRun = fullscreen;
         this.showAgreement = true;
@@ -87,7 +88,7 @@ export default {
     handleAgreementRunClick() {
       this.$client.onClick();
       this.$client.run(this.preservedFullscreenRun, this.starsStore.stars);
-      this.scenesStore.setScene('galaxy');
+      this.scenesStore.setScene(SceneName.Galaxy);
     },
   },
 };
