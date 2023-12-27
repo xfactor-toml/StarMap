@@ -17,47 +17,56 @@ export function IsTrueNetwork(): boolean {
 }
 
 async function NetworkAuth(): Promise<account> {
-    if (!env) {
-        // Checking mobile device
-        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-            document.location.href = mobileUrl
-        }
-        return null
-    }
-
-    try {
-        const accs = await env.request({ method: "eth_requestAccounts" }, connect)
-        const network = env.chainId
-
-        if (network !== networkParams.networkHexID) {
-
-            await env.request({
-                method: 'wallet_addEthereumChain',
-                params: [{
-                    chainId: networkParams.networkHexID,
-                    chainName: networkParams.chainName,
-                    nativeCurrency: {
-                        name: networkParams.ethSymbol,
-                        symbol: networkParams.ethSymbol,
-                        decimals: 18
-                    },
-                    rpcUrls: [networkParams.rpcUrl] // , reserveRpcs[0], reserveRpcs[1]
-                }]
-            })
+    return new Promise(async (resolve, reject) => {
+        if (!env) {
+            // Checking mobile device
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                document.location.href = mobileUrl;
+                walletAddress = '';
+                resolve("");
+            } else {
+                reject("Wallet not found");
+            }
         }
 
-        if (!IsTrueNetwork()) {
-            walletAddress = '';
-            return walletAddress;
+        try {
+            const accs = await env.request({ method: "eth_requestAccounts" }, connect)
+            const network = env.chainId
+    
+            if (network !== networkParams.networkHexID) {
+    
+                await env.request({
+                    method: 'wallet_addEthereumChain',
+                    params: [{
+                        chainId: networkParams.networkHexID,
+                        chainName: networkParams.chainName,
+                        nativeCurrency: {
+                            name: networkParams.ethSymbol,
+                            symbol: networkParams.ethSymbol,
+                            decimals: 18
+                        },
+                        rpcUrls: [networkParams.rpcUrl] // , reserveRpcs[0], reserveRpcs[1]
+                    }]
+                })
+            }
+    
+            if (!IsTrueNetwork()) {
+                walletAddress = '';
+                reject("User had refused to connect with using network");
+            }
+
+            if (!accs[0]) {
+                walletAddress = '';
+                reject("User wallet address not found");
+            }
+            
+            walletAddress = accs[0];
+            resolve(walletAddress);
+    
+        } catch (e) {
+            reject(e.message);
         }
-
-        walletAddress = accs[0] || "";
-        return walletAddress;
-
-    } catch (e) {
-        walletAddress = '';
-        return walletAddress;
-    }
+    })
 
 }
 
