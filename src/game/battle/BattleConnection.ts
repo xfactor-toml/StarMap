@@ -11,6 +11,7 @@ export enum PackTitle {
     startSearchGame = 'startSearchGame', // request
     stopSearchGame = 'stopSearchGame', // request
     gameSearching = 'gameSearching', // status, update, info
+    gameStart = 'gameStart',
     // for game
     objectCreate = 'objectCreate',
     objectUpdate = 'objectUpdate',
@@ -18,20 +19,9 @@ export enum PackTitle {
     attack = 'attack'
 }
 
-export enum ObjectClass {
-    star = 'star',
-    planet = 'planet',
-    ship = 'ship',
-    battleship = 'battleship',
-    shell = 'shell'
-}
+export type ObjectType = 'Star' | 'Planet' | 'FighterShip' | 'BattleShip' | 'Homing';
 
 export class BattleConnection extends MyEventDispatcher {
-    // wallet
-    // private _walletConnected = false;
-    // private _walletSubscribed = false;
-    // private _walletAccount: string;
-    // socket
     private _socket: Socket;
 
     constructor() {
@@ -81,6 +71,21 @@ export class BattleConnection extends MyEventDispatcher {
             this.logDebug(`gameSearching:`, aData);
             this.emit(PackTitle.gameSearching, aData);
         });
+
+        this._socket.on(PackTitle.gameStart, (aData: {
+            cmd?: string,
+            timer: number,
+            playerPosition: 'top' | 'bot'
+        }) => {
+            this.logDebug(`gameStart:`, aData);
+            this.emit(PackTitle.gameStart, aData);
+        });
+
+        this._socket.on(PackTitle.objectCreate, (aData) => {
+            this.logDebug(`objectCreate:`, aData);
+            this.emit(PackTitle.objectCreate, aData);
+        });
+
     }
 
     private onSignRecv(aData: {

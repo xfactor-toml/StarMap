@@ -67,7 +67,7 @@ export class GameEngine extends MyBasicClass {
         });
         this._battleScene.hide();
         this._battleScene.on(BattleSceneEvent.onGameSearchStart, this.onBattleSearchStart, this);
-        this._battleScene.on(BattleSceneEvent.onEnterGame, this.onBattleEnterGame, this);
+        this._battleScene.on(BattleSceneEvent.onGameStart, this.onBattleGameStart, this);
         this._battleScene.on(BattleSceneEvent.onWithdraw, this.onBattleWithdrawGame, this);
         this._battleScene.on(BattleSceneEvent.onGameComplete, this.onBattleComplete, this);
     }
@@ -77,7 +77,7 @@ export class GameEngine extends MyBasicClass {
         this._galaxyScene.hide();
     }
 
-    private onBattleEnterGame() {
+    private onBattleGameStart() {
         this.logDebug(`onBattleEnterGame...`);
         this._galaxyScene.hide();
         this._battleScene.show();

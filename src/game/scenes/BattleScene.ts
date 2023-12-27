@@ -5,11 +5,11 @@ import { IUpdatable } from '../interfaces/IUpdatable';
 import { BattleView } from '../battle/BattleView';
 import { FrontEvents } from '../events/FrontEvents';
 import { GUI } from 'dat.gui';
-import { BattleConnection, PackTitle } from '../battle/BattleConnection';
+import { BattleConnection, ObjectType, PackTitle } from '../battle/BattleConnection';
 
 export enum BattleSceneEvent {
     onGameSearchStart = 'onGameSearchStart',
-    onEnterGame = 'onEnterGame',
+    onGameStart = 'onEnterGame',
     onWithdraw = 'onWithdraw',
     onGameComplete = 'onGameComplete'
 }
@@ -33,6 +33,10 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
         this._connection = new BattleConnection();
         // this._connection.on(BattleConnectionEvent.message, this.onBattleSocketMessage, this);
         this._connection.on(PackTitle.gameSearching, this.onGameSearchPack, this);
+        this._connection.on(PackTitle.gameStart, this.onGameStartPack, this);
+        this._connection.on(PackTitle.objectCreate, (aData) => {
+            this._view.onObjectCreatePack(aData);
+        }, this);
 
     }
 
@@ -153,6 +157,23 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
         
             default:
                 this.logDebug(`onGameSearchPack(): unknown cmd`, aData);
+                break;
+        }
+    }
+
+    onGameStartPack(aData: {
+        cmd?: 'start',
+        timer: number,
+        playerPosition: 'top' | 'bot'
+    }) {
+        switch (aData.cmd) {
+            case 'start':
+                this._view.onGameStartPacket(aData);
+                this.emit(BattleSceneEvent.onGameStart);
+                break;
+
+            default:
+                this.logDebug(`onGameStartPack(): unknown cmd`, aData);
                 break;
         }
     }
