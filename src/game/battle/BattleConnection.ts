@@ -3,6 +3,7 @@ import { MyEventDispatcher } from "../basics/MyEventDispatcher";
 import { newGameAuth } from "~/blockchain/functions/gameplay";
 import { Socket, io } from "socket.io-client";
 import { Settings } from "../data/Settings";
+import { getWalletAddress, isWalletConnected } from "~/blockchain/functions/auth";
 
 export enum PackTitle {
     // for lobby
@@ -27,9 +28,9 @@ export enum ObjectClass {
 
 export class BattleConnection extends MyEventDispatcher {
     // wallet
-    private _walletConnected = false;
-    private _walletSubscribed = false;
-    private _walletAccount: string;
+    // private _walletConnected = false;
+    // private _walletSubscribed = false;
+    // private _walletAccount: string;
     // socket
     private _socket: Socket;
 
@@ -56,23 +57,8 @@ export class BattleConnection extends MyEventDispatcher {
         this.initListeners();
     }
 
-    private updateState(auth: string | null) {
-        if (!auth) return false;
-        this._walletConnected = true;
-        this._walletAccount = auth;
-        return true;
-    }
-
-    private async walletSubscribe() {
-        this._walletSubscribed = true;
-        return await SubscribeOnAccountChanging();
-    }
-
     private async walletConnect() {
-        if (!this._walletSubscribed) {
-            this.walletSubscribe();
-        }
-        return this.updateState(await NetworkAuth());
+        await NetworkAuth();
     }
 
     private sendPacket(aPackTitle: PackTitle, aData: any) {
@@ -122,12 +108,14 @@ export class BattleConnection extends MyEventDispatcher {
     }
 
     private signProcess1() {
-        if (!this._walletConnected) {
-            this.walletConnect().then((value: boolean) => {
+        if (!isWalletConnected()) {
+            this.walletConnect();
+            if (isWalletConnected()) {
                 this.signProcess2();
-            }).catch((reason: any) => {
-                alert(`${reason}`);
-            });
+            }
+            else {
+                alert(`wallet not connected!`);
+            }
         }
         else {
             this.signProcess2();
@@ -135,7 +123,7 @@ export class BattleConnection extends MyEventDispatcher {
     }
     
     private signProcess2() {
-        newGameAuth(this._walletAccount).then(aSignature => {
+        newGameAuth(getWalletAddress()).then(aSignature => {
             this.logDebug(`wallet auth...`);
             this._socket.emit(PackTitle.sign, aSignature);
         });
@@ -143,10 +131,6 @@ export class BattleConnection extends MyEventDispatcher {
 
     public get connected(): boolean {
         return this._socket.connected;
-    }
-
-    public get walletAccount(): string {
-        return this._walletAccount;
     }
 
     closeConnection() {

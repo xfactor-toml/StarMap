@@ -1,7 +1,15 @@
 import { connect, env, mobileUrl, networkParams, reserveRpcs, walletChangingEventName } from "../config";
 import { account } from "../types";
 
-export let walletAddress = '';
+let walletAddress = '';
+
+export function getWalletAddress(): string {
+    return walletAddress;
+}
+
+export function isWalletConnected(): boolean {
+    return walletAddress != '';
+}
 
 export function IsTrueNetwork(): boolean {
     if (!env) return false
