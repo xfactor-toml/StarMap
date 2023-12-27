@@ -125,6 +125,8 @@ export class BattleConnection extends MyEventDispatcher {
         if (!this._walletConnected) {
             this.walletConnect().then((value: boolean) => {
                 this.signProcess2();
+            }).catch((reason: any) => {
+                alert(`${reason}`);
             });
         }
         else {

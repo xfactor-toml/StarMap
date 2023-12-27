@@ -1,6 +1,8 @@
 import { connect, env, mobileUrl, networkParams, reserveRpcs, walletChangingEventName } from "../config";
 import { account } from "../types";
 
+export let walletAddress = '';
+
 export function IsTrueNetwork(): boolean {
     if (!env) return false
     return env.chainId === networkParams.networkHexID;
@@ -37,13 +39,16 @@ async function NetworkAuth(): Promise<account> {
         }
 
         if (!IsTrueNetwork()) {
-            return ""
+            walletAddress = '';
+            return walletAddress;
         }
 
-        return accs[0] || ""
+        walletAddress = accs[0] || "";
+        return walletAddress;
 
     } catch (e) {
-        return ""
+        walletAddress = '';
+        return walletAddress;
     }
 
 }
