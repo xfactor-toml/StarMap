@@ -44,6 +44,7 @@
         "stats-js": "^1.0.1",
         "textfit": "^2.4.0",
         "three": "^0.144.0",
+        "typescript": "^5.3.3",
         "typescript-debounce-decorator": "^0.0.18",
         "ua-parser-js": "^1.0.33",
         "vue": "^3.2.47",
