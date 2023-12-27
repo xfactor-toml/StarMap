@@ -57,10 +57,6 @@ export class BattleConnection extends MyEventDispatcher {
         this.initListeners();
     }
 
-    private async walletConnect() {
-        await NetworkAuth();
-    }
-
     private sendPacket(aPackTitle: PackTitle, aData: any) {
         this.logDebug(`sendPacket:`, aData);
         this._socket.emit(aPackTitle, aData);
@@ -109,13 +105,11 @@ export class BattleConnection extends MyEventDispatcher {
 
     private signProcess1() {
         if (!isWalletConnected()) {
-            this.walletConnect();
-            if (isWalletConnected()) {
+            NetworkAuth().then((aWallet: string) => {
                 this.signProcess2();
-            }
-            else {
-                alert(`wallet not connected!`);
-            }
+            }).catch((reason) => {
+                alert(reason);
+            });
         }
         else {
             this.signProcess2();
