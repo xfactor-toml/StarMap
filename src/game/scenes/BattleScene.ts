@@ -68,10 +68,17 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
             },
             searchGame: () => {
                 if (!this._connection.connected) {
-                    alert('Wrong Step! You need connect first...');
+                    alert('Socket is disconnected...');
                     return;
                 }
                 FrontEvents.onBattleSearch.dispatch();
+            },
+            searchGameBot: () => {
+                if (!this._connection.connected) {
+                    alert('Socket is disconnected...');
+                    return;
+                }
+                this._connection.sendSearchGameBot();
             },
             withdrawgame: () => {
                 this._connection.sendWithdrawGame();
@@ -88,8 +95,8 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
         }
 
         const f = aFolder;
-        // f.add(DATA, 'connectLocal').name('Connect Local');
-        f.add(DATA, 'searchGame').name('Search Game');
+        f.add(DATA, 'searchGame').name('Play');
+        f.add(DATA, 'searchGameBot').name('Play with Bot');
         f.add(DATA, 'withdrawgame').name('Withdraw');
         f.add(DATA, 'exitgame').name('Exit Game');
         f.add(DATA, 'planetFire').name('Planet Fire');

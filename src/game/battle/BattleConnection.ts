@@ -158,6 +158,12 @@ export class BattleConnection extends MyEventDispatcher {
         this._socket.emit(PackTitle.startSearchGame);
     }
 
+    sendSearchGameBot() {
+        this._socket.emit(PackTitle.startSearchGame, {
+            withBot: true
+        });
+    }
+
     sendWithdrawGame() {
         // this.sendPacket(PackTitle.gameSearching, {
         //     action: "stop"
