@@ -1,5 +1,11 @@
 <template>
-  <component :is="scenesStore.current.scene.getComponent()" />
+  <transition
+    :css="false"
+    @enter="onEnter"
+    @leave="onLeave"
+  >
+    <component :is="scenesStore.current.scene.getComponent()" />
+  </transition>
   <div class="version">{{ version }}</div>
 </template>
 
@@ -10,6 +16,7 @@ import { useScenesStore, useSettingsStore, useUiStore } from '@/stores';
 import { ClientEventsService } from '@/services';
 import { SCENES } from '@/settings';
 import { SceneName } from '@/types';
+import { default as anime } from 'animejs';
 
 export default {
   name: 'App',
@@ -17,6 +24,28 @@ export default {
     version: 'v0.3.3'
   }),
   computed: mapStores(useScenesStore, useSettingsStore, useUiStore),
+  methods: {
+    async onEnter(el, done) {
+      await anime({
+        targets: el,
+        easing: 'easeInOutQuart',
+        duration: 400,
+        opacity: [0, 1],
+      }).finished
+
+      done()
+    },
+    async onLeave(el, done) {
+      await anime({
+        targets: el,
+        easing: 'easeInOutQuart',
+        duration: 400,
+        opacity: [1, 0],
+      }).finished
+
+      done()
+    }
+  },
   created() {
     this.scenesStore.setScenes(SCENES, SceneName.Start)
 

@@ -11,10 +11,19 @@ import {
 } from '@/types';
 import { reactive, ref } from 'vue';
 import { logger } from '@/services';
-import { wait } from '@/utils';
 
 export const useScenesStore = defineStore('scenes', () => {
   const scenes = ref<GuiScenes>()
+
+  const previous = reactive<{
+    scene: GuiScene
+    mode: GuiMode | null
+    clientScene: GuiClientSceneView | null
+  }>({
+    scene: null,
+    mode: null,
+    clientScene: null,
+  })
 
   const current = reactive<{
     scene: GuiScene
@@ -26,27 +35,17 @@ export const useScenesStore = defineStore('scenes', () => {
     clientScene: null,
   })
 
-  const modeActivated = ref(false)
-
   const setClientScene = (clientSceneName: GuiClientSceneName) => {
-    logger.log({ clientSceneName });
+    previous.clientScene = current.clientScene
     current.clientScene = current.mode?.clientScenes?.find(({ name }) => name === clientSceneName) || null
+    logger.log({ clientSceneName });
   }
 
   const setSceneMode = async (modeName: GuiModeName) => {
-    modeActivated.value = false
-    
-    if (current.mode?.beforeLeave) {
-      await current.mode.beforeLeave()
-    }
-    
+    previous.mode = current.mode
     current.mode = [...current.scene.modes].find(({ name }) => name === modeName) || null
     current.clientScene = current.mode?.clientScenes?.find(({ enabled }) => enabled) || null
     logger.log({ modeName });
-
-    await wait(100)
-
-    modeActivated.value = true
   }
   
   const setScene = async <T extends SceneName = SceneName>(sceneName: T, { mode, clientScene }: {
@@ -55,6 +54,12 @@ export const useScenesStore = defineStore('scenes', () => {
   } = {}) => {
     const scene = scenes.value[sceneName]
 
+    if (!scene) {
+      logger.error('Scene not found')
+      return
+    }
+
+    previous.scene = current.scene
     current.scene = scene
     logger.log({ sceneName });
 
@@ -71,8 +76,8 @@ export const useScenesStore = defineStore('scenes', () => {
   }
 
   return {
+    previous,
     current,
-    modeActivated,
     setScenes,
     setClientScene,
     setSceneMode,

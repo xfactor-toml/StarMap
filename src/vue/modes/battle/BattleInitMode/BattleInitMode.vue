@@ -1,10 +1,5 @@
 <template>
-  <div
-    class="BattleInitMode"
-    :class="{
-      'is-activated': scenesStore.modeActivated
-    }"
-  >
+  <div class="BattleInitMode">
     <template v-if="battleStore.members">
       <div class="BattleInitMode__top">
         <BattleInitMember
@@ -29,13 +24,16 @@
 <script lang="ts">
 import { useBattleStore, useScenesStore } from '@/stores';
 import { BattleInitMember } from '@/components';
-import { mapStores } from 'pinia'; 
+import { mapStores } from 'pinia';
 
 export default {
   name: 'BattleInitMode',
   components: {
     BattleInitMember,
   },
+  data: () => ({
+    activated: false
+  }),
   computed: {
     ...mapStores(useBattleStore, useScenesStore),
     member() {
@@ -45,7 +43,7 @@ export default {
         top: member1,
         bottom: member2
       }
-    }
+    },
   },
 };
 </script>

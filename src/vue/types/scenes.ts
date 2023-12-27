@@ -15,7 +15,8 @@ type Mode<
   label?: string;
   clientScenes?: K;
   enabled?: boolean;
-  beforeLeave?: () => Promise<void>
+  onEnter?: (el: HTMLElement) => Promise<void>
+  beforeLeave?: (el: HTMLElement) => Promise<void>
   getComponent: () => DefineComponent<{}, {}, any> | null
 };
 

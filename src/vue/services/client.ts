@@ -102,12 +102,12 @@ export class ClientService {
     const scenes = useScenesStore()
     const battle = useBattleStore()
 
-    battle.setRunningState('searching');
+    // battle.setRunningState('searching');
     
-    await wait(2000)
+    // await wait(2000)
     
+    // battle.setRunningState('initial');
     scenes.setScene(SceneName.Battle)
-    battle.setRunningState('initial');
     battle.setMembers([
       {
         address: '0xA089D195D994e8145dda68993A91C4a6D1704538',

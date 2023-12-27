@@ -16,9 +16,13 @@ export class ClientEventsService {
 
       case 'GAME_LOADED':
         if (!Settings.isDebugMode) {
-          await starsStore.fetchStars();
+          // await starsStore.fetchStars();
         }
-        scenesStore.setSceneMode('welcome');
+
+        scenesStore.setScene(SceneName.Start, {
+          mode: 'welcome'
+        });
+
         break;
 
       case 'GAME_CREATED':

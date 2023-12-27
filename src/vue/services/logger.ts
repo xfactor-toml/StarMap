@@ -13,10 +13,18 @@ class Logger {
     this.enabled = localStorage.getItem('logger') === 'on'
   }
 
-  log(message) {
+  _log(type: 'log' | 'error', message) {
     if (this.enabled) {
-      console.log(`${this.timestamp}:`, message)
+      console[type](`${this.timestamp}:`, message)
     }
+  }
+
+  log(message) {
+    this._log('log', message)
+  }
+  
+  error(message) {
+    this._log('error', message)
   }
 
   get timestamp() {

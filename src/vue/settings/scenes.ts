@@ -2,7 +2,7 @@ import { GuiScenes, SceneName } from '@/types';
 import { BattleScene, GalaxyScene, StartScene } from '@/scenes';
 import { PhantomMode, PreloaderMode, RealMode, WelcomeMode } from '@/modes';
 import { BattleInitMode, BattleProcessMode } from '@/modes';
-import { wait } from '@/utils';
+import { default as anime } from 'animejs';
 
 export const SCENES: GuiScenes = {
   start: {
@@ -54,7 +54,7 @@ export const SCENES: GuiScenes = {
             clickable: false
           }
         ],
-        enabled: true
+        enabled: true,
       },
       {
         name: 'season',
@@ -72,11 +72,64 @@ export const SCENES: GuiScenes = {
       {
         name: 'init',
         getComponent: () => BattleInitMode,
-        beforeLeave: () => wait(),
+        onEnter: async (el) => {
+          const top = el.querySelector('.BattleInitMode__top')
+          const bottom = el.querySelector('.BattleInitMode__bottom')
+          const vs = el.querySelector('.BattleInitMode__vs')
+
+          const timeline = anime.timeline({
+            easing: 'easeInOutQuart',
+            duration: 800,
+            delay: 100,
+          });
+
+          await timeline.add({
+            targets: vs,
+            opacity: [0, 1],
+            scale: [0.5, 1],
+          }).add({
+            targets: top,
+            translateY: ['-100%', 0],
+          }, 0).add({
+            targets: bottom,
+            translateY: ['100%', 0],
+          }, 0).finished
+        },
+        beforeLeave: async (el) => {
+          const top = el.querySelector('.BattleInitMode__top')
+          const bottom = el.querySelector('.BattleInitMode__bottom')
+          const vs = el.querySelector('.BattleInitMode__vs')
+
+          const timeline = anime.timeline({
+            easing: 'easeInCubic',
+            duration: 600,
+          });
+
+          await timeline.add({
+            targets: vs,
+            opacity: [1, 0],
+            scale: [1, 0.5],
+          }).add({
+            targets: top,
+            translateY: [0, '-100%'],
+          }, 0).add({
+            targets: bottom,
+            translateY: [0, '100%'],
+          }, 0).finished
+        },
       },
       {
         name: 'process',
         getComponent: () => BattleProcessMode,
+        onEnter: async (el) => {
+          await anime({
+            targets: el,
+            easing: 'easeInOutQuart',
+            duration: 400,
+            opacity: [0, 1],
+            scale: [0.8, 1],
+          }).finished
+        },
       },
     ],
     initialMode: 'init'

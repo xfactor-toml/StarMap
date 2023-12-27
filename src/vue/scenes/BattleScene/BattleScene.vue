@@ -1,6 +1,14 @@
 <template>
   <div class="BattleScene">
-    <component :is="scenesStore.current.mode.getComponent()" />
+    <transition
+      :css="false"
+      :mode="'out-in'"
+      :appear="true"
+      @enter="onEnter"
+      @leave="onLeave"
+    >
+      <component :is="currentMode.getComponent()"/>
+    </transition>
   </div>
 </template>
 
@@ -10,7 +18,25 @@ import { mapStores } from 'pinia';
 
 export default {
   name: 'BattleScene',
-  computed: mapStores(useScenesStore),
+  computed: {
+    ...mapStores(useScenesStore),
+    previousMode() {
+      return this.scenesStore.previous.mode
+    },
+    currentMode() {
+      return this.scenesStore.current.mode
+    }
+  },
+  methods: {
+    async onEnter(el, done) {
+      await this.currentMode?.onEnter?.(el)
+      done()
+    },
+    async onLeave(el, done) {
+      await this.previousMode?.beforeLeave?.(el)
+      done()
+    }
+  }
 };
 </script>
 
