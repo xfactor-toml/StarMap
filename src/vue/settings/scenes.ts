@@ -1,8 +1,9 @@
 import { GuiScenes, SceneName } from '@/types';
 import { BattleScene, GalaxyScene, StartScene } from '@/scenes';
-import { PhantomMode, PreloaderMode, RealMode, WelcomeMode } from '@/modes';
+import { BattleResultsMode, PhantomMode, PreloaderMode, RealMode, WelcomeMode } from '@/modes';
 import { BattleInitMode, BattleProcessMode } from '@/modes';
 import { default as anime } from 'animejs';
+import { useBattleStore } from '@/stores';
 
 export const SCENES: GuiScenes = {
   start: {
@@ -129,6 +130,29 @@ export const SCENES: GuiScenes = {
             opacity: [0, 1],
           }).finished
         },
+        beforeLeave: async (el) => {
+          await anime({
+            targets: el,
+            easing: 'easeInOutQuart',
+            duration: 400,
+            opacity: [1, 0],
+          }).finished
+        }
+      },
+      {
+        name: 'results',
+        getComponent: () => BattleResultsMode,
+        onEnter: async (el) => {
+          await anime({
+            targets: el,
+            easing: 'easeInOutQuart',
+            duration: 400,
+            opacity: [0, 1],
+          }).finished
+        },
+        beforeLeave: async () => {
+          useBattleStore().reset()
+        }
       },
     ],
     initialMode: 'init'

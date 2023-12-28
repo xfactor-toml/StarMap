@@ -1,11 +1,28 @@
 import { defineStore } from 'pinia';
-import { BattleActionType, BattleActiveCooldown, BattleCooldown, BattleStoreState } from '@/types';
+import { BattleActionType, BattleActiveCooldown, BattleCooldown, BattleData, BattleResults } from '@/types';
 
 import { computed, ref } from 'vue';
 
 import { default as anime } from 'animejs';
 
-const cancelAnimation = (animation) => {
+const getInitialState = () => ({
+  players: {
+    connected: null,
+    current: null,
+  },
+  gold: 0,
+  level: 1,
+  skills: {}
+})
+
+const getInitialCooldown = () => ({
+  invisibility: null,
+  satelliteFire: null,
+  slowdown: null,
+  rocketFire: null,
+})
+
+const cancelAnimation = (animation: anime.AnimeInstance) => {
   const activeInstances = anime.running;
   const index = activeInstances.indexOf(animation);
 
@@ -14,28 +31,11 @@ const cancelAnimation = (animation) => {
 
 export const useBattleStore = defineStore('battle', () => {
   const playerSearching = ref(false)
-
-  const state = ref<BattleStoreState>({
-    players: {
-      connected: null,
-      current: null,
-    },
-    gold: 0,
-    level: 1,
-    skills: {}
-  })
-
-  const cooldown = ref<BattleCooldown>({
-    invisibility: null,
-    satelliteFire: null,
-    slowdown: null,
-    rocketFire: null,
-  })
-
+  const state = ref<BattleData>(getInitialState())
+  const cooldown = ref<BattleCooldown>(getInitialCooldown())
+  const results = ref<BattleResults | null>(null)
   const skillsPendingList = ref<BattleActionType[]>([])
-
   const activeCooldown = ref<BattleActiveCooldown>({})
-
   const players = computed(() => state.value.players)
 
   const addSkillToPendingList = (skillType: BattleActionType) => {
@@ -46,7 +46,15 @@ export const useBattleStore = defineStore('battle', () => {
     skillsPendingList.value = skillsPendingList.value.filter(type => type !== skillType)
   }
 
-  const runCooldown = (skillType: BattleActionType, duration: number) => {
+  const setPlayerSearchingState = (state: boolean) => {
+    playerSearching.value = state;
+  }
+
+  const setState = (newState: BattleData) => {
+    state.value = newState;
+  }
+
+  const setCooldown = (skillType: BattleActionType, duration: number) => {
     if (activeCooldown.value[skillType]) {
       cancelAnimation(activeCooldown.value[skillType])
     }
@@ -74,16 +82,17 @@ export const useBattleStore = defineStore('battle', () => {
     })
   }
 
-  const setPlayerSearchingState = (state: boolean) => {
-    playerSearching.value = state;
+  const setResults = (value: BattleResults) => {
+    results.value = value
   }
 
-  const setState = (newState: BattleStoreState) => {
-    state.value = newState;
-  }
-
-  const setCooldown = (skillType: BattleActionType, duration: number) => {
-    runCooldown(skillType, duration)
+  const reset = () => {
+    results.value = null
+    state.value = getInitialState()
+    cooldown.value = getInitialCooldown()
+    skillsPendingList.value = []
+    Object.values(activeCooldown).forEach(cancelAnimation)
+    activeCooldown.value = {}
   }
 
   return {
@@ -92,9 +101,12 @@ export const useBattleStore = defineStore('battle', () => {
     players,
     state,
     skillsPendingList,
+    results,
     addSkillToPendingList,
     setPlayerSearchingState,
     setState,
     setCooldown,
+    setResults,
+    reset
   }
 });

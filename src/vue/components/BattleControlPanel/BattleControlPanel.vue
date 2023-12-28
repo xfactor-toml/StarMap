@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts">
-import { BattleActionType, BattleCooldown, BattleStoreState} from '@/types';
+import { BattleActionType, BattleCooldown, BattleData } from '@/types';
 import { PropType } from 'vue';
 
 import {
@@ -78,7 +78,7 @@ export default {
   },
   props: {
     skills: {
-      type: Object as PropType<BattleStoreState['skills']>,
+      type: Object as PropType<BattleData['skills']>,
       required: true
     },
     skillsPendingList: {
@@ -102,7 +102,7 @@ export default {
     action: (payload: { type: BattleActionType }) => payload
   },
   computed: {
-    satelliteFireSkill(): BattleStoreState['skills']['satelliteFire'] {
+    satelliteFireSkill(): BattleData['skills']['satelliteFire'] {
       return this.skills['satelliteFire']
     }
   },

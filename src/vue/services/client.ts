@@ -157,10 +157,38 @@ export class ClientService {
     battleStore.addSkillToPendingList(payload.type)
     logger.log(`battle action, ${JSON.stringify(payload)}`)
 
+    // MOCK START
     wait(1000).then(() => {
-      battleStore.setCooldown(payload.type, 3000)
+      battleStore.setCooldown(payload.type, 2000)
+
+      wait(3000).then(() => {
+        const scenes = useScenesStore()
+
+        battleStore.setResults({
+          type: 'victory',
+          player: '0xA089D195D994e8145dda68993A91C4a6D1704535',
+          owner: '0xA089D195D994e8145dda68993A91C4a6D1704535',
+          demage: 1000,
+          gold: 1000,
+          exp: 51323,
+          rating: {
+            prevoius: 1310,
+            current: 1422
+          },
+        })
+
+        scenes.setScene(SceneName.Battle, {
+          mode: 'results'
+        })
+      })
     })
+    // MOCK END
   }
+  
+  onClaim() {
+    logger.log('claim')
+  }
+  
 
   static VuePlugin = {
     install: app => {

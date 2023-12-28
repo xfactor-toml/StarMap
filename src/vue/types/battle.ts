@@ -19,7 +19,7 @@ export type BattleSkill = {
   }
 }
 
-export type BattleStoreState = {
+export type BattleData = {
   players: {
     current: BattlePlayer,
     connected: BattlePlayer,
@@ -28,6 +28,19 @@ export type BattleStoreState = {
   gold: number,
   skills: {
     [K in BattleActionType]?: BattleSkill
+  }
+}
+
+export type BattleResults = {
+  type: 'victory' | 'defeat'
+  player: string
+  owner: string
+  demage: number
+  gold: number
+  exp: number
+  rating: {
+    prevoius: number
+    current: number
   }
 }
 
