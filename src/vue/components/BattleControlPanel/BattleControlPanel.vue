@@ -21,23 +21,25 @@
     <div class="BattleControlPanel__row">
       <SatelliteFireSkill
         :params="satelliteFireSkill"
+        :cooldown="cooldown['satelliteFire']"
+        :disabled="isPendingSkill('satelliteFire')"
         @fire="$emit('action', {
           type: 'satelliteFire'
         })"
       />
       <RocketFireSkill
         :disabled="true"
-        :cooldown="0"
+        :cooldown="null"
         :progress="0"
       />
       <SlowdownSkill
         :disabled="true"
-        :cooldown="0"
+        :cooldown="null"
         :progress="0"
       />
       <InvisibilitySkill
         :disabled="true"
-        :cooldown="0"
+        :cooldown="null"
         :progress="0"
       />
     </div>
@@ -45,7 +47,8 @@
 </template>
 
 <script lang="ts">
-import { BattleActionType, BattleStoreState} from '@/types';
+import { BattleActionType, BattleCooldown, BattleStoreState} from '@/types';
+import { PropType } from 'vue';
 
 import {
   EmptyControl,
@@ -75,7 +78,15 @@ export default {
   },
   props: {
     skills: {
-      type: Object,
+      type: Object as PropType<BattleStoreState['skills']>,
+      required: true
+    },
+    skillsPendingList: {
+      type: Array as PropType<BattleActionType[]>,
+      required: true
+    },
+    cooldown: {
+      type: Object as PropType<BattleCooldown>,
       required: true
     },
     level: {
@@ -93,6 +104,11 @@ export default {
   computed: {
     satelliteFireSkill(): BattleStoreState['skills']['satelliteFire'] {
       return this.skills['satelliteFire']
+    }
+  },
+  methods: {
+    isPendingSkill(type: BattleActionType) {
+      return this.skillsPendingList.includes(type)
     }
   }
 };

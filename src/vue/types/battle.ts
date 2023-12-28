@@ -30,3 +30,14 @@ export type BattleStoreState = {
     [K in BattleActionType]?: BattleSkill
   }
 }
+
+export type BattleCooldown = {
+  [K in BattleActionType]?: null | {
+    duration: number
+    progress: number
+  }
+}
+
+export type BattleActiveCooldown = {
+  [K in BattleActionType]?: anime.AnimeInstance
+}

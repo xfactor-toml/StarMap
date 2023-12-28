@@ -20,6 +20,8 @@
     </div>
     <BattleControlPanel
       :skills="battleStore.state.skills"
+      :skillsPendingList="battleStore.skillsPendingList"
+      :cooldown="battleStore.cooldown"
       :level="battleStore.state.level"
       :gold="battleStore.state.gold"
       @action="$client.onBattleAction"

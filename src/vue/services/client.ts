@@ -152,7 +152,14 @@ export class ClientService {
   }
   
   onBattleAction(payload: { type: BattleActionType }) {
+    const battleStore = useBattleStore()
+
+    battleStore.addSkillToPendingList(payload.type)
     logger.log(`battle action, ${JSON.stringify(payload)}`)
+
+    wait(1000).then(() => {
+      battleStore.setCooldown(payload.type, 3000)
+    })
   }
 
   static VuePlugin = {
