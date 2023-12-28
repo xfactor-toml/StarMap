@@ -28,6 +28,7 @@ type Scene<
   modes: K;
   initialMode: K[number]['name'];
   getComponent: () => DefineComponent<{}, {}, any>
+  afterLeave?: () => void
 };
 
 export enum SceneName {

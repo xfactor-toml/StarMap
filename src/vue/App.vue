@@ -3,6 +3,7 @@
     :css="false"
     @enter="onEnter"
     @leave="onLeave"
+    @after-leave="onAfterLeave"
   >
     <component :is="scenesStore.current.scene.getComponent()" />
   </transition>
@@ -44,6 +45,9 @@ export default {
       }).finished
 
       done()
+    },
+    onAfterLeave() {
+      this.scenesStore.previous.scene?.afterLeave?.()
     }
   },
   created() {

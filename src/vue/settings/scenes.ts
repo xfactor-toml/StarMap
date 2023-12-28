@@ -150,11 +150,11 @@ export const SCENES: GuiScenes = {
             opacity: [0, 1],
           }).finished
         },
-        beforeLeave: async () => {
-          useBattleStore().reset()
-        }
       },
     ],
-    initialMode: 'init'
+    initialMode: 'init',
+    afterLeave: () => {
+      useBattleStore().reset()
+    }
   },
 };
