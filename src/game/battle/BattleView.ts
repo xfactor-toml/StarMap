@@ -16,16 +16,22 @@ import { BattleShip } from '../objects/battle/BattleShip';
 import { Settings } from '../data/Settings';
 import { FieldInitData, ObjectType, PackTitle } from './Types';
 import { BattleConnection } from './BattleConnection';
+import { FieldCell } from '../objects/battle/FieldCell';
 
 const SETTINGS = {
 
     server: {
         field: {
             size: {
-                w: 80,
-                h: 100
-            }
-        }
+                cols: 8,
+                rows: 10,
+                sectorWidth: 10,
+                sectorHeight: 3 / 4 * 10,
+                w: 8 * 10,
+                h: 10 * 3 / 4 * 10
+            },
+        },
+        
     },
 
     client: {
@@ -90,7 +96,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
     private initConnectionListeners() {
         this._connection.socket.on(PackTitle.fieldInit, (aData: FieldInitData) => {
-            this.onGameStartPacket(aData);
+            this.onFieldInitPack(aData);
         });
         this._connection.socket.on(PackTitle.objectCreate, (aData) => {
             this.logDebug(`objectCreate:`, aData);
@@ -101,7 +107,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
     private initField() {
 
-        const fw = SETTINGS.client.field.size.w;
+        const fSize = SETTINGS.server.field.size;
 
         // this._gridTop = new THREE.GridHelper(fw, fw / 10, 0xaa0000);
         // this._gridTop.position.z = -SETTINGS.client.field.size.h / 4;
@@ -111,10 +117,18 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         // this._gridBot.position.z = SETTINGS.client.field.size.h / 4;
         // this._dummyMain.add(this._gridBot);
 
-        this._gridBot = new THREE.GridHelper(fw, fw / 10, 0x999999, 0x333333);
-        this._gridBot.position.y = -1;
-        this._gridBot.position.z = 0;
-        this._dummyMain.add(this._gridBot);
+        // this._gridBot = new THREE.GridHelper(fSize.w, fSize.w / 10, 0x999999, 0x333333);
+        // this._gridBot.position.y = -1;
+        // this._gridBot.position.z = 0;
+        // this._dummyMain.add(this._gridBot);
+
+        for (let cy = 0; cy < fSize.rows; cy++) {
+            for (let cx = 0; cx < fSize.cols; cx++) {
+                let fieldCell = new FieldCell(4);
+                fieldCell.position.copy(this.getPosByCellPos({ x: cx, y: cy }));
+                this._dummyMain.add(fieldCell);
+            }
+        }
 
     }
 
@@ -134,14 +148,16 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
     private serverToClientX(aServerX: number): number {
         const factor = SETTINGS.client.field.size.w / SETTINGS.server.field.size.w;
-        const h = SETTINGS.client.field.size.w / 2;
-        return aServerX * factor - h;
+        const wh = SETTINGS.client.field.size.w / 2;
+        const dx = SETTINGS.server.field.size.sectorWidth / 2 * factor;
+        return aServerX * factor - wh + dx;
     }
 
     private serverToClientY(aServerY: number): number {
         const factor = SETTINGS.client.field.size.h / SETTINGS.server.field.size.h;
         const h = SETTINGS.client.field.size.h / 2;
-        return aServerY * factor - h;
+        const dy = SETTINGS.server.field.size.sectorHeight / 2 * factor;
+        return aServerY * factor - h + dy;
     }
 
     private getPositionByServer(aServerPos: { x: number, y: number }): THREE.Vector3 {
@@ -149,6 +165,17 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             this.serverToClientX(aServerPos.x),
             0,
             this.serverToClientY(aServerPos.y),
+        );
+    }
+
+    private getPosByCellPos(aCellPos: { x: number, y: number }): THREE.Vector3 {
+        const fx = SETTINGS.server.field.size.sectorWidth;
+        const fy = SETTINGS.server.field.size.sectorHeight;
+        const dx = aCellPos.y % 2 === 0 ? 0 : fx / 2;
+        return new THREE.Vector3(
+            this.serverToClientX(aCellPos.x * fx + dx),
+            0,
+            this.serverToClientY(aCellPos.y * fy),
         );
     }
 
@@ -503,7 +530,11 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         }
     }
 
-    onGameStartPacket(aData: FieldInitData) {
+    onFieldInitPack(aData: FieldInitData) {
+        SETTINGS.server.field = aData.fieldParams;
+        let fieldSize = SETTINGS.server.field.size;
+        fieldSize.w = fieldSize.cols * fieldSize.sectorWidth;
+        fieldSize.h = fieldSize.rows * fieldSize.sectorHeight;
         this.initField();
         this._isTopPosition = aData.playerPosition == 'top';
         this._shipEnergyViewer.isTopViewPosition = this._isTopPosition;
