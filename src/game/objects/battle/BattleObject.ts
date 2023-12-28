@@ -8,8 +8,9 @@ export class BattleObject extends MyObject3D {
     private _hp: number;
     private _owner: string;
     private _debugSphere: THREE.Mesh;
-    targetPosition: { x: number, z: number };
-    targetRotation = 0;
+    private _targetPosition: { x: number; z: number; };
+    // targetRotation = 0;
+    private _dirrection: THREE.Vector3;
 
     constructor(aParams: {
         id: string,
@@ -22,6 +23,7 @@ export class BattleObject extends MyObject3D {
         this._radius = aParams.radius;
         this._hp = this._maxHp = aParams.maxHp;
         this._owner = aParams.owner || '';
+        this._dirrection = new THREE.Vector3(0, 0, 1);
     }
 
     public get objId(): string {
@@ -56,6 +58,13 @@ export class BattleObject extends MyObject3D {
         return this._owner;
     }
 
+    public get targetPosition(): { x: number; z: number; } {
+        return this._targetPosition;
+    }
+    public set targetPosition(value: { x: number; z: number; }) {
+        this._targetPosition = value;
+    }
+
     createDebugSphere(aRadius: number) {
         let g = new THREE.SphereGeometry(aRadius);
         let m = new THREE.MeshBasicMaterial({
@@ -74,14 +83,22 @@ export class BattleObject extends MyObject3D {
         super.free();
     }
 
+    setQuaternion(q: {x, y, z, w}) {
+        this.quaternion.set(q.x, q.y, q.z, q.w);
+    }
+
     update(dt: number) {
-        if (this.targetPosition) {
-            this.position.x += (this.targetPosition.x - this.position.x) * dt;
-            this.position.z += (this.targetPosition.z - this.position.z) * dt;
+        // move
+        if (this._targetPosition) {
+            this.position.x += (this._targetPosition.x - this.position.x) * dt;
+            this.position.z += (this._targetPosition.z - this.position.z) * dt;
         }
+
+        // rotate
+        // smoth
         // this.rotation.y += (this.targetRotation - this.rotation.y) * dt;
-        this.rotation.y = this.targetRotation;
-        // this.rotation.y = 0;
+        // moment
+        // this.rotation.y = this.targetRotation;
     }
 
 }

@@ -47,7 +47,7 @@ export class BattleShip extends BattleObject {
         });
 
         // basic rotation
-        this._model.rotation.y = Math.PI / 2;
+        // this._model.rotation.y = Math.PI / 2;
 
         const sc = this.radius * 1;
         this._model.scale.set(sc, sc, sc);

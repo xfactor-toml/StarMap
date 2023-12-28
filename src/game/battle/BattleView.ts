@@ -225,7 +225,6 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             z: number,
             w: number
         },
-        rotation?: number,
         /**
          * special data for planets
          */
@@ -249,7 +248,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                     maxHp: aData.hp,
                     camera: this._camera,
                 });
-                if (aData.pos) obj.position.copy(this.getPositionByServer({ x: aData.pos.x, y: aData.pos.y }));
+                if (aData.pos) obj.position.copy(this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z }));
                 // add hp bar
                 this._shipEnergyViewer.addBar(obj);
                 break;
@@ -279,8 +278,9 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                     owner: aData.owner
                 });
                 obj.createDebugSphere(r);
-                if (aData.pos) obj.position.copy(this.getPositionByServer({ x: aData.pos.x, y: aData.pos.y }));
-                if (aData.rotation) obj.targetRotation = obj.rotation.y = aData.rotation;
+                if (aData.pos) obj.position.copy(this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z }));
+                // if (aData.dirrection) obj.setDirrection(aData.dirrection);
+                if (aData.q) obj.setQuaternion(aData.q);
                 // add hp bar
                 this._shipEnergyViewer.addBar(obj);
             } break;
@@ -295,7 +295,8 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 });
                 obj.createDebugSphere(r);
                 if (aData.pos) obj.position.copy(this.getPositionByServer({ x: aData.pos.x, y: aData.pos.y }));
-                if (aData.rotation) obj.targetRotation = obj.rotation.y = aData.rotation;
+                // if (aData.rotation) obj.targetRotation = obj.rotation.y = aData.rotation;
+                if (aData.q) obj.setQuaternion(aData.q);
                 // add hp bar
                 this._shipEnergyViewer.addBar(obj);
             } break;
@@ -370,10 +371,10 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                     }
                 }
 
-                if (aParams.rotation != undefined) {
+                // if (aParams.rotation != undefined) {
                     // update position
-                    obj.targetRotation = aParams.rotation;
-                }
+                    // obj.targetRotation = aParams.rotation;
+                // }
 
                 if (aParams.hp != undefined) {
                     // update hp
