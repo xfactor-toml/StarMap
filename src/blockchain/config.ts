@@ -6,6 +6,7 @@ export const walletChangingEventName = 'wallet';
 export const env = window.ethereum
 export const pingPongDelay = 3000
 export const plasmaDecimals = 18;
+export const maxStarLevel = 3;
 
 export const connect : connectRpc = {
     keepAlive: true,
