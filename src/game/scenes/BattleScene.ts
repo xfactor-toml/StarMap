@@ -5,7 +5,8 @@ import { IUpdatable } from '../interfaces/IUpdatable';
 import { BattleView } from '../battle/BattleView';
 import { FrontEvents } from '../events/FrontEvents';
 import { GUI } from 'dat.gui';
-import { BattleConnection, ObjectType, PackTitle } from '../battle/BattleConnection';
+import { BattleConnection } from '../battle/BattleConnection';
+import { PackTitle, StartGameData } from '../battle/Types';
 
 export enum BattleSceneEvent {
     onGameSearchStart = 'onGameSearchStart',
@@ -23,13 +24,13 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
         camera: THREE.PerspectiveCamera
     }) {
         super('BattleScene');
-        this.initSocket();
+        this.initConnection();
         this.initView(aParams);
         this.initEvents();
         this.initDebug();
     }
 
-    private initSocket() {
+    private initConnection() {
         this._connection = new BattleConnection();
         // this._connection.on(BattleConnectionEvent.message, this.onBattleSocketMessage, this);
         this._connection.on(PackTitle.gameSearching, this.onGameSearchPack, this);
@@ -46,8 +47,9 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
     }) {
         this._view = new BattleView({
             scene: aParams.scene,
-            camera: aParams.camera
-        })
+            camera: aParams.camera,
+            connection: this._connection
+        });
     }
 
     private initEvents() {
@@ -119,34 +121,6 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
         this._connection.sendSearchGame();
     }
 
-    private onBattleSocketMessage(aData: any) {
-        switch (aData.action) {
-            // case PackTitle.entergame:
-            //     this._view.walletNumber = this._socket.walletAccount;
-
-            //     this.emit(BattleSceneEvent.onEnterGame);
-            //     break;
-            
-            // case PackTitle.withdrawgame:
-            //     this.emit(BattleSceneEvent.onWithdraw);
-            //     break;
-            
-            // case PackTitle.gameend:
-            //     if (aData.win) {
-            //         alert(`You Win!`);
-            //     }
-            //     else {
-            //         alert(`You Loose...`);
-            //     }
-            //     this.emit(BattleSceneEvent.onGameComplete);
-            //     break;
-            
-            default:
-                this._view.onSocketMessage(aData);
-                break;
-        }
-    }
-
     onGameSearchPack(aData: {
         cmd: 'start'
     }) {
@@ -161,17 +135,11 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
         }
     }
 
-    onGameStartPack(aData: {
-        cmd?: 'start',
-        timer: number,
-        playerPosition: 'top' | 'bot'
-    }) {
+    onGameStartPack(aData: StartGameData) {
         switch (aData.cmd) {
             case 'start':
-                this._view.onGameStartPacket(aData);
                 this.emit(BattleSceneEvent.onGameStart);
                 break;
-
             default:
                 this.logDebug(`onGameStartPack(): unknown cmd`, aData);
                 break;

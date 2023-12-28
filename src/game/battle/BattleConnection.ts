@@ -1,25 +1,10 @@
-import { NetworkAuth, SubscribeOnAccountChanging } from "~/blockchain";
+import { NetworkAuth } from "~/blockchain";
 import { MyEventDispatcher } from "../basics/MyEventDispatcher";
 import { newGameAuth } from "~/blockchain/functions/gameplay";
 import { Socket, io } from "socket.io-client";
 import { Settings } from "../data/Settings";
 import { getWalletAddress, isWalletConnected } from "~/blockchain/functions/auth";
-
-export enum PackTitle {
-    // for lobby
-    sign = 'sign',
-    startSearchGame = 'startSearchGame', // request
-    stopSearchGame = 'stopSearchGame', // request
-    gameSearching = 'gameSearching', // status, update, info
-    gameStart = 'gameStart',
-    // for game
-    objectCreate = 'objectCreate',
-    objectUpdate = 'objectUpdate',
-    objectDestroy = 'objectDestroy',
-    attack = 'attack'
-}
-
-export type ObjectType = 'Star' | 'Planet' | 'FighterShip' | 'BattleShip' | 'Homing';
+import { PackTitle, StartGameData } from "./Types";
 
 export class BattleConnection extends MyEventDispatcher {
     private _socket: Socket;
@@ -72,18 +57,9 @@ export class BattleConnection extends MyEventDispatcher {
             this.emit(PackTitle.gameSearching, aData);
         });
 
-        this._socket.on(PackTitle.gameStart, (aData: {
-            cmd?: string,
-            timer: number,
-            playerPosition: 'top' | 'bot'
-        }) => {
+        this._socket.on(PackTitle.gameStart, (aData: StartGameData) => {
             this.logDebug(`gameStart:`, aData);
             this.emit(PackTitle.gameStart, aData);
-        });
-
-        this._socket.on(PackTitle.objectCreate, (aData) => {
-            this.logDebug(`objectCreate:`, aData);
-            this.emit(PackTitle.objectCreate, aData);
         });
 
     }
@@ -130,6 +106,10 @@ export class BattleConnection extends MyEventDispatcher {
 
     public get connected(): boolean {
         return this._socket.connected;
+    }
+    
+    public get socket(): Socket {
+        return this._socket;
     }
 
     closeConnection() {

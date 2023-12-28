@@ -2,7 +2,6 @@ import * as THREE from 'three';
 import gsap, { Linear, Sine } from 'gsap';
 import { GUI } from 'dat.gui';
 import { MyEventDispatcher } from "../basics/MyEventDispatcher";
-import { ObjectType, PackTitle } from "./BattleConnection";
 import { IUpdatable } from "../interfaces/IUpdatable";
 import { BattleObject } from '../objects/battle/BattleObject';
 import { BattleStar } from '../objects/battle/BattleStar';
@@ -15,6 +14,8 @@ import { BattlePosition } from '../objects/battle/BattlePosition';
 import { ShipEnergyViewer } from './ShipEnergyViewer';
 import { BattleShip } from '../objects/battle/BattleShip';
 import { Settings } from '../data/Settings';
+import { FieldInitData, ObjectType, PackTitle } from './Types';
+import { BattleConnection } from './BattleConnection';
 
 const SETTINGS = {
 
@@ -42,6 +43,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     private _walletNumber: string;
     private _scene: THREE.Scene;
     private _camera: THREE.PerspectiveCamera;
+    private _connection: BattleConnection;
     private _cameraTarget: THREE.Vector3;
     private _cameraMng: BattleCameraMng;
 
@@ -57,11 +59,13 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     constructor(aParams: {
         scene: THREE.Scene,
         camera: THREE.PerspectiveCamera,
+        connection: BattleConnection
     }) {
         super('BattleScene');
 
         this._scene = aParams.scene;
         this._camera = aParams.camera;
+        this._connection = aParams.connection;
 
         this._cameraTarget = new THREE.Vector3();
         this._cameraMng = new BattleCameraMng({
@@ -80,6 +84,19 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         this._objects = new Map<string, BattleObject>;
         this._shipEnergyViewer = new ShipEnergyViewer(this._dummyMain);
 
+        this.initConnectionListeners();
+
+    }
+
+    private initConnectionListeners() {
+        this._connection.socket.on(PackTitle.fieldInit, (aData: FieldInitData) => {
+            this.onGameStartPacket(aData);
+        });
+        this._connection.socket.on(PackTitle.objectCreate, (aData) => {
+            this.logDebug(`objectCreate:`, aData);
+            // this.emit(PackTitle.objectCreate, aData);
+            this.onObjectCreatePack(aData);
+        });
     }
 
     private initField() {
@@ -133,15 +150,6 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             0,
             this.serverToClientY(aServerPos.y),
         );
-    }
-
-    onGameStartPacket(aData: {
-        playerPosition?: 'top' | 'bot'
-    }) {
-        this.initField();
-        this._isTopPosition = aData.playerPosition == 'top';
-        this._shipEnergyViewer.isTopViewPosition = this._isTopPosition;
-        this.initCameraPosition(this._isTopPosition);
     }
 
     private createObject(aData: {
@@ -388,9 +396,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     }
 
     private destroyObject(aId: string) {
-
         this._shipEnergyViewer.removeBar(aId);
-
         let obj = this.getObjectById(aId);
         if (!obj) {
             this.logError(`updateObject(): !obj`, aId);
@@ -449,7 +455,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         this._objects.clear();
     }
 
-    onSocketMessage(aData: {
+    onSocketMessage_OLD(aData: {
         title?: string,
         action?: string,
         // opponent?: string,
@@ -495,6 +501,13 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 this.logWarn(`onSocketMessage(): unhandled package (${packTitle}):`, aData);
                 break;
         }
+    }
+
+    onGameStartPacket(aData: FieldInitData) {
+        this.initField();
+        this._isTopPosition = aData.playerPosition == 'top';
+        this._shipEnergyViewer.isTopViewPosition = this._isTopPosition;
+        this.initCameraPosition(this._isTopPosition);
     }
 
     onObjectCreatePack(aData: {
