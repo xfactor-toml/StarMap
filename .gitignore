@@ -3,6 +3,7 @@ node_modules/
 dist/
 build/
 .VSCodeCounter
+yarn.lock
 
 # Compiled Java class files
 *.class
