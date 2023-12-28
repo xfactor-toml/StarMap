@@ -11,7 +11,7 @@ import { LaserLine } from '../objects/battle/LaserLine';
 import { MyMath } from '../utils/MyMath';
 import { BattleCameraMng } from './BattleCameraMng';
 import { BattlePosition } from '../objects/battle/BattlePosition';
-import { ShipEnergyViewer } from './ShipEnergyViewer';
+import { ObjectEnergyViewer } from './ObjectEnergyViewer';
 import { BattleShip } from '../objects/battle/BattleShip';
 import { Settings } from '../data/Settings';
 import { FieldInitData, ObjectType, PackTitle } from './Types';
@@ -58,7 +58,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     private _gridBot: THREE.GridHelper;
 
     private _objects: Map<string, BattleObject>;
-    private _shipEnergyViewer: ShipEnergyViewer;
+    private _shipEnergyViewer: ObjectEnergyViewer;
 
     private _isTopPosition = false;
 
@@ -88,7 +88,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         this._scene.add(this._dummyMain);
 
         this._objects = new Map<string, BattleObject>;
-        this._shipEnergyViewer = new ShipEnergyViewer(this._dummyMain);
+        this._shipEnergyViewer = new ObjectEnergyViewer(this._dummyMain);
 
         this.initConnectionListeners();
 
@@ -99,10 +99,37 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             this.onFieldInitPack(aData);
         });
         this._connection.socket.on(PackTitle.objectCreate, (aData) => {
-            this.logDebug(`objectCreate:`, aData);
+            // this.logDebug(`objectCreate:`, aData);
             // this.emit(PackTitle.objectCreate, aData);
             this.onObjectCreatePack(aData);
         });
+    }
+
+    private onFieldInitPack(aData: FieldInitData) {
+        SETTINGS.server.field = aData.fieldParams;
+        let fieldSize = SETTINGS.server.field.size;
+        fieldSize.w = fieldSize.cols * fieldSize.sectorWidth;
+        fieldSize.h = fieldSize.rows * fieldSize.sectorHeight;
+        this.initField();
+        this._isTopPosition = aData.playerPosition == 'top';
+        this._shipEnergyViewer.isTopViewPosition = this._isTopPosition;
+        this.initCameraPosition(this._isTopPosition);
+    }
+
+    private onObjectCreatePack(aData: {
+        type: ObjectType
+    }) {
+        switch (aData.type) {
+            case 'Star':
+                this.createObject(aData as any);
+                break;
+            case 'FighterShip':
+                this.createObject(aData as any);
+                break;
+
+            default:
+                break;
+        }
     }
 
     private initField() {
@@ -526,30 +553,6 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
             default:
                 this.logWarn(`onSocketMessage(): unhandled package (${packTitle}):`, aData);
-                break;
-        }
-    }
-
-    onFieldInitPack(aData: FieldInitData) {
-        SETTINGS.server.field = aData.fieldParams;
-        let fieldSize = SETTINGS.server.field.size;
-        fieldSize.w = fieldSize.cols * fieldSize.sectorWidth;
-        fieldSize.h = fieldSize.rows * fieldSize.sectorHeight;
-        this.initField();
-        this._isTopPosition = aData.playerPosition == 'top';
-        this._shipEnergyViewer.isTopViewPosition = this._isTopPosition;
-        this.initCameraPosition(this._isTopPosition);
-    }
-
-    onObjectCreatePack(aData: {
-        type: ObjectType
-    }) {
-        switch (aData.type) {
-            case 'Star':
-                this.createObject(aData as any);
-                break;
-        
-            default:
                 break;
         }
     }
