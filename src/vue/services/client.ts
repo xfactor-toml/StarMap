@@ -2,6 +2,10 @@ import { Star } from '@/models';
 import { markRaw } from 'vue';
 import { FrontEvents } from '~/game/events/FrontEvents';
 import { debounce } from "typescript-debounce-decorator";
+import { logger } from '@/services/logger';
+import { useBattleStore, useScenesStore } from '@/stores';
+import { BattleActionType, SceneName } from '@/types';
+import { wait } from '@/utils';
 
 export class ClientService {
   constructor(private dispatcher: typeof FrontEvents) {}
@@ -13,7 +17,7 @@ export class ClientService {
     );
   }
 
-  playInitScreenSfx() {
+  playInitSceneSfx() {
     this.dispatcher.playInitScreenSfx.dispatch();
   }
 
@@ -42,12 +46,12 @@ export class ClientService {
   }
 
   updateStarLevelFilter(levels: number[]) {
+    logger.log({ levels });
     this.dispatcher.starLevelFilterChanged.dispatch(levels);
   }
 
   @debounce(200)
   search(key: string) {
-    // console.log(key);
     this.dispatcher.starNameFilterChanged.dispatch(key);
   }
 
@@ -91,6 +95,66 @@ export class ClientService {
     this.dispatcher.onStarUpdated.dispatch(star.toRaw());
   }
 
+  async onGameStart() {
+    logger.log('start game')
+
+    // MOCK START
+    const scenes = useScenesStore()
+    const battle = useBattleStore()
+
+    battle.setPlayerSearchingState(true);
+    
+    await wait(2000)
+    
+    battle.setPlayerSearchingState(false);
+    scenes.setScene(SceneName.Battle)
+
+    battle.setState({
+      players: {
+        connected: {
+          address: '0xA089D195D994e8145dda68993A91C4a6D1704535',
+          name: 'Kepler',
+          race: 'Humans',
+          star: '2048RX',
+        },
+        current: {
+          address: '0xA089D195D994e8145dda68993A91C4a6D1704538',
+          name: 'Anthares',
+          race: 'Insects',
+          star: '2048RX',
+        },
+      },
+      gold: 1000,
+      level: 1,
+      skills: {
+        satelliteFire: {
+          charges: {
+            count: 3,
+            fractions: 4
+          },
+          cooldown: {
+            duration: 3000,
+          }
+        }
+      }
+    })
+
+    await wait(2000)
+
+    scenes.setScene(SceneName.Battle, {
+      mode: 'process'
+    })
+    // MOCK END
+  }
+  
+  onSearchingClick() {
+    logger.log('searching click')
+  }
+  
+  onBattleAction(payload: { type: BattleActionType }) {
+    logger.log(`battle action, ${JSON.stringify(payload)}`)
+  }
+
   static VuePlugin = {
     install: app => {
       app.config.globalProperties.$client = markRaw(new ClientService(FrontEvents));
@@ -101,3 +165,5 @@ export class ClientService {
     client: markRaw(new ClientService(FrontEvents))
   });
 }
+
+export const useClient = () => new ClientService(FrontEvents)

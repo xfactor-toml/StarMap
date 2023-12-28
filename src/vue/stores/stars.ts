@@ -1,48 +1,59 @@
 import { LEVELS } from '@/constants';
 import { Star } from '@/models';
+import { useClient, useWallet } from '@/services';
 import { GuiLevel } from '@/types';
 import { defineStore } from 'pinia';
+import { computed, ref } from 'vue';
 
-type StarsStoreState = {
-  stars: Star[];
-  availableFilterLevels: GuiLevel[];
-  levelsFilter: number[];
-};
+export const useStarsStore = defineStore('stars', () => {
+  const client = useClient()
+  const wallet = useWallet()
 
-export const useStarsStore = defineStore('stars', {
-  state: (): StarsStoreState => {
-    return {
-      stars: [],
-      levelsFilter: LEVELS.map(({ value }) => value),
-      availableFilterLevels: [...LEVELS].reverse()
-    };
-  },
-  actions: {
-    async fetchStars() {
-      this.stars = (await this.wallet.getStars()).map(star => new Star(star));
-    },
-    addStar(star: Star) {
-      if (!this.exist(star.id)) {
-        this.stars.push(star);
-      }
-    },
-    updateStar(updatedStar: Star) {
-      this.stars = this.stars.map(star => (star.id === updatedStar.id ? updatedStar : star));
-    },
-    getById(starId: number) {
-      return this.stars.find(star => star.id === starId);
-    },
-    exist(starId: number) {
-      return this.stars.some(star => star.id === starId);
-    },
-    setLevelsFilter(levels: number[]) {
-      this.levelsFilter = levels;
-      this.client.updateStarLevelFilter(this.levelsFilter);
+  const stars = ref<Star[]>([])
+  const levelsFilter = ref<number[]>(LEVELS.map(({ value }) => value))
+  const availableFilterLevels = ref<GuiLevel[]>([...LEVELS].reverse())
+
+  const filteredByLevels = computed(() => {
+    return stars.value.filter(star => levelsFilter.value.includes(star.params.level));
+  })
+
+  const fetchStars = async () => {
+    stars.value = (await wallet.getStars()).map(star => new Star(star));
+  }
+
+  const addStar = (star: Star) => {
+    if (!exist(star.id)) {
+      stars.value.push(star);
     }
-  },
-  getters: {
-    filteredByLevels() {
-      return this.stars.filter(star => this.levelsFilter.includes(star.params.level));
-    }
+  }
+
+  const updateStar = (updatedStar: Star) => {
+    stars.value = stars.value.map(star => (star.id === updatedStar.id ? updatedStar : star));
+  }
+
+  const getById = (starId: number) => {
+    return stars.value.find(star => star.id === starId);
+  }
+
+  const exist = (starId: number) => {
+    return stars.value.some(star => star.id === starId);
+  }
+
+  const setLevelsFilter = (levels: number[]) => {
+    levelsFilter.value = levels;
+    client.updateStarLevelFilter(levelsFilter.value);
+  }
+
+  return {
+    availableFilterLevels,
+    filteredByLevels,
+    levelsFilter,
+    stars,
+    fetchStars,
+    addStar,
+    updateStar,
+    getById,
+    exist,
+    setLevelsFilter,
   }
 });

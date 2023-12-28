@@ -1,0 +1,69 @@
+.SearchingIndicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 120px;
+  height: 60px;
+  padding: 5px;
+  background-image: url(../gui/images/searching-indicator-bg.svg);
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: 120px 80px;
+  background-color: transparent;
+  border: none;
+  color: #00f0ff;
+  font-family: 'Exo 2', sans-serif;
+}
+
+.SearchingIndicator__label {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.SearchingIndicator__loading {
+  display: flex;
+  gap: 4px;
+}
+
+.SearchingIndicator__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  position: relative;
+  box-shadow: inset 0 0 4px currentColor;
+  transition: ease opacity 200ms;
+}
+
+.SearchingIndicator__dot::after {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: currentColor;
+  box-shadow: 0 0 6px currentColor;
+  opacity: 0;
+  transition: ease opacity 200ms;
+}
+
+.SearchingIndicator__dot.is-active::after {
+  opacity: 1;
+}
+
+.SearchingIndicator__dot.is-disabled {
+  opacity: 0.5;
+}
+
+.SearchingIndicator__dot.is-disabled::after {
+  opacity: 0;
+}
+
+.SearchingIndicator__time {
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 1.1;
+  text-transform: uppercase;
+}

@@ -1,11 +1,14 @@
-import { useSettingsStore, useStarsStore } from '@/stores';
-import { ClientEvent } from '@/types';
+import { useBattleStore, useScenesStore, useSettingsStore, useStarsStore, useUiStore } from '@/stores';
+import { ClientEvent, SceneName } from '@/types';
 import { Settings } from '~/game/data/Settings';
 
 export class ClientEventsService {
   static async handleEvent({ detail: clientEvent }: Event & { detail: ClientEvent }) {
+    const battleStore = useBattleStore();
+    const scenesStore = useScenesStore();
     const settingsStore = useSettingsStore();
     const starsStore = useStarsStore();
+    const uiStore = useUiStore();
 
     switch (clientEvent.eventName) {
       case 'GAME_LOADING':
@@ -15,7 +18,11 @@ export class ClientEventsService {
         if (!Settings.isDebugMode) {
           await starsStore.fetchStars();
         }
-        settingsStore.setScreen('welcome');
+
+        scenesStore.setScene(SceneName.Start, {
+          mode: 'welcome'
+        });
+
         break;
 
       case 'GAME_CREATED':
@@ -25,40 +32,64 @@ export class ClientEventsService {
         break;
 
       case 'HIDE_STAR_PREVIEW':
-        settingsStore.hideStarTooltip();
+        uiStore.star.hideStarTooltip();
         break;
 
       case 'HIDE_STAR_GUI':
-        settingsStore.hideStarPanel();
+        uiStore.star.hideStarPanel();
         break;
 
       case 'SHOW_STAR_PREVIEW':
-        settingsStore.showStarTooltip(clientEvent, 500);
+        uiStore.star.showStarTooltip(clientEvent, 500);
         break;
 
       case 'SHOW_STAR_GUI':
-        settingsStore.showStarPanel(clientEvent);
+        uiStore.star.showStarPanel(clientEvent);
         break;
 
       case 'PHANTOM_STAR_PREVIEW':
-        settingsStore.showPhantomStarTooltip(clientEvent, 500);
+        uiStore.star.showPhantomStarTooltip(clientEvent, 500);
         break;
 
       case 'SHOW_REAL_MODE':
-        settingsStore.setMode('real');
+        scenesStore.setSceneMode('real');
         break;
 
       case 'SHOW_PHANTOM_MODE':
-        settingsStore.setMode('phantom');
+        scenesStore.setSceneMode('phantom');
         break;
 
       case 'EVENT_STAR_MODE':
-        settingsStore.setView('star');
+        scenesStore.setClientScene('star');
         break;
 
       case 'EVENT_GALAXY_MODE':
-        settingsStore.setView('galaxy');
+        scenesStore.setClientScene('galaxy');
         break;
+
+      // case 'GAME_SEARCHING_START':
+      //   battleStore.setPlayerSearchingState(true);
+      //   break;
+
+      // case 'GAME_SEARCHING_END':
+      //   battleStore.setPlayerSearchingState(false);
+      //   break;
+
+      // case 'GAME_SEARCHING_ERROR':
+      //   battleStore.setPlayerSearchingState(false);
+      //   break;
+
+      // case 'GAME_BATTLE_PREPARE':
+      //   scenesStore.setScene(SceneName.Battle);
+      //   break;
+
+      // case 'GAME_BATTLE_START':
+      //   scenesStore.setSceneMode('process');
+      //   break;
+
+      // case 'GAME_BATTLE_ACTION_COOLDOWN':
+      //   scenesStore.setSceneMode('process');
+      //   break;
     }
   }
 }

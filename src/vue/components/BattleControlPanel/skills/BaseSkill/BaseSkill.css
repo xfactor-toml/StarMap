@@ -1,0 +1,58 @@
+.BaseSkill {
+  position: relative;
+  z-index: 0;
+}
+
+.BaseSkill.hasFractions {
+  margin-bottom: 4px;
+}
+
+.BaseSkill.hasCount {
+  margin-bottom: 20px;
+}
+
+.BaseSkill__count {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  top: calc(100% - 10px);
+  left: -8px;
+  z-index: -1;
+  color: #050A26;
+  font-family: "Exo 2";
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.BaseSkill__count svg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  filter: drop-shadow(0px 0px 30px rgba(0, 255, 246, 0.75));
+}
+
+.BaseSkill__fractions {
+  display: flex;
+  gap: 2px;
+  position: absolute;
+  right: 0;
+  top: calc(100% - 7px);
+  transform: rotate(-32deg);
+}
+
+.BaseSkill__fraction {
+  width: 5px;
+  height: 5px;
+  background-color: rgba(0, 255, 255, 0.3);
+}
+
+.BaseSkill__fraction.active {
+  background-color: #00FFFF;
+}

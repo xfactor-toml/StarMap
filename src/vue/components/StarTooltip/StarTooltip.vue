@@ -65,7 +65,7 @@ export default {
   methods: {
     recalcIntersection() {
       const { innerWidth, innerHeight } = window;
-      const { width, height } = this.$refs.tooltip.getBoundingClientRect();
+      const { width, height } = (this.$refs.tooltip as HTMLElement).getBoundingClientRect();
 
       return {
         x: width > innerWidth - this.position.x,
@@ -74,7 +74,7 @@ export default {
     },
     calcScale() {
       const { innerWidth } = window;
-      const { width } = this.$refs.tooltip.getBoundingClientRect();
+      const { width } = (this.$refs.tooltip as HTMLElement).getBoundingClientRect();
 
       const factor = 1.1;
       const area = this.intersection.x ? this.position.x : innerWidth - this.position.x;
