@@ -8,13 +8,13 @@
         <Logo />
       </div>
       <div class="GalaxyScene__headerColumn is-center">
-        <StartGameButton
-          v-if="battleStore.runningState === 'initial'"
-          @click="$client.onGameStart"
-        />
         <SearchingIndicator
-          v-if="battleStore.runningState === 'searching'"
+          v-if="battleStore.playerSearching"
           @click="$client.onSearchingClick"
+        />
+        <StartGameButton
+          v-else
+          @click="$client.onGameStart"
         />
       </div>
       <div class="GalaxyScene__headerColumn is-right">

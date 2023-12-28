@@ -1,25 +1,36 @@
 import { defineStore } from 'pinia';
-import { BattleMember, BattleRunningState } from '@/types';
+import { BattleStoreState } from '@/types';
 
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 export const useBattleStore = defineStore('battle', () => {
-  const runningState = ref<BattleRunningState>('initial')
+  const playerSearching = ref(false)
 
-  const members = ref<[BattleMember, BattleMember] | null>(null)
+  const state = ref<BattleStoreState>({
+    players: {
+      connected: null,
+      current: null,
+    },
+    gold: 0,
+    level: 1,
+    skills: {}
+  })
 
-  const setRunningState = (nextState: BattleRunningState) => {
-    runningState.value = nextState;
+  const players = computed(() => state.value.players)
+
+  const setPlayerSearchingState = (state: boolean) => {
+    playerSearching.value = state;
   }
 
-  const setMembers = (value: [BattleMember, BattleMember]) => {
-    members.value = value;
+  const setState = (newState: BattleStoreState) => {
+    state.value = newState;
   }
 
   return {
-    runningState,
-    members,
-    setRunningState,
-    setMembers
+    playerSearching,
+    players,
+    state,
+    setPlayerSearchingState,
+    setState,
   }
 });

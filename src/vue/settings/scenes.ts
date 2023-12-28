@@ -127,7 +127,6 @@ export const SCENES: GuiScenes = {
             easing: 'easeInOutQuart',
             duration: 400,
             opacity: [0, 1],
-            scale: [0.8, 1],
           }).finished
         },
       },

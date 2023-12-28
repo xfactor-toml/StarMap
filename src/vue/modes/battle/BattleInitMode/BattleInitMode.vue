@@ -1,19 +1,19 @@
 <template>
   <div class="BattleInitMode">
-    <template v-if="battleStore.members">
+    <template v-if="battleStore.players.current && battleStore.players.connected">
       <div class="BattleInitMode__top">
         <BattleInitMember
-          :name="member.top.name"
-          :address="member.top.address"
-          :race="member.top.race"
+          :name="battleStore.players.connected.name"
+          :address="battleStore.players.connected.address"
+          :race="battleStore.players.connected.race"
         />
       </div>
       <div class="BattleInitMode__vs">VS</div>
       <div class="BattleInitMode__bottom">
         <BattleInitMember
-          :name="member.bottom.name"
-          :address="member.bottom.address"
-          :race="member.bottom.race"
+          :name="battleStore.players.current.name"
+          :address="battleStore.players.current.address"
+          :race="battleStore.players.current.race"
           :reflected="true"
         />
       </div>
@@ -31,20 +31,7 @@ export default {
   components: {
     BattleInitMember,
   },
-  data: () => ({
-    activated: false
-  }),
-  computed: {
-    ...mapStores(useBattleStore, useScenesStore),
-    member() {
-      const [member1, member2] = this.battleStore.members
-
-      return {
-        top: member1,
-        bottom: member2
-      }
-    },
-  },
+  computed: mapStores(useBattleStore, useScenesStore),
 };
 </script>
 

@@ -16,7 +16,7 @@ export class ClientEventsService {
 
       case 'GAME_LOADED':
         if (!Settings.isDebugMode) {
-          // await starsStore.fetchStars();
+          await starsStore.fetchStars();
         }
 
         scenesStore.setScene(SceneName.Start, {
@@ -68,15 +68,15 @@ export class ClientEventsService {
         break;
 
       // case 'GAME_SEARCHING_START':
-      //   battleStore.setRunningState('searching');
+      //   battleStore.setPlayerSearchingState(true);
       //   break;
 
       // case 'GAME_SEARCHING_END':
-      //   battleStore.setRunningState('initial');
+      //   battleStore.setPlayerSearchingState(false);
       //   break;
 
       // case 'GAME_SEARCHING_ERROR':
-      //   battleStore.setRunningState('initial');
+      //   battleStore.setPlayerSearchingState(false);
       //   break;
 
       // case 'GAME_BATTLE_PREPARE':
@@ -84,6 +84,10 @@ export class ClientEventsService {
       //   break;
 
       // case 'GAME_BATTLE_START':
+      //   scenesStore.setSceneMode('process');
+      //   break;
+
+      // case 'GAME_BATTLE_ACTION_COOLDOWN':
       //   scenesStore.setSceneMode('process');
       //   break;
     }

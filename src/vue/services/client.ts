@@ -4,7 +4,7 @@ import { FrontEvents } from '~/game/events/FrontEvents';
 import { debounce } from "typescript-debounce-decorator";
 import { logger } from '@/services/logger';
 import { useBattleStore, useScenesStore } from '@/stores';
-import { SceneName } from '@/types';
+import { BattleActionType, SceneName } from '@/types';
 import { wait } from '@/utils';
 
 export class ClientService {
@@ -102,24 +102,42 @@ export class ClientService {
     const scenes = useScenesStore()
     const battle = useBattleStore()
 
-    // battle.setRunningState('searching');
+    battle.setPlayerSearchingState(true);
     
-    // await wait(2000)
+    await wait(2000)
     
-    // battle.setRunningState('initial');
+    battle.setPlayerSearchingState(false);
     scenes.setScene(SceneName.Battle)
-    battle.setMembers([
-      {
-        address: '0xA089D195D994e8145dda68993A91C4a6D1704538',
-        name: 'Kepler',
-        race: 'Humans',
+
+    battle.setState({
+      players: {
+        connected: {
+          address: '0xA089D195D994e8145dda68993A91C4a6D1704535',
+          name: 'Kepler',
+          race: 'Humans',
+          star: '2048RX',
+        },
+        current: {
+          address: '0xA089D195D994e8145dda68993A91C4a6D1704538',
+          name: 'Anthares',
+          race: 'Insects',
+          star: '2048RX',
+        },
       },
-      {
-        address: '0xA089D195D994e8145dda68993A91C4a6D1704538',
-        name: 'Anthares',
-        race: 'Insects',
-      },
-    ])
+      gold: 1000,
+      level: 1,
+      skills: {
+        satelliteFire: {
+          charges: {
+            count: 3,
+            fractions: 4
+          },
+          cooldown: {
+            duration: 3000,
+          }
+        }
+      }
+    })
 
     await wait(2000)
 
@@ -131,6 +149,10 @@ export class ClientService {
   
   onSearchingClick() {
     logger.log('searching click')
+  }
+  
+  onBattleAction(payload: { type: BattleActionType }) {
+    logger.log(`battle action, ${JSON.stringify(payload)}`)
   }
 
   static VuePlugin = {

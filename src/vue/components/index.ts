@@ -1,3 +1,4 @@
+export * from './BattleControlPanel';
 export * from './BattleInitMember';
 export * from './LevelsPanel';
 export * from './Logo';
