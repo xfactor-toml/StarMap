@@ -22,12 +22,13 @@ type Mode<
 
 type Scene<
   T extends string,
-  K extends Mode[]
+  K extends Mode[],
 > = {
   name: T;
   modes: K;
   initialMode: K[number]['name'];
   getComponent: () => DefineComponent<{}, {}, any>
+  afterLeave?: () => void
 };
 
 export enum SceneName {
@@ -54,7 +55,8 @@ export type GuiScenes = {
   ]>,
   [SceneName.Battle]: Scene<SceneName.Battle, [
     Mode<'init'>,
-    Mode<'process'>
+    Mode<'process'>,
+    Mode<'results'>
   ]>
 }
 

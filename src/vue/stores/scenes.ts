@@ -12,24 +12,22 @@ import {
 import { reactive, ref } from 'vue';
 import { logger } from '@/services';
 
+type SceneState = {
+  scene: GuiScene
+  mode: GuiMode | null
+  clientScene: GuiClientSceneView | null
+}
+
 export const useScenesStore = defineStore('scenes', () => {
   const scenes = ref<GuiScenes>()
 
-  const previous = reactive<{
-    scene: GuiScene
-    mode: GuiMode | null
-    clientScene: GuiClientSceneView | null
-  }>({
+  const previous = reactive<SceneState>({
     scene: null,
     mode: null,
     clientScene: null,
   })
 
-  const current = reactive<{
-    scene: GuiScene
-    mode: GuiMode | null
-    clientScene: GuiClientSceneView | null
-  }>({
+  const current = reactive<SceneState>({
     scene: null,
     mode: null,
     clientScene: null,
@@ -48,7 +46,10 @@ export const useScenesStore = defineStore('scenes', () => {
     logger.log({ modeName });
   }
   
-  const setScene = async <T extends SceneName = SceneName>(sceneName: T, { mode, clientScene }: {
+  const setScene = async <T extends SceneName = SceneName>(sceneName: T, {
+    mode,
+    clientScene,
+  }: {
     mode?: GuiModeName<T>,
     clientScene?: GuiClientSceneName<T>
   } = {}) => {
