@@ -1,9 +1,11 @@
 import { connectRpc } from "./types"
 
-export const mobileUrl = `https://metamask.app.link/dapp/${document.location.hostname}/`
-export const wsServerUrl = 'wss://staging-api.vorpal.finance/ws/'
+export const mobileUrl = `https://metamask.app.link/dapp/${document.location.hostname}/`;
+export const wsServerUrl = 'wss://staging-api.vorpal.finance/ws/';
+export const walletChangingEventName = 'wallet';
 export const env = window.ethereum
 export const pingPongDelay = 3000
+export const plasmaDecimals = 18;
 
 export const connect : connectRpc = {
     keepAlive: true,

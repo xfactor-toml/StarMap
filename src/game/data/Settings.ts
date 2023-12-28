@@ -1,4 +1,5 @@
 ﻿import * as datGui from "dat.gui";
+import { wsServerUrl } from "~/blockchain/config";
 
 export type GalaxyData = {
     starsCount: number;
@@ -124,6 +125,12 @@ export class Settings {
     static STAR_CLICK_POINTS = true;
     static POINTS_CAMERA_MAX_DIST = 100;
     static POINTS_MAX_CHECK_RADIUS = 10;
+
+    // battle
+    static BATTLE = {
+        serverAddr: wsServerUrl,
+        localConnect: false
+    };
 
     // audio
     static AUDIO = {
