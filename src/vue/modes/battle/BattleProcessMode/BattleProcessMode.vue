@@ -13,7 +13,7 @@
         </div>
         <div class="BattleProcessMode__column">
           <div class="BattleProcessMode__caption">
-            Start<br>{{ player.star }}
+            Star<br>{{ player.star }}
           </div>
         </div>
       </div>
