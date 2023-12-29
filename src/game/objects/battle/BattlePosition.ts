@@ -5,7 +5,7 @@ export class BattlePosition extends BattleObject {
     protected _mesh: THREE.Mesh;
 
     constructor(aParams: {
-        id: string,
+        id: number,
         radius?: number
     }) {
         super(aParams, 'BattlePosition');

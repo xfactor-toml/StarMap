@@ -10,7 +10,7 @@ export class BattlePlanet extends BattleObject {
     private _orbitSpeed;
     private _orbitAngle;
 
-    constructor(aId: string, aParams: {
+    constructor(aId: number, aParams: {
         radius: number, // object radius
         orbitRadius: number, // planet orbit radius
         rotationSpeed: number, // planet rad/sec

@@ -9,14 +9,14 @@ export class ObjectEnergyViewer implements ILogger, IUpdatable {
 
     private _className = 'ShipEnergyViewer';
     private _parent: THREE.Group;
-    private _objects: Map<string, BattleObject>;
-    private _bars: Map<string, ShipEnergyBar>;
+    private _objects: Map<number, BattleObject>;
+    private _bars: Map<number, ShipEnergyBar>;
     private _isTopViewPosition = false;
     
     constructor(aParent: THREE.Group) {
         this._parent = aParent;
-        this._objects = new Map<string, BattleObject>();
-        this._bars = new Map<string, ShipEnergyBar>();
+        this._objects = new Map<number, BattleObject>();
+        this._bars = new Map<number, ShipEnergyBar>();
     }
 
     logDebug(aMsg: string, aData?: any): void {
@@ -47,7 +47,7 @@ export class ObjectEnergyViewer implements ILogger, IUpdatable {
         this._parent.add(bar);
     }
 
-    removeBar(aShipId: string) {
+    removeBar(aShipId: number) {
         this._objects.delete(aShipId);
         let bar = this._bars.get(aShipId);
         this._bars.delete(aShipId);

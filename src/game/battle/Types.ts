@@ -25,3 +25,18 @@ export type FieldInitData = {
     fieldParams: any,
     playerPosition: 'top' | 'bot'
 }
+
+export type ObjectUpdateData = {
+    id?: number,
+    pos?: {
+        x: number,
+        y: number,
+        z: number
+    },
+    q?: {
+        x: number,
+        y: number,
+        z: number,
+        w: number
+    }
+}

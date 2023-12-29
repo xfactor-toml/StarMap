@@ -8,7 +8,7 @@ export class BattleStar extends BattleObject {
     protected _star: BigStar2;
 
     constructor(aParams: {
-        id: string,
+        id: number,
         camera: THREE.Camera,
         radius: number,
         maxHp: number

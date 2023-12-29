@@ -9,7 +9,7 @@ export class BattleShip extends BattleObject {
     protected _model: THREE.Group;
 
     constructor(aParams: {
-        id: string,
+        id: number,
         radius?: number,
         maxHp?: number,
         owner?: string

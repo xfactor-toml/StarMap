@@ -14,7 +14,7 @@ import { BattlePosition } from '../objects/battle/BattlePosition';
 import { ObjectEnergyViewer } from './ObjectEnergyViewer';
 import { BattleShip } from '../objects/battle/BattleShip';
 import { Settings } from '../data/Settings';
-import { FieldInitData, ObjectType, PackTitle } from './Types';
+import { FieldInitData, ObjectType, ObjectUpdateData, PackTitle } from './Types';
 import { BattleConnection } from './BattleConnection';
 import { FieldCell } from '../objects/battle/FieldCell';
 
@@ -31,7 +31,7 @@ const SETTINGS = {
                 h: 10 * 3 / 4 * 10
             },
         },
-        
+
     },
 
     client: {
@@ -57,7 +57,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     private _gridTop: THREE.GridHelper;
     private _gridBot: THREE.GridHelper;
 
-    private _objects: Map<string, BattleObject>;
+    private _objects: Map<number, BattleObject>;
     private _shipEnergyViewer: ObjectEnergyViewer;
 
     private _isTopPosition = false;
@@ -87,7 +87,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         }
         this._scene.add(this._dummyMain);
 
-        this._objects = new Map<string, BattleObject>;
+        this._objects = new Map();
         this._shipEnergyViewer = new ObjectEnergyViewer(this._dummyMain);
 
         this.initConnectionListeners();
@@ -99,9 +99,10 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             this.onFieldInitPack(aData);
         });
         this._connection.socket.on(PackTitle.objectCreate, (aData) => {
-            // this.logDebug(`objectCreate:`, aData);
-            // this.emit(PackTitle.objectCreate, aData);
             this.onObjectCreatePack(aData);
+        });
+        this._connection.socket.on(PackTitle.objectUpdate, (aData) => {
+            this.onObjectUpdatePack(aData);
         });
     }
 
@@ -130,6 +131,31 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             default:
                 break;
         }
+    }
+
+    private onObjectUpdatePack(aData: ObjectUpdateData[]) {
+        for (let i = 0; i < aData.length; i++) {
+            const data = aData[i];
+
+            let obj = this._objects.get(data.id);
+            if (!obj) {
+                this.logError(`updateObject: !obj for data:`, data);
+                return;
+            }
+
+            if (data.pos) {
+                obj.targetPosition = {
+                    x: this.serverToClientX(data.pos.x),
+                    z: this.serverToClientY(data.pos.z)
+                }
+            }
+
+            if (data.q) {
+                obj.setQuaternion(data.q);
+            }
+
+        }
+
     }
 
     private initField() {
@@ -213,7 +239,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         radius?: number,
         hp?: number
 
-        id: string,
+        id: number,
         pos: {
             x: number,
             y: number,
@@ -225,6 +251,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             z: number,
             w: number
         },
+
         /**
          * special data for planets
          */
@@ -251,6 +278,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 if (aData.pos) obj.position.copy(this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z }));
                 // add hp bar
                 this._shipEnergyViewer.addBar(obj);
+                this._objects.set(aData.id, obj);
                 break;
 
             case 'Planet':
@@ -314,7 +342,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
     }
 
-    private getObjectById(aId: string): BattleObject {
+    private getObjectById(aId: number): BattleObject {
         return this._objects.get(aId);
     }
 
@@ -328,8 +356,8 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         return ships[id];
     }
 
-    private updateObject(aParams: {
-        id: string,
+    private updateObject_OLD(aParams: {
+        id: number,
         event?: 'starAttackPositions',
         position?: { x: number, y: number },
         rotation?: number,
@@ -372,8 +400,8 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 }
 
                 // if (aParams.rotation != undefined) {
-                    // update position
-                    // obj.targetRotation = aParams.rotation;
+                // update position
+                // obj.targetRotation = aParams.rotation;
                 // }
 
                 if (aParams.hp != undefined) {
@@ -390,8 +418,8 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     private attack(aParams: {
         type: 'laser' | 'ray',
         data: {
-            idFrom: string,
-            idTo: string,
+            idFrom: number,
+            idTo: number,
             damage?: number,
             isMiss?: boolean,
             state?: 'start' | 'end'
@@ -450,7 +478,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
     }
 
-    private destroyObject(aId: string) {
+    private destroyObject(aId: number) {
         this._shipEnergyViewer.removeBar(aId);
         let obj = this.getObjectById(aId);
         if (!obj) {
@@ -540,7 +568,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 let list: any[] = aData.list;
                 for (let i = 0; i < list.length; i++) {
                     const objData = list[i];
-                    this.updateObject(objData);
+                    this.updateObject_OLD(objData);
                 }
                 break;
 

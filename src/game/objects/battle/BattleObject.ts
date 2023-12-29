@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { MyObject3D } from "~/game/basics/MyObject3D";
 
 export class BattleObject extends MyObject3D {
-    private _objId: string;
+    private _objId: number;
     private _radius: number;
     private _maxHp: number;
     private _hp: number;
@@ -13,7 +13,7 @@ export class BattleObject extends MyObject3D {
     private _dirrection: THREE.Vector3;
 
     constructor(aParams: {
-        id: string,
+        id: number,
         radius?: number,
         maxHp?: number,
         owner?: string
@@ -26,7 +26,7 @@ export class BattleObject extends MyObject3D {
         this._dirrection = new THREE.Vector3(0, 0, 1);
     }
 
-    public get objId(): string {
+    public get objId(): number {
         return this._objId;
     }
 
