@@ -13,13 +13,15 @@
         </div>
         <div class="BattleProcessMode__column">
           <div class="BattleProcessMode__caption">
-            Start<br>{{ player.star }}
+            Star<br>{{ player.star }}
           </div>
         </div>
       </div>
     </div>
     <BattleControlPanel
       :skills="battleStore.state.skills"
+      :skillsPendingList="battleStore.skillsPendingList"
+      :cooldown="battleStore.cooldown"
       :level="battleStore.state.level"
       :gold="battleStore.state.gold"
       @action="$client.onBattleAction"

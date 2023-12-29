@@ -21,7 +21,7 @@ export default {
       type: Boolean,
     },
     cooldown: {
-      type: Number,
+      type: [Number, null],
     },
     progress: {
       type: Number,

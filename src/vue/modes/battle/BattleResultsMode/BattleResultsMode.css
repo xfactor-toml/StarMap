@@ -1,0 +1,129 @@
+.BattleResultsMode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #00FFFF;
+  font-family: "Exo 2";
+  pointer-events: all;
+}
+
+.BattleResultsMode__header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.BattleResultsMode__status {
+  width: 280px;
+  height: 90px;
+  background-image: url(../gui/images/battle-results/victory.svg);
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: 50%;
+}
+
+.BattleResultsMode__status[data-type=defeat] {
+  background-image: url(../gui/images/battle-results/defeat.svg);
+}
+
+.BattleResultsMode__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.BattleResultsMode__player {
+  padding: 8px 18px;
+  color: #000;
+  background-color: #00FFFF;
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.BattleResultsMode__owner {
+  width: 100%;
+  padding-top: 12px;
+  border-top: 1px solid rgba(0, 255, 255, 0.3);
+  font-size: 12px;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.BattleResultsMode__rows {
+  width: 100%;
+  margin-top: 24px;
+}
+
+.BattleResultsMode__row {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 6px;
+  padding: 12px;
+  border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+  font-size: 14px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.BattleResultsMode__value:not(.is-rating) {
+  color: #F9EB21;
+}
+
+.BattleResultsMode__ratingChange {
+  margin-left: 8px;
+}
+
+.BattleResultsMode__ratingChange::before {
+  content: '-';
+}
+
+.BattleResultsMode__ratingChange.is-increased::before {
+  content: '+';
+}
+
+.BattleResultsMode__ratingChange::after {
+  content: '';
+  color: #FF0025;
+  border: 9px solid currentColor;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: none;
+  height: 9px;
+  display: inline-block;
+  width: 12px;
+  margin-left: 4px;
+}
+
+.BattleResultsMode__ratingChange.is-increased::after {
+  color: #39B24A;
+  transform: scale(-1);
+  filter: drop-shadow(0 0 2px currentColor);
+}
+
+.BattleResultsMode__footer {
+  margin-top: 36px;
+  padding-bottom: 36px;
+}
+
+.BattleResultsMode__button {
+  padding: 12px 24px;
+  border: none;
+  background-color: #00FFFF;
+  color: #000;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
