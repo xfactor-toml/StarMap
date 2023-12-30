@@ -38,5 +38,13 @@ export type ObjectUpdateData = {
         y: number,
         z: number,
         w: number
-    }
+    },
+}
+
+export type ObjectCreateData = ObjectUpdateData & {
+    type: ObjectType,
+    owner?: string, // owner id
+    radius?: number,
+    hp?: number,
+    attackRadius?: number
 }

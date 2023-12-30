@@ -10,13 +10,17 @@ import { BattleFighter } from '../objects/battle/BattleFighter';
 import { LaserLine } from '../objects/battle/LaserLine';
 import { MyMath } from '../utils/MyMath';
 import { BattleCameraMng } from './BattleCameraMng';
-import { BattlePosition } from '../objects/battle/BattlePosition';
 import { ObjectEnergyViewer } from './ObjectEnergyViewer';
 import { BattleShip } from '../objects/battle/BattleShip';
 import { Settings } from '../data/Settings';
-import { FieldInitData, ObjectType, ObjectUpdateData, PackTitle } from './Types';
+import { FieldInitData, ObjectCreateData, ObjectType, ObjectUpdateData, PackTitle } from './Types';
 import { BattleConnection } from './BattleConnection';
 import { FieldCell } from '../objects/battle/FieldCell';
+import { getWalletAddress } from '~/blockchain/functions/auth';
+
+type ServerFieldParams = {
+
+}
 
 const SETTINGS = {
 
@@ -26,9 +30,9 @@ const SETTINGS = {
                 cols: 8,
                 rows: 10,
                 sectorWidth: 10,
-                sectorHeight: 3 / 4 * 10,
+                sectorHeight: 9,
                 w: 8 * 10,
-                h: 10 * 3 / 4 * 10
+                h: 10 * 9
             },
         },
 
@@ -104,9 +108,18 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         this._connection.socket.on(PackTitle.objectUpdate, (aData) => {
             this.onObjectUpdatePack(aData);
         });
+        this._connection.socket.on(PackTitle.objectDestroy, (aIds: number[]) => {
+            this.onObjectDestroyPack(aIds);
+        });
+        this._connection.socket.on(PackTitle.attack, (aData) => {
+            this.attack(aData);
+        });
     }
 
     private onFieldInitPack(aData: FieldInitData) {
+        // update wallet number
+        this._walletNumber = getWalletAddress();
+
         SETTINGS.server.field = aData.fieldParams;
         let fieldSize = SETTINGS.server.field.size;
         fieldSize.w = fieldSize.cols * fieldSize.sectorWidth;
@@ -158,6 +171,81 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
     }
 
+    private onObjectDestroyPack(aIds: number[]) {
+        for (let i = 0; i < aIds.length; i++) {
+            this.destroyObject(aIds[i]);
+        }
+    }
+
+    private attack(aData: {
+        attackType: 'laser' | 'ray',
+        idFrom: number,
+        idTo: number,
+        damage?: number,
+        isMiss?: boolean
+    }) {
+
+        let objFrom = this.getObjectById(aData.idFrom);
+        if (!objFrom) {
+            this.logWarn(`attack: !fromObj`, aData);
+            return;
+        }
+
+        let objTo = this.getObjectById(aData.idTo);
+        if (!objTo) {
+            this.logWarn(`attack: !toObj`, aData);
+            return;
+        }
+
+        this.logDebug(`wallet: ${this._walletNumber}, ship owner: ${objFrom.owner}`);
+        let laserColor = '#0072ff';
+        // const purpleLaserColor = '#5e48ff';
+        if (objFrom.owner != this._walletNumber) {
+            this.logDebug(`laser is red`);
+            laserColor = '#ff0000';
+        }
+        else {
+            this.logDebug(`laser is blue`);
+        }
+
+        switch (aData.attackType) {
+
+            case 'laser':
+                // create laser
+                let laser = new LaserLine(objFrom.position.clone(), objTo.position.clone(), laserColor);
+                this._dummyMain.add(laser);
+                laser.hide({
+                    dur: 1,
+                    cb: () => {
+                        laser.free();
+                    },
+                    ctx: this
+                });
+                break;
+
+            case 'ray': {
+                // create laser
+                let laser = new LaserLine(objFrom.position.clone(), objTo.position.clone(), laserColor);
+                this._dummyMain.add(laser);
+                laser.hide({
+                    dur: 1,
+                    cb: () => {
+                        laser.free();
+                    },
+                    ctx: this
+                });
+            } break;
+
+            default:
+                this.logWarn(`onAttackPack: unknown attack type:`, aData);
+                break;
+        }
+
+        if (!aData.isMiss) {
+            objTo.hp -= aData.damage;
+        }
+    }
+
     private initField() {
 
         const fSize = SETTINGS.server.field.size;
@@ -188,7 +276,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     private initCameraPosition(aIsTop: boolean) {
         let zFactor = aIsTop ? -1 : 1;
         this._cameraMng.moveTo({
-            aCamPos: { x: 0, y: 120, z: 5 * zFactor },
+            aCamPos: { x: 0, y: 140, z: 5 * zFactor },
             aTargetPos: { x: 0, y: 0, z: 1 * zFactor },
             duration: 2,
         });
@@ -232,49 +320,25 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         );
     }
 
-    private createObject(aData: {
-        // common params
-        type: ObjectType,
-        owner?: string, // owner id
-        radius?: number,
-        hp?: number
-
-        id: number,
-        pos: {
-            x: number,
-            y: number,
-            z: number
-        },
-        q: {
-            x: number,
-            y: number,
-            z: number,
-            w: number
-        },
-
+    private createObject(aData: ObjectCreateData
         /**
          * special data for planets
          */
-        planetData?: {
-            orbitRadius?: number,
-            orbitCenter?: { x: number, y: number },
-            startOrbitAngle?: number,
-            year?: number,
-            rotationSpeed?: number,
-            orbitSpeed?: number,
-        }
-    }) {
+        // planetData?: {
+        //     orbitRadius?: number,
+        //     orbitCenter?: { x: number, y: number },
+        //     startOrbitAngle?: number,
+        //     year?: number,
+        //     rotationSpeed?: number,
+        //     orbitSpeed?: number,
+        // }
+    ) {
         let obj: BattleObject;
 
         switch (aData.type) {
 
             case 'Star':
-                obj = new BattleStar({
-                    id: aData.id,
-                    radius: this.serverValueToClient(aData.radius),
-                    maxHp: aData.hp,
-                    camera: this._camera,
-                });
+                obj = new BattleStar(aData);
                 if (aData.pos) obj.position.copy(this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z }));
                 // add hp bar
                 this._shipEnergyViewer.addBar(obj);
@@ -282,30 +346,26 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 break;
 
             case 'Planet':
-                let oCenter = this.getPositionByServer(aData.planetData.orbitCenter);
-                obj = new BattlePlanet(aData.id, {
-                    orbitCenter: {
-                        x: oCenter.x,
-                        y: oCenter.z
-                    },
-                    orbitRadius: this.serverValueToClient(aData.planetData.orbitRadius),
-                    orbitSpeed: aData.planetData.orbitSpeed,
-                    radius: this.serverValueToClient(aData.radius),
-                    rotationSpeed: aData.planetData.rotationSpeed,
-                    year: aData.planetData.year,
-                    startOrbitAngle: aData.planetData.startOrbitAngle
-                });
+                // let oCenter = this.getPositionByServer(aData.planetData.orbitCenter);
+                // obj = new BattlePlanet(aData.id, {
+                //     orbitCenter: {
+                //         x: oCenter.x,
+                //         y: oCenter.z
+                //     },
+                //     orbitRadius: this.serverValueToClient(aData.planetData.orbitRadius),
+                //     orbitSpeed: aData.planetData.orbitSpeed,
+                //     radius: this.serverValueToClient(aData.radius),
+                //     rotationSpeed: aData.planetData.rotationSpeed,
+                //     year: aData.planetData.year,
+                //     startOrbitAngle: aData.planetData.startOrbitAngle
+                // });
                 break;
 
             case 'FighterShip': {
                 let r = this.serverValueToClient(aData.radius);
-                obj = new BattleFighter({
-                    id: aData.id,
-                    radius: r,
-                    maxHp: aData.hp,
-                    owner: aData.owner
-                });
-                obj.createDebugSphere(r);
+                obj = new BattleFighter(aData);
+                obj.createDebugRadiusSphere();
+                obj.createDebugAttackSphere();
                 if (aData.pos) obj.position.copy(this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z }));
                 // if (aData.dirrection) obj.setDirrection(aData.dirrection);
                 if (aData.q) obj.setQuaternion(aData.q);
@@ -315,13 +375,8 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
             case 'BattleShip': {
                 let r = this.serverValueToClient(aData.radius);
-                obj = new BattleShip({
-                    id: aData.id,
-                    radius: r,
-                    maxHp: aData.hp,
-                    owner: aData.owner
-                });
-                obj.createDebugSphere(r);
+                obj = new BattleShip(aData);
+                obj.createDebugRadiusSphere();
                 if (aData.pos) obj.position.copy(this.getPositionByServer({ x: aData.pos.x, y: aData.pos.y }));
                 // if (aData.rotation) obj.targetRotation = obj.rotation.y = aData.rotation;
                 if (aData.q) obj.setQuaternion(aData.q);
@@ -356,128 +411,6 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         return ships[id];
     }
 
-    private updateObject_OLD(aParams: {
-        id: number,
-        event?: 'starAttackPositions',
-        position?: { x: number, y: number },
-        rotation?: number,
-        hp?: number,
-        /**
-         * Any other data
-         */
-        data?: any
-    }) {
-
-        let obj = this.getObjectById(aParams.id);
-        if (!obj) {
-            this.logError(`updateObject: !obj`, aParams);
-            return;
-        }
-
-        switch (aParams.event) {
-
-            case 'starAttackPositions':
-                let posList: {
-                    center: { x, y },
-                    hold: boolean
-                }[] = aParams.data.list;
-
-                for (let i = 0; i < posList.length; i++) {
-                    const pos = posList[i];
-                    // let p = new BattlePosition();
-                }
-
-                break;
-
-            default:
-
-                if (aParams.position) {
-                    // update position
-                    obj.targetPosition = {
-                        x: this.serverToClientX(aParams.position.x),
-                        z: this.serverToClientY(aParams.position.y)
-                    }
-                }
-
-                // if (aParams.rotation != undefined) {
-                // update position
-                // obj.targetRotation = aParams.rotation;
-                // }
-
-                if (aParams.hp != undefined) {
-                    // update hp
-                    obj.hp = aParams.hp;
-                }
-
-                break;
-
-        }
-
-    }
-
-    private attack(aParams: {
-        type: 'laser' | 'ray',
-        data: {
-            idFrom: number,
-            idTo: number,
-            damage?: number,
-            isMiss?: boolean,
-            state?: 'start' | 'end'
-        }
-    }) {
-
-        let objFrom = this.getObjectById(aParams.data.idFrom);
-        if (!objFrom) {
-            this.logWarn(`attack: !fromObj`, aParams);
-            return;
-        }
-
-        let objTo = this.getObjectById(aParams.data.idTo);
-        if (!objTo) {
-            this.logWarn(`attack: !toObj`, aParams);
-            return;
-        }
-
-        let laserColor = '#0072ff';
-        // const purpleLaserColor = '#5e48ff';
-        if (objFrom.owner.length > 0 && objFrom.owner != this._walletNumber) {
-            laserColor = '#ff0000';
-        }
-
-        switch (aParams.type) {
-            case 'ray': {
-                // create laser
-                let laser = new LaserLine(objFrom.position.clone(), objTo.position.clone(), laserColor);
-                this._dummyMain.add(laser);
-                laser.hide({
-                    dur: 1,
-                    cb: () => {
-                        laser.free();
-                    },
-                    ctx: this
-                });
-            } break;
-
-            default:
-                // create laser
-                let laser = new LaserLine(objFrom.position.clone(), objTo.position.clone(), laserColor);
-                this._dummyMain.add(laser);
-                laser.hide({
-                    dur: 1,
-                    cb: () => {
-                        laser.free();
-                    },
-                    ctx: this
-                });
-                break;
-        }
-
-        if (!aParams.data.isMiss) {
-            objTo.hp -= aParams.data.damage;
-        }
-
-    }
-
     private destroyObject(aId: number) {
         this._shipEnergyViewer.removeBar(aId);
         let obj = this.getObjectById(aId);
@@ -504,12 +437,10 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 let ship2 = this.getRandomShip();
                 if (!ship1 || !ship2 || ship1.objId == ship2.objId) return;
                 this.attack({
-                    type: 'laser',
-                    data: {
-                        idFrom: ship1.objId,
-                        idTo: ship2.objId,
-                        damage: 10
-                    }
+                    attackType: 'laser',
+                    idFrom: ship1.objId,
+                    idTo: ship2.objId,
+                    damage: 10
                 });
             },
             randomLaserBlue: () => {
@@ -517,12 +448,10 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 let ship2 = this.getRandomShip();
                 if (!ship1 || !ship2 || ship1.objId == ship2.objId) return;
                 this.attack({
-                    type: 'laser',
-                    data: {
-                        idFrom: ship1.objId,
-                        idTo: ship2.objId,
-                        damage: 10
-                    }
+                    attackType: 'laser',
+                    idFrom: ship1.objId,
+                    idTo: ship2.objId,
+                    damage: 10
                 });
             }
         }
@@ -536,54 +465,6 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             obj.free();
         });
         this._objects.clear();
-    }
-
-    onSocketMessage_OLD(aData: {
-        title?: string,
-        action?: string,
-        // opponent?: string,
-        // list?: ServerObjectData[],
-        data?: any,
-        class?: 'ship',
-        list?: any[]
-    } & any) {
-
-        const packTitle = aData.title || aData.action;
-
-        switch (packTitle) {
-
-            // case PackTitle.gamestart:
-            //     this.onGameStartPacket(aData || {});
-            //     break;
-
-            case PackTitle.objectCreate: {
-                let list = aData.list;
-                for (let i = 0; i < list.length; i++) {
-                    const objData = list[i];
-                    this.createObject(objData);
-                }
-            } break;
-
-            case PackTitle.objectUpdate:
-                let list: any[] = aData.list;
-                for (let i = 0; i < list.length; i++) {
-                    const objData = list[i];
-                    this.updateObject_OLD(objData);
-                }
-                break;
-
-            // case PackTitle.objectdestroy:
-            //     this.destroyObject(aData.id);
-            //     break;
-
-            case PackTitle.attack:
-                this.attack(aData);
-                break;
-
-            default:
-                this.logWarn(`onSocketMessage(): unhandled package (${packTitle}):`, aData);
-                break;
-        }
     }
 
     show() {

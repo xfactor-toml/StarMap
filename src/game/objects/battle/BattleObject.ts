@@ -1,41 +1,35 @@
+import { MyMath } from '@/utils';
 import * as THREE from 'three';
 import { MyObject3D } from "~/game/basics/MyObject3D";
+import { ObjectCreateData } from '~/game/battle/Types';
 
 export class BattleObject extends MyObject3D {
-    private _objId: number;
-    private _radius: number;
-    private _maxHp: number;
-    private _hp: number;
-    private _owner: string;
-    private _debugSphere: THREE.Mesh;
+    protected _params: ObjectCreateData;
+    protected _maxHp: number;
+    protected _hp: number;
+    private _debugRadiusSphere: THREE.Mesh;
+    private _debugAttackRadius: THREE.Mesh;
     private _targetPosition: { x: number; z: number; };
     // targetRotation = 0;
     private _dirrection: THREE.Vector3;
 
-    constructor(aParams: {
-        id: number,
-        radius?: number,
-        maxHp?: number,
-        owner?: string
-    }, aClassName?: string) {
+    constructor(aParams: ObjectCreateData, aClassName?: string) {
         super(aClassName || 'BattleObject');
-        this._objId = aParams.id;
-        this._radius = aParams.radius;
-        this._hp = this._maxHp = aParams.maxHp;
-        this._owner = aParams.owner || '';
+        this._params = aParams;
+        this._hp = this._maxHp = this._params.hp;
         this._dirrection = new THREE.Vector3(0, 0, 1);
     }
 
     public get objId(): number {
-        return this._objId;
+        return this._params.id;
     }
 
     public get radius(): number {
-        return this._radius;
+        return this._params.radius;
     }
 
     public set radius(value: number) {
-        this._radius = value;
+        this._params.radius = value;
     }
 
     public get maxHp(): number {
@@ -51,11 +45,12 @@ export class BattleObject extends MyObject3D {
     }
     
     public set hp(value: number) {
-        this._hp = value;
+        let newHp = Math.max(0, value);
+        this._hp = newHp;
     }
 
     public get owner(): string {
-        return this._owner;
+        return this._params.owner;
     }
 
     public get targetPosition(): { x: number; z: number; } {
@@ -65,21 +60,36 @@ export class BattleObject extends MyObject3D {
         this._targetPosition = value;
     }
 
-    createDebugSphere(aRadius: number) {
-        let g = new THREE.SphereGeometry(aRadius);
-        let m = new THREE.MeshBasicMaterial({
-            color: 0x0000ff,
+    createDebugRadiusSphere() {
+        const geometry = new THREE.TorusGeometry(this._params.radius, .2, 2, 20);
+        const material = new THREE.MeshBasicMaterial({
+            color: 0x00ff00,
+            transparent: true,
+            opacity: .3,
+            depthWrite: false
+        });
+        this._debugRadiusSphere = new THREE.Mesh(geometry, material);
+        this._debugRadiusSphere.rotation.x = MyMath.toRadian(-90);
+        this.add(this._debugRadiusSphere);
+    }
+
+    createDebugAttackSphere() {
+        const geometry = new THREE.TorusGeometry(this._params.attackRadius, .15, 2, 20);
+        const material = new THREE.MeshBasicMaterial({
+            color: 0xff0000,
             transparent: true,
             opacity: .2,
-            depthWrite: false,
-            // blending: THREE.AdditiveBlending
+            depthWrite: false
         });
-        this._debugSphere = new THREE.Mesh(g, m);
-        this.add(this._debugSphere);
+        this._debugAttackRadius = new THREE.Mesh(geometry, material);
+        this._debugAttackRadius.rotation.x = MyMath.toRadian(-90);
+        this.add(this._debugAttackRadius);
     }
 
     free() {
-        this._debugSphere = null;
+        this._debugRadiusSphere = null;
+        this._debugAttackRadius = null;
+        this._params = null;
         super.free();
     }
 

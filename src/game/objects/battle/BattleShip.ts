@@ -3,17 +3,13 @@ import { BattleObject } from './BattleObject';
 import { ThreeLoader } from '~/game/utils/threejs/ThreeLoader';
 import { ModelAlias } from '~/game/data/ModelData';
 import { TextureAlias } from '~/game/data/TextureData';
+import { ObjectCreateData } from '~/game/battle/Types';
 
 export class BattleShip extends BattleObject {
     protected _mesh: THREE.Mesh;
     protected _model: THREE.Group;
 
-    constructor(aParams: {
-        id: number,
-        radius?: number,
-        maxHp?: number,
-        owner?: string
-    }) {
+    constructor(aParams: ObjectCreateData) {
         super(aParams, 'BattleShip');
         this.initSimpleModel();
         // this.initShipModel();

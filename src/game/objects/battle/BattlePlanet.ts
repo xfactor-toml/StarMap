@@ -19,7 +19,7 @@ export class BattlePlanet extends BattleObject {
         orbitSpeed: number, // planet orbit speed in rad/sec
         startOrbitAngle: number
     }) {
-        super({ id: aId, radius: aParams.radius }, 'BattlePlanet');
+        super(null, 'BattlePlanet');
 
         this.logDebug(`params:`, aParams);
 

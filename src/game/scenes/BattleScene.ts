@@ -32,7 +32,6 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
 
     private initConnection() {
         this._connection = new BattleConnection();
-        // this._connection.on(BattleConnectionEvent.message, this.onBattleSocketMessage, this);
         this._connection.on(PackTitle.gameSearching, this.onGameSearchPack, this);
         this._connection.on(PackTitle.gameStart, this.onGameStartPack, this);
 

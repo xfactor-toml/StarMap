@@ -2,17 +2,13 @@ import * as THREE from 'three';
 import { BattleObject } from './BattleObject';
 import { BigStar2 } from '../BigStar2';
 import { Settings } from '~/game/data/Settings';
+import { ObjectCreateData } from '~/game/battle/Types';
 
 export class BattleStar extends BattleObject {
     protected _mesh: THREE.Mesh;
     protected _star: BigStar2;
 
-    constructor(aParams: {
-        id: number,
-        camera: THREE.Camera,
-        radius: number,
-        maxHp: number
-    }) {
+    constructor(aParams: ObjectCreateData) {
         super(aParams, 'BattleStar');
 
         let g = new THREE.SphereGeometry(aParams.radius);

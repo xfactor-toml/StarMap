@@ -22,7 +22,6 @@ export class FieldCell extends MyObject3D {
         });
         const torus = new THREE.Mesh(geometry, material);
         torus.rotation.x = MyMath.toRadian(-90);
-        // torus.scale.y = 3 / 4;
         this.add(torus);
     }
 
