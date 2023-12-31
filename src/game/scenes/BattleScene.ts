@@ -6,7 +6,7 @@ import { BattleView } from '../battle/BattleView';
 import { FrontEvents } from '../events/FrontEvents';
 import { GUI } from 'dat.gui';
 import { BattleConnection } from '../battle/BattleConnection';
-import { PackTitle, StartGameData } from '../battle/Types';
+import { GameCompleteData, PackTitle, StartGameData } from '../battle/Types';
 
 export enum BattleSceneEvent {
     onGameSearchStart = 'onGameSearchStart',
@@ -34,6 +34,7 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
         this._connection = new BattleConnection();
         this._connection.on(PackTitle.gameSearching, this.onGameSearchPack, this);
         this._connection.on(PackTitle.gameStart, this.onGameStartPack, this);
+        this._connection.on(PackTitle.gameComplete, this.onGameCompletePack, this);
 
     }
 
@@ -140,6 +141,24 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
                 this.logDebug(`onGameStartPack(): unknown cmd`, aData);
                 break;
         }
+    }
+
+    onGameCompletePack(aData: GameCompleteData) {
+        switch (aData.status) {
+            case 'win':
+                alert(`You Win!`);
+                break;
+            case 'lose':
+                alert(`You Lose...`);
+                break;
+            case 'draw':
+                alert(`Draw...`);
+                break;
+            default:
+                this.logWarn(`onGameCompletePack: unknown status:`, aData);
+                break;
+        }
+        this.emit(BattleSceneEvent.onGameComplete);
     }
 
     show() {

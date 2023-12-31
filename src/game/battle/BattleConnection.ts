@@ -4,7 +4,7 @@ import { newGameAuth } from "~/blockchain/functions/gameplay";
 import { Socket, io } from "socket.io-client";
 import { Settings } from "../data/Settings";
 import { getWalletAddress, isWalletConnected } from "~/blockchain/functions/auth";
-import { PackTitle, StartGameData } from "./Types";
+import { GameCompleteData, PackTitle, StartGameData } from "./Types";
 
 export class BattleConnection extends MyEventDispatcher {
     private _socket: Socket;
@@ -60,6 +60,11 @@ export class BattleConnection extends MyEventDispatcher {
         this._socket.on(PackTitle.gameStart, (aData: StartGameData) => {
             this.logDebug(`gameStart:`, aData);
             this.emit(PackTitle.gameStart, aData);
+        });
+
+        this._socket.on(PackTitle.gameComplete, (aData: GameCompleteData) => {
+            this.logDebug(`gameComplete:`, aData);
+            this.emit(PackTitle.gameComplete, aData);
         });
 
     }

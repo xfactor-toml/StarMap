@@ -6,6 +6,8 @@ export enum PackTitle {
     stopSearchGame = 'stopSearchGame', // request
     gameSearching = 'gameSearching', // status, update, info
     gameStart = 'gameStart',
+    // exitGame = 'exitGame',
+    gameComplete = 'gameComplete',
     // for game
     fieldInit = 'fieldInit',
     objectCreate = 'objectCreate',
@@ -19,6 +21,10 @@ export type ObjectType = 'Star' | 'Planet' | 'FighterShip' | 'BattleShip' | 'Hom
 export type StartGameData = {
     cmd?: 'start',
     timer: number,
+}
+
+export type GameCompleteData = {
+    status: 'win' | 'lose' | 'draw'
 }
 
 export type FieldInitData = {
