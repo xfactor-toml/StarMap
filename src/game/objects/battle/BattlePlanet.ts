@@ -1,35 +1,13 @@
 import * as THREE from 'three';
 import { BattleObject } from './BattleObject';
+import { ObjectCreateData } from '~/game/battle/Types';
 
 export class BattlePlanet extends BattleObject {
     protected _mesh: THREE.Mesh;
     protected _settelite: THREE.Mesh;
-    private _orbitRadius;
-    private _rotationSpeed;
-    private _orbitCenter;
-    private _orbitSpeed;
-    private _orbitAngle;
 
-    constructor(aId: number, aParams: {
-        radius: number, // object radius
-        orbitRadius: number, // planet orbit radius
-        rotationSpeed: number, // planet rad/sec
-        year: number, // planet period in sec
-        orbitCenter: { x: number, y: number }, // planet orbit center
-        orbitSpeed: number, // planet orbit speed in rad/sec
-        startOrbitAngle: number
-    }) {
-        super(null, 'BattlePlanet');
-
-        this.logDebug(`params:`, aParams);
-
-        this._orbitRadius = aParams.orbitRadius;
-        this._rotationSpeed = aParams.rotationSpeed;
-        this._orbitCenter = aParams.orbitCenter;
-        this._orbitSpeed = aParams.orbitSpeed;
-        this._orbitAngle = aParams.startOrbitAngle;
-
-        this.updatePosition();
+    constructor(aParams: ObjectCreateData) {
+        super(aParams, 'BattlePlanet');
 
         let g = new THREE.SphereGeometry(this.radius);
         let m = new THREE.MeshBasicMaterial({
@@ -48,15 +26,9 @@ export class BattlePlanet extends BattleObject {
         
     }
 
-    private updatePosition() {
-        this.position.x = this._orbitCenter.x + Math.cos(this._orbitAngle) * this._orbitRadius;
-        this.position.y = 0;
-        this.position.z = this._orbitCenter.y + Math.sin(this._orbitAngle) * this._orbitRadius;
-    }
-
-    private updateRotation(dt: number) {
-        this.rotation.y += this._rotationSpeed * dt;
-    }
+    // private updateRotation(dt: number) {
+    //     this.rotation.y += this._rotationSpeed * dt;
+    // }
 
     free() {
         if (this._mesh) {
@@ -67,9 +39,7 @@ export class BattlePlanet extends BattleObject {
     }
 
     update(dt: number) {
-        this._orbitAngle += this._orbitSpeed * dt;
-        this.updatePosition();
-        this.updateRotation(dt);
+        super.update(dt);
     }
 
 }

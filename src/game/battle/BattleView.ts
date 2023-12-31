@@ -130,20 +130,8 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         this.initCameraPosition(this._isTopPosition);
     }
 
-    private onObjectCreatePack(aData: {
-        type: ObjectType
-    }) {
-        switch (aData.type) {
-            case 'Star':
-                this.createObject(aData as any);
-                break;
-            case 'FighterShip':
-                this.createObject(aData as any);
-                break;
-
-            default:
-                break;
-        }
+    private onObjectCreatePack(aData: ObjectCreateData) {
+        this.createObject(aData);
     }
 
     private onObjectUpdatePack(aData: ObjectUpdateData[]) {
@@ -154,6 +142,10 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             if (!obj) {
                 this.logError(`updateObject: !obj for data:`, data);
                 return;
+            }
+
+            if (obj instanceof BattlePlanet) {
+                this.logDebug(`planet update:`, data);
             }
 
             if (data.pos) {
@@ -175,6 +167,62 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         for (let i = 0; i < aIds.length; i++) {
             this.destroyObject(aIds[i]);
         }
+    }
+
+    private createObject(aData: ObjectCreateData) {
+        let obj: BattleObject;
+
+        switch (aData.type) {
+
+            case 'Star':
+                obj = new BattleStar(aData);
+                if (aData.pos) obj.position.copy(this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z }));
+                // add hp bar
+                this._shipEnergyViewer.addBar(obj);
+                this._objects.set(aData.id, obj);
+                break;
+
+            case 'Planet':
+                obj = new BattlePlanet(aData);
+                if (aData.pos) obj.position.copy(this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z }));
+                if (aData.q) obj.setQuaternion(aData.q);
+                this._objects.set(aData.id, obj);
+                break;
+
+            case 'FighterShip': {
+                let r = this.serverValueToClient(aData.radius);
+                obj = new BattleFighter(aData);
+                obj.createDebugRadiusSphere();
+                obj.createDebugAttackSphere();
+                if (aData.pos) obj.position.copy(this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z }));
+                // if (aData.dirrection) obj.setDirrection(aData.dirrection);
+                if (aData.q) obj.setQuaternion(aData.q);
+                // add hp bar
+                this._shipEnergyViewer.addBar(obj);
+            } break;
+
+            case 'BattleShip': {
+                let r = this.serverValueToClient(aData.radius);
+                obj = new BattleShip(aData);
+                obj.createDebugRadiusSphere();
+                if (aData.pos) obj.position.copy(this.getPositionByServer({ x: aData.pos.x, y: aData.pos.y }));
+                // if (aData.rotation) obj.targetRotation = obj.rotation.y = aData.rotation;
+                if (aData.q) obj.setQuaternion(aData.q);
+                // add hp bar
+                this._shipEnergyViewer.addBar(obj);
+            } break;
+
+            default:
+                this.logWarn(`createObject(): unknown obj type:`, aData);
+                break;
+
+        }
+
+        if (obj) {
+            this._dummyMain.add(obj);
+            this._objects.set(aData.id, obj);
+        }
+
     }
 
     private attack(aData: {
@@ -318,83 +366,6 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             0,
             this.serverToClientY(aCellPos.y * fy),
         );
-    }
-
-    private createObject(aData: ObjectCreateData
-        /**
-         * special data for planets
-         */
-        // planetData?: {
-        //     orbitRadius?: number,
-        //     orbitCenter?: { x: number, y: number },
-        //     startOrbitAngle?: number,
-        //     year?: number,
-        //     rotationSpeed?: number,
-        //     orbitSpeed?: number,
-        // }
-    ) {
-        let obj: BattleObject;
-
-        switch (aData.type) {
-
-            case 'Star':
-                obj = new BattleStar(aData);
-                if (aData.pos) obj.position.copy(this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z }));
-                // add hp bar
-                this._shipEnergyViewer.addBar(obj);
-                this._objects.set(aData.id, obj);
-                break;
-
-            case 'Planet':
-                // let oCenter = this.getPositionByServer(aData.planetData.orbitCenter);
-                // obj = new BattlePlanet(aData.id, {
-                //     orbitCenter: {
-                //         x: oCenter.x,
-                //         y: oCenter.z
-                //     },
-                //     orbitRadius: this.serverValueToClient(aData.planetData.orbitRadius),
-                //     orbitSpeed: aData.planetData.orbitSpeed,
-                //     radius: this.serverValueToClient(aData.radius),
-                //     rotationSpeed: aData.planetData.rotationSpeed,
-                //     year: aData.planetData.year,
-                //     startOrbitAngle: aData.planetData.startOrbitAngle
-                // });
-                break;
-
-            case 'FighterShip': {
-                let r = this.serverValueToClient(aData.radius);
-                obj = new BattleFighter(aData);
-                obj.createDebugRadiusSphere();
-                obj.createDebugAttackSphere();
-                if (aData.pos) obj.position.copy(this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z }));
-                // if (aData.dirrection) obj.setDirrection(aData.dirrection);
-                if (aData.q) obj.setQuaternion(aData.q);
-                // add hp bar
-                this._shipEnergyViewer.addBar(obj);
-            } break;
-
-            case 'BattleShip': {
-                let r = this.serverValueToClient(aData.radius);
-                obj = new BattleShip(aData);
-                obj.createDebugRadiusSphere();
-                if (aData.pos) obj.position.copy(this.getPositionByServer({ x: aData.pos.x, y: aData.pos.y }));
-                // if (aData.rotation) obj.targetRotation = obj.rotation.y = aData.rotation;
-                if (aData.q) obj.setQuaternion(aData.q);
-                // add hp bar
-                this._shipEnergyViewer.addBar(obj);
-            } break;
-
-            default:
-                this.logWarn(`createObject(): unknown obj type:`, aData);
-                break;
-
-        }
-
-        if (obj) {
-            this._dummyMain.add(obj);
-            this._objects.set(aData.id, obj);
-        }
-
     }
 
     private getObjectById(aId: number): BattleObject {

@@ -10,14 +10,15 @@ export class BattleObject extends MyObject3D {
     private _debugRadiusSphere: THREE.Mesh;
     private _debugAttackRadius: THREE.Mesh;
     private _targetPosition: { x: number; z: number; };
-    // targetRotation = 0;
     private _dirrection: THREE.Vector3;
+    private _targetQuaternion: THREE.Quaternion;
 
     constructor(aParams: ObjectCreateData, aClassName?: string) {
         super(aClassName || 'BattleObject');
         this._params = aParams;
         this._hp = this._maxHp = this._params.hp;
         this._dirrection = new THREE.Vector3(0, 0, 1);
+        this._targetQuaternion = this.quaternion.clone();
     }
 
     public get objId(): number {
@@ -93,11 +94,13 @@ export class BattleObject extends MyObject3D {
         super.free();
     }
 
-    setQuaternion(q: {x, y, z, w}) {
-        this.quaternion.set(q.x, q.y, q.z, q.w);
+    setQuaternion(q: { x, y, z, w }) {
+        this._targetQuaternion.set(q.x, q.y, q.z, q.w);
+        // this.quaternion.set(q.x, q.y, q.z, q.w);
     }
 
     update(dt: number) {
+
         // move
         if (this._targetPosition) {
             this.position.x += (this._targetPosition.x - this.position.x) * dt;
@@ -106,7 +109,7 @@ export class BattleObject extends MyObject3D {
 
         // rotate
         // smoth
-        // this.rotation.y += (this.targetRotation - this.rotation.y) * dt;
+        this.quaternion.slerp(this._targetQuaternion, .1);
         // moment
         // this.rotation.y = this.targetRotation;
     }
