@@ -34,6 +34,7 @@ export type FieldInitData = {
 
 export type ObjectUpdateData = {
     id?: number,
+    hp?: number,
     pos?: {
         x: number,
         y: number,

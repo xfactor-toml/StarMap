@@ -71,7 +71,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         camera: THREE.PerspectiveCamera,
         connection: BattleConnection
     }) {
-        super('BattleScene');
+        super('BattleView');
 
         this._scene = aParams.scene;
         this._camera = aParams.camera;
@@ -145,7 +145,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             }
 
             if (obj instanceof BattlePlanet) {
-                this.logDebug(`planet update:`, data);
+                // this.logDebug(`planet update:`, data);
             }
 
             if (data.pos) {
@@ -157,6 +157,10 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
             if (data.q) {
                 obj.setQuaternion(data.q);
+            }
+
+            if (data.hp != undefined) {
+                obj.hp = data.hp;
             }
 
         }
@@ -289,9 +293,9 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 break;
         }
 
-        if (!aData.isMiss) {
-            objTo.hp -= aData.damage;
-        }
+        // if (!aData.isMiss) {
+        //     objTo.hp -= aData.damage;
+        // }
     }
 
     private initField() {
