@@ -135,9 +135,7 @@ export class BattleConnection extends MyEventDispatcher {
     }
 
     sendWithdrawGame() {
-        // this.sendPacket(PackTitle.gameSearching, {
-        //     action: "stop"
-        // });
+        this._socket.emit(PackTitle.stopSearchGame);
     }
 
     sendExitGame() {

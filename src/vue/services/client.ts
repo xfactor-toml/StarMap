@@ -103,6 +103,10 @@ export class ClientService {
     const battle = useBattleStore()
 
     battle.setPlayerSearchingState(true);
+
+    FrontEvents.onBattleSearch.dispatch();
+
+    return;
     
     await wait(2000)
     
@@ -145,10 +149,12 @@ export class ClientService {
       mode: 'process'
     })
     // MOCK END
+
   }
   
   onSearchingClick() {
-    logger.log('searching click')
+    logger.log('searching click');
+    FrontEvents.onBattleStopSearch.dispatch();
   }
   
   onBattleAction(payload: { type: BattleActionType }) {

@@ -51,7 +51,7 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
 
     private initEvents() {
         FrontEvents.onBattleSearch.add(this.onFrontStarBattleSearch, this);
-        FrontEvents.onBattleWithdrawSearch.add(this.onFrontWithdrawSearch, this);
+        FrontEvents.onBattleStopSearch.add(this.onFrontStopBattleSearch, this);
         FrontEvents.onExitBattle.add(this.onFrontExitBattle, this);
     }
 
@@ -110,7 +110,7 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
         this._connection.sendSearchGame();
     }
 
-    private onFrontWithdrawSearch() {
+    private onFrontStopBattleSearch() {
         this._connection.sendWithdrawGame();
     }
 
