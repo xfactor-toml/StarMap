@@ -125,9 +125,11 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         fieldSize.w = fieldSize.cols * fieldSize.sectorWidth;
         fieldSize.h = fieldSize.rows * fieldSize.sectorHeight;
         this.initField();
+
         this._isTopPosition = aData.playerPosition == 'top';
         this._shipEnergyViewer.isTopViewPosition = this._isTopPosition;
         this.initCameraPosition(this._isTopPosition);
+        
     }
 
     private onObjectCreatePack(aData: ObjectCreateData) {
@@ -340,8 +342,8 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     private initCameraPosition(aIsTop: boolean) {
         let zFactor = aIsTop ? -1 : 1;
         this._cameraMng.moveTo({
-            aCamPos: { x: 0, y: 140, z: 5 * zFactor },
-            aTargetPos: { x: 0, y: 0, z: 1 * zFactor },
+            aCamPos: { x: 0, y: 160, z: 25 * zFactor },
+            aTargetPos: { x: 0, y: 0, z: 20 * zFactor },
             duration: 2,
         });
     }

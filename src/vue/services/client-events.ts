@@ -1,8 +1,10 @@
 import { useBattleStore, useScenesStore, useSettingsStore, useStarsStore, useUiStore } from '@/stores';
 import { ClientEvent, SceneName } from '@/types';
 import { Settings } from '~/game/data/Settings';
+import { GameEvents } from '~/game/events/GameEvents';
 
 export class ClientEventsService {
+
   static async handleEvent({ detail: clientEvent }: Event & { detail: ClientEvent }) {
     const battleStore = useBattleStore();
     const scenesStore = useScenesStore();
@@ -11,27 +13,25 @@ export class ClientEventsService {
     const uiStore = useUiStore();
 
     switch (clientEvent.eventName) {
-      case 'GAME_LOADING':
+      case GameEvents.EVENT_LOADING:
         break;
 
-      case 'GAME_LOADED':
+      case GameEvents.EVENT_LOADED:
         if (!Settings.isDebugMode) {
           await starsStore.fetchStars();
         }
-
         scenesStore.setScene(SceneName.Start, {
           mode: 'welcome'
         });
-
         break;
 
-      case 'GAME_CREATED':
+      case GameEvents.EVENT_GAME_CREATED:
         break;
 
-      case 'GAME_FULLSCREEN':
+      case GameEvents.EVENT_GAME_FULLSCREEN:
         break;
 
-      case 'HIDE_STAR_PREVIEW':
+      case GameEvents.EVENT_HIDE_STAR_PREVIEW:
         uiStore.star.hideStarTooltip();
         break;
 
@@ -71,9 +71,9 @@ export class ClientEventsService {
       //   battleStore.setPlayerSearchingState(true);
       //   break;
 
-      // case 'GAME_SEARCHING_END':
-      //   battleStore.setPlayerSearchingState(false);
-      //   break;
+      case GameEvents.EVENT_STOP_SEARCHING:
+        battleStore.setPlayerSearchingState(false);
+        break;
 
       // case 'GAME_SEARCHING_ERROR':
       //   battleStore.setPlayerSearchingState(false);

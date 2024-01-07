@@ -71,11 +71,11 @@ export class GameRenderer {
         FrontEvents.toggleFullscreen.add(() => {
             if (!document.fullscreenElement) {
                 document.body.requestFullscreen();
-                GameEvents.dispatchEvent(GameEvents.EVENT_GAME_FULSCREEN, { v: true });
+                GameEvents.dispatchEvent(GameEvents.EVENT_GAME_FULLSCREEN, { v: true });
             }
             else {
                 document.exitFullscreen();
-                GameEvents.dispatchEvent(GameEvents.EVENT_GAME_FULSCREEN, { v: false });
+                GameEvents.dispatchEvent(GameEvents.EVENT_GAME_FULLSCREEN, { v: false });
             }
         }, this);
 

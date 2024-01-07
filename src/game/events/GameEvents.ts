@@ -4,7 +4,7 @@ export const GameEvents = {
     EVENT_LOADING: 'GAME_LOADING',
     EVENT_LOADED: 'GAME_LOADED',
     EVENT_GAME_CREATED: 'GAME_CREATED',
-    EVENT_GAME_FULSCREEN: 'GAME_FULLSCREEN',
+    EVENT_GAME_FULLSCREEN: 'GAME_FULLSCREEN',
 
     /**
      * starData: ServerStarData
@@ -31,6 +31,9 @@ export const GameEvents = {
 
     EVENT_SHOW_REAL_MODE: 'SHOW_REAL_MODE',
     EVENT_SHOW_PHANTOM_MODE: 'SHOW_PHANTOM_MODE',
+
+    // BATTLE
+    EVENT_STOP_SEARCHING: 'EVENT_STOP_SEARCHING',
 
     dispatchEvent: (aEventName: string, aData: any = {}) => {
         aData.eventName = aEventName;

@@ -50,9 +50,7 @@ export class BattleConnection extends MyEventDispatcher {
             this.onSignRecv(aData);
         });
 
-        this._socket.on(PackTitle.gameSearching, (aData: {
-            status: 'started'
-        }) => {
+        this._socket.on(PackTitle.gameSearching, (aData) => {
             this.logDebug(`gameSearching:`, aData);
             this.emit(PackTitle.gameSearching, aData);
         });
@@ -134,7 +132,7 @@ export class BattleConnection extends MyEventDispatcher {
         });
     }
 
-    sendWithdrawGame() {
+    sendStopSearchingGame() {
         this._socket.emit(PackTitle.stopSearchGame);
     }
 

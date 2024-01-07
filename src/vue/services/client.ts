@@ -6,6 +6,7 @@ import { logger } from '@/services/logger';
 import { useBattleStore, useScenesStore } from '@/stores';
 import { BattleActionType, SceneName } from '@/types';
 import { wait } from '@/utils';
+import { LogMng } from '~/game/utils/LogMng';
 
 export class ClientService {
   constructor(private dispatcher: typeof FrontEvents) {}
@@ -96,7 +97,7 @@ export class ClientService {
   }
 
   async onGameStart() {
-    logger.log('start game')
+    LogMng.debug('Front: start game click');
 
     // MOCK START
     const scenes = useScenesStore()
@@ -153,7 +154,7 @@ export class ClientService {
   }
   
   onSearchingClick() {
-    logger.log('searching click');
+    LogMng.debug('Front: stop searching click');
     FrontEvents.onBattleStopSearch.dispatch();
   }
   

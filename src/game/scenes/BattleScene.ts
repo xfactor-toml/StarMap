@@ -7,6 +7,7 @@ import { FrontEvents } from '../events/FrontEvents';
 import { GUI } from 'dat.gui';
 import { BattleConnection } from '../battle/BattleConnection';
 import { GameCompleteData, PackTitle, StartGameData } from '../battle/Types';
+import { GameEvents } from '../events/GameEvents';
 
 export enum BattleSceneEvent {
     onGameSearchStart = 'onGameSearchStart',
@@ -84,7 +85,7 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
                 this._connection.sendSearchGameBot();
             },
             withdrawgame: () => {
-                this._connection.sendWithdrawGame();
+                this._connection.sendStopSearchingGame();
             },
             exitgame: () => {
                 this._connection.sendExitGame();
@@ -98,9 +99,9 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
         }
 
         const f = aFolder;
-        f.add(DATA, 'searchGame').name('Play');
+        // f.add(DATA, 'searchGame').name('Play');
         f.add(DATA, 'searchGameBot').name('Play with Bot');
-        f.add(DATA, 'withdrawgame').name('Withdraw');
+        // f.add(DATA, 'withdrawgame').name('Withdraw');
         f.add(DATA, 'exitgame').name('Exit Game');
         f.add(DATA, 'planetFire').name('Planet Fire');
         f.add(DATA, 'planetFireClient').name('Planet Fire - Client');
@@ -111,7 +112,7 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
     }
 
     private onFrontStopBattleSearch() {
-        this._connection.sendWithdrawGame();
+        this._connection.sendStopSearchingGame();
     }
 
     private onFrontExitBattle() {
@@ -119,13 +120,15 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
     }
 
     onGameSearchPack(aData: {
-        cmd: 'start'
+        cmd: 'start' | 'stop'
     }) {
         switch (aData.cmd) {
             case 'start':
                 this.emit(BattleSceneEvent.onGameSearchStart);
                 break;
-        
+            case 'stop':
+                GameEvents.dispatchEvent(GameEvents.EVENT_STOP_SEARCHING);
+                break;
             default:
                 this.logDebug(`onGameSearchPack(): unknown cmd`, aData);
                 break;
