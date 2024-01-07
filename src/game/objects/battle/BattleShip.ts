@@ -23,7 +23,7 @@ export class BattleShip extends BattleObject {
         });
         this._mesh = new THREE.Mesh(g, m);
         // basic rotation
-        this._mesh.rotation.y = Math.PI / 2;
+        // this._mesh.rotation.y = Math.PI / 2;
         this.add(this._mesh);
     }
 

@@ -103,8 +103,9 @@ export class BattleObject extends MyObject3D {
 
         // move
         if (this._targetPosition) {
-            this.position.x += (this._targetPosition.x - this.position.x) * dt;
-            this.position.z += (this._targetPosition.z - this.position.z) * dt;
+            const moveFactor = dt * 2;
+            this.position.x += (this._targetPosition.x - this.position.x) * moveFactor;
+            this.position.z += (this._targetPosition.z - this.position.z) * moveFactor;
         }
 
         // rotate

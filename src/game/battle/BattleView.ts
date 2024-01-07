@@ -131,7 +131,71 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     }
 
     private onObjectCreatePack(aData: ObjectCreateData) {
-        this.createObject(aData);
+        let obj: BattleObject;
+
+        switch (aData.type) {
+
+            case 'Star':
+                obj = new BattleStar(aData);
+                if (aData.pos) obj.position.copy(this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z }));
+                // add hp bar
+                this._shipEnergyViewer.addBar(obj);
+                this._objects.set(aData.id, obj);
+                break;
+
+            case 'Planet':
+                obj = new BattlePlanet(aData);
+                if (aData.pos) obj.position.copy(this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z }));
+                if (aData.q) obj.setQuaternion(aData.q);
+                this._objects.set(aData.id, obj);
+                break;
+
+            case 'FighterShip': {
+                let r = this.serverValueToClient(aData.radius);
+                obj = new BattleFighter(aData);
+                obj.createDebugRadiusSphere();
+                obj.createDebugAttackSphere();
+
+                if (aData.pos) {
+                    const clientPos = this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z });
+                    obj.targetPosition = clientPos;
+                    obj.position.copy(clientPos);
+                }
+
+                if (aData.q) obj.setQuaternion(aData.q);
+                // add hp bar
+                this._shipEnergyViewer.addBar(obj);
+            } break;
+
+            case 'BattleShip': {
+                this.logDebug(`onObjectCreatePack(): BattleShip:`, aData);
+                let r = this.serverValueToClient(aData.radius);
+                obj = new BattleShip(aData);
+                obj.createDebugRadiusSphere();
+                obj.createDebugAttackSphere();
+
+                if (aData.pos) {
+                    const clientPos = this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z });
+                    this.logDebug(`clientPos:`, clientPos);
+                    obj.targetPosition = clientPos;
+                    obj.position.copy(clientPos);
+                }
+
+                if (aData.q) obj.setQuaternion(aData.q);
+                // add hp bar
+                this._shipEnergyViewer.addBar(obj);
+            } break;
+
+            default:
+                this.logWarn(`createObject(): unknown obj type:`, aData);
+                break;
+
+        }
+
+        if (obj) {
+            this._dummyMain.add(obj);
+            this._objects.set(aData.id, obj);
+        }
     }
 
     private onObjectUpdatePack(aData: ObjectUpdateData[]) {
@@ -146,6 +210,10 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
             if (obj instanceof BattlePlanet) {
                 // this.logDebug(`planet update:`, data);
+            }
+
+            if (obj instanceof BattleShip) {
+                // this.logDebug(`BattleShip update:`, data);
             }
 
             if (data.pos) {
@@ -173,62 +241,6 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         }
     }
 
-    private createObject(aData: ObjectCreateData) {
-        let obj: BattleObject;
-
-        switch (aData.type) {
-
-            case 'Star':
-                obj = new BattleStar(aData);
-                if (aData.pos) obj.position.copy(this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z }));
-                // add hp bar
-                this._shipEnergyViewer.addBar(obj);
-                this._objects.set(aData.id, obj);
-                break;
-
-            case 'Planet':
-                obj = new BattlePlanet(aData);
-                if (aData.pos) obj.position.copy(this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z }));
-                if (aData.q) obj.setQuaternion(aData.q);
-                this._objects.set(aData.id, obj);
-                break;
-
-            case 'FighterShip': {
-                let r = this.serverValueToClient(aData.radius);
-                obj = new BattleFighter(aData);
-                obj.createDebugRadiusSphere();
-                obj.createDebugAttackSphere();
-                if (aData.pos) obj.position.copy(this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z }));
-                // if (aData.dirrection) obj.setDirrection(aData.dirrection);
-                if (aData.q) obj.setQuaternion(aData.q);
-                // add hp bar
-                this._shipEnergyViewer.addBar(obj);
-            } break;
-
-            case 'BattleShip': {
-                let r = this.serverValueToClient(aData.radius);
-                obj = new BattleShip(aData);
-                obj.createDebugRadiusSphere();
-                if (aData.pos) obj.position.copy(this.getPositionByServer({ x: aData.pos.x, y: aData.pos.y }));
-                // if (aData.rotation) obj.targetRotation = obj.rotation.y = aData.rotation;
-                if (aData.q) obj.setQuaternion(aData.q);
-                // add hp bar
-                this._shipEnergyViewer.addBar(obj);
-            } break;
-
-            default:
-                this.logWarn(`createObject(): unknown obj type:`, aData);
-                break;
-
-        }
-
-        if (obj) {
-            this._dummyMain.add(obj);
-            this._objects.set(aData.id, obj);
-        }
-
-    }
-
     private attack(aData: {
         attackType: 'laser' | 'ray',
         idFrom: number,
@@ -249,15 +261,15 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             return;
         }
 
-        this.logDebug(`wallet: ${this._walletNumber}, ship owner: ${objFrom.owner}`);
+        // this.logDebug(`attack(): wallet: ${this._walletNumber}, ship owner: ${objFrom.owner}`);
         let laserColor = '#0072ff';
         // const purpleLaserColor = '#5e48ff';
         if (objFrom.owner != this._walletNumber) {
-            this.logDebug(`laser is red`);
+            // this.logDebug(`laser is red`);
             laserColor = '#ff0000';
         }
         else {
-            this.logDebug(`laser is blue`);
+            // this.logDebug(`laser is blue`);
         }
 
         switch (aData.attackType) {
