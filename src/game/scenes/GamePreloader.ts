@@ -1,7 +1,7 @@
 import { LogMng } from '../utils/LogMng';
 import { Settings } from '../data/Settings';
 import { AudioMng } from '../audio/AudioMng';
-import { GameEvents } from '../events/GameEvents';
+import { GameEvent, GameEventDispatcher } from '../events/GameEvents';
 import { FrontEvents } from '../events/FrontEvents';
 import { Signal } from '../utils/events/Signal';
 import { AudioAlias, MusicLoadList, SoundLoadList } from '../audio/AudioData';
@@ -171,7 +171,7 @@ export class GamePreloader {
             }
         }
 
-        GameEvents.dispatchEvent(GameEvents.EVENT_LOADING, { percent: aProgressPercent });
+        GameEventDispatcher.dispatchEvent(GameEvent.GAME_LOADING, { percent: aProgressPercent });
 
     }
 
@@ -180,7 +180,7 @@ export class GamePreloader {
         this._isLoadingInProcess = false;
         this.onLoadCompleteSignal.dispatch();
 
-        GameEvents.dispatchEvent(GameEvents.EVENT_LOADED, {
+        GameEventDispatcher.dispatchEvent(GameEvent.GAME_LOADED, {
             frontEvents: FrontEvents
         });
 

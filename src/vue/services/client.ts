@@ -112,7 +112,7 @@ export class ClientService {
     await wait(2000)
     
     battle.setPlayerSearchingState(false);
-    scenes.setScene(SceneName.Battle)
+    scenes.setScene(SceneName.Battle);
 
     battle.setState({
       players: {
@@ -142,13 +142,13 @@ export class ClientService {
           }
         }
       }
-    })
+    });
 
-    await wait(2000)
+    await wait(2000);
 
     scenes.setScene(SceneName.Battle, {
       mode: 'process'
-    })
+    });
     // MOCK END
 
   }

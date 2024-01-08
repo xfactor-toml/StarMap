@@ -7,7 +7,7 @@ import { FrontEvents } from '../events/FrontEvents';
 import { GUI } from 'dat.gui';
 import { BattleConnection } from '../battle/BattleConnection';
 import { GameCompleteData, PackTitle, StartGameData } from '../battle/Types';
-import { GameEvents } from '../events/GameEvents';
+import { GameEvent, GameEventDispatcher } from '../events/GameEvents';
 
 export enum BattleSceneEvent {
     onGameSearchStart = 'onGameSearchStart',
@@ -127,7 +127,7 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
                 this.emit(BattleSceneEvent.onGameSearchStart);
                 break;
             case 'stop':
-                GameEvents.dispatchEvent(GameEvents.EVENT_STOP_SEARCHING);
+                GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_STOP_SEARCHING);
                 break;
             default:
                 this.logDebug(`onGameSearchPack(): unknown cmd`, aData);

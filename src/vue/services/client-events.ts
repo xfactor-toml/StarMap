@@ -1,7 +1,7 @@
 import { useBattleStore, useScenesStore, useSettingsStore, useStarsStore, useUiStore } from '@/stores';
 import { ClientEvent, SceneName } from '@/types';
 import { Settings } from '~/game/data/Settings';
-import { GameEvents } from '~/game/events/GameEvents';
+import { GameEvent } from '~/game/events/GameEvents';
 
 export class ClientEventsService {
 
@@ -13,10 +13,10 @@ export class ClientEventsService {
     const uiStore = useUiStore();
 
     switch (clientEvent.eventName) {
-      case GameEvents.EVENT_LOADING:
+      case GameEvent.GAME_LOADING:
         break;
 
-      case GameEvents.EVENT_LOADED:
+      case GameEvent.GAME_LOADED:
         if (!Settings.isDebugMode) {
           await starsStore.fetchStars();
         }
@@ -25,45 +25,45 @@ export class ClientEventsService {
         });
         break;
 
-      case GameEvents.EVENT_GAME_CREATED:
+      case GameEvent.GAME_CREATED:
         break;
 
-      case GameEvents.EVENT_GAME_FULLSCREEN:
+      case GameEvent.GAME_FULLSCREEN:
         break;
 
-      case GameEvents.EVENT_HIDE_STAR_PREVIEW:
+      case GameEvent.HIDE_STAR_PREVIEW:
         uiStore.star.hideStarTooltip();
         break;
 
-      case 'HIDE_STAR_GUI':
+      case GameEvent.HIDE_STAR_GUI:
         uiStore.star.hideStarPanel();
         break;
 
-      case 'SHOW_STAR_PREVIEW':
+      case GameEvent.SHOW_STAR_PREVIEW:
         uiStore.star.showStarTooltip(clientEvent, 500);
         break;
 
-      case 'SHOW_STAR_GUI':
+      case GameEvent.SHOW_STAR_GUI:
         uiStore.star.showStarPanel(clientEvent);
         break;
 
-      case 'PHANTOM_STAR_PREVIEW':
+      case GameEvent.PHANTOM_STAR_PREVIEW:
         uiStore.star.showPhantomStarTooltip(clientEvent, 500);
         break;
 
-      case 'SHOW_REAL_MODE':
+      case GameEvent.SHOW_REAL_MODE:
         scenesStore.setSceneMode('real');
         break;
 
-      case 'SHOW_PHANTOM_MODE':
+      case GameEvent.SHOW_PHANTOM_MODE:
         scenesStore.setSceneMode('phantom');
         break;
 
-      case 'EVENT_STAR_MODE':
+      case GameEvent.STAR_MODE:
         scenesStore.setClientScene('star');
         break;
 
-      case 'EVENT_GALAXY_MODE':
+      case GameEvent.GALAXY_MODE:
         scenesStore.setClientScene('galaxy');
         break;
 
@@ -71,7 +71,7 @@ export class ClientEventsService {
       //   battleStore.setPlayerSearchingState(true);
       //   break;
 
-      case GameEvents.EVENT_STOP_SEARCHING:
+      case GameEvent.BATTLE_STOP_SEARCHING:
         battleStore.setPlayerSearchingState(false);
         break;
 
@@ -79,9 +79,9 @@ export class ClientEventsService {
       //   battleStore.setPlayerSearchingState(false);
       //   break;
 
-      // case 'GAME_BATTLE_PREPARE':
-      //   scenesStore.setScene(SceneName.Battle);
-      //   break;
+      case GameEvent.BATTLE_SHOW_START:
+        scenesStore.setScene(SceneName.Battle);
+        break;
 
       // case 'GAME_BATTLE_START':
       //   scenesStore.setSceneMode('process');

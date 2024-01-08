@@ -3,7 +3,7 @@ import { GamePreloader } from "./GamePreloader";
 import * as MyUtils from "../utils/MyUtils";
 import { Settings } from "../data/Settings";
 import { GameRenderer } from "./GameRenderer";
-import { GameEvents } from "../events/GameEvents";
+import { GameEvent, GameEventDispatcher } from "../events/GameEvents";
 import { FrontEvents } from "../events/FrontEvents";
 import { AudioMng } from "../audio/AudioMng";
 import { ILogger } from "../interfaces/ILogger";
@@ -135,7 +135,7 @@ export class GameBoot implements ILogger {
         DB.realStars = aRealStars;
         let gameEngine = new GameEngine();
         gameEngine.initGame();
-        GameEvents.dispatchEvent(GameEvents.EVENT_GAME_CREATED);
+        GameEventDispatcher.dispatchEvent(GameEvent.GAME_CREATED);
     }
 
 

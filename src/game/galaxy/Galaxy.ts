@@ -9,7 +9,7 @@ import { InputMng } from '../utils/inputs/InputMng';
 import { FSM } from '../states/FSM';
 import { GalaxyStates } from '../states/States';
 import { FrontEvents } from '../events/FrontEvents';
-import { GameEvents } from '../events/GameEvents';
+import { GameEvent, GameEventDispatcher } from '../events/GameEvents';
 import { SmallFlySystem } from '../objects/smallFly/SmallFlySystem';
 import { MyOrbitControls } from '../mythree/MyOrbitControls';
 import { AudioMng } from '../audio/AudioMng';
@@ -1262,7 +1262,7 @@ export class GalaxyMng implements ILogger {
 
                 if (this.isStarPreviewState) {
 
-                    GameEvents.dispatchEvent(GameEvents.EVENT_HIDE_STAR_PREVIEW);
+                    GameEventDispatcher.dispatchEvent(GameEvent.HIDE_STAR_PREVIEW);
                     if (!this._orbitControl.autoRotate) this._orbitControl.autoRotate = true;
                     this._orbitControl.enableZoom = true;
                     if (!this._orbitControl.enabled) this._orbitControl.enabled = true;
@@ -1288,7 +1288,7 @@ export class GalaxyMng implements ILogger {
 
                         LogMng.debug('onClick(): realStars: starParams:', starParams);
 
-                        GameEvents.dispatchEvent(GameEvents.EVENT_SHOW_STAR_PREVIEW, {
+                        GameEventDispatcher.dispatchEvent(GameEvent.SHOW_STAR_PREVIEW, {
                             starData: starParams.starInfo.serverData,
                             pos2d: {
                                 x: pos.x,
@@ -1307,7 +1307,7 @@ export class GalaxyMng implements ILogger {
 
             case GalaxyStates.phantomStars:
                 if (this.isStarPreviewState) {
-                    GameEvents.dispatchEvent(GameEvents.EVENT_HIDE_STAR_PREVIEW);
+                    GameEventDispatcher.dispatchEvent(GameEvent.HIDE_STAR_PREVIEW);
                     if (!this._orbitControl.autoRotate) this._orbitControl.autoRotate = true;
                     this._orbitControl.enableZoom = true;
                     if (!this._orbitControl.enabled) this._orbitControl.enabled = true;
@@ -1328,7 +1328,7 @@ export class GalaxyMng implements ILogger {
 
                         LogMng.debug('onClick(): phantomStar params:', this._phantomStarPicked);
 
-                        GameEvents.dispatchEvent(GameEvents.EVENT_PHANTOM_STAR_PREVIEW, {
+                        GameEventDispatcher.dispatchEvent(GameEvent.PHANTOM_STAR_PREVIEW, {
                             pos3d: this._phantomStarPicked.pos,
                             pos2d: {
                                 x: pos.x,
@@ -2071,7 +2071,7 @@ export class GalaxyMng implements ILogger {
 
         let guiScale = this.guiGetScaleBigStarTooltip();
 
-        GameEvents.dispatchEvent(GameEvents.EVENT_SHOW_STAR_GUI, {
+        GameEventDispatcher.dispatchEvent(GameEvent.SHOW_STAR_GUI, {
             starData: starParams.starInfo.serverData,
             scale: guiScale
         });
@@ -2260,7 +2260,7 @@ export class GalaxyMng implements ILogger {
             }
         });
 
-        GameEvents.dispatchEvent(GameEvents.EVENT_HIDE_STAR_PREVIEW);
+        GameEventDispatcher.dispatchEvent(GameEvent.HIDE_STAR_PREVIEW);
 
         this.smallFlySystem.activeSpawn = true;
 
@@ -2330,9 +2330,9 @@ export class GalaxyMng implements ILogger {
         // switch to real mode
         this._phantomStarsParticles.visible = false;
         this._realStarsParticles.visible = true;
-        GameEvents.dispatchEvent(GameEvents.EVENT_SHOW_REAL_MODE);
+        GameEventDispatcher.dispatchEvent(GameEvent.SHOW_REAL_MODE);
 
-        GameEvents.dispatchEvent(GameEvents.EVENT_STAR_MODE);
+        GameEventDispatcher.dispatchEvent(GameEvent.STAR_MODE);
 
         // debugger;
 

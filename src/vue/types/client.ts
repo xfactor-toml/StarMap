@@ -1,83 +1,78 @@
 import { ServerStarData } from '~/game/data/Types';
 import { FrontEvents } from '~/game/events/FrontEvents';
-
-type ClientEventName =
-  | 'GAME_LOADING'
-  | 'GAME_LOADED'
-  | 'GAME_CREATED'
-  | 'GAME_FULLSCREEN'
-  | 'HIDE_STAR_PREVIEW'
-  | 'HIDE_STAR_GUI'
-  | 'SHOW_STAR_PREVIEW'
-  | 'SHOW_STAR_GUI'
-  | 'SHOW_REAL_MODE'
-  | 'SHOW_PHANTOM_MODE'
-  | 'EVENT_GALAXY_MODE'
-  | 'EVENT_STAR_MODE'
-  | 'PHANTOM_STAR_PREVIEW';
+import { GameEvent, GameEventDispatcher } from '~/game/events/GameEvents';
 
 interface BaseEvent {
-  eventName: ClientEventName;
+  eventName: GameEvent;
 }
 
 export interface GameLoadingEvent extends BaseEvent {
-  eventName: 'GAME_LOADING';
+  eventName: GameEvent.GAME_LOADING;
   percent: number;
 }
 
 export interface GameLoadedEvent extends BaseEvent {
-  eventName: 'GAME_LOADED';
+  eventName: GameEvent.GAME_LOADED;
   frontEvents: typeof FrontEvents;
 }
 
 export interface GameCreatedEvent extends BaseEvent {
-  eventName: 'GAME_CREATED';
+  eventName: GameEvent.GAME_CREATED;
 }
 
 export interface GameFullscreenEvent extends BaseEvent {
-  eventName: 'GAME_FULLSCREEN';
+  eventName: GameEvent.GAME_FULLSCREEN;
   v: boolean;
 }
 
 export interface HideStarPreviewEvent extends BaseEvent {
-  eventName: 'HIDE_STAR_PREVIEW';
+  eventName: GameEvent.HIDE_STAR_PREVIEW;
 }
 
 export interface HideStarGuiEvent extends BaseEvent {
-  eventName: 'HIDE_STAR_GUI';
+  eventName: GameEvent.HIDE_STAR_GUI;
 }
 
 export interface ShowStarPreviewEvent extends BaseEvent {
-  eventName: 'SHOW_STAR_PREVIEW';
+  eventName: GameEvent.SHOW_STAR_PREVIEW;
   starData: ServerStarData;
   pos2d: { x; y };
 }
 
 export interface ShowStarGuiEvent extends BaseEvent {
-  eventName: 'SHOW_STAR_GUI';
+  eventName: GameEvent.SHOW_STAR_GUI;
   starData: ServerStarData;
   scale: number;
 }
 
 export interface PhantomStarPreviewEvent extends BaseEvent {
-  eventName: 'PHANTOM_STAR_PREVIEW';
+  eventName: GameEvent.PHANTOM_STAR_PREVIEW;
   pos3d: { x: number; y: number; z: number };
   pos2d: { x: number; y: number };
 }
 
 export interface ShowRealModeEvent extends BaseEvent {
-  eventName: 'SHOW_REAL_MODE';
+  eventName: GameEvent.SHOW_REAL_MODE;
 }
 
 export interface ShowPhantomModeEvent extends BaseEvent {
-  eventName: 'SHOW_PHANTOM_MODE';
+  eventName: GameEvent.SHOW_PHANTOM_MODE;
 }
 
 export interface GalaxyModeEvent extends BaseEvent {
-  eventName: 'EVENT_GALAXY_MODE';
+  eventName: GameEvent.GALAXY_MODE;
 }
+
 export interface StarModeEvent extends BaseEvent {
-  eventName: 'EVENT_STAR_MODE';
+  eventName: GameEvent.STAR_MODE;
+}
+
+export interface BattleStopSearching extends BaseEvent {
+  eventName: GameEvent.BATTLE_STOP_SEARCHING;
+}
+
+export interface BattleShowStart extends BaseEvent {
+  eventName: GameEvent.BATTLE_SHOW_START;
 }
 
 export type ClientEvent =
@@ -93,7 +88,9 @@ export type ClientEvent =
   | ShowPhantomModeEvent
   | PhantomStarPreviewEvent
   | GalaxyModeEvent
-  | StarModeEvent;
+  | StarModeEvent
+  | BattleStopSearching
+  | BattleShowStart;
 
 export type GuiLevel = {
   value: number;
