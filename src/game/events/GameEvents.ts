@@ -32,12 +32,13 @@ export enum GameEvent {
     SHOW_PHANTOM_MODE = 'SHOW_PHANTOM_MODE',
 
     // BATTLE
-    BATTLE_STOP_SEARCHING = 'BATTLE_STOP_SEARCHING',
-    BATTLE_SHOW_START = 'BATTLE_SHOW_START',
-}
-
-export const GameEvents = {
-    
+    BATTLE_SEARCHING_START = 'BATTLE_SEARCHING_START',
+    BATTLE_SEARCHING_STOP = 'BATTLE_SEARCHING_STOP',
+    /**
+     * reason: string
+     */
+    BATTLE_SEARCHING_ERROR = 'BATTLE_SEARCHING_ERROR',
+    BATTLE_PREROLL_SHOW = 'BATTLE_PREROLL_SHOW',
 }
 
 export class GameEventDispatcher {
@@ -45,6 +46,16 @@ export class GameEventDispatcher {
     static dispatchEvent(aEventName: GameEvent, aData: any = {}) {
         aData.eventName = aEventName;
         window.dispatchEvent(new CustomEvent('gameEvent', { detail: aData }));
+    }
+
+    static battlePrerollShow(aData: {
+        playerWallet: string,
+        enemyWallet: string
+    }) {
+        aData[`eventName`] = GameEvent.BATTLE_PREROLL_SHOW;
+        window.dispatchEvent(new CustomEvent('gameEvent', {
+            detail: aData
+        }));
     }
 
 }

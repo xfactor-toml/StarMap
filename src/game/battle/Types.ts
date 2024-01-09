@@ -13,7 +13,8 @@ export enum PackTitle {
     objectCreate = 'objectCreate',
     objectUpdate = 'objectUpdate',
     objectDestroy = 'objectDestroy',
-    attack = 'attack'
+    attack = 'attack',
+    laser = 'laser'
 }
 
 export type ObjectType = 'Star' | 'Planet' | 'FighterShip' | 'BattleShip' | 'Homing';
@@ -21,6 +22,8 @@ export type ObjectType = 'Star' | 'Planet' | 'FighterShip' | 'BattleShip' | 'Hom
 export type StartGameData = {
     cmd?: 'start',
     timer: number,
+    playerWallet: string,
+    enemyWallet: string
 }
 
 export type GameCompleteData = {

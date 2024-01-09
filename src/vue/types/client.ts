@@ -36,7 +36,7 @@ export interface HideStarGuiEvent extends BaseEvent {
 export interface ShowStarPreviewEvent extends BaseEvent {
   eventName: GameEvent.SHOW_STAR_PREVIEW;
   starData: ServerStarData;
-  pos2d: { x; y };
+  pos2d: { x: number; y: number; };
 }
 
 export interface ShowStarGuiEvent extends BaseEvent {
@@ -67,12 +67,20 @@ export interface StarModeEvent extends BaseEvent {
   eventName: GameEvent.STAR_MODE;
 }
 
-export interface BattleStopSearching extends BaseEvent {
-  eventName: GameEvent.BATTLE_STOP_SEARCHING;
+export interface BattleSearchingStart extends BaseEvent {
+  eventName: GameEvent.BATTLE_SEARCHING_START;
 }
-
-export interface BattleShowStart extends BaseEvent {
-  eventName: GameEvent.BATTLE_SHOW_START;
+export interface BattleSearchingStop extends BaseEvent {
+  eventName: GameEvent.BATTLE_SEARCHING_STOP;
+}
+export interface BattleSearchingError extends BaseEvent {
+  eventName: GameEvent.BATTLE_SEARCHING_ERROR;
+  reason: string;
+}
+export interface BattlePrerollShow extends BaseEvent {
+  eventName: GameEvent.BATTLE_PREROLL_SHOW;
+  playerWallet: string;
+  enemyWallet: string;
 }
 
 export type ClientEvent =
@@ -89,8 +97,10 @@ export type ClientEvent =
   | PhantomStarPreviewEvent
   | GalaxyModeEvent
   | StarModeEvent
-  | BattleStopSearching
-  | BattleShowStart;
+  | BattleSearchingStart
+  | BattleSearchingStop
+  | BattleSearchingError
+  | BattlePrerollShow;
 
 export type GuiLevel = {
   value: number;

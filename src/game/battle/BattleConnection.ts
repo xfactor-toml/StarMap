@@ -5,6 +5,7 @@ import { Socket, io } from "socket.io-client";
 import { Settings } from "../data/Settings";
 import { getWalletAddress, isWalletConnected } from "~/blockchain/functions/auth";
 import { GameCompleteData, PackTitle, StartGameData } from "./Types";
+import { GameEvent, GameEventDispatcher } from "../events/GameEvents";
 
 export class BattleConnection extends MyEventDispatcher {
     private _socket: Socket;
@@ -93,6 +94,7 @@ export class BattleConnection extends MyEventDispatcher {
                 this.signProcess2();
             }).catch((reason) => {
                 alert(reason);
+                GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_ERROR, { reason: reason });
             });
         }
         else {
@@ -124,6 +126,12 @@ export class BattleConnection extends MyEventDispatcher {
 
     sendSearchGame() {
         this._socket.emit(PackTitle.startSearchGame);
+    }
+
+    sendLaserClick() {
+        this._socket.emit(PackTitle.laser, {
+            cmd: 'click'
+        });
     }
 
     sendSearchGameBot() {

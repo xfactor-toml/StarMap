@@ -160,10 +160,11 @@ export class ClientService {
   
   onBattleAction(payload: { type: BattleActionType }) {
     const battleStore = useBattleStore()
-
-    battleStore.addSkillToPendingList(payload.type)
     logger.log(`battle action, ${JSON.stringify(payload)}`)
+    FrontEvents.onBattleAbilityLaserClick.dispatch();
+    // battleStore.addSkillToPendingList(payload.type);
 
+    return;
     // MOCK START
     wait(1000).then(() => {
       battleStore.setCooldown(payload.type, 2000)
@@ -190,6 +191,7 @@ export class ClientService {
       })
     })
     // MOCK END
+
   }
   
   onClaim() {

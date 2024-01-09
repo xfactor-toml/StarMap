@@ -1,7 +1,9 @@
 import { useBattleStore, useScenesStore, useSettingsStore, useStarsStore, useUiStore } from '@/stores';
 import { ClientEvent, SceneName } from '@/types';
+import { wait } from '@/utils';
 import { Settings } from '~/game/data/Settings';
 import { GameEvent } from '~/game/events/GameEvents';
+import { LogMng } from '~/game/utils/LogMng';
 
 export class ClientEventsService {
 
@@ -13,6 +15,7 @@ export class ClientEventsService {
     const uiStore = useUiStore();
 
     switch (clientEvent.eventName) {
+
       case GameEvent.GAME_LOADING:
         break;
 
@@ -67,29 +70,72 @@ export class ClientEventsService {
         scenesStore.setClientScene('galaxy');
         break;
 
-      // case 'GAME_SEARCHING_START':
-      //   battleStore.setPlayerSearchingState(true);
-      //   break;
+      case GameEvent.BATTLE_SEARCHING_START:
+        battleStore.setPlayerSearchingState(true);
+        break;
 
-      case GameEvent.BATTLE_STOP_SEARCHING:
+      case GameEvent.BATTLE_SEARCHING_STOP:
+        battleStore.setPlayerSearchingState(false);
+        break;
+      
+      case GameEvent.BATTLE_SEARCHING_ERROR:
         battleStore.setPlayerSearchingState(false);
         break;
 
-      // case 'GAME_SEARCHING_ERROR':
-      //   battleStore.setPlayerSearchingState(false);
-      //   break;
-
-      case GameEvent.BATTLE_SHOW_START:
+      case GameEvent.BATTLE_PREROLL_SHOW:
+        battleStore.setPlayerSearchingState(false);
         scenesStore.setScene(SceneName.Battle);
+
+        battleStore.setState({
+          players: {
+            connected: {
+              address: clientEvent.enemyWallet || '0xADDR-ENEMY',
+              name: 'Kepler',
+              race: 'Humans',
+              star: '2048RX',
+            },
+            current: {
+              address: clientEvent.playerWallet || '0xADDR-PLAYER',
+              name: 'Anthares',
+              race: 'Insects',
+              star: '2048RX',
+            },
+          },
+          gold: 1000,
+          level: 1,
+          skills: {
+            satelliteFire: {
+              charges: {
+                count: 3,
+                fractions: 4
+              },
+              cooldown: {
+                duration: 3000,
+              }
+            }
+          }
+        });
+
+        await wait(2000);
+
+        scenesStore.setScene(SceneName.Battle, {
+          mode: 'process'
+        });
+
         break;
 
-      // case 'GAME_BATTLE_START':
+      // case GameEvent.BATTLE_SHOW_START:
       //   scenesStore.setSceneMode('process');
       //   break;
 
       // case 'GAME_BATTLE_ACTION_COOLDOWN':
       //   scenesStore.setSceneMode('process');
       //   break;
+
+      default:
+        LogMng.error(`Unknown game event:`, clientEvent);
+        break;
+      
     }
   }
 }

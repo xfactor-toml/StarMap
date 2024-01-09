@@ -54,6 +54,7 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
         FrontEvents.onBattleSearch.add(this.onFrontStarBattleSearch, this);
         FrontEvents.onBattleStopSearch.add(this.onFrontStopBattleSearch, this);
         FrontEvents.onExitBattle.add(this.onFrontExitBattle, this);
+        FrontEvents.onBattleAbilityLaserClick.add(this.onFrontLaserClick, this);
     }
 
     private initDebug() {
@@ -119,15 +120,20 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
         this._connection.sendSearchGame();
     }
 
+    private onFrontLaserClick() {
+        this._connection.sendLaserClick();
+    }
+
     onGameSearchPack(aData: {
         cmd: 'start' | 'stop'
     }) {
         switch (aData.cmd) {
             case 'start':
                 this.emit(BattleSceneEvent.onGameSearchStart);
+                GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_START);
                 break;
             case 'stop':
-                GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_STOP_SEARCHING);
+                GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_STOP);
                 break;
             default:
                 this.logDebug(`onGameSearchPack(): unknown cmd`, aData);
@@ -138,7 +144,7 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
     onGameStartPack(aData: StartGameData) {
         switch (aData.cmd) {
             case 'start':
-                this.emit(BattleSceneEvent.onGameStart);
+                this.emit(BattleSceneEvent.onGameStart, aData);
                 break;
             default:
                 this.logDebug(`onGameStartPack(): unknown cmd`, aData);

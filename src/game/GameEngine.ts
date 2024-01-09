@@ -8,6 +8,9 @@ import { GalaxyScene } from "./scenes/GalaxyScene";
 import { MyBasicClass } from "./basics/MyBasicClass";
 import { ThreeLoader } from "./utils/threejs/ThreeLoader";
 import { BattleScene, BattleSceneEvent } from "./scenes/BattleScene";
+import { StartGameData } from "./battle/Types";
+import { GameEventDispatcher } from "./events/GameEvents";
+import { getWalletAddress } from "~/blockchain/functions/auth";
 
 export class GameEngine extends MyBasicClass {
     private _renderer: GameRenderer;
@@ -77,8 +80,14 @@ export class GameEngine extends MyBasicClass {
         this._galaxyScene.hide();
     }
 
-    private onBattleGameStart() {
+    private onBattleGameStart(aData: StartGameData) {
         this.logDebug(`onBattleEnterGame...`);
+
+        GameEventDispatcher.battlePrerollShow({
+            playerWallet: aData.playerWallet, // getWalletAddress(),
+            enemyWallet: aData.enemyWallet
+        });
+        
         this._galaxyScene.hide();
         this._battleScene.show();
     }
