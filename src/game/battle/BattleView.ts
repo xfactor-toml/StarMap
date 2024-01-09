@@ -137,11 +137,12 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         this._cameraMng.moveTo({
             aCamPos: { x: 0, y: H, z: 25 * zFactor },
             aTargetPos: { x: 0, y: 0, z: 20 * zFactor },
-            duration: 2,
+            duration: .5
         });
     }
 
     private onFieldInitPack(aData: FieldInitData) {
+
         // update wallet number
         this._walletNumber = getWalletAddress();
 
@@ -151,9 +152,11 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         fieldSize.h = fieldSize.rows * fieldSize.sectorHeight;
         this.initField();
 
-        this._isTopPosition = aData.playerPosition == 'top';
-        this._shipEnergyViewer.isTopViewPosition = this._isTopPosition;
-        this.initCameraPosition(this._isTopPosition);
+        setTimeout(() => {
+            this._isTopPosition = aData.playerPosition == 'top';
+            this._shipEnergyViewer.isTopViewPosition = this._isTopPosition;
+            this.initCameraPosition(this._isTopPosition);
+        }, 1000);
         
     }
 
@@ -356,10 +359,10 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
         let planetPos = planet.position.clone();
         let dir = new THREE.Vector3(aData.dir.x, aData.dir.y, aData.dir.z);
-        dir.multiplyScalar(50);
+        dir.multiplyScalar(200);
         let targetPos = planetPos.clone().add(dir);
         // create laser
-        let laser = new LaserLine(planetPos, targetPos, laserColor);
+        let laser = new LaserLine(planetPos, targetPos, laserColor, .02, .5);
         this._dummyMain.add(laser);
         laser.hide({
             dur: 1,

@@ -8,10 +8,6 @@ const LINES_CNT = 10;
 const START_OPACITY = 0.2;
 const FINAL_OPACITY = 0;
 
-const MIN_RADIUS = 0.01;
-const MAX_RADIUS = 0.08;
-
-
 export class LaserLine extends MyObject3D {
     private materials: THREE.MeshBasicMaterial[];
     private meshes: THREE.Mesh[];
@@ -20,10 +16,14 @@ export class LaserLine extends MyObject3D {
     private _points: any[];
     private _hided = false;
     private _lighted = false;
+    private minRadius = 0.01;
+    private maxRadius = 0.08;
 
-
-    constructor(aPosStart: THREE.Vector3, aPosEnd: THREE.Vector3, aColor: string) {
+    constructor(aPosStart: THREE.Vector3, aPosEnd: THREE.Vector3, aColor: string, minRadius?: number, maxRadius?: number) {
         super();
+
+        if (minRadius != undefined) this.minRadius = minRadius;
+        if (maxRadius != undefined) this.maxRadius = maxRadius;
 
         this._color = aColor;
         this._points = [aPosStart, aPosEnd];
@@ -54,7 +54,7 @@ export class LaserLine extends MyObject3D {
                 blending: THREE.AdditiveBlending
             });
 
-            let radius = MIN_RADIUS + i / len * (MAX_RADIUS - MIN_RADIUS);
+            let radius = this.minRadius + i / len * (this.maxRadius - this.minRadius);
             let geometry = new THREE.CylinderGeometry(radius, radius, distance, 8, 1, false);
             // shift it so one end rests on the origin
             geometry.applyMatrix4(new THREE.Matrix4().makeTranslation(0, distance / 2, 0));

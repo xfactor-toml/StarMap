@@ -77,7 +77,7 @@ export class GameEngine extends MyBasicClass {
 
     private onBattleSearchStart() {
         this.logDebug(`onBattleSearchStart...`);
-        this._galaxyScene.hide();
+        // this._galaxyScene.hide();
     }
 
     private onBattleGameStart(aData: StartGameData) {
@@ -88,8 +88,11 @@ export class GameEngine extends MyBasicClass {
             enemyWallet: aData.enemyWallet
         });
         
-        this._galaxyScene.hide();
-        this._battleScene.show();
+        setTimeout(() => {
+            this._galaxyScene.hide();
+            this._battleScene.show();
+        }, 1000);
+
     }
 
     private onBattleWithdrawGame() {
