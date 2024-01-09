@@ -129,7 +129,7 @@ export class BattleConnection extends MyEventDispatcher {
     }
 
     sendLaserClick() {
-        this._socket.emit(PackTitle.laser, {
+        this._socket.emit(PackTitle.planetLaser, {
             cmd: 'click'
         });
     }

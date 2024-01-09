@@ -13,10 +13,11 @@ import { BattleCameraMng } from './BattleCameraMng';
 import { ObjectEnergyViewer } from './ObjectEnergyViewer';
 import { BattleShip } from '../objects/battle/BattleShip';
 import { Settings } from '../data/Settings';
-import { FieldInitData, ObjectCreateData, ObjectType, ObjectUpdateData, PackTitle } from './Types';
+import { FieldInitData, PlanetLaserData, ObjectCreateData, ObjectType, ObjectUpdateData, PackTitle } from './Types';
 import { BattleConnection } from './BattleConnection';
 import { FieldCell } from '../objects/battle/FieldCell';
 import { getWalletAddress } from '~/blockchain/functions/auth';
+import { LogMng } from '../utils/LogMng';
 
 type ServerFieldParams = {
 
@@ -113,6 +114,30 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         });
         this._connection.socket.on(PackTitle.attack, (aData) => {
             this.attack(aData);
+        });
+        this._connection.socket.on(PackTitle.planetLaser, (aData: PlanetLaserData) => {
+            this.planetLaser(aData);
+        });
+    }
+
+    private initField() {
+        const fSize = SETTINGS.server.field.size;
+        for (let cy = 0; cy < fSize.rows; cy++) {
+            for (let cx = 0; cx < fSize.cols; cx++) {
+                let fieldCell = new FieldCell(4);
+                fieldCell.position.copy(this.getPosByCellPos({ x: cx, y: cy }));
+                this._dummyMain.add(fieldCell);
+            }
+        }
+    }
+
+    private initCameraPosition(aIsTop: boolean) {
+        const H = 180;
+        let zFactor = aIsTop ? -1 : 1;
+        this._cameraMng.moveTo({
+            aCamPos: { x: 0, y: H, z: 25 * zFactor },
+            aTargetPos: { x: 0, y: 0, z: 20 * zFactor },
+            duration: 2,
         });
     }
 
@@ -312,39 +337,36 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         // }
     }
 
-    private initField() {
-
-        const fSize = SETTINGS.server.field.size;
-
-        // this._gridTop = new THREE.GridHelper(fw, fw / 10, 0xaa0000);
-        // this._gridTop.position.z = -SETTINGS.client.field.size.h / 4;
-        // this._dummyMain.add(this._gridTop);
-
-        // this._gridBot = new THREE.GridHelper(fw, fw / 10, 0x00aa00);
-        // this._gridBot.position.z = SETTINGS.client.field.size.h / 4;
-        // this._dummyMain.add(this._gridBot);
-
-        // this._gridBot = new THREE.GridHelper(fSize.w, fSize.w / 10, 0x999999, 0x333333);
-        // this._gridBot.position.y = -1;
-        // this._gridBot.position.z = 0;
-        // this._dummyMain.add(this._gridBot);
-
-        for (let cy = 0; cy < fSize.rows; cy++) {
-            for (let cx = 0; cx < fSize.cols; cx++) {
-                let fieldCell = new FieldCell(4);
-                fieldCell.position.copy(this.getPosByCellPos({ x: cx, y: cy }));
-                this._dummyMain.add(fieldCell);
-            }
+    private planetLaser(aData: PlanetLaserData) {
+        let planet = this.getObjectById(aData.planetId);
+        if (!planet) {
+            LogMng.warn(`planetLaser: !planet for...`, aData);
+            return;
         }
 
-    }
+        let laserColor = '#0072ff';
+        // const purpleLaserColor = '#5e48ff';
+        if (planet.owner != this._walletNumber) {
+            // this.logDebug(`laser is red`);
+            laserColor = '#ff0000';
+        }
+        else {
+            // this.logDebug(`laser is blue`);
+        }
 
-    private initCameraPosition(aIsTop: boolean) {
-        let zFactor = aIsTop ? -1 : 1;
-        this._cameraMng.moveTo({
-            aCamPos: { x: 0, y: 160, z: 25 * zFactor },
-            aTargetPos: { x: 0, y: 0, z: 20 * zFactor },
-            duration: 2,
+        let planetPos = planet.position.clone();
+        let dir = new THREE.Vector3(aData.dir.x, aData.dir.y, aData.dir.z);
+        dir.multiplyScalar(50);
+        let targetPos = planetPos.clone().add(dir);
+        // create laser
+        let laser = new LaserLine(planetPos, targetPos, laserColor);
+        this._dummyMain.add(laser);
+        laser.hide({
+            dur: 1,
+            cb: () => {
+                laser.free();
+            },
+            ctx: this
         });
     }
 

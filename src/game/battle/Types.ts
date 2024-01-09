@@ -14,7 +14,7 @@ export enum PackTitle {
     objectUpdate = 'objectUpdate',
     objectDestroy = 'objectDestroy',
     attack = 'attack',
-    laser = 'laser'
+    planetLaser = 'planetLaser'
 }
 
 export type ObjectType = 'Star' | 'Planet' | 'FighterShip' | 'BattleShip' | 'Homing';
@@ -57,4 +57,9 @@ export type ObjectCreateData = ObjectUpdateData & {
     radius?: number,
     hp?: number,
     attackRadius?: number
+}
+
+export type PlanetLaserData = {
+    planetId: number,
+    dir: { x, y, z }
 }

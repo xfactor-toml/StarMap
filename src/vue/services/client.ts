@@ -160,9 +160,11 @@ export class ClientService {
   
   onBattleAction(payload: { type: BattleActionType }) {
     const battleStore = useBattleStore()
-    logger.log(`battle action, ${JSON.stringify(payload)}`)
+    // logger.log(`battle action, ${JSON.stringify(payload)}`)
+    LogMng.debug(`battle action, ${JSON.stringify(payload)}`);
     FrontEvents.onBattleAbilityLaserClick.dispatch();
     // battleStore.addSkillToPendingList(payload.type);
+    battleStore.setCooldown(payload.type, 3000);
 
     return;
     // MOCK START

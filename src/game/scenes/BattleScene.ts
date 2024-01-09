@@ -90,12 +90,6 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
             },
             exitgame: () => {
                 this._connection.sendExitGame();
-            },
-            planetFire: () => {
-                this._connection.sendPlanetFire();
-            },
-            planetFireClient: () => {
-                
             }
         }
 
@@ -104,8 +98,6 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
         f.add(DATA, 'searchGameBot').name('Play with Bot');
         // f.add(DATA, 'withdrawgame').name('Withdraw');
         f.add(DATA, 'exitgame').name('Exit Game');
-        f.add(DATA, 'planetFire').name('Planet Fire');
-        f.add(DATA, 'planetFireClient').name('Planet Fire - Client');
     }
 
     private onFrontStarBattleSearch() {
