@@ -79,6 +79,7 @@ export interface BattleSearchingError extends BaseEvent {
 }
 export interface BattlePrerollShow extends BaseEvent {
   eventName: GameEvent.BATTLE_PREROLL_SHOW;
+  timer: number;
   playerWallet: string;
   enemyWallet: string;
 }

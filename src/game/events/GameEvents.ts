@@ -51,6 +51,7 @@ export class GameEventDispatcher {
     }
 
     static battlePrerollShow(aData: {
+        timer: number,
         playerWallet: string,
         enemyWallet: string
     }) {

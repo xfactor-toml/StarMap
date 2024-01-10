@@ -88,6 +88,7 @@ export class GameEngine extends MyBasicClass {
         this.logDebug(`onBattleEnterGame...`);
 
         GameEventDispatcher.battlePrerollShow({
+            timer: aData.timer,
             playerWallet: aData.playerWallet, // getWalletAddress(),
             enemyWallet: aData.enemyWallet
         });

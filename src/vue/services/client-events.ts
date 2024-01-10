@@ -110,7 +110,7 @@ export class ClientEventsService {
                 fractions: 4
               },
               cooldown: {
-                duration: 3000,
+                duration: clientEvent.timer || 3000,
               }
             }
           }

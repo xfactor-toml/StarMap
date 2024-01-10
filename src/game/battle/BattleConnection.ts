@@ -23,7 +23,7 @@ export class BattleConnection extends MyEventDispatcher {
 
     private connectLocal() {
         this.closeConnection();
-        this._socket = io('localhost:3078');
+        this._socket = io('localhost:3089');
         this.initListeners();
     }
 

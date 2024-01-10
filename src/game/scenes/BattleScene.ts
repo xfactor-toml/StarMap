@@ -152,20 +152,6 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
     }
 
     onGameCompletePack(aData: GameCompleteData) {
-        switch (aData.status) {
-            case 'win':
-                alert(`You Win!`);
-                break;
-            case 'lose':
-                alert(`You Lose...`);
-                break;
-            case 'draw':
-                alert(`Draw...`);
-                break;
-            default:
-                this.logWarn(`onGameCompletePack: unknown status:`, aData);
-                break;
-        }
         this.emit(BattleSceneEvent.onGameComplete, aData);
     }
 
