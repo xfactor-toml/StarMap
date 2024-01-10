@@ -55,8 +55,9 @@ export const FrontEvents = {
      */
     onBattleSearch: new Signal(),
     onBattleStopSearch: new Signal(),
-    onExitBattle: new Signal(),
+    onBattleExit: new Signal(),
     onBattleAbilityLaserClick: new Signal(),
+    onBattleClaimClick: new Signal(),
 
 
 

@@ -82,6 +82,12 @@ export interface BattlePrerollShow extends BaseEvent {
   playerWallet: string;
   enemyWallet: string;
 }
+export interface BattleCompleteShow extends BaseEvent {
+  eventName: GameEvent.BATTLE_COMPLETE_SHOW;
+  status: 'win' | 'lose' | 'draw';
+  playerWallet: string;
+  enemyWallet: string;
+}
 
 export type ClientEvent =
   | GameLoadingEvent
@@ -100,7 +106,8 @@ export type ClientEvent =
   | BattleSearchingStart
   | BattleSearchingStop
   | BattleSearchingError
-  | BattlePrerollShow;
+  | BattlePrerollShow
+  | BattleCompleteShow;
 
 export type GuiLevel = {
   value: number;

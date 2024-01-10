@@ -73,6 +73,7 @@ export class GameBoot implements ILogger {
                 }
             },
             {
+                // battle local connection
                 keys: ['blc'],
                 onReadHandler: (aValue: string) => {
                     Settings.BATTLE.localConnect = aValue == '1';

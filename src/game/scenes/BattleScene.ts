@@ -12,7 +12,7 @@ import { GameEvent, GameEventDispatcher } from '../events/GameEvents';
 export enum BattleSceneEvent {
     onGameSearchStart = 'onGameSearchStart',
     onGameStart = 'onEnterGame',
-    onWithdraw = 'onWithdraw',
+    // onWithdraw = 'onWithdraw',
     onGameComplete = 'onGameComplete'
 }
 
@@ -53,7 +53,7 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
     private initEvents() {
         FrontEvents.onBattleSearch.add(this.onFrontStarBattleSearch, this);
         FrontEvents.onBattleStopSearch.add(this.onFrontStopBattleSearch, this);
-        FrontEvents.onExitBattle.add(this.onFrontExitBattle, this);
+        FrontEvents.onBattleExit.add(this.onFrontExitBattle, this);
         FrontEvents.onBattleAbilityLaserClick.add(this.onFrontLaserClick, this);
     }
 
@@ -90,7 +90,13 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
             },
             exitgame: () => {
                 this._connection.sendExitGame();
-            }
+            },
+            winScreenTest: () => {
+                let data: GameCompleteData = {
+                    status: 'win'
+                }
+                this.emit(BattleSceneEvent.onGameComplete, data);
+            },
         }
 
         const f = aFolder;
@@ -98,6 +104,7 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
         f.add(DATA, 'searchGameBot').name('Play with Bot');
         // f.add(DATA, 'withdrawgame').name('Withdraw');
         f.add(DATA, 'exitgame').name('Exit Game');
+        f.add(DATA, 'winScreenTest').name('Win Screen Test');
     }
 
     private onFrontStarBattleSearch() {
@@ -109,7 +116,7 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
     }
 
     private onFrontExitBattle() {
-        this._connection.sendSearchGame();
+        
     }
 
     private onFrontLaserClick() {
@@ -159,7 +166,7 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
                 this.logWarn(`onGameCompletePack: unknown status:`, aData);
                 break;
         }
-        this.emit(BattleSceneEvent.onGameComplete);
+        this.emit(BattleSceneEvent.onGameComplete, aData);
     }
 
     show() {

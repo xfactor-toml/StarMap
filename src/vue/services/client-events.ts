@@ -116,11 +116,12 @@ export class ClientEventsService {
           }
         });
 
-        await wait(2000);
+        await wait(3000);
 
-        scenesStore.setScene(SceneName.Battle, {
-          mode: 'process'
-        });
+        // scenesStore.setScene(SceneName.Battle, {
+        //   mode: 'process'
+        // });
+        scenesStore.setSceneMode('process');
 
         break;
 
@@ -131,6 +132,32 @@ export class ClientEventsService {
       // case 'GAME_BATTLE_ACTION_COOLDOWN':
       //   scenesStore.setSceneMode('process');
       //   break;
+
+      case GameEvent.BATTLE_COMPLETE_SHOW:
+        const scenes = useScenesStore();
+        const typeByStatus: {[index: string]: 'victory' | 'defeat'} = {
+          'win': 'victory',
+          'lose': 'defeat',
+          'draw': 'defeat'
+        }
+        battleStore.setResults({
+          type: typeByStatus[clientEvent.status],
+          player: '0xA089D195D994e8145dda68993A91C4a6D1704535',
+          owner: '0xA089D195D994e8145dda68993A91C4a6D1704535',
+          demage: 1000,
+          gold: 1000,
+          exp: 51323,
+          rating: {
+            prevoius: 1310,
+            current: 1422
+          },
+        })
+
+        scenes.setScene(SceneName.Battle, {
+          mode: 'results'
+        })
+        break;
+
 
       default:
         LogMng.error(`Unknown game event:`, clientEvent);

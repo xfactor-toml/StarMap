@@ -197,7 +197,8 @@ export class ClientService {
   }
   
   onClaim() {
-    logger.log('claim')
+    logger.log('claim');
+    FrontEvents.onBattleClaimClick.dispatch();
   }
   
 

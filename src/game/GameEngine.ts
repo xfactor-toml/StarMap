@@ -8,9 +8,10 @@ import { GalaxyScene } from "./scenes/GalaxyScene";
 import { MyBasicClass } from "./basics/MyBasicClass";
 import { ThreeLoader } from "./utils/threejs/ThreeLoader";
 import { BattleScene, BattleSceneEvent } from "./scenes/BattleScene";
-import { StartGameData } from "./battle/Types";
+import { GameCompleteData, StartGameData } from "./battle/Types";
 import { GameEventDispatcher } from "./events/GameEvents";
 import { getWalletAddress } from "~/blockchain/functions/auth";
+import { FrontEvents } from "./events/FrontEvents";
 
 export class GameEngine extends MyBasicClass {
     private _renderer: GameRenderer;
@@ -71,8 +72,11 @@ export class GameEngine extends MyBasicClass {
         this._battleScene.hide();
         this._battleScene.on(BattleSceneEvent.onGameSearchStart, this.onBattleSearchStart, this);
         this._battleScene.on(BattleSceneEvent.onGameStart, this.onBattleGameStart, this);
-        this._battleScene.on(BattleSceneEvent.onWithdraw, this.onBattleWithdrawGame, this);
+        // this._battleScene.on(BattleSceneEvent.onWithdraw, this.onBattleWithdrawGame, this);
         this._battleScene.on(BattleSceneEvent.onGameComplete, this.onBattleComplete, this);
+
+        FrontEvents.onBattleClaimClick.add(this.onFrontClaimClick, this);
+
     }
 
     private onBattleSearchStart() {
@@ -101,8 +105,12 @@ export class GameEngine extends MyBasicClass {
         this._galaxyScene.show();
     }
 
-    private onBattleComplete() {
+    private onBattleComplete(aData: GameCompleteData) {
         this.logDebug(`onBattleComplete...`);
+        GameEventDispatcher.battleComplete(aData);
+    }
+
+    private onFrontClaimClick() {
         this._battleScene.hide();
         this._battleScene.clear();
         this._galaxyScene.show();
