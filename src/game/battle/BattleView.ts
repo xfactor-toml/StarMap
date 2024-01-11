@@ -357,12 +357,12 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             // this.logDebug(`laser is blue`);
         }
 
-        let planetPos = planet.position.clone();
+        let originPos = this.getPositionByServerV3(aData.pos);
         let dir = new THREE.Vector3(aData.dir.x, aData.dir.y, aData.dir.z);
-        dir.multiplyScalar(200);
-        let targetPos = planetPos.clone().add(dir);
+        dir.multiplyScalar(aData.length);
+        let targetPos = originPos.clone().add(dir);
         // create laser
-        let laser = new LaserLine(planetPos, targetPos, laserColor, .02, .5);
+        let laser = new LaserLine(originPos, targetPos, laserColor, .02, .5);
         this._dummyMain.add(laser);
         laser.hide({
             dur: 1,
@@ -397,6 +397,14 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             this.serverToClientX(aServerPos.x),
             0,
             this.serverToClientY(aServerPos.y),
+        );
+    }
+
+    private getPositionByServerV3(aV3: { x: number, y: number, z: number }): THREE.Vector3 {
+        return new THREE.Vector3(
+            this.serverToClientX(aV3.x),
+            0,
+            this.serverToClientY(aV3.z)
         );
     }
 

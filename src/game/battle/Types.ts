@@ -61,5 +61,7 @@ export type ObjectCreateData = ObjectUpdateData & {
 
 export type PlanetLaserData = {
     planetId: number,
-    dir: { x, y, z }
+    pos: { x, y, z },
+    dir: { x, y, z },
+    length: number
 }

@@ -129,11 +129,6 @@ export class Settings {
     // battle
     static BATTLE = {
         // serverAddr: wsServerUrl,
-        // serverAddr: 'wss://staging-api.vorpal.finance/ws',
-        // serverAddr: 'wss://staging-api.vorpal.finance/ws/socket.io',
-        // serverAddr: 'ws://staging-api.vorpal.finance:3078',
-        // serverAddr: 'wss://staging-api.vorpal.finance/ws',
-        // serverAddr: 'https://staging-api.vorpal.finance',
         serverAddr: 'https://staging-api.vorpal.finance',
         localConnect: false
     };
