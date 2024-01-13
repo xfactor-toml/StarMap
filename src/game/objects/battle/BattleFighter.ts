@@ -25,7 +25,7 @@ export class BattleFighter extends BattleObject {
 
     private initShipModel() {
         this._model = ThreeLoader.getInstance().getModel(ModelAlias.Fighter);
-        let tMap = ThreeLoader.getInstance().getTexture(TextureAlias.Ship1Color);
+        let tMap = ThreeLoader.getInstance().getTexture(TextureAlias.ship1Color);
 
         let m = new THREE.MeshBasicMaterial({
             map: tMap

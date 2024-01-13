@@ -18,6 +18,7 @@ import { BattleConnection } from './BattleConnection';
 import { FieldCell } from '../objects/battle/FieldCell';
 import { getWalletAddress } from '~/blockchain/functions/auth';
 import { LogMng } from '../utils/LogMng';
+import { FieldGrid } from '../objects/battle/FieldGrid';
 
 type ServerFieldParams = {
 
@@ -122,6 +123,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
     private initField() {
         const fSize = SETTINGS.server.field.size;
+
         for (let cy = 0; cy < fSize.rows; cy++) {
             for (let cx = 0; cx < fSize.cols; cx++) {
                 let fieldCell = new FieldCell(4);
@@ -129,6 +131,11 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 this._dummyMain.add(fieldCell);
             }
         }
+
+        // let grid = new FieldGrid(fSize.rows, fSize.cols, fSize.sectorWidth, fSize.sectorHeight, 0x00ffff);
+        // grid.rotation.x = MyMath.toRadian(-90);
+        // this._dummyMain.add(grid);
+
     }
 
     private initCameraPosition(aIsTop: boolean) {
