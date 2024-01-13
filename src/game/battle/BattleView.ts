@@ -173,10 +173,10 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         switch (aData.type) {
 
             case 'Star':
-                obj = new BattleStar(aData);
+                obj = new BattleStar({ ...aData, ...{ camera: this._camera } });
                 if (aData.pos) obj.position.copy(this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z }));
                 // add hp bar
-                this._shipEnergyViewer.addBar(obj);
+                // this._shipEnergyViewer.addBar(obj);
                 this._objects.set(aData.id, obj);
                 break;
 
