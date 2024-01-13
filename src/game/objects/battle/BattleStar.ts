@@ -8,7 +8,8 @@ import { MyMath } from '@/utils';
 import { BattleStarHpBar } from './BattleStarHpBar';
 
 type BattleStarParams = ObjectCreateData & {
-    camera: THREE.Camera
+    camera: THREE.Camera,
+    planetOrbitRadius: number
 }
 
 export class BattleStar extends BattleObject {
@@ -25,6 +26,7 @@ export class BattleStar extends BattleObject {
         this.initStar();
         this.initHpBgLine();
         this.initHpBar();
+        this.initPlanetOrbit();
 
     }
 
@@ -67,6 +69,16 @@ export class BattleStar extends BattleObject {
             hp: this.hp
         });
         this.add(this._starHpBar);
+    }
+
+    private initPlanetOrbit() {
+        let orbitLine = ThreeUtils.drawLineCircle({
+            radius: this._starParams.planetOrbitRadius,
+            lineWidth: 1,
+            color: 0x00ffff
+        });
+        orbitLine.rotation.x = MyMath.toRadian(-90);
+        this.add(orbitLine);
     }
 
     free() {
