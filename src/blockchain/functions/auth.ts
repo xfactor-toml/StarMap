@@ -11,9 +11,10 @@ export function isWalletConnected(): boolean {
     return walletAddress != '';
 }
 
-export function IsTrueNetwork(): boolean {
+export async function IsTrueNetwork(): Promise<boolean> {
     if (!env) return false
-    return env.chainId === networkParams.networkHexID;
+    const network = await env.request({ method: "eth_chainId" });
+    return network === networkParams.networkHexID;
 }
 
 async function NetworkAuth(): Promise<account> {
@@ -31,9 +32,8 @@ async function NetworkAuth(): Promise<account> {
 
         try {
             const accs = await env.request({ method: "eth_requestAccounts" }, connect)
-            const network = env.chainId
     
-            if (network !== networkParams.networkHexID) {
+            if (!await IsTrueNetwork()) {
     
                 await env.request({
                     method: 'wallet_addEthereumChain',
@@ -50,7 +50,7 @@ async function NetworkAuth(): Promise<account> {
                 })
             }
     
-            if (!IsTrueNetwork()) {
+            if (!await IsTrueNetwork()) {
                 walletAddress = '';
                 reject("User had refused to connect with using network");
             }

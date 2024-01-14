@@ -2,7 +2,6 @@ import Web3 from "web3";
 import { contracts, env, maxStarLevel, plasmaDecimals, reserveRpcs } from "../config";
 import { Coords, GameStats, Race, StarData, StarList, StarParams, account, fuelTarget } from "../types";
 import { ERC20ABI, StarNFTABI } from "../ABI";
-import { IsTrueNetwork, NetworkAuth } from "./auth";
 import { ApprovePlasma, GetAllowance } from "./plasma";
 
 const nft = contracts.starNFT
@@ -244,7 +243,7 @@ async function RefuelStar ( account : account,
       } */
 
       try {
-        const fuel = BigInt(amount * 1e18).toString()
+        const fuel = String(amount * (10 ** 18))
 		const gs = await web3.eth.getGasPrice()
         if (target === "existence") {
             await writeable.methods.UpdateStarFuel(starId, fuel).send({
