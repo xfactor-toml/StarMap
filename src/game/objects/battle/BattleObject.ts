@@ -1,4 +1,5 @@
 import { MyMath } from '@/utils';
+import gsap from 'gsap';
 import * as THREE from 'three';
 import { MyObject3D } from "~/game/basics/MyObject3D";
 import { ObjectCreateData } from '~/game/battle/Types';
@@ -87,6 +88,49 @@ export class BattleObject extends MyObject3D {
         this.add(this._debugAttackRadius);
     }
 
+    rotateToPoint(aPoint: THREE.Vector3, aDuration: number) {
+        let startQ = this.quaternion.clone();
+        this.lookAt(aPoint);
+        let targetQ = this.quaternion.clone();
+        this.quaternion.copy(startQ);
+        const tweenObj = { t: 0 };
+        gsap.to(tweenObj, {
+            t: 1,
+            duration: aDuration / 1000,
+            ease: 'sine.inOut',
+            onUpdate: () => {
+                let q = startQ.clone().slerp(targetQ, tweenObj.t);
+                this.quaternion.copy(q);
+            }
+        });
+    }
+
+    jumpToPoint(aPoint: THREE.Vector3, aDuration: number) {
+        let startPos = this.position.clone();
+        let targetPos = aPoint;
+
+        gsap.to(this.scale, {
+            x: .8,
+            y: .8,
+            duration: aDuration / 1000 / 2,
+            ease: 'power4.in',
+            yoyo: true,
+            repeat: 1
+        });
+
+        const tweenObj = { t: 0 };
+        gsap.to(tweenObj, {
+            t: 1,
+            duration: aDuration / 1000,
+            ease: 'power4.inOut',
+            onUpdate: () => {
+                // let p = targetPos.clone().sub(startPos).normalize().multiplyScalar(tweenObj.t);
+                let p = startPos.clone().lerp(targetPos, tweenObj.t);
+                this.position.copy(p);
+            }
+        });
+    }
+
     free() {
         this._debugRadiusSphere = null;
         this._debugAttackRadius = null;
@@ -99,6 +143,16 @@ export class BattleObject extends MyObject3D {
         // this.quaternion.set(q.x, q.y, q.z, q.w);
     }
 
+    lookByDir(aDir: { x, y, z }) {
+        let dir = new THREE.Vector3(aDir.x, aDir.y, aDir.z);
+        let p = this.position.clone().add(dir);
+        this.lookAt(p);
+    }
+
+    updateQuaternion(dt: number) {
+        this.quaternion.slerp(this._targetQuaternion, .1);
+    }
+
     update(dt: number) {
 
         // move
@@ -109,10 +163,8 @@ export class BattleObject extends MyObject3D {
         }
 
         // rotate
-        // smoth
-        this.quaternion.slerp(this._targetQuaternion, .1);
-        // moment
-        // this.rotation.y = this.targetRotation;
+        this.updateQuaternion(dt);
+
     }
 
 }

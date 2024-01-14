@@ -47,6 +47,10 @@ export class BattleFighter extends BattleObject {
         this.add(this._model);
     }
 
+    updateQuaternion(dt: number) {
+        
+    }
+
     free() {
         this._mesh = null;
         this._model = null;

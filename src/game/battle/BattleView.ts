@@ -113,6 +113,12 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         this._connection.socket.on(PackTitle.objectDestroy, (aIds: number[]) => {
             this.onObjectDestroyPack(aIds);
         });
+        this._connection.socket.on(PackTitle.rotate, (aData) => {
+            this.rotate(aData);
+        });
+        this._connection.socket.on(PackTitle.jump, (aData) => {
+            this.jump(aData);
+        });
         this._connection.socket.on(PackTitle.attack, (aData) => {
             this.attack(aData);
         });
@@ -174,14 +180,13 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
             case 'Star':
                 obj = new BattleStar({
-                    ...aData, ...{
+                    ...aData,
+                    ...{
                         camera: this._camera,
                         planetOrbitRadius: 15
                     }
                 });
                 if (aData.pos) obj.position.copy(this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z }));
-                // add hp bar
-                // this._shipEnergyViewer.addBar(obj);
                 this._objects.set(aData.id, obj);
                 break;
 
@@ -200,11 +205,13 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
                 if (aData.pos) {
                     const clientPos = this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z });
-                    obj.targetPosition = clientPos;
+                    // obj.targetPosition = clientPos;
                     obj.position.copy(clientPos);
                 }
 
-                if (aData.q) obj.setQuaternion(aData.q);
+                // if (aData.q) obj.setQuaternion(aData.q);
+                if (aData.lookDir) obj.lookByDir(aData.lookDir);
+
                 // add hp bar
                 this._shipEnergyViewer.addBar(obj);
             } break;
@@ -281,6 +288,41 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         for (let i = 0; i < aIds.length; i++) {
             this.destroyObject(aIds[i]);
         }
+    }
+
+    private rotate(aData: {
+        id: number,
+        type: 'toPoint' | 'toDir',
+        target: { x, y, z },
+        duration: number
+    }) {
+        let obj = this.getObjectById(aData.id);
+        if (!obj) {
+            this.logWarn(`rotate: !obj`, aData);
+            return;
+        }
+        switch (aData.type) {
+            case 'toPoint':
+                obj.rotateToPoint(this.getPositionByServerV3(aData.target), aData.duration);
+                break;
+        }
+    }
+
+    private jump(aData: {
+        id: number,
+        pos: { x, y, z },
+        duration: number
+    }) {
+        let obj = this.getObjectById(aData.id);
+        if (!obj) {
+            this.logWarn(`jump: !obj`, aData);
+            return;
+        }
+        // obj.rotateToPoint(this.getPositionByServerV3(aData.target), aData.duration);
+        // let pos = this.getPositionByServerV3(aData.pos);
+        // obj.position.copy(pos);
+        obj.jumpToPoint(this.getPositionByServerV3(aData.pos), aData.duration);
+
     }
 
     private attack(aData: {
