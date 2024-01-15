@@ -68,6 +68,8 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
     private _isTopPosition = false;
 
+    private _axiesHelper: THREE.AxesHelper;
+
     constructor(aParams: {
         scene: THREE.Scene,
         camera: THREE.PerspectiveCamera,
@@ -86,11 +88,6 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         });
 
         this._dummyMain = new THREE.Group();
-        // this._dummyMain.visible = !aIsHided;
-        if (Settings.isDebugMode) {
-            let axiesHelper = new THREE.AxesHelper(150);
-            this._dummyMain.add(axiesHelper);
-        }
         this._scene.add(this._dummyMain);
 
         this._objects = new Map();
@@ -138,10 +135,6 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             }
         }
 
-        // let grid = new FieldGrid(fSize.rows, fSize.cols, fSize.sectorWidth, fSize.sectorHeight, 0x00ffff);
-        // grid.rotation.x = MyMath.toRadian(-90);
-        // this._dummyMain.add(grid);
-
     }
 
     private initCameraPosition(aIsTop: boolean) {
@@ -152,6 +145,66 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             aTargetPos: { x: 0, y: 0, z: 20 * zFactor },
             duration: .5
         });
+    }
+
+    private serverValueToClient(aServerValue: number): number {
+        const factor = SETTINGS.client.field.size.w / SETTINGS.server.field.size.w;
+        return aServerValue * factor;
+    }
+
+    private serverToClientX(aServerX: number): number {
+        const factor = SETTINGS.client.field.size.w / SETTINGS.server.field.size.w;
+        const wh = SETTINGS.client.field.size.w / 2;
+        const dx = SETTINGS.server.field.size.sectorWidth / 2 * factor;
+        return aServerX * factor - wh + dx;
+    }
+
+    private serverToClientY(aServerY: number): number {
+        const factor = SETTINGS.client.field.size.h / SETTINGS.server.field.size.h;
+        const h = SETTINGS.client.field.size.h / 2;
+        const dy = SETTINGS.server.field.size.sectorHeight / 2 * factor;
+        return aServerY * factor - h + dy;
+    }
+
+    private getPositionByServer(aServerPos: { x: number, y: number }): THREE.Vector3 {
+        return new THREE.Vector3(
+            this.serverToClientX(aServerPos.x),
+            0,
+            this.serverToClientY(aServerPos.y),
+        );
+    }
+
+    private getPositionByServerV3(aV3: { x: number, y: number, z: number }): THREE.Vector3 {
+        return new THREE.Vector3(
+            this.serverToClientX(aV3.x),
+            0,
+            this.serverToClientY(aV3.z)
+        );
+    }
+
+    private getPosByCellPos(aCellPos: { x: number, y: number }): THREE.Vector3 {
+        const fx = SETTINGS.server.field.size.sectorWidth;
+        const fy = SETTINGS.server.field.size.sectorHeight;
+        const dx = aCellPos.y % 2 === 0 ? 0 : fx / 2;
+        return new THREE.Vector3(
+            this.serverToClientX(aCellPos.x * fx + dx),
+            0,
+            this.serverToClientY(aCellPos.y * fy),
+        );
+    }
+
+    private getObjectById(aId: number): BattleObject {
+        return this._objects.get(aId);
+    }
+
+    private getRandomShip(exclude?: BattleObject[]): BattleObject {
+        let ships: BattleObject[] = [];
+        this._objects.forEach((aObj) => {
+            if (aObj instanceof BattleFighter) ships.push(aObj);
+        })
+        if (ships.length <= 0) return null;
+        let id = MyMath.randomIntInRange(0, ships.length - 1);
+        return ships[id];
     }
 
     private onFieldInitPack(aData: FieldInitData) {
@@ -200,9 +253,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             case 'FighterShip': {
                 let r = this.serverValueToClient(aData.radius);
                 obj = new BattleFighter(aData);
-                obj.createDebugRadiusSphere();
-                obj.createDebugAttackSphere();
-
+                
                 if (aData.pos) {
                     const clientPos = this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z });
                     // obj.targetPosition = clientPos;
@@ -220,8 +271,6 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 this.logDebug(`onObjectCreatePack(): BattleShip:`, aData);
                 let r = this.serverValueToClient(aData.radius);
                 obj = new BattleShip(aData);
-                obj.createDebugRadiusSphere();
-                obj.createDebugAttackSphere();
 
                 if (aData.pos) {
                     const clientPos = this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z });
@@ -427,66 +476,6 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         });
     }
 
-    private serverValueToClient(aServerValue: number): number {
-        const factor = SETTINGS.client.field.size.w / SETTINGS.server.field.size.w;
-        return aServerValue * factor;
-    }
-
-    private serverToClientX(aServerX: number): number {
-        const factor = SETTINGS.client.field.size.w / SETTINGS.server.field.size.w;
-        const wh = SETTINGS.client.field.size.w / 2;
-        const dx = SETTINGS.server.field.size.sectorWidth / 2 * factor;
-        return aServerX * factor - wh + dx;
-    }
-
-    private serverToClientY(aServerY: number): number {
-        const factor = SETTINGS.client.field.size.h / SETTINGS.server.field.size.h;
-        const h = SETTINGS.client.field.size.h / 2;
-        const dy = SETTINGS.server.field.size.sectorHeight / 2 * factor;
-        return aServerY * factor - h + dy;
-    }
-
-    private getPositionByServer(aServerPos: { x: number, y: number }): THREE.Vector3 {
-        return new THREE.Vector3(
-            this.serverToClientX(aServerPos.x),
-            0,
-            this.serverToClientY(aServerPos.y),
-        );
-    }
-
-    private getPositionByServerV3(aV3: { x: number, y: number, z: number }): THREE.Vector3 {
-        return new THREE.Vector3(
-            this.serverToClientX(aV3.x),
-            0,
-            this.serverToClientY(aV3.z)
-        );
-    }
-
-    private getPosByCellPos(aCellPos: { x: number, y: number }): THREE.Vector3 {
-        const fx = SETTINGS.server.field.size.sectorWidth;
-        const fy = SETTINGS.server.field.size.sectorHeight;
-        const dx = aCellPos.y % 2 === 0 ? 0 : fx / 2;
-        return new THREE.Vector3(
-            this.serverToClientX(aCellPos.x * fx + dx),
-            0,
-            this.serverToClientY(aCellPos.y * fy),
-        );
-    }
-
-    private getObjectById(aId: number): BattleObject {
-        return this._objects.get(aId);
-    }
-
-    private getRandomShip(exclude?: BattleObject[]): BattleObject {
-        let ships: BattleObject[] = [];
-        this._objects.forEach((aObj) => {
-            if (aObj instanceof BattleFighter) ships.push(aObj);
-        })
-        if (ships.length <= 0) return null;
-        let id = MyMath.randomIntInRange(0, ships.length - 1);
-        return ships[id];
-    }
-
     private destroyObject(aId: number) {
         this._shipEnergyViewer.removeBar(aId);
         let obj = this.getObjectById(aId);
@@ -507,33 +496,48 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     }
 
     initDebugGui(aFolder: GUI) {
-        const DATA = {
-            randomLaserRed: () => {
-                let ship1 = this.getRandomShip();
-                let ship2 = this.getRandomShip();
-                if (!ship1 || !ship2 || ship1.objId == ship2.objId) return;
-                this.attack({
-                    attackType: 'laser',
-                    idFrom: ship1.objId,
-                    idTo: ship2.objId,
-                    damage: 10
-                });
-            },
-            randomLaserBlue: () => {
-                let ship1 = this.getRandomShip();
-                let ship2 = this.getRandomShip();
-                if (!ship1 || !ship2 || ship1.objId == ship2.objId) return;
-                this.attack({
-                    attackType: 'laser',
-                    idFrom: ship1.objId,
-                    idTo: ship2.objId,
-                    damage: 10
-                });
-            }
-        }
         const f = aFolder;
-        // f.add(DATA, 'randomLaserRed');
-        // f.add(DATA, 'randomLaserBlue');
+        const DATA = {
+            showAxies: false,
+            showObjectRadius: false,
+            showObjectAttackRadius: false
+        }
+
+        f.add(DATA, 'showAxies').onChange((aShow: boolean) => {
+            if (aShow) {
+                if (this._axiesHelper) return;
+                this._axiesHelper = new THREE.AxesHelper(150);
+                this._dummyMain.add(this._axiesHelper);
+            }
+            else {
+                if (!this._axiesHelper) return;
+                this._dummyMain.remove(this._axiesHelper);
+                this._axiesHelper = null;
+            }
+        }).name(`Axies`);
+
+        f.add(DATA, 'showObjectRadius').onChange((aShow: boolean) => {
+            this._objects.forEach(obj => {
+                if (aShow) {
+                    obj.createDebugRadiusSphere();
+                }
+                else {
+                    obj.destroyDebugRadiusSphere();
+                }
+            });
+        }).name(`Object Radius`);
+
+        f.add(DATA, 'showObjectAttackRadius').onChange((val: boolean) => {
+            this._objects.forEach(obj => {
+                if (val) {
+                    obj.createDebugAttackSphere();
+                }
+                else {
+                    obj.destroyDebugAttackSphere();
+                }
+            });
+        }).name(`Attack Radius`);
+
     }
 
     destroyAllObjects() {

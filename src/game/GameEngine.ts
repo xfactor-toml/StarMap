@@ -9,7 +9,7 @@ import { MyBasicClass } from "./basics/MyBasicClass";
 import { ThreeLoader } from "./utils/threejs/ThreeLoader";
 import { BattleScene, BattleSceneEvent } from "./scenes/BattleScene";
 import { GameCompleteData, StartGameData } from "./battle/Types";
-import { GameEventDispatcher } from "./events/GameEvents";
+import { GameEvent, GameEventDispatcher } from "./events/GameEvents";
 import { getWalletAddress } from "~/blockchain/functions/auth";
 import { FrontEvents } from "./events/FrontEvents";
 
@@ -55,7 +55,7 @@ export class GameEngine extends MyBasicClass {
         this._renderer.scene.background = loader.getCubeTexture('skybox');
     }
 
-    private initGalaxy() {
+    private initGalaxyScene() {
         // SCENES
         this._galaxyScene = new GalaxyScene({
             scene: this._renderer.scene,
@@ -64,24 +64,17 @@ export class GameEngine extends MyBasicClass {
         this._galaxyScene.initGalaxy();
     }
 
-    private initBattle() {
+    private initBattleScene() {
         this._battleScene = new BattleScene({
             scene: this._renderer.scene,
             camera: this._renderer.camera
         });
         this._battleScene.hide();
-        this._battleScene.on(BattleSceneEvent.onGameSearchStart, this.onBattleSearchStart, this);
         this._battleScene.on(BattleSceneEvent.onGameStart, this.onBattleGameStart, this);
-        // this._battleScene.on(BattleSceneEvent.onWithdraw, this.onBattleWithdrawGame, this);
         this._battleScene.on(BattleSceneEvent.onGameComplete, this.onBattleComplete, this);
 
         FrontEvents.onBattleClaimClick.add(this.onFrontClaimClick, this);
 
-    }
-
-    private onBattleSearchStart() {
-        this.logDebug(`onBattleSearchStart...`);
-        // this._galaxyScene.hide();
     }
 
     private onBattleGameStart(aData: StartGameData) {
@@ -89,7 +82,7 @@ export class GameEngine extends MyBasicClass {
 
         GameEventDispatcher.battlePrerollShow({
             timer: aData.timer,
-            playerWallet: aData.playerWallet, // getWalletAddress(),
+            playerWallet: aData.playerWallet,
             enemyWallet: aData.enemyWallet
         });
         
@@ -98,12 +91,6 @@ export class GameEngine extends MyBasicClass {
             this._battleScene.show();
         }, 1000);
 
-    }
-
-    private onBattleWithdrawGame() {
-        this.logDebug(`onBattleWithdrawGame...`);
-        this._galaxyScene.hide();
-        this._galaxyScene.show();
     }
 
     private onBattleComplete(aData: GameCompleteData) {
@@ -145,8 +132,8 @@ export class GameEngine extends MyBasicClass {
             this.initDebugGui();
         }
         this.initSkybox();
-        this.initGalaxy();
-        this.initBattle();
+        this.initGalaxyScene();
+        this.initBattleScene();
         this.animate();
     }
 

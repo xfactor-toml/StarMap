@@ -10,9 +10,7 @@ import { GameCompleteData, PackTitle, StartGameData } from '../battle/Types';
 import { GameEvent, GameEventDispatcher } from '../events/GameEvents';
 
 export enum BattleSceneEvent {
-    onGameSearchStart = 'onGameSearchStart',
     onGameStart = 'onEnterGame',
-    // onWithdraw = 'onWithdraw',
     onGameComplete = 'onGameComplete'
 }
 
@@ -104,7 +102,7 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
         f.add(DATA, 'searchGameBot').name('Play with Bot');
         // f.add(DATA, 'withdrawgame').name('Withdraw');
         f.add(DATA, 'exitgame').name('Exit Game');
-        f.add(DATA, 'winScreenTest').name('Win Screen Test');
+        // f.add(DATA, 'winScreenTest').name('Win Screen Test');
     }
 
     private onFrontStarBattleSearch() {
@@ -128,7 +126,6 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
     }) {
         switch (aData.cmd) {
             case 'start':
-                this.emit(BattleSceneEvent.onGameSearchStart);
                 GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_START);
                 break;
             case 'stop':

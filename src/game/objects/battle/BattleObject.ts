@@ -63,6 +63,7 @@ export class BattleObject extends MyObject3D {
     }
 
     createDebugRadiusSphere() {
+        if (this._debugRadiusSphere) return;
         const geometry = new THREE.TorusGeometry(this._params.radius, .2, 2, 20);
         const material = new THREE.MeshBasicMaterial({
             color: 0x00ff00,
@@ -75,7 +76,14 @@ export class BattleObject extends MyObject3D {
         this.add(this._debugRadiusSphere);
     }
 
+    destroyDebugRadiusSphere() {
+        if (!this._debugRadiusSphere) return;
+        this.remove(this._debugRadiusSphere);
+        this._debugRadiusSphere = null;
+    }
+
     createDebugAttackSphere() {
+        if (this._debugAttackRadius) return;
         const geometry = new THREE.TorusGeometry(this._params.attackRadius, .15, 2, 20);
         const material = new THREE.MeshBasicMaterial({
             color: 0xff0000,
@@ -86,6 +94,12 @@ export class BattleObject extends MyObject3D {
         this._debugAttackRadius = new THREE.Mesh(geometry, material);
         this._debugAttackRadius.rotation.x = MyMath.toRadian(-90);
         this.add(this._debugAttackRadius);
+    }
+
+    destroyDebugAttackSphere() {
+        if (!this._debugAttackRadius) return;
+        this.remove(this._debugAttackRadius);
+        this._debugAttackRadius = null;
     }
 
     rotateToPoint(aPoint: THREE.Vector3, aDuration: number) {

@@ -48,7 +48,7 @@ export class BattleFighter extends BattleObject {
     }
 
     updateQuaternion(dt: number) {
-        
+        // clear override
     }
 
     free() {

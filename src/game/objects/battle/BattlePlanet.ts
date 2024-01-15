@@ -11,12 +11,15 @@ export class BattlePlanet extends BattleObject {
     protected _settelite: THREE.Mesh;
     protected _setteliteOrbitRadius: number;
     protected _setteliteRadius: number;
+    protected _localRotateSpd = 0;
 
     constructor(aParams: ObjectCreateData) {
         super(aParams, 'BattlePlanet');
 
         this._setteliteOrbitRadius = this.radius * 2;
         this._setteliteRadius = this.radius / 2;
+
+        this._localRotateSpd = MyMath.randomInRange(-2, 4);
 
         this.initPlanet();
         this.initSetteliteOrbitLine(this, this._setteliteOrbitRadius, 1, 0x00ffff);
@@ -27,8 +30,9 @@ export class BattlePlanet extends BattleObject {
 
     private initPlanet() {
         let g = new THREE.SphereGeometry(this.radius);
+        let t = ThreeLoader.getInstance().getTexture(TextureAlias.planet0_256);
         let m = new THREE.MeshBasicMaterial({
-            color: 0xaaaaaa
+            map: t
         });
         this._mesh = new THREE.Mesh(g, m);
         this.add(this._mesh);
@@ -70,16 +74,21 @@ export class BattlePlanet extends BattleObject {
         this.add(mesh);
     }
 
+    private updateMeshRotate(dt: number) {
+        this._mesh.rotation.y -= dt * this._localRotateSpd;
+    }
+
+    update(dt: number) {
+        super.update(dt);
+        this.updateMeshRotate(dt);
+    }
+
     free() {
         if (this._mesh) {
             this.remove(this._mesh);
             this._mesh = null;
         }
         super.free();
-    }
-
-    update(dt: number) {
-        super.update(dt);
     }
 
 }

@@ -6,6 +6,7 @@ export enum TextureAlias {
     ship1Color = `ship1Color`,
     fieldCell = `fieldCell`,
     planetDirrectionArea = `planetDirrectionArea`,
+    planet0_256 = `planet0_256`,
 
 };
 
@@ -19,4 +20,5 @@ export const TEXTURE_LOAD_LIST = [
     { alias: TextureAlias.ship1Color, file: 'models/battle/space11/textures/spch3_Material_BaseColor.jpg' },
     { alias: TextureAlias.fieldCell, file: 'sprites/battle/cell.png' },
     { alias: TextureAlias.planetDirrectionArea, file: 'sprites/battle/area.png' },
+    { alias: TextureAlias.planet0_256, file: 'sprites/planets/0_256.jpg' },
 ];
