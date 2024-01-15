@@ -106,4 +106,21 @@ export class ThreeUtils {
 
     }
 
+    public static randomNormalVector(): THREE.Vector3 {
+        // Генерация случайных углов
+        const phi = Math.random() * 2 * Math.PI; // Азимутальный угол в диапазоне [0, 2π]
+        const theta = Math.acos(2 * Math.random() - 1); // Угол места в диапазоне [0, π]
+
+        // Преобразование сферических координат в декартовы
+        const x = Math.sin(theta) * Math.cos(phi);
+        const y = Math.sin(theta) * Math.sin(phi);
+        const z = Math.cos(theta);
+
+        return new THREE.Vector3(x, y, z);
+    }
+
+    public static randomVector(aLength: number): THREE.Vector3 {
+        return this.randomNormalVector().multiplyScalar(aLength);
+    }
+
 }

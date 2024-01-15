@@ -4,13 +4,16 @@ import { ThreeLoader } from '~/game/utils/threejs/ThreeLoader';
 import { ModelAlias } from '~/game/data/ModelData';
 import { TextureAlias } from '~/game/data/TextureData';
 import { ObjectCreateData } from '~/game/battle/Types';
+import { MyMath } from '@/utils';
 
 export class BattleFighter extends BattleObject {
     protected _mesh: THREE.Mesh;
     protected _model: THREE.Group;
+    protected _currGunNumber: number;
 
     constructor(aParams: ObjectCreateData) {
         super(aParams, 'BattleFighter');
+        this._currGunNumber = MyMath.randomIntInRange(1, 2);
         this.initShipModel();
     }
 
@@ -45,6 +48,33 @@ export class BattleFighter extends BattleObject {
         this._model.scale.set(sc, sc, sc);
 
         this.add(this._model);
+    }
+
+    private getCurrentGunLocalPoint(): THREE.Vector3 {
+        const dx = 1.5;
+        if (this._currGunNumber == 1) {
+            // left
+            return new THREE.Vector3(-dx, 0, 0);
+        }
+        else {
+            // right
+            return new THREE.Vector3(dx, 0, 0);
+        }
+    }
+
+    private switchGunPoint() {
+        if (this._currGunNumber == 1) {
+            this._currGunNumber = 2;
+        }
+        else {
+            this._currGunNumber = 1;
+        }
+    }
+
+    getGlobalFirePoint(): THREE.Vector3 {
+        let localPoint = this.getCurrentGunLocalPoint();
+        this.switchGunPoint();
+        return this.localToWorld(localPoint);
     }
 
     updateQuaternion(dt: number) {

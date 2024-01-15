@@ -19,17 +19,23 @@ export class LaserLine extends MyObject3D {
     private minRadius = 0.01;
     private maxRadius = 0.08;
 
-    constructor(aPosStart: THREE.Vector3, aPosEnd: THREE.Vector3, aColor: string, minRadius?: number, maxRadius?: number) {
+    constructor(aParams: {
+        posStart: THREE.Vector3,
+        posEnd: THREE.Vector3,
+        color: string,
+        minRadius?: number,
+        maxRadius?: number
+    }) {
         super();
 
-        if (minRadius != undefined) this.minRadius = minRadius;
-        if (maxRadius != undefined) this.maxRadius = maxRadius;
+        if (aParams.minRadius != undefined) this.minRadius = aParams.minRadius;
+        if (aParams.maxRadius != undefined) this.maxRadius = aParams.maxRadius;
 
-        this._color = aColor;
-        this._points = [aPosStart, aPosEnd];
+        this._color = aParams.color;
+        this._points = [aParams.posStart, aParams.posEnd];
 
-        let pos1 = aPosStart;
-        let pos2 = aPosEnd;
+        let pos1 = aParams.posStart;
+        let pos2 = aParams.posEnd;
 
         let newPos1 = pos1.clone();
         let newPos2 = pos2.clone();

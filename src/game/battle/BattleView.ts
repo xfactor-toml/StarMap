@@ -19,6 +19,7 @@ import { FieldCell } from '../objects/battle/FieldCell';
 import { getWalletAddress } from '~/blockchain/functions/auth';
 import { LogMng } from '../utils/LogMng';
 import { FieldGrid } from '../objects/battle/FieldGrid';
+import { ThreeUtils } from '../utils/threejs/ThreejsUtils';
 
 type ServerFieldParams = {
 
@@ -409,20 +410,56 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
             case 'laser':
                 // create laser
-                let laser = new LaserLine(objFrom.position.clone(), objTo.position.clone(), laserColor);
-                this._dummyMain.add(laser);
-                laser.hide({
-                    dur: 1,
-                    cb: () => {
-                        laser.free();
-                    },
-                    ctx: this
+                const laserLen = 2;
+                let r = ThreeUtils.randomVector(objTo.radius / 10);
+                const targetPoint = objTo.position.clone().add(r);
+                const firePoint = objFrom.getGlobalFirePoint();
+                const dir = targetPoint.clone().sub(firePoint).normalize();
+                if (aData.isMiss) {
+                    targetPoint.add(dir.multiplyScalar(objTo.radius * 4));
+                }
+                // let laser = new LaserLine(objFrom.position.clone(), objTo.position.clone(), laserColor);
+                let laser = new LaserLine({
+                    posStart: new THREE.Vector3(0, 0, 0),
+                    posEnd: new THREE.Vector3(0, 0, laserLen),
+                    color: laserColor,
+                    minRadius: .02,
+                    maxRadius: .2
                 });
+                laser.position.copy(firePoint);
+                laser.lookAt(targetPoint);
+
+                // show laser
+                const dur = .25;
+                gsap.to(laser.position, {
+                    x: targetPoint.x,
+                    y: targetPoint.y,
+                    z: targetPoint.z,
+                    duration: dur,
+                    ease: 'none',
+                    onStart: () => {
+                        // laser.hide({
+                        //     dur: 1,
+                        //     cb: () => {
+                        //         laser.free();
+                        //     },
+                        //     ctx: this
+                        // });
+                    },
+                    onComplete: () => {
+                        laser.free();
+                    }
+                });
+                this._dummyMain.add(laser);
                 break;
 
             case 'ray': {
                 // create laser
-                let laser = new LaserLine(objFrom.position.clone(), objTo.position.clone(), laserColor);
+                let laser = new LaserLine({
+                    posStart: objFrom.position.clone(),
+                    posEnd: objTo.position.clone(),
+                    color: laserColor
+                });
                 this._dummyMain.add(laser);
                 laser.hide({
                     dur: 1,
@@ -465,7 +502,13 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         dir.multiplyScalar(aData.length);
         let targetPos = originPos.clone().add(dir);
         // create laser
-        let laser = new LaserLine(originPos, targetPos, laserColor, .02, .5);
+        let laser = new LaserLine({
+            posStart: originPos,
+            posEnd: targetPos,
+            color: laserColor,
+            minRadius: .02,
+            maxRadius: .5
+        });
         this._dummyMain.add(laser);
         laser.hide({
             dur: 1,

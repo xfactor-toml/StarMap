@@ -102,6 +102,10 @@ export class BattleObject extends MyObject3D {
         this._debugAttackRadius = null;
     }
 
+    getGlobalFirePoint(): THREE.Vector3 {
+        return this.position.clone();
+    }
+
     rotateToPoint(aPoint: THREE.Vector3, aDuration: number) {
         let startQ = this.quaternion.clone();
         this.lookAt(aPoint);
