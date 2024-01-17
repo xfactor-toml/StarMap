@@ -11,8 +11,8 @@ export class BattleShip extends BattleObject {
 
     constructor(aParams: ObjectCreateData) {
         super(aParams, 'BattleShip');
-        this.initSimpleModel();
-        // this.initShipModel();
+        // this.initSimpleModel();
+        this.initShipModel();
     }
 
     private initSimpleModel() {
@@ -22,17 +22,14 @@ export class BattleShip extends BattleObject {
             color: 0xaaaaaa
         });
         this._mesh = new THREE.Mesh(g, m);
-        // basic rotation
-        // this._mesh.rotation.y = Math.PI / 2;
         this.add(this._mesh);
     }
 
     private initShipModel() {
-        this._model = ThreeLoader.getInstance().getModel(ModelAlias.BattleShip);
-        let tMap = ThreeLoader.getInstance().getTexture(TextureAlias.ship1Color);
+        this._model = ThreeLoader.getInstance().getModel(ModelAlias.BattleShipAqua);
 
-        let m = new THREE.MeshBasicMaterial({
-            map: tMap
+        let m = new THREE.MeshStandardMaterial({
+            color: 0xffffff
         });
 
         this._model.traverse((aObj) => {
@@ -43,12 +40,16 @@ export class BattleShip extends BattleObject {
         });
 
         // basic rotation
-        // this._model.rotation.y = Math.PI / 2;
+        this._model.rotation.y = Math.PI / 2;
 
-        const sc = this.radius * 1;
+        const sc = this.radius * 0.0015;
         this._model.scale.set(sc, sc, sc);
 
         this.add(this._model);
+    }
+
+    updateQuaternion(dt: number) {
+        // clear override
     }
 
     free() {

@@ -18,6 +18,7 @@ export class BattleStar extends BattleObject {
     protected _star: BigStar2;
     protected _starHpBar: BattleStarHpBar;
     protected _prevHp: number;
+    protected _pointLight: THREE.PointLight;
 
     constructor(aParams: BattleStarParams) {
         super(aParams, 'BattleStar');
@@ -27,6 +28,7 @@ export class BattleStar extends BattleObject {
         this.initHpBgLine();
         this.initHpBar();
         this.initPlanetOrbit();
+        this.initPointLight();
 
     }
 
@@ -81,6 +83,11 @@ export class BattleStar extends BattleObject {
         this.add(orbitLine);
     }
 
+    private initPointLight() {
+        this._pointLight = new THREE.PointLight(0xffffff, 2, 100);
+        this.add(this._pointLight);
+    }
+
     free() {
         this.clear();
         
@@ -106,6 +113,13 @@ export class BattleStar extends BattleObject {
             this._prevHp = this.hp;
             this._starHpBar.hp = this.hp;
         }
+
+        if (this._pointLight) {
+            this._pointLight.position.x = this.position.x;
+            this._pointLight.position.y = this.position.y + 20;
+            this._pointLight.position.z = this.position.z;
+        }
+
 
     }
 

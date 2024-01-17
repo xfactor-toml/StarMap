@@ -257,11 +257,9 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 
                 if (aData.pos) {
                     const clientPos = this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z });
-                    // obj.targetPosition = clientPos;
                     obj.position.copy(clientPos);
                 }
 
-                // if (aData.q) obj.setQuaternion(aData.q);
                 if (aData.lookDir) obj.lookByDir(aData.lookDir);
 
                 // add hp bar
@@ -275,12 +273,11 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
                 if (aData.pos) {
                     const clientPos = this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z });
-                    this.logDebug(`clientPos:`, clientPos);
-                    obj.targetPosition = clientPos;
                     obj.position.copy(clientPos);
                 }
 
-                if (aData.q) obj.setQuaternion(aData.q);
+                if (aData.lookDir) obj.lookByDir(aData.lookDir);
+
                 // add hp bar
                 this._shipEnergyViewer.addBar(obj);
             } break;

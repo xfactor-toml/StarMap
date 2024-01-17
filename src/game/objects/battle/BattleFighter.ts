@@ -27,11 +27,13 @@ export class BattleFighter extends BattleObject {
     }
 
     private initShipModel() {
-        this._model = ThreeLoader.getInstance().getModel(ModelAlias.Fighter);
-        let tMap = ThreeLoader.getInstance().getTexture(TextureAlias.ship1Color);
+        this._model = ThreeLoader.getInstance().getModel(ModelAlias.FighterAqua);
+        // let tMap = ThreeLoader.getInstance().getTexture(TextureAlias.ship1Color);
 
-        let m = new THREE.MeshBasicMaterial({
-            map: tMap
+        let m = new THREE.MeshStandardMaterial({
+        // let m = new THREE.MeshBasicMaterial({
+            // map: tMap
+            color: 0xffffff
         });
 
         this._model.traverse((aObj) => {
@@ -42,9 +44,9 @@ export class BattleFighter extends BattleObject {
         });
 
         // basic rotation
-        // this._model.rotation.y = Math.PI / 2;
+        this._model.rotation.y = Math.PI / 2;
 
-        const sc = this.radius * 0.001;
+        const sc = this.radius * 0.0015;
         this._model.scale.set(sc, sc, sc);
 
         this.add(this._model);
