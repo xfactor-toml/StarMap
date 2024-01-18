@@ -55,7 +55,7 @@ const SETTINGS = {
         light: {
             height: 10,
             intens: 1,
-            dist: 100,
+            dist: 150,
             decay: 1
         }
     }
@@ -278,7 +278,13 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
             case 'FighterShip': {
                 let r = this.serverValueToClient(aData.radius);
-                obj = new BattleFighter(aData);
+                obj = new BattleFighter({
+                    ...aData,
+                    ...{
+                        race: aData.owner == getWalletAddress() ? 
+                            'Aqua' : 'Insects'
+                    }
+                });
                 
                 if (aData.pos) {
                     const clientPos = this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z });
@@ -294,7 +300,13 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             case 'BattleShip': {
                 this.logDebug(`onObjectCreatePack(): BattleShip:`, aData);
                 let r = this.serverValueToClient(aData.radius);
-                obj = new BattleShip(aData);
+                obj = new BattleShip({
+                    ...aData,
+                    ...{
+                        race: aData.owner == getWalletAddress() ?
+                            'Aqua' : 'Insects'
+                    }
+                });
 
                 if (aData.pos) {
                     const clientPos = this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z });

@@ -26,7 +26,16 @@ export class BattleShip extends BattleObject {
     }
 
     private initShipModel() {
-        this._model = ThreeLoader.getInstance().getModel(ModelAlias.BattleShipAqua);
+        let modelAlias: ModelAlias;
+        switch (this._params.race) {
+            case 'Insects':
+                modelAlias = ModelAlias.BattleShipInsects;
+                break;
+            default:
+                modelAlias = ModelAlias.BattleShipAqua;
+                break;
+        }
+        this._model = ThreeLoader.getInstance().getModel(modelAlias);
 
         let m = new THREE.MeshStandardMaterial({
             color: 0xffffff

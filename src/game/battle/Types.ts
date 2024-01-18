@@ -20,6 +20,7 @@ export enum PackTitle {
 }
 
 export type ObjectType = 'Star' | 'Planet' | 'FighterShip' | 'BattleShip' | 'Homing';
+export type ObjectRace = 'Human' | 'Aqua' | 'Insects' | '???';
 
 export type StartGameData = {
     cmd?: 'start',
@@ -56,6 +57,7 @@ export type ObjectUpdateData = {
 export type ObjectCreateData = ObjectUpdateData & {
     type: ObjectType,
     owner?: string, // owner id
+    race?: ObjectRace,
     radius?: number,
     hp?: number,
     attackRadius?: number,

@@ -3,15 +3,19 @@ import { BattleObject } from './BattleObject';
 import { ThreeLoader } from '~/game/utils/threejs/ThreeLoader';
 import { ModelAlias } from '~/game/data/ModelData';
 import { TextureAlias } from '~/game/data/TextureData';
-import { ObjectCreateData } from '~/game/battle/Types';
+import { ObjectCreateData, ObjectRace } from '~/game/battle/Types';
 import { MyMath } from '@/utils';
+
+type BattleFighterParams = ObjectCreateData & {
+    
+}
 
 export class BattleFighter extends BattleObject {
     protected _mesh: THREE.Mesh;
     protected _model: THREE.Group;
     protected _currGunNumber: number;
 
-    constructor(aParams: ObjectCreateData) {
+    constructor(aParams: BattleFighterParams) {
         super(aParams, 'BattleFighter');
         this._currGunNumber = MyMath.randomIntInRange(1, 2);
         this.initShipModel();
@@ -27,7 +31,16 @@ export class BattleFighter extends BattleObject {
     }
 
     private initShipModel() {
-        this._model = ThreeLoader.getInstance().getModel(ModelAlias.FighterAqua);
+        let modelAlias: ModelAlias;
+        switch (this._params.race) {
+            case 'Insects':
+                modelAlias = ModelAlias.FighterInsects;
+                break;
+            default:
+                modelAlias = ModelAlias.FighterAqua;
+                break;
+        }
+        this._model = ThreeLoader.getInstance().getModel(modelAlias);
         // let tMap = ThreeLoader.getInstance().getTexture(TextureAlias.ship1Color);
 
         let m = new THREE.MeshStandardMaterial({
