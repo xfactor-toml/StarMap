@@ -48,6 +48,16 @@ const SETTINGS = {
                 h: 100
             }
         }
+    },
+
+    // stars params
+    stars: {
+        light: {
+            height: 10,
+            intens: 1,
+            dist: 100,
+            decay: 1
+        }
     }
 
 }
@@ -112,10 +122,10 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             this.onObjectDestroyPack(aIds);
         });
         this._connection.socket.on(PackTitle.rotate, (aData) => {
-            this.rotate(aData);
+            this.onRotateObject(aData);
         });
         this._connection.socket.on(PackTitle.jump, (aData) => {
-            this.jump(aData);
+            this.onJumpObject(aData);
         });
         this._connection.socket.on(PackTitle.attack, (aData) => {
             this.attack(aData);
@@ -198,6 +208,16 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         return this._objects.get(aId);
     }
 
+    private getObjectsByType(aType: ObjectType): BattleObject[] {
+        let res: BattleObject[] = [];
+        this._objects.forEach(obj => {
+            if (obj.objType == aType) {
+                res.push(obj);
+            }
+        });
+        return res;
+    }
+
     private getRandomShip(exclude?: BattleObject[]): BattleObject {
         let ships: BattleObject[] = [];
         this._objects.forEach((aObj) => {
@@ -237,7 +257,12 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                     ...aData,
                     ...{
                         camera: this._camera,
-                        planetOrbitRadius: 15
+                        planetOrbitRadius: 15,
+                        lightParent: this._dummyMain,
+                        lightHeight: SETTINGS.stars.light.height,
+                        lightIntens: SETTINGS.stars.light.intens,
+                        lightDist: SETTINGS.stars.light.dist,
+                        lightDecay: SETTINGS.stars.light.decay,
                     }
                 });
                 if (aData.pos) obj.position.copy(this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z }));
@@ -337,7 +362,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         }
     }
 
-    private rotate(aData: {
+    private onRotateObject(aData: {
         id: number,
         type: 'toPoint' | 'toDir',
         target: { x, y, z },
@@ -355,7 +380,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         }
     }
 
-    private jump(aData: {
+    private onJumpObject(aData: {
         id: number,
         pos: { x, y, z },
         duration: number
@@ -536,14 +561,16 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     }
 
     initDebugGui(aFolder: GUI) {
-        const f = aFolder;
-        const DATA = {
+        const DEBUG_GUI = {
             showAxies: false,
             showObjectRadius: false,
-            showObjectAttackRadius: false
+            showObjectAttackRadius: false,
+            lightHelpers: false
         }
 
-        f.add(DATA, 'showAxies').onChange((aShow: boolean) => {
+        const f = aFolder;
+        
+        f.add(DEBUG_GUI, 'showAxies').onChange((aShow: boolean) => {
             if (aShow) {
                 if (this._axiesHelper) return;
                 this._axiesHelper = new THREE.AxesHelper(150);
@@ -556,7 +583,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             }
         }).name(`Axies`);
 
-        f.add(DATA, 'showObjectRadius').onChange((aShow: boolean) => {
+        f.add(DEBUG_GUI, 'showObjectRadius').onChange((aShow: boolean) => {
             this._objects.forEach(obj => {
                 if (aShow) {
                     obj.createDebugRadiusSphere();
@@ -567,7 +594,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             });
         }).name(`Object Radius`);
 
-        f.add(DATA, 'showObjectAttackRadius').onChange((val: boolean) => {
+        f.add(DEBUG_GUI, 'showObjectAttackRadius').onChange((val: boolean) => {
             this._objects.forEach(obj => {
                 if (val) {
                     obj.createDebugAttackSphere();
@@ -577,6 +604,43 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 }
             });
         }).name(`Attack Radius`);
+
+        let starsFolder = f.addFolder('Stars');
+        starsFolder.add(DEBUG_GUI, 'lightHelpers').name('Helpers').onChange((aVal: boolean) => {
+            let stars: BattleStar[] = this.getObjectsByType('Star') as BattleStar[];
+            for (let i = 0; i < stars.length; i++) {
+                const star = stars[i];
+                star.lightHelperVisible = DEBUG_GUI.lightHelpers;
+            }
+        })
+        starsFolder.add(SETTINGS.stars.light, 'height', 0, 50, .1).name('Height').onChange((aVal: number) => {
+            let stars: BattleStar[] = this.getObjectsByType('Star') as BattleStar[];
+            for (let i = 0; i < stars.length; i++) {
+                const star = stars[i];
+                star.lightHeight = aVal;
+            }
+        })
+        starsFolder.add(SETTINGS.stars.light, 'intens', .1, 5, .1).name('Intensity').onChange((aVal: number) => {
+            let stars: BattleStar[] = this.getObjectsByType('Star') as BattleStar[];
+            for (let i = 0; i < stars.length; i++) {
+                const star = stars[i];
+                star.lightIntens = aVal;
+            }
+        })
+        starsFolder.add(SETTINGS.stars.light, 'dist', 0, 500, 1).name('Distance').onChange((aVal: number) => {
+            let stars: BattleStar[] = this.getObjectsByType('Star') as BattleStar[];
+            for (let i = 0; i < stars.length; i++) {
+                const star = stars[i];
+                star.lightDist = aVal;
+            }
+        })
+        starsFolder.add(SETTINGS.stars.light, 'decay', 0, 3, .01).name('Decay').onChange((aVal: number) => {
+            let stars: BattleStar[] = this.getObjectsByType('Star') as BattleStar[];
+            for (let i = 0; i < stars.length; i++) {
+                const star = stars[i];
+                star.lightDecay = aVal;
+            }
+        })
 
     }
 

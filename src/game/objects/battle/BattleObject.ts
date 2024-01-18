@@ -2,7 +2,7 @@ import { MyMath } from '@/utils';
 import gsap from 'gsap';
 import * as THREE from 'three';
 import { MyObject3D } from "~/game/basics/MyObject3D";
-import { ObjectCreateData } from '~/game/battle/Types';
+import { ObjectCreateData, ObjectType } from '~/game/battle/Types';
 
 export class BattleObject extends MyObject3D {
     protected _params: ObjectCreateData;
@@ -24,6 +24,10 @@ export class BattleObject extends MyObject3D {
 
     public get objId(): number {
         return this._params.id;
+    }
+
+    public get objType(): ObjectType {
+        return this._params.type;
     }
 
     public get radius(): number {

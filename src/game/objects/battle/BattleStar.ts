@@ -9,7 +9,12 @@ import { BattleStarHpBar } from './BattleStarHpBar';
 
 type BattleStarParams = ObjectCreateData & {
     camera: THREE.Camera,
-    planetOrbitRadius: number
+    planetOrbitRadius: number,
+    lightParent: THREE.Object3D,
+    lightHeight?: number,
+    lightDist?: number,
+    lightIntens?: number,
+    lightDecay?: number,
 }
 
 export class BattleStar extends BattleObject {
@@ -18,17 +23,25 @@ export class BattleStar extends BattleObject {
     protected _star: BigStar2;
     protected _starHpBar: BattleStarHpBar;
     protected _prevHp: number;
-    protected _pointLight: THREE.PointLight;
 
+    protected _lightParent: THREE.Object3D;
+    protected _pointLight: THREE.PointLight;
+    protected _plHelper: THREE.PointLightHelper;
+    private _lightHeight = 0;
+
+    
     constructor(aParams: BattleStarParams) {
         super(aParams, 'BattleStar');
         this._starParams = aParams;
         this._prevHp = this.hp;
+        this._lightParent = aParams.lightParent;
+        this._lightHeight = aParams.lightHeight || 0;
+
         this.initStar();
         this.initHpBgLine();
         this.initHpBar();
         this.initPlanetOrbit();
-        this.initPointLight();
+        this.initPointLight(aParams);
 
     }
 
@@ -83,9 +96,61 @@ export class BattleStar extends BattleObject {
         this.add(orbitLine);
     }
 
-    private initPointLight() {
-        this._pointLight = new THREE.PointLight(0xffffff, 2, 100);
-        this.add(this._pointLight);
+    private initPointLight(aParams: {
+        lightDist?: number,
+        lightIntens?: number,
+        lightDecay?: number
+    }) {
+        this._pointLight = new THREE.PointLight(0xffffff,
+            aParams.lightIntens || 1,
+            aParams.lightDist || 100,
+            aParams.lightDecay || 1
+        );
+        this._lightParent.add(this._pointLight);
+
+        this._plHelper = new THREE.PointLightHelper(this._pointLight);
+        this._plHelper.visible = false;
+        this._lightParent.add(this._plHelper);
+    }
+
+    public get lightHeight(): number {
+        return this._lightHeight;
+    }
+
+    public set lightHeight(value: number) {
+        this._lightHeight = value;
+    }
+
+    public get lightIntens(): number {
+        return this._pointLight?.intensity;
+    }
+
+    public set lightIntens(aValue: number) {
+        if (this._pointLight) this._pointLight.intensity = aValue;
+    }
+
+    public get lightDist(): number {
+        return this._pointLight?.distance;
+    }
+
+    public set lightDist(aValue: number) {
+        if (this._pointLight) this._pointLight.distance = aValue;
+    }
+
+    public get lightDecay(): number {
+        return this._pointLight?.intensity;
+    }
+
+    public set lightDecay(aValue: number) {
+        if (this._pointLight) this._pointLight.decay = aValue;
+    }
+
+    public get lightHelperVisible() {
+        return this._plHelper.visible;
+    }
+
+    public set lightHelperVisible(value) {
+        this._plHelper.visible = value;
     }
 
     free() {
@@ -106,6 +171,12 @@ export class BattleStar extends BattleObject {
         super.free();
     }
 
+    protected updateLight() {
+        this._pointLight.position.x = this.position.x;
+        this._pointLight.position.y = this.position.y + this._lightHeight;
+        this._pointLight.position.z = this.position.z;
+    }
+
     update(dt: number) {
         this._star?.update(dt);
 
@@ -114,12 +185,7 @@ export class BattleStar extends BattleObject {
             this._starHpBar.hp = this.hp;
         }
 
-        if (this._pointLight) {
-            this._pointLight.position.x = this.position.x;
-            this._pointLight.position.y = this.position.y + 20;
-            this._pointLight.position.z = this.position.z;
-        }
-
+        if (this._pointLight) this.updateLight();
 
     }
 
