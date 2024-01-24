@@ -103,8 +103,6 @@ export class ClientService {
     const scenes = useScenesStore()
     const battle = useBattleStore()
 
-    battle.setPlayerSearchingState(true);
-
     FrontEvents.onBattleSearch.dispatch();
 
     return;

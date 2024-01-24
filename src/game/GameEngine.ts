@@ -72,6 +72,7 @@ export class GameEngine extends MyBasicClass {
         this._battleScene.hide();
         this._battleScene.on(BattleSceneEvent.onGameStart, this.onBattleGameStart, this);
         this._battleScene.on(BattleSceneEvent.onGameComplete, this.onBattleComplete, this);
+        this._battleScene.on(BattleSceneEvent.onDisconnect, this.onBattleDisconnect, this);
 
         FrontEvents.onBattleClaimClick.add(this.onFrontClaimClick, this);
 
@@ -98,7 +99,17 @@ export class GameEngine extends MyBasicClass {
         GameEventDispatcher.battleComplete(aData);
     }
 
+    private onBattleDisconnect() {
+        this.logDebug(`onBattleDisconnect...`);
+        alert(`Disconnect...`);
+        this.switchSceneToGalaxy();
+    }
+
     private onFrontClaimClick() {
+        this.switchSceneToGalaxy();
+    }
+
+    private switchSceneToGalaxy() {
         this._battleScene.hide();
         this._battleScene.clear();
         this._galaxyScene.show();

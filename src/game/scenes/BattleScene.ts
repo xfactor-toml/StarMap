@@ -5,16 +5,23 @@ import { IUpdatable } from '../interfaces/IUpdatable';
 import { BattleView } from '../battle/BattleView';
 import { FrontEvents } from '../events/FrontEvents';
 import { GUI } from 'dat.gui';
-import { BattleConnection } from '../battle/BattleConnection';
+import { BattleConnection, ConnectionEvent } from '../battle/BattleConnection';
 import { GameCompleteData, PackTitle, StartGameData } from '../battle/Types';
 import { GameEvent, GameEventDispatcher } from '../events/GameEvents';
 
 export enum BattleSceneEvent {
     onGameStart = 'onEnterGame',
-    onGameComplete = 'onGameComplete'
+    onGameComplete = 'onGameComplete',
+    onDisconnect = 'onDisconnect',
+}
+
+enum BattleSceneState {
+    none = 'none',
+    game = 'game'
 }
 
 export class BattleScene extends MyEventDispatcher implements IUpdatable {
+    private _state: BattleSceneState;
     private _connection: BattleConnection;
     private _view: BattleView;
 
@@ -23,6 +30,7 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
         camera: THREE.PerspectiveCamera
     }) {
         super('BattleScene');
+        this._state = BattleSceneState.none;
         this.initConnection();
         this.initView(aParams);
         this.initEvents();
@@ -34,6 +42,7 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
         this._connection.on(PackTitle.gameSearching, this.onGameSearchPack, this);
         this._connection.on(PackTitle.gameStart, this.onGameStartPack, this);
         this._connection.on(PackTitle.gameComplete, this.onGameCompletePack, this);
+        this._connection.on(ConnectionEvent.disconnect, this.onSocketDisconnect, this);
 
     }
 
@@ -71,14 +80,14 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
             },
             searchGame: () => {
                 if (!this._connection.connected) {
-                    alert('Socket is disconnected...');
+                    alert(`No connection to server!`);
                     return;
                 }
                 FrontEvents.onBattleSearch.dispatch();
             },
             searchGameBot: () => {
                 if (!this._connection.connected) {
-                    alert('Socket is disconnected...');
+                    alert(`No connection to server!`);
                     return;
                 }
                 this._connection.sendSearchGameBot();
@@ -106,6 +115,11 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
     }
 
     private onFrontStarBattleSearch() {
+        if (!this._connection.connected) {
+            alert(`No connection to server!`);
+            return;
+        }
+        GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_START);
         this._connection.sendSearchGame();
     }
 
@@ -121,7 +135,7 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
         this._connection.sendLaserClick();
     }
 
-    onGameSearchPack(aData: {
+    private onGameSearchPack(aData: {
         cmd: 'start' | 'stop'
     }) {
         switch (aData.cmd) {
@@ -137,9 +151,10 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
         }
     }
 
-    onGameStartPack(aData: StartGameData) {
+    private onGameStartPack(aData: StartGameData) {
         switch (aData.cmd) {
             case 'start':
+                this._state = BattleSceneState.game;
                 this.emit(BattleSceneEvent.onGameStart, aData);
                 break;
             default:
@@ -148,8 +163,20 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
         }
     }
 
-    onGameCompletePack(aData: GameCompleteData) {
+    private onGameCompletePack(aData: GameCompleteData) {
+        this._state = BattleSceneState.none;
         this.emit(BattleSceneEvent.onGameComplete, aData);
+    }
+
+    private onSocketDisconnect() {
+        switch (this._state) {
+            case BattleSceneState.game:
+                this.emit(BattleSceneEvent.onDisconnect);
+                // alert(`Disconnect...`);
+                // stop the battle
+                // this._view
+                break;
+        }
     }
 
     show() {

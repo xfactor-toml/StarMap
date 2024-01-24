@@ -6,6 +6,11 @@ import { Settings } from "../data/Settings";
 import { getWalletAddress, isWalletConnected } from "~/blockchain/functions/auth";
 import { GameCompleteData, PackTitle, StartGameData } from "./Types";
 import { GameEvent, GameEventDispatcher } from "../events/GameEvents";
+import { Signal } from "../utils/events/Signal";
+
+export enum ConnectionEvent {
+    disconnect = 'disconnect'
+}
 
 export class BattleConnection extends MyEventDispatcher {
     private _socket: Socket;
@@ -43,6 +48,11 @@ export class BattleConnection extends MyEventDispatcher {
 
         this._socket.on('connect', () => {
             this.logDebug('socket connected...');
+        });
+
+        this._socket.on('disconnect', () => {
+            this.logDebug('socket disconnected...');
+            this.emit(ConnectionEvent.disconnect);
         });
 
         this._socket.on(PackTitle.sign, (aData: {
