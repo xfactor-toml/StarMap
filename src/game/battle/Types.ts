@@ -16,10 +16,13 @@ export enum PackTitle {
     rotate = 'rotate',
     jump = 'jump',
     attack = 'attack',
+    rayStart = 'rayStart',
+    rayStop = 'rayStop',
     planetLaser = 'planetLaser'
 }
 
 export type ObjectType = 'Star' | 'Planet' | 'FighterShip' | 'BattleShip' | 'Homing';
+export type AttackType = 'laser' | 'ray';
 export type ObjectRace = 'Human' | 'Aqua' | 'Insects' | '???';
 
 export type StartGameData = {
@@ -62,6 +65,14 @@ export type ObjectCreateData = ObjectUpdateData & {
     hp?: number,
     attackRadius?: number,
     lookDir?: { x, y, z }
+}
+
+export type AttackData = {
+    attackType: AttackType,
+    idFrom: number,
+    idTo: number,
+    damage?: number,
+    isMiss?: boolean
 }
 
 export type PlanetLaserData = {

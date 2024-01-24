@@ -13,7 +13,7 @@ import { BattleCameraMng } from './BattleCameraMng';
 import { ObjectEnergyViewer } from './ObjectEnergyViewer';
 import { BattleShip } from '../objects/battle/BattleShip';
 import { Settings } from '../data/Settings';
-import { FieldInitData, PlanetLaserData, ObjectCreateData, ObjectType, ObjectUpdateData, PackTitle } from './Types';
+import { FieldInitData, PlanetLaserData, ObjectCreateData, ObjectType, ObjectUpdateData, PackTitle, AttackData } from './Types';
 import { BattleConnection } from './BattleConnection';
 import { FieldCell } from '../objects/battle/FieldCell';
 import { getWalletAddress } from '~/blockchain/functions/auth';
@@ -54,9 +54,9 @@ const SETTINGS = {
     stars: {
         light: {
             height: 10,
-            intens: 1,
-            dist: 150,
-            decay: 1
+            intens: 1.1,
+            dist: 50,
+            decay: .5
         }
     }
 
@@ -76,6 +76,8 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
     private _objects: Map<number, BattleObject>;
     private _shipEnergyViewer: ObjectEnergyViewer;
+
+    private _attackRays: { [index: string]: LaserLine } = {};
 
     private _isTopPosition = false;
 
@@ -127,8 +129,11 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         this._connection.socket.on(PackTitle.jump, (aData) => {
             this.onJumpObject(aData);
         });
-        this._connection.socket.on(PackTitle.attack, (aData) => {
+        this._connection.socket.on(PackTitle.attack, (aData: AttackData) => {
             this.attack(aData);
+        });
+        this._connection.socket.on(PackTitle.rayStart, (aData) => {
+            this.rayStart(aData);
         });
         this._connection.socket.on(PackTitle.planetLaser, (aData: PlanetLaserData) => {
             this.planetLaser(aData);
@@ -244,7 +249,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             this._shipEnergyViewer.isTopViewPosition = this._isTopPosition;
             this.initCameraPosition(this._isTopPosition);
         }, 1000);
-        
+
     }
 
     private onObjectCreatePack(aData: ObjectCreateData) {
@@ -281,11 +286,11 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 obj = new BattleFighter({
                     ...aData,
                     ...{
-                        race: aData.owner == getWalletAddress() ? 
+                        race: aData.owner == getWalletAddress() ?
                             'Aqua' : 'Insects'
                     }
                 });
-                
+
                 if (aData.pos) {
                     const clientPos = this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z });
                     obj.position.copy(clientPos);
@@ -409,14 +414,8 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
     }
 
-    private attack(aData: {
-        attackType: 'laser' | 'ray',
-        idFrom: number,
-        idTo: number,
-        damage?: number,
-        isMiss?: boolean
-    }) {
-
+    private attack(aData: AttackData) {
+        
         let objFrom = this.getObjectById(aData.idFrom);
         if (!objFrom) {
             this.logWarn(`attack: !fromObj`, aData);
@@ -429,16 +428,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             return;
         }
 
-        // this.logDebug(`attack(): wallet: ${this._walletNumber}, ship owner: ${objFrom.owner}`);
-        let laserColor = '#0072ff';
-        // const purpleLaserColor = '#5e48ff';
-        if (objFrom.owner != this._walletNumber) {
-            // this.logDebug(`laser is red`);
-            laserColor = '#ff0000';
-        }
-        else {
-            // this.logDebug(`laser is blue`);
-        }
+        let laserColor = objFrom.owner != this._walletNumber ? '#ff0000' : '#0072ff';
 
         switch (aData.attackType) {
 
@@ -488,20 +478,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 break;
 
             case 'ray': {
-                // create laser
-                let laser = new LaserLine({
-                    posStart: objFrom.position.clone(),
-                    posEnd: objTo.position.clone(),
-                    color: laserColor
-                });
-                this._dummyMain.add(laser);
-                laser.hide({
-                    dur: 1,
-                    cb: () => {
-                        laser.free();
-                    },
-                    ctx: this
-                });
+                
             } break;
 
             default:
@@ -509,9 +486,40 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 break;
         }
 
-        // if (!aData.isMiss) {
-        //     objTo.hp -= aData.damage;
-        // }
+    }
+
+    private rayStart(aData: {
+        idFrom: number,
+        idTo: number
+    }) {
+
+        let objFrom = this.getObjectById(aData.idFrom);
+        if (!objFrom) {
+            this.logWarn(`rayStart: !fromObj`, aData);
+            return;
+        }
+
+        let objTo = this.getObjectById(aData.idTo);
+        if (!objTo) {
+            this.logWarn(`rayStart: !toObj`, aData);
+            return;
+        }
+
+        let laserColor = objFrom.owner != this._walletNumber ? '#ff0000' : '#0072ff';
+
+        // create ray
+
+        let laser = new LaserLine({
+            posStart: objFrom.position.clone(),
+            posEnd: objTo.position.clone(),
+            color: laserColor,
+            minRadius: 0.1,
+            maxRadius: 0.3
+        });
+        this._dummyMain.add(laser);
+
+        this._attackRays[aData.idFrom] = laser;
+
     }
 
     private planetLaser(aData: PlanetLaserData) {
@@ -562,6 +570,19 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         }
         obj.free();
         this._objects.delete(aId);
+
+        let rayEfect = this._attackRays[aId];
+        if (rayEfect) {
+            rayEfect.hide({
+                dur: .1,
+                cb: () => {
+                    this._attackRays[aId] = null;
+                    rayEfect.free();
+                },
+                ctx: this
+            });
+        }
+
     }
 
     public get walletNumber(): string {
@@ -581,7 +602,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         }
 
         const f = aFolder;
-        
+
         f.add(DEBUG_GUI, 'showAxies').onChange((aShow: boolean) => {
             if (aShow) {
                 if (this._axiesHelper) return;

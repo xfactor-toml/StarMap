@@ -31,7 +31,7 @@ export class BattlePlanet extends BattleObject {
     private initPlanet() {
         let g = new THREE.SphereGeometry(this.radius);
         let t = ThreeLoader.getInstance().getTexture(TextureAlias.planet0_256);
-        let m = new THREE.MeshBasicMaterial({
+        let m = new THREE.MeshStandardMaterial({
             map: t
         });
         this._mesh = new THREE.Mesh(g, m);

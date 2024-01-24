@@ -3,6 +3,7 @@ import gsap from 'gsap';
 import * as THREE from 'three';
 import { MyObject3D } from "~/game/basics/MyObject3D";
 import { ObjectCreateData, ObjectType } from '~/game/battle/Types';
+import { LaserLine } from './LaserLine';
 
 export class BattleObject extends MyObject3D {
     protected _params: ObjectCreateData;
