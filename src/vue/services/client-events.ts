@@ -67,6 +67,7 @@ export class ClientEventsService {
         break;
 
       case GameEvent.GALAXY_MODE:
+        scenesStore.setScene(SceneName.Galaxy);
         scenesStore.setClientScene('galaxy');
         break;
 

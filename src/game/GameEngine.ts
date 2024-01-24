@@ -102,6 +102,7 @@ export class GameEngine extends MyBasicClass {
     private onBattleDisconnect() {
         this.logDebug(`onBattleDisconnect...`);
         alert(`Disconnect...`);
+        GameEventDispatcher.dispatchEvent(GameEvent.GALAXY_MODE);
         this.switchSceneToGalaxy();
     }
 

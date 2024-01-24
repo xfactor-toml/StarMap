@@ -155,9 +155,7 @@ export class BattleConnection extends MyEventDispatcher {
     }
 
     sendExitGame() {
-        // this.sendPacket({
-        //     action: "exitgame"
-        // });
+        this._socket.emit(PackTitle.exitGame);
     }
 
     sendPlanetFire() {
