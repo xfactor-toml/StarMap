@@ -37,7 +37,7 @@ export class BattleFighter extends BattleObject {
                 modelAlias = ModelAlias.FighterInsects;
                 break;
             default:
-                modelAlias = ModelAlias.FighterAqua;
+                modelAlias = ModelAlias.FighterWaters;
                 break;
         }
         this._model = ThreeLoader.getInstance().getModel(modelAlias);

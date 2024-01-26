@@ -32,7 +32,7 @@ export class BattleShip extends BattleObject {
                 modelAlias = ModelAlias.BattleShipInsects;
                 break;
             default:
-                modelAlias = ModelAlias.BattleShipAqua;
+                modelAlias = ModelAlias.BattleShipWaters;
                 break;
         }
         this._model = ThreeLoader.getInstance().getModel(modelAlias);

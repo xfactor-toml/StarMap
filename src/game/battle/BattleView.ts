@@ -10,7 +10,7 @@ import { BattleFighter } from '../objects/battle/BattleFighter';
 import { LaserLine } from '../objects/battle/LaserLine';
 import { MyMath } from '../utils/MyMath';
 import { BattleCameraMng } from './BattleCameraMng';
-import { ObjectEnergyViewer } from './ObjectEnergyViewer';
+import { ObjectHpViewer } from './ObjectHpViewer';
 import { BattleShip } from '../objects/battle/BattleShip';
 import { Settings } from '../data/Settings';
 import { FieldInitData, PlanetLaserData, ObjectCreateData, ObjectType, ObjectUpdateData, PackTitle, AttackData } from './Types';
@@ -20,6 +20,7 @@ import { getWalletAddress } from '~/blockchain/functions/auth';
 import { LogMng } from '../utils/LogMng';
 import { FieldGrid } from '../objects/battle/FieldGrid';
 import { ThreeUtils } from '../utils/threejs/ThreejsUtils';
+import { DamageViewer } from './DamageViewer';
 
 type ServerFieldParams = {
 
@@ -75,12 +76,12 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     private _gridBot: THREE.GridHelper;
 
     private _objects: Map<number, BattleObject>;
-    private _shipEnergyViewer: ObjectEnergyViewer;
 
+    private _objectHpViewer: ObjectHpViewer;
+    private _damageViewer: DamageViewer;
     private _attackRays: { [index: string]: LaserLine } = {};
 
     private _isTopPosition = false;
-
     private _axiesHelper: THREE.AxesHelper;
 
     constructor(aParams: {
@@ -104,7 +105,8 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         this._scene.add(this._dummyMain);
 
         this._objects = new Map();
-        this._shipEnergyViewer = new ObjectEnergyViewer(this._dummyMain);
+        this._objectHpViewer = new ObjectHpViewer(this._dummyMain);
+        this._damageViewer = new DamageViewer(this._dummyMain, this._camera);
 
         this.initConnectionListeners();
 
@@ -246,7 +248,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
         setTimeout(() => {
             this._isTopPosition = aData.playerPosition == 'top';
-            this._shipEnergyViewer.isTopViewPosition = this._isTopPosition;
+            this._objectHpViewer.isTopViewPosition = this._isTopPosition;
             this.initCameraPosition(this._isTopPosition);
         }, 1000);
 
@@ -287,7 +289,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                     ...aData,
                     ...{
                         race: aData.owner == getWalletAddress() ?
-                            'Aqua' : 'Insects'
+                            'Waters' : 'Insects'
                     }
                 });
 
@@ -299,7 +301,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 if (aData.lookDir) obj.lookByDir(aData.lookDir);
 
                 // add hp bar
-                this._shipEnergyViewer.addBar(obj);
+                this._objectHpViewer.addBar(obj);
             } break;
 
             case 'BattleShip': {
@@ -309,7 +311,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                     ...aData,
                     ...{
                         race: aData.owner == getWalletAddress() ?
-                            'Aqua' : 'Insects'
+                            'Waters' : 'Insects'
                     }
                 });
 
@@ -321,7 +323,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 if (aData.lookDir) obj.lookByDir(aData.lookDir);
 
                 // add hp bar
-                this._shipEnergyViewer.addBar(obj);
+                this._objectHpViewer.addBar(obj);
             } break;
 
             default:
@@ -366,7 +368,12 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             }
 
             if (data.hp != undefined) {
+                let prevHp = obj.hp;
+                let dtHp = prevHp - data.hp;
                 obj.hp = data.hp;
+                if (dtHp > 2) {
+                    this._damageViewer.showDamage(obj, -dtHp);
+                }
             }
 
         }
@@ -562,7 +569,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     }
 
     private destroyObject(aId: number) {
-        this._shipEnergyViewer.removeBar(aId);
+        this._objectHpViewer.removeBar(aId);
         let obj = this.getObjectById(aId);
         if (!obj) {
             this.logError(`updateObject(): !obj`, aId);
@@ -693,7 +700,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     }
 
     clear() {
-        this._shipEnergyViewer.clear();
+        this._objectHpViewer.clear();
         // clear all objects
         this.destroyAllObjects();
         // destroy grids
@@ -715,7 +722,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             obj.update(dt);
         });
 
-        this._shipEnergyViewer.update(dt);
+        this._objectHpViewer.update(dt);
 
     }
 

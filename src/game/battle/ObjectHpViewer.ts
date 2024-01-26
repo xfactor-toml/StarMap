@@ -5,9 +5,9 @@ import { IUpdatable } from '../interfaces/IUpdatable';
 import { LogMng } from '../utils/LogMng';
 import { BattleObject } from '../objects/battle/BattleObject';
 
-export class ObjectEnergyViewer implements ILogger, IUpdatable {
+export class ObjectHpViewer implements ILogger, IUpdatable {
 
-    private _className = 'ShipEnergyViewer';
+    private _className = 'ObjectHpViewer';
     private _parent: THREE.Group;
     private _objects: Map<number, BattleObject>;
     private _bars: Map<number, ShipEnergyBar>;

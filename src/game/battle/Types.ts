@@ -24,7 +24,8 @@ export enum PackTitle {
 
 export type ObjectType = 'Star' | 'Planet' | 'FighterShip' | 'BattleShip' | 'Homing';
 export type AttackType = 'laser' | 'ray';
-export type ObjectRace = 'Human' | 'Aqua' | 'Insects' | '???';
+// Humans, Insects, Waters, Lizards
+export type ObjectRace = 'Humans' | 'Waters' | 'Insects' | 'Lizards';
 
 export type StartGameData = {
     cmd?: 'start',

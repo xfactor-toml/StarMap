@@ -150,6 +150,7 @@ export class GamePreloader {
             });
         }
 
+        // sounds
         let am = AudioMng.getInstance({});
         // storage data
         am.musicVolume = Number(localStorage.getItem(`musicVolume`)) ?? Settings.AUDIO.defaultMusicVolume;
@@ -158,6 +159,10 @@ export class GamePreloader {
             musicList: MusicLoadList,
             soundList: SoundLoadList
         });
+
+        // fonts
+        // this._loader.addFontToSet(aSetId, 'Ubuntu', `${assetsPath}/fonts/Ubuntu/Ubuntu-Medium.json`);
+        this._loader.addFontToSet(aSetId, 'Arial', `${assetsPath}/fonts/Arial_Regular.json`);
 
     }
 
