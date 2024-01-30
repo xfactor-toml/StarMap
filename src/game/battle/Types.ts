@@ -74,7 +74,8 @@ export type AttackData = {
     idFrom: number,
     idTo: number,
     damage?: number,
-    isMiss?: boolean
+    isMiss?: boolean,
+    isCrit?: boolean
 }
 
 export type PlanetLaserData = {
