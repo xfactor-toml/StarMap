@@ -46,6 +46,7 @@ export type FieldInitData = {
 export type ObjectUpdateData = {
     id?: number,
     hp?: number,
+    shield?: number,
     pos?: {
         x: number,
         y: number,
@@ -65,6 +66,7 @@ export type ObjectCreateData = ObjectUpdateData & {
     race?: ObjectRace,
     radius?: number,
     hp?: number,
+    shield?: number,
     attackRadius?: number,
     lookDir?: { x, y, z }
 }

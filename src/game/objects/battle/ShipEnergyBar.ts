@@ -6,14 +6,15 @@ export class ShipEnergyBar extends MyObject3D {
     private _progress: number;
     
     constructor(aParams?: {
-        w?: number
+        w?: number,
+        color?: number
     }) {
         super('ShipEnergyBar');
 
         let w = aParams?.w || 2;
         let g = new THREE.BoxGeometry(w, .2, .2);
         let m = new THREE.MeshBasicMaterial({
-            color: 0xff0000
+            color: aParams.color || 0xff0000
         });
         this._mesh = new THREE.Mesh(g, m);
         this.add(this._mesh);

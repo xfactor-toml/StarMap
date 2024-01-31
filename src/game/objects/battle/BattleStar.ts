@@ -80,7 +80,7 @@ export class BattleStar extends BattleObject {
         this._starHpBar = new BattleStarHpBar({
             radius: this.radius * 1.5,
             width: .4,
-            maxHp: this.maxHp,
+            maxHp: this.hpMax,
             hp: this.hp
         });
         this.add(this._starHpBar);
@@ -167,6 +167,18 @@ export class BattleStar extends BattleObject {
         this._star = null;
 
         this._starHpBar = null;
+
+        if (this._pointLight) {
+            this._lightParent.remove(this._pointLight);
+            this._pointLight.dispose();
+            this._pointLight = null;
+        }
+        if (this._plHelper) {
+            this._plHelper.visible = false;
+            this._lightParent.remove(this._plHelper);
+            this._plHelper.dispose();
+            this._plHelper = null;
+        }
 
         super.free();
     }

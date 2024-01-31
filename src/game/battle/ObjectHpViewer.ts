@@ -10,13 +10,15 @@ export class ObjectHpViewer implements ILogger, IUpdatable {
     private _className = 'ObjectHpViewer';
     private _parent: THREE.Group;
     private _objects: Map<number, BattleObject>;
-    private _bars: Map<number, ShipEnergyBar>;
+    private _hpBars: Map<number, ShipEnergyBar>;
+    private _shieldBars: Map<number, ShipEnergyBar>;
     private _isTopViewPosition = false;
     
     constructor(aParent: THREE.Group) {
         this._parent = aParent;
-        this._objects = new Map<number, BattleObject>();
-        this._bars = new Map<number, ShipEnergyBar>();
+        this._objects = new Map();
+        this._hpBars = new Map();
+        this._shieldBars = new Map();
     }
 
     logDebug(aMsg: string, aData?: any): void {
@@ -40,38 +42,69 @@ export class ObjectHpViewer implements ILogger, IUpdatable {
 
     addBar(aObject: BattleObject) {
         this._objects.set(aObject.objId, aObject);
-        let bar = new ShipEnergyBar({
+
+        let hpBar = new ShipEnergyBar({
             w: aObject.radius * 2
         });
-        this._bars.set(aObject.objId, bar);
-        this._parent.add(bar);
+        this._hpBars.set(aObject.objId, hpBar);
+        this._parent.add(hpBar);
+
+        if (aObject.shield > 0) {
+            let shieldBar = new ShipEnergyBar({
+                w: aObject.radius * 2,
+                color: 0x30b4ff
+            });
+            this._shieldBars.set(aObject.objId, shieldBar);
+            this._parent.add(shieldBar);
+        }
     }
 
     removeBar(aShipId: number) {
         this._objects.delete(aShipId);
-        let bar = this._bars.get(aShipId);
-        this._bars.delete(aShipId);
-        if (!bar) return;
-        bar.free();
+
+        let hpBar = this._hpBars.get(aShipId);
+        this._hpBars.delete(aShipId);
+        if (hpBar) hpBar.free();
+
+        let shieldBar = this._shieldBars.get(aShipId);
+        this._shieldBars.delete(aShipId);
+        if (shieldBar) shieldBar.free();
     }
 
     clear() {
         this._objects.clear();
-        this._bars.forEach(bar => {
+        this._hpBars.forEach(bar => {
             bar.free();
         });
-        this._bars.clear();
+        this._hpBars.clear();
+        this._shieldBars.forEach(bar => {
+            bar.free();
+        });
+        this._shieldBars.clear();
     }
 
     update(dt: number) {
         const f = this._isTopViewPosition ? -1 : 1;
         this._objects.forEach(obj => {
-            let bar = this._bars.get(obj.objId);
-            let p = obj.hp / obj.maxHp;
-            bar.progress = p;
-            bar.position.x = obj.position.x;
-            bar.position.y = obj.position.y;
-            bar.position.z = obj.position.z + f * (obj.radius + 1);
+
+            let hpBar = this._hpBars.get(obj.objId);
+            if (hpBar) {
+                let p = obj.hp / obj.hpMax;
+                hpBar.progress = p;
+                hpBar.position.x = obj.position.x;
+                hpBar.position.y = obj.position.y;
+                hpBar.position.z = obj.position.z + f * (obj.radius + 1);
+            }
+
+            let shieldBar = this._shieldBars.get(obj.objId);
+            if (shieldBar) {
+                let p = obj.shield / obj.shieldMax;
+                shieldBar.progress = p;
+                shieldBar.position.x = obj.position.x;
+                shieldBar.position.y = obj.position.y;
+                shieldBar.position.z = obj.position.z + f * (obj.radius + 1.4);
+            }
+
         });
     }
 

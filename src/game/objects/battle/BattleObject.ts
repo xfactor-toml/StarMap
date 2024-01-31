@@ -7,8 +7,10 @@ import { LaserLine } from './LaserLine';
 
 export class BattleObject extends MyObject3D {
     protected _params: ObjectCreateData;
-    protected _maxHp: number;
+    protected _hpMax: number;
     protected _hp: number;
+    private _shieldMax: number;
+    private _shield: number;
     private _debugRadiusSphere: THREE.Mesh;
     private _debugAttackRadius: THREE.Mesh;
     private _targetPosition: { x: number; z: number; };
@@ -18,7 +20,8 @@ export class BattleObject extends MyObject3D {
     constructor(aParams: ObjectCreateData, aClassName?: string) {
         super(aClassName || 'BattleObject');
         this._params = aParams;
-        this._hp = this._maxHp = this._params.hp;
+        this._hp = this._hpMax = this._params.hp;
+        this._shield = this._shieldMax = this._params.shield;
         this._dirrection = new THREE.Vector3(0, 0, 1);
         this._targetQuaternion = this.quaternion.clone();
     }
@@ -39,12 +42,8 @@ export class BattleObject extends MyObject3D {
         this._params.radius = value;
     }
 
-    public get maxHp(): number {
-        return this._maxHp;
-    }
-
-    public set maxHp(value: number) {
-        this._maxHp = value;
+    public get hpMax(): number {
+        return this._hpMax;
     }
 
     public get hp(): number {
@@ -54,6 +53,19 @@ export class BattleObject extends MyObject3D {
     public set hp(value: number) {
         let newHp = Math.max(0, value);
         this._hp = newHp;
+    }
+
+    get shieldMax(): number {
+        return this._shieldMax;
+    }
+
+    get shield(): number {
+        return this._shield;
+    }
+
+    set shield(value: number) {
+        let newVal = Math.max(0, value);
+        this._shield = newVal;
     }
 
     public get owner(): string {

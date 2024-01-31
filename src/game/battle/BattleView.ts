@@ -376,6 +376,15 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 }
             }
 
+            if (data.shield != undefined) {
+                let prevShield = obj.shield;
+                let dt = prevShield - data.shield;
+                obj.shield = data.shield;
+                if (dt > 1) {
+                    this._damageViewer.showShieldDamage(obj, -dt);
+                }
+            }
+
         }
 
     }
@@ -689,6 +698,13 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             obj.free();
         });
         this._objects.clear();
+
+        for (const key in this._attackRays) {
+            const rayEfect = this._attackRays[key];
+            if (rayEfect) rayEfect.free();
+        }
+        this._attackRays = {};
+
     }
 
     show() {

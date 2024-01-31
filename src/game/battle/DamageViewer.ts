@@ -38,7 +38,14 @@ export class DamageViewer implements ILogger, IUpdatable {
     }
 
     showDamage(aObject: BattleObject, aDamage: number) {
-        const damageNumber = new DamageNumber(this._parent, this._camera, aObject.position, aDamage);
+        const damageNumber = new DamageNumber(this._parent, this._camera,
+            aObject.position, aDamage);
+        damageNumber.animate();
+    }
+
+    showShieldDamage(aObject: BattleObject, aDamage: number) {
+        const damageNumber = new DamageNumber(this._parent, this._camera,
+            aObject.position, aDamage, 0x30b4ff);
         damageNumber.animate();
     }
 
