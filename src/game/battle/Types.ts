@@ -7,7 +7,6 @@ export enum PackTitle {
     gameSearching = 'gameSearching', // status, update, info
     exitGame = 'exitGame',
     gameStart = 'gameStart',
-    // exitGame = 'exitGame',
     gameComplete = 'gameComplete',
     // for game
     fieldInit = 'fieldInit',
@@ -19,7 +18,8 @@ export enum PackTitle {
     attack = 'attack',
     rayStart = 'rayStart',
     rayStop = 'rayStop',
-    planetLaser = 'planetLaser'
+    planetLaser = 'planetLaser',
+    damage = 'damage'
 }
 
 export type ObjectType = 'Star' | 'Planet' | 'FighterShip' | 'BattleShip' | 'Homing';
@@ -85,4 +85,17 @@ export type PlanetLaserData = {
     pos: { x, y, z },
     dir: { x, y, z },
     length: number
+}
+
+export type DamageInfo = {
+    damage: number,
+    isMiss?: boolean,
+    isCrit?: boolean,
+    critFactor?: number
+}
+
+export type DamageData = {
+    id: number,
+    pos: { x: number, y: number, z: number },
+    info: DamageInfo
 }

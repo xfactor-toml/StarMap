@@ -9,22 +9,28 @@ export class DamageNumber {
     private _camera: THREE.Camera;
     private _mesh: THREE.Mesh;
 
-    constructor(aParent: THREE.Group, aCamera: THREE.Camera,
-        aPosition: THREE.Vector3, aDamage: number, aColor?: number) {
-        this._camera = aCamera;
+    constructor(aParams: {
+        parent: THREE.Group,
+        camera: THREE.Camera,
+        position: THREE.Vector3,
+        text: string,
+        color?: number,
+        size?: number
+    }) {
+        this._camera = aParams.camera;
         let f = ThreeLoader.getInstance().getFont('Arial');
-        const geometry = new TextGeometry(`${Math.trunc(aDamage)}`, {
+        const geometry = new TextGeometry(aParams.text, {
             font: f,
-            size: 2,
+            size: aParams.size || 2,
             height: 0.1
         });
-        const material = new THREE.MeshBasicMaterial({ color: aColor || 0xff0000 });
+        const material = new THREE.MeshBasicMaterial({ color: aParams.color || 0xff0000 });
         this._mesh = new THREE.Mesh(geometry, material);
-        this._mesh.position.copy(aPosition);
-        aParent.add(this._mesh);
+        this._mesh.position.copy(aParams.position);
+        aParams.parent.add(this._mesh);
     }
 
-    animate() {
+    animate(aDir: 1 | -1) {
         const newY = this._mesh.position.y + 10;
         gsap.to(this._mesh.position, {
             y: newY,

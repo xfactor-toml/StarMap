@@ -13,7 +13,7 @@ import { BattleCameraMng } from './BattleCameraMng';
 import { ObjectHpViewer } from './ObjectHpViewer';
 import { BattleShip } from '../objects/battle/BattleShip';
 import { Settings } from '../data/Settings';
-import { FieldInitData, PlanetLaserData, ObjectCreateData, ObjectType, ObjectUpdateData, PackTitle, AttackData } from './Types';
+import { FieldInitData, PlanetLaserData, ObjectCreateData, ObjectType, ObjectUpdateData, PackTitle, AttackData, DamageData } from './Types';
 import { BattleConnection } from './BattleConnection';
 import { FieldCell } from '../objects/battle/FieldCell';
 import { getWalletAddress } from '~/blockchain/functions/auth';
@@ -72,8 +72,6 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     private _cameraMng: BattleCameraMng;
 
     private _dummyMain: THREE.Group;
-    private _gridTop: THREE.GridHelper;
-    private _gridBot: THREE.GridHelper;
 
     private _objects: Map<number, BattleObject>;
 
@@ -137,6 +135,10 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         this._connection.socket.on(PackTitle.rayStart, (aData) => {
             this.rayStart(aData);
         });
+        this._connection.socket.on(PackTitle.damage, (aData: DamageData) => {
+            this.onDamage(aData);
+        });
+        // skills
         this._connection.socket.on(PackTitle.planetLaser, (aData: PlanetLaserData) => {
             this.planetLaser(aData);
         });
@@ -368,21 +370,21 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             }
 
             if (data.hp != undefined) {
-                let prevHp = obj.hp;
-                let dtHp = prevHp - data.hp;
+                // let prevHp = obj.hp;
+                // let dtHp = prevHp - data.hp;
                 obj.hp = data.hp;
-                if (dtHp > 2) {
-                    this._damageViewer.showDamage(obj, -dtHp);
-                }
+                // if (dtHp > 2) {
+                //     this._damageViewer.showDamage(obj, -dtHp);
+                // }
             }
 
             if (data.shield != undefined) {
-                let prevShield = obj.shield;
-                let dt = prevShield - data.shield;
+                // let prevShield = obj.shield;
+                // let dt = prevShield - data.shield;
                 obj.shield = data.shield;
-                if (dt > 1) {
-                    this._damageViewer.showShieldDamage(obj, -dt);
-                }
+                // if (dt > 1) {
+                    // this._damageViewer.showShieldDamage(obj, -dt);
+                // }
             }
 
         }
@@ -478,13 +480,6 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                     duration: dur,
                     ease: 'none',
                     onStart: () => {
-                        // laser.hide({
-                        //     dur: 1,
-                        //     cb: () => {
-                        //         laser.free();
-                        //     },
-                        //     ctx: this
-                        // });
                     },
                     onComplete: () => {
                         laser.free();
@@ -536,6 +531,12 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
         this._attackRays[aData.idFrom] = laser;
 
+    }
+
+    private onDamage(aData: DamageData) {
+        const dmg = aData.info.damage;
+        let pos = this.getPositionByServerV3(aData.pos);
+        this._damageViewer.showDamage(pos, aData.info);
     }
 
     private planetLaser(aData: PlanetLaserData) {
@@ -719,15 +720,6 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         this._objectHpViewer.clear();
         // clear all objects
         this.destroyAllObjects();
-        // destroy grids
-        if (this._gridTop) {
-            this._dummyMain.remove(this._gridTop);
-            this._gridTop = null;
-        }
-        if (this._gridBot) {
-            this._dummyMain.remove(this._gridBot);
-            this._gridBot = null;
-        }
     }
 
     update(dt: number) {

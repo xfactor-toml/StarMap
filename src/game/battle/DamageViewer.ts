@@ -4,6 +4,7 @@ import { IUpdatable } from "../interfaces/IUpdatable";
 import { LogMng } from '../utils/LogMng';
 import { BattleObject } from '../objects/battle/BattleObject';
 import { DamageNumber } from './DamageNumber';
+import { DamageInfo } from './Types';
 
 export class DamageViewer implements ILogger, IUpdatable {
     private _className = 'DamageViewer';
@@ -37,17 +38,36 @@ export class DamageViewer implements ILogger, IUpdatable {
         this._isTopViewPosition = value;
     }
 
-    showDamage(aObject: BattleObject, aDamage: number) {
-        const damageNumber = new DamageNumber(this._parent, this._camera,
-            aObject.position, aDamage);
-        damageNumber.animate();
+    showDamage(aPosition: THREE.Vector3, aDamageInfo: DamageInfo) {
+        let text = '';
+        let clr = 0xff1e1e;
+        if (aDamageInfo.isMiss) {
+            text = 'MISS';
+            clr = 0x30b4ff;
+        }
+        else {
+            if (aDamageInfo.isCrit) {
+                text = `${aDamageInfo.damage} CRIT`;
+            }
+            else {
+                text = `${aDamageInfo.damage}`;
+            }
+        }
+        const damageNumber = new DamageNumber({
+            parent: this._parent,
+            camera: this._camera,
+            position: aPosition,
+            text: text,
+            color: clr
+        });
+        damageNumber.animate(1);
     }
 
-    showShieldDamage(aObject: BattleObject, aDamage: number) {
-        const damageNumber = new DamageNumber(this._parent, this._camera,
-            aObject.position, aDamage, 0x30b4ff);
-        damageNumber.animate();
-    }
+    // showShieldDamage(aObject: BattleObject, aDamage: number) {
+    //     const damageNumber = new DamageNumber(this._parent, this._camera,
+    //         aObject.position, aDamage, 0x30b4ff);
+    //     damageNumber.animate();
+    // }
 
     clear() {
 
