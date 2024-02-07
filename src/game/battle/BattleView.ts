@@ -677,7 +677,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 star.lightIntens = aVal;
             }
         })
-        starsFolder.add(SETTINGS.stars.light, 'dist', 0, 500, 1).name('Distance').onChange((aVal: number) => {
+        starsFolder.add(SETTINGS.stars.light, 'dist', 0, 100, 1).name('Distance').onChange((aVal: number) => {
             let stars: BattleStar[] = this.getObjectsByType('Star') as BattleStar[];
             for (let i = 0; i < stars.length; i++) {
                 const star = stars[i];
