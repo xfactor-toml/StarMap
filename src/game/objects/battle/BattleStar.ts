@@ -10,11 +10,13 @@ import { BattleStarHpBar } from './BattleStarHpBar';
 type BattleStarParams = ObjectCreateData & {
     camera: THREE.Camera,
     planetOrbitRadius: number,
-    lightParent: THREE.Object3D,
-    lightHeight?: number,
-    lightDist?: number,
-    lightIntens?: number,
-    lightDecay?: number,
+    light: {
+        parent: THREE.Object3D,
+        height?: number,
+        dist?: number,
+        intens?: number,
+        decay?: number
+    }
 }
 
 export class BattleStar extends BattleObject {
@@ -26,23 +28,21 @@ export class BattleStar extends BattleObject {
     // light
     protected _lightParent: THREE.Object3D;
     protected _pointLight: THREE.PointLight;
-    // light params
     private _lightHeight = 0;
-    // light helper
     protected _lightHelper: THREE.Line;
     
     constructor(aParams: BattleStarParams) {
         super(aParams, 'BattleStar');
         this._starParams = aParams;
         this._prevHp = this.hp;
-        this._lightParent = aParams.lightParent;
-        this._lightHeight = aParams.lightHeight || 0;
+        this._lightParent = aParams.light.parent;
+        this._lightHeight = aParams.light.height || 0;
 
         this.initStar();
         this.initHpBgLine();
         this.initHpBar();
         this.initPlanetOrbit();
-        this.initPointLight(aParams);
+        this.initPointLight(aParams.light);
 
     }
 
@@ -98,15 +98,15 @@ export class BattleStar extends BattleObject {
     }
 
     private initPointLight(aParams: {
-        lightDist?: number,
-        lightIntens?: number,
-        lightDecay?: number
+        dist?: number,
+        intens?: number,
+        decay?: number
     }) {
         const lightColor = 0xffffff;
         this._pointLight = new THREE.PointLight(lightColor,
-            aParams.lightIntens || 1,
-            aParams.lightDist || 100,
-            aParams.lightDecay || 1
+            aParams.intens || 1,
+            aParams.dist || 50,
+            aParams.decay || 1
         );
         this._lightParent.add(this._pointLight);
         
@@ -119,7 +119,6 @@ export class BattleStar extends BattleObject {
         this._lightHelper.rotation.x = MyMath.toRadian(-90);
         this._lightHelper.visible = false;
         this._lightParent.add(this._lightHelper);
-
     }
 
     public get lightHeight(): number {

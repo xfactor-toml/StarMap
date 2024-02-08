@@ -21,6 +21,7 @@ import { LogMng } from '../utils/LogMng';
 import { FieldGrid } from '../objects/battle/FieldGrid';
 import { ThreeUtils } from '../utils/threejs/ThreejsUtils';
 import { DamageViewer } from './DamageViewer';
+import { BattleTower } from '../objects/battle/BattleTower';
 
 type ServerFieldParams = {
 
@@ -54,10 +55,20 @@ const SETTINGS = {
     // stars params
     stars: {
         light: {
-            height: 10,
-            intens: 1.1,
+            height: 6,
+            intens: 1,
             dist: 50,
-            decay: .5
+            decay: .2
+        }
+    },
+
+    // tower params
+    towers: {
+        light: {
+            height: 6,
+            intens: .5,
+            dist: 25,
+            decay: .2
         }
     }
 
@@ -267,11 +278,10 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                     ...{
                         camera: this._camera,
                         planetOrbitRadius: 15,
-                        lightParent: this._dummyMain,
-                        lightHeight: SETTINGS.stars.light.height,
-                        lightIntens: SETTINGS.stars.light.intens,
-                        lightDist: SETTINGS.stars.light.dist,
-                        lightDecay: SETTINGS.stars.light.decay,
+                        light: {
+                            parent: this._dummyMain,
+                            ...SETTINGS.stars.light
+                        }
                     }
                 });
                 if (aData.pos) obj.position.copy(this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z }));
@@ -284,9 +294,29 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 if (aData.q) obj.setQuaternion(aData.q);
                 this._objects.set(aData.id, obj);
                 break;
+            
+            case 'Tower':
+                obj = new BattleTower({
+                    ...aData,
+                    ...{
+                        race: aData.owner == getWalletAddress() ? 'Waters' : 'Insects',
+                        light: {
+                            parent: this._dummyMain,
+                            ...SETTINGS.towers.light
+                        }
+                    }
+                });
+
+                if (aData.pos) {
+                    const clientPos = this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z });
+                    obj.position.copy(clientPos);
+                }
+
+                // add hp bar
+                this._objectHpViewer.addBar(obj);
+                break;
 
             case 'FighterShip': {
-                let r = this.serverValueToClient(aData.radius);
                 obj = new BattleFighter({
                     ...aData,
                     ...{
@@ -308,7 +338,6 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
             case 'BattleShip': {
                 this.logDebug(`onObjectCreatePack(): BattleShip:`, aData);
-                let r = this.serverValueToClient(aData.radius);
                 obj = new BattleShip({
                     ...aData,
                     ...{

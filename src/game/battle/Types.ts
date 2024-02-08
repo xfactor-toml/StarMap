@@ -22,7 +22,8 @@ export enum PackTitle {
     damage = 'damage'
 }
 
-export type ObjectType = 'Star' | 'Planet' | 'FighterShip' | 'BattleShip' | 'Homing';
+export type ObjectType = 'Star' | 'Planet' | 'Tower' | 'FighterShip' | 'BattleShip' | 'Homing';
+
 export type AttackType = 'laser' | 'ray';
 // Humans, Insects, Waters, Lizards
 export type ObjectRace = 'Humans' | 'Waters' | 'Insects' | 'Lizards';
