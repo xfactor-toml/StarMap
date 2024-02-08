@@ -65,9 +65,9 @@ const SETTINGS = {
     // tower params
     towers: {
         light: {
-            height: 6,
-            intens: .5,
-            dist: 25,
+            height: 0,
+            intens: 1,
+            dist: 22,
             decay: .2
         }
     }
@@ -684,14 +684,23 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             });
         }).name(`Attack Radius`);
 
-        let starsFolder = f.addFolder('Stars');
-        starsFolder.add(DEBUG_GUI, 'lightHelpers').name('Helpers').onChange((aVal: boolean) => {
+        f.add(DEBUG_GUI, 'lightHelpers').name('Light Helpers').onChange((aVal: boolean) => {
+            // stars
             let stars: BattleStar[] = this.getObjectsByType('Star') as BattleStar[];
             for (let i = 0; i < stars.length; i++) {
                 const star = stars[i];
                 star.lightHelperVisible = DEBUG_GUI.lightHelpers;
             }
+            // towers
+            let towers: BattleTower[] = this.getObjectsByType('Tower') as BattleTower[];
+            for (let i = 0; i < towers.length; i++) {
+                const tower = towers[i];
+                tower.lightHelperVisible = aVal;
+            }
         })
+
+        // star lights
+        let starsFolder = f.addFolder('Stars');
         starsFolder.add(SETTINGS.stars.light, 'height', 0, 50, .1).name('Height').onChange((aVal: number) => {
             let stars: BattleStar[] = this.getObjectsByType('Star') as BattleStar[];
             for (let i = 0; i < stars.length; i++) {
@@ -706,7 +715,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 star.lightIntens = aVal;
             }
         })
-        starsFolder.add(SETTINGS.stars.light, 'dist', 0, 100, 1).name('Distance').onChange((aVal: number) => {
+        starsFolder.add(SETTINGS.stars.light, 'dist', 0, 100, .1).name('Distance').onChange((aVal: number) => {
             let stars: BattleStar[] = this.getObjectsByType('Star') as BattleStar[];
             for (let i = 0; i < stars.length; i++) {
                 const star = stars[i];
@@ -717,6 +726,37 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             let stars: BattleStar[] = this.getObjectsByType('Star') as BattleStar[];
             for (let i = 0; i < stars.length; i++) {
                 const star = stars[i];
+                star.lightDecay = aVal;
+            }
+        })
+
+        // tower lights
+        let towerFolder = f.addFolder('Towers');
+        towerFolder.add(SETTINGS.towers.light, 'height', 0, 50, .1).name('Height').onChange((aVal: number) => {
+            let towers: BattleTower[] = this.getObjectsByType('Tower') as BattleTower[];
+            for (let i = 0; i < towers.length; i++) {
+                const tower = towers[i];
+                tower.lightHeight = aVal;
+            }
+        })
+        towerFolder.add(SETTINGS.towers.light, 'intens', .1, 5, .1).name('Intensity').onChange((aVal: number) => {
+            let towers: BattleTower[] = this.getObjectsByType('Tower') as BattleTower[];
+            for (let i = 0; i < towers.length; i++) {
+                const star = towers[i];
+                star.lightIntens = aVal;
+            }
+        })
+        towerFolder.add(SETTINGS.towers.light, 'dist', 0, 50, .1).name('Distance').onChange((aVal: number) => {
+            let towers: BattleTower[] = this.getObjectsByType('Tower') as BattleTower[];
+            for (let i = 0; i < towers.length; i++) {
+                const star = towers[i];
+                star.lightDist = aVal;
+            }
+        })
+        towerFolder.add(SETTINGS.towers.light, 'decay', 0, 3, .01).name('Decay').onChange((aVal: number) => {
+            let towers: BattleTower[] = this.getObjectsByType('Tower') as BattleTower[];
+            for (let i = 0; i < towers.length; i++) {
+                const star = towers[i];
                 star.lightDecay = aVal;
             }
         })

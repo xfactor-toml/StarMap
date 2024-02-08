@@ -123,19 +123,87 @@ export class BattleTower extends BattleObject {
         }
     }
 
+    public get lightHeight(): number {
+        return this._lightHeight;
+    }
+
+    public set lightHeight(value: number) {
+        this._lightHeight = value;
+    }
+
+    public get lightIntens(): number {
+        return this._pointLight?.intensity;
+    }
+
+    public set lightIntens(aValue: number) {
+        if (this._pointLight) this._pointLight.intensity = aValue;
+    }
+
+    public get lightDist(): number {
+        return this._pointLight?.distance;
+    }
+
+    public set lightDist(aValue: number) {
+        if (this._pointLight) this._pointLight.distance = aValue;
+    }
+
+    public get lightDecay(): number {
+        return this._pointLight?.intensity;
+    }
+
+    public set lightDecay(aValue: number) {
+        if (this._pointLight) this._pointLight.decay = aValue;
+    }
+
+    public get lightHelperVisible() {
+        return this._lightHelper.visible;
+    }
+
+    public set lightHelperVisible(value) {
+        this._lightHelper.visible = value;
+    }
+
     getGlobalFirePoint(): THREE.Vector3 {
         let localPoint = this.getCurrentGunLocalPoint();
         this.switchGunPoint();
         return this.localToWorld(localPoint);
     }
 
-    updateQuaternion(dt: number) {
-        // clear override
+    protected updateLight() {
+        this._pointLight.position.x = this.position.x;
+        this._pointLight.position.y = this.position.y + this._lightHeight;
+        this._pointLight.position.z = this.position.z;
+
+        if (this._lightHelper) {
+            this._lightHelper.position.copy(this._pointLight.position);
+            const sc = this._pointLight.distance;
+            this._lightHelper.scale.set(sc, sc, sc);
+        }
+    }
+
+    update(dt: number) {
+        if (this._pointLight) this.updateLight();
     }
 
     free() {
-        this._mesh = null;
-        this._model = null;
+        this.clear();
+
+        if (this._mesh) {
+            this.remove(this._mesh);
+            this._mesh = null;
+        }
+
+        if (this._pointLight) {
+            this._lightParent.remove(this._pointLight);
+            this._pointLight.dispose();
+            this._pointLight = null;
+        }
+        if (this._lightHelper) {
+            this._lightHelper.visible = false;
+            this._lightParent.remove(this._lightHelper);
+            this._lightHelper = null;
+        }
+
         super.free();
     }
 
