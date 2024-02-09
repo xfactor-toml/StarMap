@@ -66,7 +66,7 @@ export class FieldCell extends MyObject3D {
             new THREE.LineBasicMaterial({
                 color: color,
                 transparent: true,
-                opacity: 0.2
+                opacity: 0.1
             })
         );
 

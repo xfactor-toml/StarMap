@@ -10,7 +10,8 @@ type LightParams = {
     height?: number,
     dist?: number,
     intens?: number,
-    decay?: number
+    decay?: number,
+    color?: number
 }
 
 type TowerParams = BattleObjectData & {
@@ -81,7 +82,7 @@ export class Tower extends BattleObject {
     }
 
     private initPointLight(aParams: LightParams) {
-        const lightColor = 0xff0000;
+        const lightColor = aParams.color || 0xff0000;
         this._pointLight = new THREE.PointLight(lightColor,
             aParams.intens || 1,
             aParams.dist || 100,
@@ -153,6 +154,10 @@ export class Tower extends BattleObject {
         if (this._pointLight) this._pointLight.decay = aValue;
     }
 
+    public set lightColor(value: number) {
+        this._pointLight.color.setHex(value);
+    }
+
     public get lightHelperVisible() {
         return this._lightHelper.visible;
     }
@@ -160,7 +165,7 @@ export class Tower extends BattleObject {
     public set lightHelperVisible(value) {
         this._lightHelper.visible = value;
     }
-
+    
     getGlobalFirePoint(): THREE.Vector3 {
         let localPoint = this.getCurrentGunLocalPoint();
         this.switchGunPoint();

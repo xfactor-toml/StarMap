@@ -69,7 +69,7 @@ const SETTINGS = {
             intens: 1,
             dist: 22,
             decay: .2,
-            allyColor: 0x0000ff,
+            ownerColor: 0x0000ff,
             enemyColor: 0xff0000,
         }
     }
@@ -187,10 +187,6 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         });
     }
 
-    private isCurrentOwner(aWalletAddr: string): boolean {
-        return this._walletNumber == aWalletAddr;
-    }
-
     private serverValueToClient(aServerValue: number): number {
         const factor = SETTINGS.client.field.size.w / SETTINGS.server.field.size.w;
         return aServerValue * factor;
@@ -249,6 +245,14 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             }
         });
         return res;
+    }
+
+    private isCurrentOwner(aWalletAddr: string): boolean {
+        return this._walletNumber == aWalletAddr;
+    }
+
+    private getLaserColor(aOwner: string): string {
+        return this.isCurrentOwner(aOwner) ? '#0072ff' : '#ff0000'
     }
 
     private getRandomShip(exclude?: BattleObject[]): BattleObject {
@@ -315,7 +319,8 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                         race: this.isCurrentOwner(aData.owner) ? 'Waters' : 'Insects',
                         light: {
                             parent: this._dummyMain,
-                            ...SETTINGS.towers.light
+                            ...SETTINGS.towers.light,
+                            color: this.isCurrentOwner(aData.owner) ? SETTINGS.towers.light.ownerColor : SETTINGS.towers.light.enemyColor
                         },
                         showRadius: DEBUG_GUI.showObjectRadius,
                         showAttackRadius: DEBUG_GUI.showObjectAttackRadius
@@ -492,7 +497,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             return;
         }
 
-        let laserColor = this.isCurrentOwner(objFrom.owner) ? '#ff0000' : '#0072ff';
+        let laserColor = this.getLaserColor(objFrom.owner);
 
         switch (aData.attackType) {
 
@@ -562,7 +567,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             return;
         }
 
-        let laserColor = this.isCurrentOwner(objFrom.owner) ? '#ff0000' : '#0072ff';
+        let laserColor = this.getLaserColor(objFrom.owner);
 
         // create ray
 
@@ -592,16 +597,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             return;
         }
 
-        let laserColor = '#0072ff';
-        // const purpleLaserColor = '#5e48ff';
-        if (this.isCurrentOwner(planet.owner)) {
-            // this.logDebug(`laser is red`);
-            laserColor = '#ff0000';
-        }
-        else {
-            // this.logDebug(`laser is blue`);
-        }
-
+        let laserColor = this.getLaserColor(planet.owner);
         let originPos = this.getPositionByServerV3(aData.pos);
         let dir = new THREE.Vector3(aData.dir.x, aData.dir.y, aData.dir.z);
         dir.multiplyScalar(aData.length);
