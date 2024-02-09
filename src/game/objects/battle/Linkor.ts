@@ -1,16 +1,18 @@
 import * as THREE from 'three';
-import { BattleObject } from './BattleObject';
+import { BattleObject, BattleObjectData } from './BattleObject';
 import { ThreeLoader } from '~/game/utils/threejs/ThreeLoader';
 import { ModelAlias } from '~/game/data/ModelData';
-import { TextureAlias } from '~/game/data/TextureData';
-import { ObjectCreateData } from '~/game/battle/Types';
 
-export class BattleShip extends BattleObject {
+type LinkorParams = BattleObjectData & {
+
+}
+
+export class Linkor extends BattleObject {
     protected _mesh: THREE.Mesh;
     protected _model: THREE.Group;
 
-    constructor(aParams: ObjectCreateData) {
-        super(aParams, 'BattleShip');
+    constructor(aParams: LinkorParams) {
+        super(aParams, 'Linkor');
         // this.initSimpleModel();
         this.initShipModel();
     }

@@ -1,13 +1,11 @@
 import * as THREE from 'three';
-import { BattleObject } from './BattleObject';
+import { BattleObject, BattleObjectData } from './BattleObject';
 import { BigStar2 } from '../BigStar2';
-import { Settings } from '~/game/data/Settings';
-import { ObjectCreateData } from '~/game/battle/Types';
 import { ThreeUtils } from '~/game/utils/threejs/ThreejsUtils';
 import { MyMath } from '@/utils';
 import { BattleStarHpBar } from './BattleStarHpBar';
 
-type BattleStarParams = ObjectCreateData & {
+type BattleStarParams = BattleObjectData & {
     camera: THREE.Camera,
     planetOrbitRadius: number,
     light: {

@@ -6,12 +6,12 @@ import { IUpdatable } from "../interfaces/IUpdatable";
 import { BattleObject } from '../objects/battle/BattleObject';
 import { BattleStar } from '../objects/battle/BattleStar';
 import { BattlePlanet } from '../objects/battle/BattlePlanet';
-import { BattleFighter } from '../objects/battle/BattleFighter';
+import { Fighter } from '../objects/battle/Fighter';
 import { LaserLine } from '../objects/battle/LaserLine';
 import { MyMath } from '../utils/MyMath';
 import { BattleCameraMng } from './BattleCameraMng';
 import { ObjectHpViewer } from './ObjectHpViewer';
-import { BattleShip } from '../objects/battle/BattleShip';
+import { Linkor } from '../objects/battle/Linkor';
 import { Settings } from '../data/Settings';
 import { FieldInitData, PlanetLaserData, ObjectCreateData, ObjectType, ObjectUpdateData, PackTitle, AttackData, DamageData } from './Types';
 import { BattleConnection } from './BattleConnection';
@@ -21,7 +21,7 @@ import { LogMng } from '../utils/LogMng';
 import { FieldGrid } from '../objects/battle/FieldGrid';
 import { ThreeUtils } from '../utils/threejs/ThreejsUtils';
 import { DamageViewer } from './DamageViewer';
-import { BattleTower } from '../objects/battle/BattleTower';
+import { Tower } from '../objects/battle/Tower';
 
 type ServerFieldParams = {
 
@@ -68,10 +68,19 @@ const SETTINGS = {
             height: 0,
             intens: 1,
             dist: 22,
-            decay: .2
+            decay: .2,
+            allyColor: 0x0000ff,
+            enemyColor: 0xff0000,
         }
     }
 
+}
+
+const DEBUG_GUI = {
+    showAxies: false,
+    showObjectRadius: false,
+    showObjectAttackRadius: false,
+    lightHelpers: false
 }
 
 export class BattleView extends MyEventDispatcher implements IUpdatable {
@@ -178,6 +187,10 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         });
     }
 
+    private isCurrentOwner(aWalletAddr: string): boolean {
+        return this._walletNumber == aWalletAddr;
+    }
+
     private serverValueToClient(aServerValue: number): number {
         const factor = SETTINGS.client.field.size.w / SETTINGS.server.field.size.w;
         return aServerValue * factor;
@@ -241,7 +254,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     private getRandomShip(exclude?: BattleObject[]): BattleObject {
         let ships: BattleObject[] = [];
         this._objects.forEach((aObj) => {
-            if (aObj instanceof BattleFighter) ships.push(aObj);
+            if (aObj instanceof Fighter) ships.push(aObj);
         })
         if (ships.length <= 0) return null;
         let id = MyMath.randomIntInRange(0, ships.length - 1);
@@ -296,14 +309,16 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 break;
             
             case 'Tower':
-                obj = new BattleTower({
+                obj = new Tower({
                     ...aData,
                     ...{
-                        race: aData.owner == getWalletAddress() ? 'Waters' : 'Insects',
+                        race: this.isCurrentOwner(aData.owner) ? 'Waters' : 'Insects',
                         light: {
                             parent: this._dummyMain,
                             ...SETTINGS.towers.light
-                        }
+                        },
+                        showRadius: DEBUG_GUI.showObjectRadius,
+                        showAttackRadius: DEBUG_GUI.showObjectAttackRadius
                     }
                 });
 
@@ -317,11 +332,12 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 break;
 
             case 'FighterShip': {
-                obj = new BattleFighter({
+                obj = new Fighter({
                     ...aData,
                     ...{
-                        race: aData.owner == getWalletAddress() ?
-                            'Waters' : 'Insects'
+                        race: this.isCurrentOwner(aData.owner) ? 'Waters' : 'Insects',
+                        showRadius: DEBUG_GUI.showObjectRadius,
+                        showAttackRadius: DEBUG_GUI.showObjectAttackRadius
                     }
                 });
 
@@ -338,11 +354,12 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
             case 'BattleShip': {
                 this.logDebug(`onObjectCreatePack(): BattleShip:`, aData);
-                obj = new BattleShip({
+                obj = new Linkor({
                     ...aData,
                     ...{
-                        race: aData.owner == getWalletAddress() ?
-                            'Waters' : 'Insects'
+                        race: this.isCurrentOwner(aData.owner) ? 'Waters' : 'Insects',
+                        showRadius: DEBUG_GUI.showObjectRadius,
+                        showAttackRadius: DEBUG_GUI.showObjectAttackRadius
                     }
                 });
 
@@ -383,7 +400,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 // this.logDebug(`planet update:`, data);
             }
 
-            if (obj instanceof BattleShip) {
+            if (obj instanceof Linkor) {
                 // this.logDebug(`BattleShip update:`, data);
             }
 
@@ -475,7 +492,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             return;
         }
 
-        let laserColor = objFrom.owner != this._walletNumber ? '#ff0000' : '#0072ff';
+        let laserColor = this.isCurrentOwner(objFrom.owner) ? '#ff0000' : '#0072ff';
 
         switch (aData.attackType) {
 
@@ -545,7 +562,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             return;
         }
 
-        let laserColor = objFrom.owner != this._walletNumber ? '#ff0000' : '#0072ff';
+        let laserColor = this.isCurrentOwner(objFrom.owner) ? '#ff0000' : '#0072ff';
 
         // create ray
 
@@ -577,7 +594,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
         let laserColor = '#0072ff';
         // const purpleLaserColor = '#5e48ff';
-        if (planet.owner != this._walletNumber) {
+        if (this.isCurrentOwner(planet.owner)) {
             // this.logDebug(`laser is red`);
             laserColor = '#ff0000';
         }
@@ -640,13 +657,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     }
 
     initDebugGui(aFolder: GUI) {
-        const DEBUG_GUI = {
-            showAxies: false,
-            showObjectRadius: false,
-            showObjectAttackRadius: false,
-            lightHelpers: false
-        }
-
+        
         const f = aFolder;
 
         f.add(DEBUG_GUI, 'showAxies').onChange((aShow: boolean) => {
@@ -692,7 +703,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 star.lightHelperVisible = DEBUG_GUI.lightHelpers;
             }
             // towers
-            let towers: BattleTower[] = this.getObjectsByType('Tower') as BattleTower[];
+            let towers: Tower[] = this.getObjectsByType('Tower') as Tower[];
             for (let i = 0; i < towers.length; i++) {
                 const tower = towers[i];
                 tower.lightHelperVisible = aVal;
@@ -733,28 +744,28 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         // tower lights
         let towerFolder = f.addFolder('Towers');
         towerFolder.add(SETTINGS.towers.light, 'height', 0, 50, .1).name('Height').onChange((aVal: number) => {
-            let towers: BattleTower[] = this.getObjectsByType('Tower') as BattleTower[];
+            let towers: Tower[] = this.getObjectsByType('Tower') as Tower[];
             for (let i = 0; i < towers.length; i++) {
                 const tower = towers[i];
                 tower.lightHeight = aVal;
             }
         })
         towerFolder.add(SETTINGS.towers.light, 'intens', .1, 5, .1).name('Intensity').onChange((aVal: number) => {
-            let towers: BattleTower[] = this.getObjectsByType('Tower') as BattleTower[];
+            let towers: Tower[] = this.getObjectsByType('Tower') as Tower[];
             for (let i = 0; i < towers.length; i++) {
                 const star = towers[i];
                 star.lightIntens = aVal;
             }
         })
         towerFolder.add(SETTINGS.towers.light, 'dist', 0, 50, .1).name('Distance').onChange((aVal: number) => {
-            let towers: BattleTower[] = this.getObjectsByType('Tower') as BattleTower[];
+            let towers: Tower[] = this.getObjectsByType('Tower') as Tower[];
             for (let i = 0; i < towers.length; i++) {
                 const star = towers[i];
                 star.lightDist = aVal;
             }
         })
         towerFolder.add(SETTINGS.towers.light, 'decay', 0, 3, .01).name('Decay').onChange((aVal: number) => {
-            let towers: BattleTower[] = this.getObjectsByType('Tower') as BattleTower[];
+            let towers: Tower[] = this.getObjectsByType('Tower') as Tower[];
             for (let i = 0; i < towers.length; i++) {
                 const star = towers[i];
                 star.lightDecay = aVal;

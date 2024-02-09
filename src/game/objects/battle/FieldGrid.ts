@@ -4,7 +4,7 @@ import { MyObject3D } from '~/game/basics/MyObject3D';
 export class FieldGrid extends MyObject3D {
 
     constructor(rows: number, cols: number, hexWidth: number, hexHeight: number, color: number) {
-        super(`FieldCell`);
+        super(`FieldGrid`);
         this.drawHexagonalField(this, rows, cols, hexWidth, hexHeight, color);
     }
 

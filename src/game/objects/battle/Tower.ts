@@ -1,9 +1,7 @@
 import * as THREE from 'three';
-import { BattleObject } from './BattleObject';
+import { BattleObject, BattleObjectData } from './BattleObject';
 import { ThreeLoader } from '~/game/utils/threejs/ThreeLoader';
 import { ModelAlias } from '~/game/data/ModelData';
-import { TextureAlias } from '~/game/data/TextureData';
-import { ObjectCreateData, ObjectRace } from '~/game/battle/Types';
 import { MyMath } from '@/utils';
 import { ThreeUtils } from '~/game/utils/threejs/ThreejsUtils';
 
@@ -15,11 +13,11 @@ type LightParams = {
     decay?: number
 }
 
-type BattleTowerParams = ObjectCreateData & {
+type TowerParams = BattleObjectData & {
     light: LightParams
 }
 
-export class BattleTower extends BattleObject {
+export class Tower extends BattleObject {
     protected _mesh: THREE.Mesh;
     protected _model: THREE.Group;
     protected _currGunNumber: number;
@@ -29,8 +27,8 @@ export class BattleTower extends BattleObject {
     protected _pointLight: THREE.PointLight;
     protected _lightHelper: THREE.Line;
 
-    constructor(aParams: BattleTowerParams) {
-        super(aParams, 'BattleFighter');
+    constructor(aParams: TowerParams) {
+        super(aParams, 'Tower');
         this._currGunNumber = MyMath.randomIntInRange(1, 2);
         this._lightParent = aParams.light.parent;
         this._lightHeight = aParams.light.height || 0;

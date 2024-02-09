@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { BattleObject } from './BattleObject';
-import { ObjectCreateData } from '~/game/battle/Types';
+import { BattleObject, BattleObjectData } from './BattleObject';
 import { ThreeLoader } from '~/game/utils/threejs/ThreeLoader';
 import { TextureAlias } from '~/game/data/TextureData';
 import { MyMath } from '@/utils';
@@ -13,7 +12,7 @@ export class BattlePlanet extends BattleObject {
     protected _setteliteRadius: number;
     protected _localRotateSpd = 0;
 
-    constructor(aParams: ObjectCreateData) {
+    constructor(aParams: BattleObjectData) {
         super(aParams, 'BattlePlanet');
 
         this._setteliteOrbitRadius = this.radius * 2;

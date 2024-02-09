@@ -3,10 +3,14 @@ import gsap from 'gsap';
 import * as THREE from 'three';
 import { MyObject3D } from "~/game/basics/MyObject3D";
 import { ObjectCreateData, ObjectType } from '~/game/battle/Types';
-import { LaserLine } from './LaserLine';
+
+export type BattleObjectData = ObjectCreateData & {
+    showRadius?: boolean,
+    showAttackRadius?: boolean,
+}
 
 export class BattleObject extends MyObject3D {
-    protected _params: ObjectCreateData;
+    protected _params: BattleObjectData;
     protected _hpMax: number;
     protected _hp: number;
     private _shieldMax: number;
@@ -17,13 +21,20 @@ export class BattleObject extends MyObject3D {
     private _dirrection: THREE.Vector3;
     private _targetQuaternion: THREE.Quaternion;
 
-    constructor(aParams: ObjectCreateData, aClassName?: string) {
+    constructor(aParams: BattleObjectData, aClassName?: string) {
         super(aClassName || 'BattleObject');
         this._params = aParams;
         this._hp = this._hpMax = this._params.hp;
         this._shield = this._shieldMax = this._params.shield;
         this._dirrection = new THREE.Vector3(0, 0, 1);
         this._targetQuaternion = this.quaternion.clone();
+
+        if (aParams.showRadius) {
+            this.createDebugRadiusSphere();
+        }
+        if (aParams.showAttackRadius) {
+            this.createDebugAttackSphere();
+        }
     }
 
     public get objId(): number {
