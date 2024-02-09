@@ -155,6 +155,9 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         this._connection.socket.on(PackTitle.rayStart, (aData) => {
             this.rayStart(aData);
         });
+        this._connection.socket.on(PackTitle.rayStop, (aData) => {
+            this.rayStop(aData);
+        });
         this._connection.socket.on(PackTitle.damage, (aData: DamageData) => {
             this.onDamage(aData);
         });
@@ -582,6 +585,20 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
         this._attackRays[aData.idFrom] = laser;
 
+    }
+
+    private rayStop(aData: {
+        idFrom: number
+    }) {
+        // create ray
+        let laser = this._attackRays[aData.idFrom];
+        laser?.hide({
+            dur: 1,
+            cb: () => {
+                this._dummyMain.add(laser);
+            },
+            ctx: this
+        });
     }
 
     private onDamage(aData: DamageData) {
