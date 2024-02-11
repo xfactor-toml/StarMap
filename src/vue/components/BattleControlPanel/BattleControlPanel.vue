@@ -1,47 +1,28 @@
 <template>
   <div class="BattleControlPanel">
-    <div class="BattleControlPanel__row">
+    <!-- <div class="BattleControlPanel__row">
       <EmptyControl/>
       <EmptyControl/>
-    </div>
+    </div> -->
     <div class="BattleControlPanel__row">
-      <LevelControl
-        :disabled="true"
-        :level="level"
-        :progress="0"
-      />
-      <GoldControl
-        :disabled="true"
-        :amount="gold"
-      />
-      <ShopControl
-        :disabled="true"
-      />
+      <LevelControl :disabled="true" :level="level" :progress="0" />
+      <GoldControl :disabled="true" :amount="gold" />
+      <ShopControl :disabled="true" />
     </div>
     <div class="BattleControlPanel__row">
       <SatelliteFireSkill
         :params="satelliteFireSkill"
         :cooldown="cooldown['satelliteFire']"
         :disabled="isPendingSkill('satelliteFire')"
-        @fire="$emit('action', {
-          type: 'satelliteFire'
-        })"
+        @fire="
+          $emit('action', {
+            type: 'satelliteFire'
+          })
+        "
       />
-      <RocketFireSkill
-        :disabled="true"
-        :cooldown="null"
-        :progress="0"
-      />
-      <SlowdownSkill
-        :disabled="true"
-        :cooldown="null"
-        :progress="0"
-      />
-      <InvisibilitySkill
-        :disabled="true"
-        :cooldown="null"
-        :progress="0"
-      />
+      <RocketFireSkill :disabled="true" :cooldown="null" :progress="0" />
+      <SlowdownSkill :disabled="true" :cooldown="null" :progress="0" />
+      <InvisibilitySkill :disabled="true" :cooldown="null" :progress="0" />
     </div>
   </div>
 </template>
@@ -50,19 +31,9 @@
 import { BattleActionType, BattleCooldown, BattleData } from '@/types';
 import { PropType } from 'vue';
 
-import {
-  EmptyControl,
-  GoldControl,
-  LevelControl,
-  ShopControl,
-} from './controls';
+import { EmptyControl, GoldControl, LevelControl, ShopControl } from './controls';
 
-import {
-  InvisibilitySkill,
-  SatelliteFireSkill,
-  RocketFireSkill,
-  SlowdownSkill
-} from './skills';
+import { InvisibilitySkill, SatelliteFireSkill, RocketFireSkill, SlowdownSkill } from './skills';
 
 export default {
   name: 'BattleControlPanel',
@@ -91,27 +62,27 @@ export default {
     },
     level: {
       type: Number,
-      required: true,
+      required: true
     },
     gold: {
       type: Number,
-      required: true,
-    },
+      required: true
+    }
   },
   emits: {
     action: (payload: { type: BattleActionType }) => payload
   },
   computed: {
     satelliteFireSkill(): BattleData['skills']['satelliteFire'] {
-      return this.skills['satelliteFire']
+      return this.skills['satelliteFire'];
     }
   },
   methods: {
     isPendingSkill(type: BattleActionType) {
-      return this.skillsPendingList.includes(type)
+      return this.skillsPendingList.includes(type);
     }
   }
 };
 </script>
 
-<style scoped src="./BattleControlPanel.css"/>
+<style scoped src="./BattleControlPanel.css" />
