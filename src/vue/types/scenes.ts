@@ -27,8 +27,8 @@ type Scene<
   name: T;
   modes: K;
   initialMode: K[number]['name'];
-  getComponent: () => DefineComponent<{}, {}, any>
   afterLeave?: () => void
+  getComponent: () => DefineComponent<{}, {}, any>
 };
 
 export enum SceneName {
@@ -55,6 +55,9 @@ export type GuiScenes = {
   ]>,
   [SceneName.Battle]: Scene<SceneName.Battle, [
     Mode<'init'>,
+    Mode<'accept'>,
+    Mode<'connect'>,
+    Mode<'loading'>,
     Mode<'process'>,
     Mode<'results'>
   ]>

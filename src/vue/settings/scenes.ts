@@ -1,9 +1,16 @@
 import { GuiScenes, SceneName } from '@/types';
 import { BattleScene, GalaxyScene, StartScene } from '@/scenes';
-import { BattleResultsMode, PhantomMode, PreloaderMode, RealMode, WelcomeMode } from '@/modes';
+import {
+  BattleAcceptMode,
+  BattleResultsMode,
+  PhantomMode,
+  PreloaderMode,
+  RealMode,
+  WelcomeMode
+} from '@/modes';
 import { BattleInitMode, BattleProcessMode } from '@/modes';
 import { default as anime } from 'animejs';
-import { useBattleStore } from '@/stores';
+import { useBattleStore, useUiStore } from '@/stores';
 
 export const SCENES: GuiScenes = {
   start: {
@@ -118,6 +125,18 @@ export const SCENES: GuiScenes = {
             translateY: [0, '100%'],
           }, 0).finished
         },
+      },
+      {
+        name: 'accept',
+        getComponent: () => BattleAcceptMode,
+      },
+      {
+        name: 'connect',
+        getComponent: () => BattleAcceptMode,
+      },
+      {
+        name: 'loading',
+        getComponent: () => BattleAcceptMode,
       },
       {
         name: 'process',

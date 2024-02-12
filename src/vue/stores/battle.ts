@@ -31,6 +31,7 @@ const cancelAnimation = (animation: anime.AnimeInstance) => {
 
 export const useBattleStore = defineStore('battle', () => {
   const playerSearching = ref(false)
+  const acceptTime = ref(0) // seconds
   const state = ref<BattleData>(getInitialState())
   const cooldown = ref<BattleCooldown>(getInitialCooldown())
   const results = ref<BattleResults | null>(null)
@@ -48,6 +49,10 @@ export const useBattleStore = defineStore('battle', () => {
 
   const setPlayerSearchingState = (state: boolean) => {
     playerSearching.value = state;
+  }
+
+  const setAcceptTime = (time: number) => {
+    acceptTime.value = time;
   }
 
   const setState = (newState: BattleData) => {
@@ -96,6 +101,7 @@ export const useBattleStore = defineStore('battle', () => {
   }
 
   return {
+    acceptTime,
     cooldown,
     playerSearching,
     players,
@@ -103,6 +109,7 @@ export const useBattleStore = defineStore('battle', () => {
     skillsPendingList,
     results,
     addSkillToPendingList,
+    setAcceptTime,
     setPlayerSearchingState,
     setState,
     setCooldown,

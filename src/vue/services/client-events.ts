@@ -1,4 +1,4 @@
-import { useBattleStore, useScenesStore, useSettingsStore, useStarsStore, useUiStore } from '@/stores';
+import { useBattleStore, useScenesStore, useStarsStore, useUiStore } from '@/stores';
 import { ClientEvent, SceneName } from '@/types';
 import { wait } from '@/utils';
 import { Settings } from '~/game/data/Settings';
@@ -10,7 +10,6 @@ export class ClientEventsService {
   static async handleEvent({ detail: clientEvent }: Event & { detail: ClientEvent }) {
     const battleStore = useBattleStore();
     const scenesStore = useScenesStore();
-    const settingsStore = useSettingsStore();
     const starsStore = useStarsStore();
     const uiStore = useUiStore();
 
@@ -21,7 +20,7 @@ export class ClientEventsService {
 
       case GameEvent.GAME_LOADED:
         if (!Settings.isDebugMode) {
-          await starsStore.fetchStars();
+          // await starsStore.fetchStars();
         }
         scenesStore.setScene(SceneName.Start, {
           mode: 'welcome'
@@ -86,7 +85,6 @@ export class ClientEventsService {
       case GameEvent.BATTLE_PREROLL_SHOW:
         battleStore.setPlayerSearchingState(false);
         scenesStore.setScene(SceneName.Battle);
-
         battleStore.setState({
           players: {
             connected: {
@@ -135,12 +133,12 @@ export class ClientEventsService {
       //   break;
 
       case GameEvent.BATTLE_COMPLETE_SHOW:
-        const scenes = useScenesStore();
         const typeByStatus: {[index: string]: 'victory' | 'defeat'} = {
-          'win': 'victory',
-          'lose': 'defeat',
-          'draw': 'defeat'
+          win: 'victory',
+          lose: 'defeat',
+          draw: 'defeat'
         }
+
         battleStore.setResults({
           type: typeByStatus[clientEvent.status],
           player: '0xA089D195D994e8145dda68993A91C4a6D1704535',
@@ -154,16 +152,14 @@ export class ClientEventsService {
           },
         })
 
-        scenes.setScene(SceneName.Battle, {
+        scenesStore.setScene(SceneName.Battle, {
           mode: 'results'
         })
         break;
 
-
       default:
         LogMng.error(`Unknown game event:`, clientEvent);
         break;
-      
     }
   }
 }

@@ -2,7 +2,10 @@
   <div class="BattleProcessMode">
     <div class="BattleProcessMode__content">
       <div
-        v-for="player in [battleStore.players.connected, battleStore.players.current]"
+        v-for="player in [
+          battleStore.players.connected,
+          battleStore.players.current
+        ]"
         :key="player.address"
         class="BattleProcessMode__section"
       >

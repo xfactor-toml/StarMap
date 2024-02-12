@@ -99,66 +99,38 @@ export class ClientService {
   async onGameStart() {
     LogMng.debug('Front: start game click');
 
-    // MOCK START
+    // mock
     const scenes = useScenesStore()
     const battle = useBattleStore()
 
-    FrontEvents.onBattleSearch.dispatch();
-
-    return;
-    
-    await wait(2000)
-    
-    battle.setPlayerSearchingState(false);
-    scenes.setScene(SceneName.Battle);
-
-    battle.setState({
-      players: {
-        connected: {
-          address: '0xA089D195D994e8145dda68993A91C4a6D1704535',
-          name: 'Kepler',
-          race: 'Humans',
-          star: '2048RX',
-        },
-        current: {
-          address: '0xA089D195D994e8145dda68993A91C4a6D1704538',
-          name: 'Anthares',
-          race: 'Insects',
-          star: '2048RX',
-        },
-      },
-      gold: 1000,
-      level: 1,
-      skills: {
-        satelliteFire: {
-          charges: {
-            count: 3,
-            fractions: 4
-          },
-          cooldown: {
-            duration: 3000,
-          }
-        }
-      }
-    });
-
-    await wait(2000);
-
     scenes.setScene(SceneName.Battle, {
-      mode: 'process'
+      mode: 'accept'
     });
-    // MOCK END
+    battle.setAcceptTime(10)
 
+    return
+    // mock end
+
+    FrontEvents.onBattleSearch.dispatch();
   }
   
   onSearchingClick() {
     LogMng.debug('Front: stop searching click');
     FrontEvents.onBattleStopSearch.dispatch();
   }
+
+  onBattleAccept() {
+    // mock
+    useScenesStore().setScene(SceneName.Galaxy);
+  }
+
+  onBattleAcceptExit() {
+    // mock
+    useScenesStore().setScene(SceneName.Galaxy);
+  }
   
   onBattleAction(payload: { type: BattleActionType }) {
     const battleStore = useBattleStore()
-    // logger.log(`battle action, ${JSON.stringify(payload)}`)
     LogMng.debug(`battle action, ${JSON.stringify(payload)}`);
     FrontEvents.onBattleAbilityLaserClick.dispatch();
     // battleStore.addSkillToPendingList(payload.type);
@@ -191,14 +163,12 @@ export class ClientService {
       })
     })
     // MOCK END
-
   }
-  
+
   onClaim() {
     logger.log('claim');
     FrontEvents.onBattleClaimClick.dispatch();
   }
-  
 
   static VuePlugin = {
     install: app => {
