@@ -80,7 +80,8 @@ const DEBUG_GUI = {
     showAxies: false,
     showObjectRadius: false,
     showObjectAttackRadius: false,
-    lightHelpers: false
+    lightHelpers: false,
+    showMyDamage: false
 }
 
 export class BattleView extends MyEventDispatcher implements IUpdatable {
@@ -602,7 +603,10 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     }
 
     private onDamage(aData: DamageData) {
-        const dmg = aData.info.damage;
+        let obj = this.getObjectById(aData.id);
+        if (this.isCurrentOwner(obj.owner) && !DEBUG_GUI.showMyDamage) {
+            return;
+        }
         let pos = this.getPositionByServerV3(aData.pos);
         this._damageViewer.showDamage(pos, aData.info);
     }
@@ -685,6 +689,8 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 this._axiesHelper = null;
             }
         }).name(`Axies`);
+
+        f.add(DEBUG_GUI, 'showMyDamage').name(`Damage To Me`);
 
         f.add(DEBUG_GUI, 'showObjectRadius').onChange((aShow: boolean) => {
             this._objects.forEach(obj => {
