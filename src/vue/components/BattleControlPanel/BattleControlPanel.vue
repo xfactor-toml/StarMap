@@ -5,9 +5,18 @@
       <EmptyControl/>
     </div> -->
     <div class="BattleControlPanel__row">
-      <LevelControl :disabled="true" :level="level" :progress="0" />
-      <GoldControl :disabled="true" :amount="gold" />
-      <ShopControl :disabled="true" />
+      <LevelControl
+        :disabled="true"
+        :level="level"
+        :progress="0"
+      />
+      <GoldControl
+        :disabled="true"
+        :amount="gold"
+      />
+      <ShopControl
+        :disabled="true"
+      />
     </div>
     <div class="BattleControlPanel__row">
       <SatelliteFireSkill
@@ -20,9 +29,21 @@
           })
         "
       />
-      <RocketFireSkill :disabled="true" :cooldown="null" :progress="0" />
-      <SlowdownSkill :disabled="true" :cooldown="null" :progress="0" />
-      <InvisibilitySkill :disabled="true" :cooldown="null" :progress="0" />
+      <RocketFireSkill
+        :disabled="true"
+        :cooldown="null"
+        :progress="0"
+      />
+      <SlowdownSkill
+        :disabled="true"
+        :cooldown="null"
+        :progress="0"
+      />
+      <InvisibilitySkill
+        :disabled="true"
+        :cooldown="null"
+        :progress="0"
+      />
     </div>
   </div>
 </template>
@@ -31,9 +52,19 @@
 import { BattleActionType, BattleCooldown, BattleData } from '@/types';
 import { PropType } from 'vue';
 
-import { EmptyControl, GoldControl, LevelControl, ShopControl } from './controls';
+import {
+  EmptyControl,
+  GoldControl,
+  LevelControl,
+  ShopControl
+} from './controls';
 
-import { InvisibilitySkill, SatelliteFireSkill, RocketFireSkill, SlowdownSkill } from './skills';
+import {
+  InvisibilitySkill,
+  SatelliteFireSkill,
+  RocketFireSkill,
+  SlowdownSkill
+} from './skills';
 
 export default {
   name: 'BattleControlPanel',
