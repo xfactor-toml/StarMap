@@ -65,7 +65,7 @@ export default {
   computed: {
     ...mapStores(useBattleStore, useScenesStore),
     results() {
-      return this.battleStore.results
+      return this.battleStore.process.results
     },
     ratingChange() {
       return this.results.rating.current - this.results.rating.prevoius

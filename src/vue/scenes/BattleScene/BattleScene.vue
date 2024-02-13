@@ -36,7 +36,7 @@ export default {
       await this.previousMode?.beforeLeave?.(el)
       done()
     }
-  }
+  },
 };
 </script>
 

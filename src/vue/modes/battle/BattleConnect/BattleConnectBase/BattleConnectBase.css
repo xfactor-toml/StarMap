@@ -1,4 +1,4 @@
-.BattleAcceptMode {
+.BattleConnectBase {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -13,7 +13,7 @@
   color: white;
 }
 
-.BattleAcceptMode__content {
+.BattleConnectBase__content {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -21,7 +21,7 @@
   flex-grow: 1;
 }
 
-.BattleAcceptMode__close {
+.BattleConnectBase__close {
   width: 21px;
   height: 21px;
   padding: 0;

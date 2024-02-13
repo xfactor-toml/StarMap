@@ -1,12 +1,5 @@
 .BattleAcceptButton {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   padding: 0;
-  position: relative;
-  z-index: 0;
-  width: 240px;
-  height: 260px;
   background-color: transparent;
   border: none;
   cursor: pointer;
@@ -22,24 +15,4 @@
 
 .BattleAcceptButton:active {
   transform: scale(0.975);
-}
-
-.BattleAcceptButton__text {
-  position: relative;
-  z-index: 1;
-  max-width: 100px;
-  color: #00FFFF;
-  text-transform: uppercase;
-  text-align: center;
-  font-family: "Exo 2";
-  font-size: 21px;
-  line-height: 1.1;
-}
-
-.BattleAcceptButton__svg {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  left: 0;
-  top: 0;
 }

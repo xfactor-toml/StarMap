@@ -1,0 +1,54 @@
+.BattleConnectIndicator {
+  --progress-color: #39B24A;
+  --strokes-opacity: 1;
+  --font-size: 21px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  position: relative;
+  z-index: 0;
+  width: 240px;
+  height: 260px;
+  pointer-events: all;
+}
+
+.BattleConnectIndicator.is-connect {
+  --progress-color: #EA1C24;
+  --strokes-opacity: 0.15;
+  --font-size: 38px;
+}
+
+.BattleConnectIndicator.is-loading {
+  --progress-color: #00FFFF;
+  --strokes-opacity: 0.15;
+}
+
+.BattleConnectIndicator__content {
+  position: relative;
+  z-index: 1;
+  max-width: 100px;
+  color: #00FFFF;
+  text-transform: uppercase;
+  text-align: center;
+  font-family: "Exo 2";
+  font-size: var(--font-size);
+  line-height: 1.1;
+}
+
+.BattleConnectIndicator__svg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.BattleConnectIndicator__progress {
+  stroke: var(--progress-color);
+}
+
+.BattleConnectIndicator__strokes {
+  opacity: var(--strokes-opacity);
+}

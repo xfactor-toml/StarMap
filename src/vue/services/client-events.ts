@@ -71,21 +71,21 @@ export class ClientEventsService {
         break;
 
       case GameEvent.BATTLE_SEARCHING_START:
-        battleStore.setPlayerSearchingState(true);
+        battleStore.connecting.setPlayerSearchingState(true);
         break;
 
       case GameEvent.BATTLE_SEARCHING_STOP:
-        battleStore.setPlayerSearchingState(false);
+        battleStore.connecting.setPlayerSearchingState(false);
         break;
       
       case GameEvent.BATTLE_SEARCHING_ERROR:
-        battleStore.setPlayerSearchingState(false);
+        battleStore.connecting.setPlayerSearchingState(false);
         break;
 
       case GameEvent.BATTLE_PREROLL_SHOW:
-        battleStore.setPlayerSearchingState(false);
+        battleStore.connecting.setPlayerSearchingState(false);
         scenesStore.setScene(SceneName.Battle);
-        battleStore.setState({
+        battleStore.process.setState({
           players: {
             connected: {
               address: clientEvent.enemyWallet || '0xADDR-ENEMY',
@@ -117,9 +117,6 @@ export class ClientEventsService {
 
         await wait(3000);
 
-        // scenesStore.setScene(SceneName.Battle, {
-        //   mode: 'process'
-        // });
         scenesStore.setSceneMode('process');
 
         break;
@@ -139,7 +136,7 @@ export class ClientEventsService {
           draw: 'defeat'
         }
 
-        battleStore.setResults({
+        battleStore.process.setResults({
           type: typeByStatus[clientEvent.status],
           player: '0xA089D195D994e8145dda68993A91C4a6D1704535',
           owner: '0xA089D195D994e8145dda68993A91C4a6D1704535',
