@@ -30,6 +30,10 @@ export class Star {
     return this.params.levelUpFuel / 1e18;
   }
 
+  get fuel() {
+    return this.params.fuel / 1e18;
+  }
+
   get name() {
     return this.params.name;
   }

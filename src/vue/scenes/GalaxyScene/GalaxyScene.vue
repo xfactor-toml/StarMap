@@ -9,7 +9,7 @@
       </div>
       <div class="GalaxyScene__headerColumn is-center">
         <SearchingIndicator
-          v-if="battleStore.playerSearching"
+          v-if="battleStore.connecting.playerSearching"
           @click="$client.onSearchingClick"
         />
         <StartGameButton

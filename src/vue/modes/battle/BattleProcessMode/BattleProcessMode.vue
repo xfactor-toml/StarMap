@@ -2,7 +2,10 @@
   <div class="BattleProcessMode">
     <div class="BattleProcessMode__content">
       <div
-        v-for="player in [battleStore.players.connected, battleStore.players.current]"
+        v-for="player in [
+          battleStore.process.players.connected,
+          battleStore.process.players.current
+        ]"
         :key="player.address"
         class="BattleProcessMode__section"
       >
@@ -19,11 +22,11 @@
       </div>
     </div>
     <BattleControlPanel
-      :skills="battleStore.state.skills"
-      :skillsPendingList="battleStore.skillsPendingList"
-      :cooldown="battleStore.cooldown"
-      :level="battleStore.state.level"
-      :gold="battleStore.state.gold"
+      :skills="battleStore.process.state.skills"
+      :skillsPendingList="battleStore.process.skillsPendingList"
+      :cooldown="battleStore.process.cooldown"
+      :level="battleStore.process.state.level"
+      :gold="battleStore.process.state.gold"
       @action="$client.onBattleAction"
     />
   </div>

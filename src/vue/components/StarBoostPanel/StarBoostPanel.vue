@@ -153,7 +153,7 @@ export default {
   computed: {
     ...mapStores(useStarsStore),
     label() {
-      return this.type === 'exp' ? 'exp.' : 'nrg.';
+      return this.type === 'exp' ? 'exp' : 'nrg';
     },
     roundedBalance() {
       return roundNumber(this.balance, this.balance > 1000 ? 2 : 4);
@@ -162,10 +162,10 @@ export default {
       return this.starsStore.getById(this.starId);
     },
     max() {
-      return this.type === 'exp' ? this.creationCost : this.roundedBalance;
+      return this.type === 'exp' ? this.creationCost : 2.5;
     },
     current() {
-      return this.type === 'exp' ? this.star.levelUpFuel : this.allowed;
+      return this.type === 'exp' ? this.star.levelUpFuel : this.star.fuel;
     },
     percent() {
       return Math.min(this.current / (this.max / 100));

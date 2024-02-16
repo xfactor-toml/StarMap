@@ -1,3 +1,5 @@
+export * from './BattleAcceptButton';
+export * from './BattleConnectIndicator';
 export * from './BattleControlPanel';
 export * from './BattleInitMember';
 export * from './LevelsPanel';

@@ -7,6 +7,7 @@ import { useBattleStore, useScenesStore } from '@/stores';
 import { BattleActionType, SceneName } from '@/types';
 import { wait } from '@/utils';
 import { LogMng } from '~/game/utils/LogMng';
+import { default as anime } from 'animejs';
 
 export class ClientService {
   constructor(private dispatcher: typeof FrontEvents) {}
@@ -99,106 +100,74 @@ export class ClientService {
   async onGameStart() {
     LogMng.debug('Front: start game click');
 
-    // MOCK START
+    // mock start
     const scenes = useScenesStore()
     const battle = useBattleStore()
+    
+    scenes.setScene(SceneName.Battle)
+
+    // Accept
+    // scenes.setSceneMode('accept');
+    // battle.connecting.setAcceptTime(10)
+
+    // Connect
+    scenes.setSceneMode('connect');
+    battle.connecting.setAcceptTime(10)
+
+    // Loading
+    // scenes.setSceneMode('loading');
+
+    // anime({
+    //   targets: { progress: 0 },
+    //   progress: 100,
+    //   easing: 'linear',
+    //   duration: 10000,
+    //   update(anim) {
+    //     battle.connecting.setLoadingProgress(anim.progress)
+    //   },
+    //   complete() {
+    //     scenes.setScene(SceneName.Galaxy);
+    //   }
+    // })
+
+    return
+    // mock end
 
     FrontEvents.onBattleSearch.dispatch();
-
-    return;
-    
-    await wait(2000)
-    
-    battle.setPlayerSearchingState(false);
-    scenes.setScene(SceneName.Battle);
-
-    battle.setState({
-      players: {
-        connected: {
-          address: '0xA089D195D994e8145dda68993A91C4a6D1704535',
-          name: 'Kepler',
-          race: 'Humans',
-          star: '2048RX',
-        },
-        current: {
-          address: '0xA089D195D994e8145dda68993A91C4a6D1704538',
-          name: 'Anthares',
-          race: 'Insects',
-          star: '2048RX',
-        },
-      },
-      gold: 1000,
-      level: 1,
-      skills: {
-        satelliteFire: {
-          charges: {
-            count: 3,
-            fractions: 4
-          },
-          cooldown: {
-            duration: 3000,
-          }
-        }
-      }
-    });
-
-    await wait(2000);
-
-    scenes.setScene(SceneName.Battle, {
-      mode: 'process'
-    });
-    // MOCK END
-
   }
   
   onSearchingClick() {
     LogMng.debug('Front: stop searching click');
     FrontEvents.onBattleStopSearch.dispatch();
   }
-  
+
+  onBattleAccept() {
+    // mock
+    useScenesStore().setScene(SceneName.Galaxy);
+  }
+
+  onBattleConnectTimeout() {
+    // mock
+    useScenesStore().setScene(SceneName.Galaxy);
+  }
+
+  onBattleConnectExit() {
+    // mock
+    useScenesStore().setScene(SceneName.Galaxy);
+  }
+
   onBattleAction(payload: { type: BattleActionType }) {
     const battleStore = useBattleStore()
-    // logger.log(`battle action, ${JSON.stringify(payload)}`)
     LogMng.debug(`battle action, ${JSON.stringify(payload)}`);
     FrontEvents.onBattleAbilityLaserClick.dispatch();
     // battleStore.addSkillToPendingList(payload.type);
-    battleStore.setCooldown(payload.type, 3000);
-
-    return;
-    // MOCK START
-    wait(1000).then(() => {
-      battleStore.setCooldown(payload.type, 2000)
-
-      wait(3000).then(() => {
-        const scenes = useScenesStore()
-
-        battleStore.setResults({
-          type: 'victory',
-          player: '0xA089D195D994e8145dda68993A91C4a6D1704535',
-          owner: '0xA089D195D994e8145dda68993A91C4a6D1704535',
-          demage: 1000,
-          gold: 1000,
-          exp: 51323,
-          rating: {
-            prevoius: 1310,
-            current: 1422
-          },
-        })
-
-        scenes.setScene(SceneName.Battle, {
-          mode: 'results'
-        })
-      })
-    })
-    // MOCK END
-
+    battleStore.process.setCooldown(payload.type, 3000);
   }
-  
+
   onClaim() {
     logger.log('claim');
     FrontEvents.onBattleClaimClick.dispatch();
   }
-  
 
   static VuePlugin = {
     install: app => {

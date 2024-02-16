@@ -1,9 +1,9 @@
 <template>
   <div class="BattleControlPanel">
-    <div class="BattleControlPanel__row">
+    <!-- <div class="BattleControlPanel__row">
       <EmptyControl/>
       <EmptyControl/>
-    </div>
+    </div> -->
     <div class="BattleControlPanel__row">
       <LevelControl
         :disabled="true"
@@ -23,9 +23,11 @@
         :params="satelliteFireSkill"
         :cooldown="cooldown['satelliteFire']"
         :disabled="isPendingSkill('satelliteFire')"
-        @fire="$emit('action', {
-          type: 'satelliteFire'
-        })"
+        @fire="
+          $emit('action', {
+            type: 'satelliteFire'
+          })
+        "
       />
       <RocketFireSkill
         :disabled="true"
@@ -54,7 +56,7 @@ import {
   EmptyControl,
   GoldControl,
   LevelControl,
-  ShopControl,
+  ShopControl
 } from './controls';
 
 import {
@@ -91,27 +93,27 @@ export default {
     },
     level: {
       type: Number,
-      required: true,
+      required: true
     },
     gold: {
       type: Number,
-      required: true,
-    },
+      required: true
+    }
   },
   emits: {
     action: (payload: { type: BattleActionType }) => payload
   },
   computed: {
     satelliteFireSkill(): BattleData['skills']['satelliteFire'] {
-      return this.skills['satelliteFire']
+      return this.skills['satelliteFire'];
     }
   },
   methods: {
     isPendingSkill(type: BattleActionType) {
-      return this.skillsPendingList.includes(type)
+      return this.skillsPendingList.includes(type);
     }
   }
 };
 </script>
 
-<style scoped src="./BattleControlPanel.css"/>
+<style scoped src="./BattleControlPanel.css" />
