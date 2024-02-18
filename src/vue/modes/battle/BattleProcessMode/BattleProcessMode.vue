@@ -1,5 +1,29 @@
 <template>
   <div class="BattleProcessMode">
+    <button
+      class="BattleProcessMode__settingsButton"
+      :class="{ active: settingsPopupVisible }"
+      @mouseenter="$client.onHover()"
+      @click="toggleSettingsPopup"
+    />
+    <div
+      class="BattleProcessMode__settingsPopup"
+      v-if="settingsPopupVisible"
+      v-click-outside="hideSettingsPopup"
+    >
+      <SettingsPopup
+        :fullscreen="uiStore.fullscreen.active"
+        :musicVolume="settingsStore.volume.music"
+        :sfxVolume="settingsStore.volume.sfx"
+        :battle="true"
+        @click="$client.onClick()"
+        @hover="$client.onHover()"
+        @setMusicVolume="settingsStore.volume.changeMusicVolume"
+        @setSfxVolume="settingsStore.volume.changeSfxVolume"
+        @toggleFullscreen="$client.toggleFullscreen()"
+        @exitFromBattle="exitFromBattle"
+      />
+    </div>
     <div class="BattleProcessMode__content">
       <div
         v-for="player in [
@@ -33,19 +57,40 @@
 </template>
 
 <script lang="ts">
-import { useBattleStore } from '@/stores';
-import { BattleControlPanel } from '@/components';
+import { useBattleStore, useSettingsStore, useUiStore } from '@/stores';
+import { BattleControlPanel, SettingsPopup } from '@/components';
 import { getShortAddress } from '@/utils';
 import { mapStores } from 'pinia'; 
+import { default as vClickOutside } from 'click-outside-vue3';
 
 export default {
   name: 'BattleProcessMode',
   components: {
     BattleControlPanel,
+    SettingsPopup,
   },
-  computed: mapStores(useBattleStore),
+  directives: {
+    clickOutside: vClickOutside.directive
+  },
+  data() {
+    return {
+      settingsPopupVisible: false
+    }
+  },
+  computed: mapStores(useBattleStore, useSettingsStore, useUiStore),
   methods: {
-    getShortAddress
+    getShortAddress,
+    toggleSettingsPopup() {
+      this.$client.onClick();
+      this.settingsPopupVisible = !this.settingsPopupVisible;
+    },
+    hideSettingsPopup() {
+      this.settingsPopupVisible = false;
+    },
+    exitFromBattle() {
+      this.$client.onBattleExit()
+      this.battleStore.process.reset()
+    }
   }
 };
 </script>

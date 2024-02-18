@@ -150,6 +150,11 @@ export class ClientService {
     }
   }
 
+  onBattleExit() {
+    // mock
+    useScenesStore().setScene(SceneName.Galaxy);
+  }
+
   onClaim() {
     logger.log('claim');
     FrontEvents.onBattleClaimClick.dispatch();

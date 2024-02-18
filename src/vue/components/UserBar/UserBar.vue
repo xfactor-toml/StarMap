@@ -53,13 +53,11 @@
         :fullscreen="uiStore.fullscreen.active"
         :musicVolume="settingsStore.volume.music"
         :sfxVolume="settingsStore.volume.sfx"
+        @click="$client.onClick()"
+        @hover="$client.onHover()"
         @setMusicVolume="settingsStore.volume.changeMusicVolume"
         @setSfxVolume="settingsStore.volume.changeSfxVolume"
         @toggleFullscreen="$client.toggleFullscreen()"
-        @volumeButtonClick="$client.onClick()"
-        @volumeButtonHover="$client.onHover()"
-        @fullscreenToggleClick="$client.onClick()"
-        @fullscreenToggleHover="$client.onHover()"
       />
     </div>
   </div>

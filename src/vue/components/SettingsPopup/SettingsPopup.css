@@ -78,3 +78,25 @@
 .settings-popup__fullscreen.is-active {
   background-image: url(../gui/images/fullscreen-off.svg);
 }
+
+
+.settings-popup__exit {
+  flex-grow: 1;
+  padding: 6px 0;
+  background-color: transparent;
+  border: none;
+  color: #00f0ff;
+  font-family: 'Inter';
+  font-weight: 300;
+  font-size: 13px;
+  line-height: 1.12;
+  text-transform: uppercase;
+  text-shadow: 0px 0px 20px #000000;
+  text-align: left;
+  cursor: pointer;
+  transition: color ease 200ms;
+}
+
+.settings-popup__exit:hover {
+  color: #39B24A;
+}
