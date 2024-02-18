@@ -1,7 +1,6 @@
 <template>
   <BaseSkill
-    :level="params.level"
-    :canLevelUp="params.levelUpAvailable"
+    :params="params"
     @levelUp="$emit('levelUp')"
   >
     <SatelliteFireControl

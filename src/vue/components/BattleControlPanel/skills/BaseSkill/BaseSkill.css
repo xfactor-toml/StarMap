@@ -1,14 +1,13 @@
 .BaseSkill {
   position: relative;
   z-index: 0;
-}
-
-.BaseSkill.hasLevel {
-  margin-bottom: 4px;
-}
-
-.BaseSkill.canLevelUp {
   margin-bottom: 20px;
+}
+
+
+.BaseSkill.isDisabled {
+  opacity: 0.5;
+  filter: blur(1px);
 }
 
 .BaseSkill__levelUp {
@@ -28,6 +27,11 @@
   cursor: pointer;
   transition: ease transform 200ms;
   will-change: transform;
+}
+
+.BaseSkill__levelUp[disabled] {
+  pointer-events: none;
+  user-select: none;
 }
 
 .BaseSkill__levelUp:hover {

@@ -2,14 +2,14 @@
   <div
     class="BaseSkill"
     :class="{
-      canLevelUp,
-      hasLevel: level !== undefined,
+      isDisabled: disabled
     }"
   >
     <slot/>
     <template v-if="canLevelUp">
       <button
         class="BaseSkill__levelUp"
+        :disabled="disabled"
         @click="$emit('levelUp')"
       >
         <svg viewBox="30.0699 30.73 87.46 97.81" fill="#00FFFF">
@@ -34,18 +34,29 @@
 </template>
 
 <script lang="ts">
+import { BattleSkill } from '@/types';
+import { PropType } from 'vue';
+
 export default {
   name: 'BaseSkill',
   props: {
-    level: {
-      type: Number,
+    params: {
+      type: Object as PropType<BattleSkill>,
     },
-    canLevelUp: {
+    disabled: {
       type: Boolean,
       default: false
     },
   },
   emits: ['levelUp'],
+  computed: {
+    level() {
+      return this.params?.level ?? 0
+    },
+    canLevelUp() {
+      return this.params?.levelUpAvailable || false
+    }
+  }
 };
 </script>
 

@@ -34,7 +34,21 @@ export const battleRunMock = async () => {
         cooldown: {
           duration: 3000,
         }
-      }
+      },
+      // slowdown: {
+      //   level: 1,
+      //   levelUpAvailable: true,
+      //   cooldown: {
+      //     duration: 4000,
+      //   }
+      // },
+      // invisibility: {
+      //   level: 2,
+      //   levelUpAvailable: true,
+      //   cooldown: {
+      //     duration: 2000,
+      //   }
+      // },
     }
   });
 

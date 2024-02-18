@@ -7,7 +7,7 @@
       hasContent: Boolean($slots.default),
       [name]: Boolean(name),
     }"
-    :disabled="disabled"
+    :disabled="!active || disabled"
     @click="$emit('click')"
   >
     <svg

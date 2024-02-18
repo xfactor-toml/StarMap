@@ -136,6 +136,7 @@ export class ClientService {
       case 'call': {
         FrontEvents.onBattleAbilityLaserClick.dispatch();
         battleStore.process.runCooldown(payload.action);
+        // battleStore.process.addSkillToPendingList(payload.action);
 
         break;
       }

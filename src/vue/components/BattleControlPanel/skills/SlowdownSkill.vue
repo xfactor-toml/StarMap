@@ -1,10 +1,14 @@
 <template>
-  <BaseSkill>
+  <BaseSkill
+    :params="params"
+    @levelUp="$emit('levelUp')"
+  >
     <SlowdownControl
-      :active="active"
+      :active="params !== undefined"
       :disabled="disabled"
-      :cooldown="cooldown"
-      :progress="progress"
+      :cooldown="cooldown === null ? null : toSeconds(cooldown.duration)"
+      :progress="cooldown ? cooldown.progress : 0"
+      @click="$emit('apply')"
     />
   </BaseSkill>
 </template>
@@ -12,6 +16,9 @@
 <script lang="ts">
 import { BaseSkill } from './BaseSkill';
 import { SlowdownControl } from '../controls';
+import { BattleSkill, BattleCooldown, BattleActionType } from '@/types';
+import { toSeconds } from '@/utils';
+import { PropType } from 'vue';
 
 export default {
   name: 'SlowdownSkill',
@@ -20,18 +27,19 @@ export default {
     SlowdownControl,
   },
   props: {
-    active: {
-      type: Boolean,
+    params: {
+      type: Object as PropType<BattleSkill>,
     },
     cooldown: {
-      type: Number,
-    },
-    progress: {
-      type: Number,
+      type: Object as PropType<BattleCooldown[BattleActionType]>
     },
     disabled: {
       type: Boolean,
     }
+  },
+  emits: ['apply', 'levelUp'],
+  methods: {
+    toSeconds
   }
 };
 </script>

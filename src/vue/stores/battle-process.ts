@@ -59,10 +59,6 @@ export const useBattleProcessStore = defineStore('battleProcess', () => {
   }
 
   const runCooldown = (skillType: BattleActionType) => {
-    if (activeCooldown.value[skillType]) {
-      cancelAnimation(activeCooldown.value[skillType])
-    }
-
     const { duration } = state.value.skills[skillType].cooldown
     
     cooldown.value[skillType] = {

@@ -16,36 +16,32 @@
     </div>
     <div class="BattleControlPanel__row">
       <SatelliteFireSkill
-        :params="satelliteFireSkill"
+        :params="skills['satelliteFire']"
         :cooldown="cooldown['satelliteFire']"
         :disabled="isPendingSkill('satelliteFire')"
-        @fire="
-          $emit('action', {
-            action: 'satelliteFire',
-            type: 'call',
-          })
-        "
-        @levelUp="
-          $emit('action', {
-            action: 'satelliteFire',
-            type: 'levelUp',
-          })
-        "
+        @fire="call('satelliteFire')"
+        @levelUp="levelUp('satelliteFire')"
       />
       <RocketFireSkill
-        :disabled="true"
-        :cooldown="null"
-        :progress="0"
+        :params="skills['rocketFire']"
+        :cooldown="cooldown['rocketFire']"
+        :disabled="isPendingSkill('rocketFire')"
+        @fire="call('rocketFire')"
+        @levelUp="levelUp('rocketFire')"
       />
       <SlowdownSkill
-        :disabled="true"
-        :cooldown="null"
-        :progress="0"
+        :params="skills['slowdown']"
+        :cooldown="cooldown['slowdown']"
+        :disabled="isPendingSkill('slowdown')"
+        @apply="call('slowdown')"
+        @levelUp="levelUp('slowdown')"
       />
       <InvisibilitySkill
-        :disabled="true"
-        :cooldown="null"
-        :progress="0"
+        :params="skills['invisibility']"
+        :cooldown="cooldown['invisibility']"
+        :disabled="isPendingSkill('invisibility')"
+        @apply="call('invisibility')"
+        @levelUp="levelUp('invisibility')"
       />
     </div>
   </div>
@@ -68,8 +64,8 @@ import {
 
 import {
   InvisibilitySkill,
-  SatelliteFireSkill,
   RocketFireSkill,
+  SatelliteFireSkill,
   SlowdownSkill
 } from './skills';
 
@@ -109,12 +105,19 @@ export default {
   emits: {
     action: (payload: BattleActionPayload) => payload
   },
-  computed: {
-    satelliteFireSkill(): BattleData['skills']['satelliteFire'] {
-      return this.skills['satelliteFire'];
-    }
-  },
   methods: {
+    call(actionType: BattleActionType) {
+      this.$emit('action', {
+        action: actionType,
+        type: 'call',
+      })
+    },
+    levelUp(actionType: BattleActionType) {
+      this.$emit('action', {
+        action: actionType,
+        type: 'levelUp',
+      })
+    },
     isPendingSkill(type: BattleActionType) {
       return this.skillsPendingList.includes(type);
     }
