@@ -58,8 +58,8 @@ export const useBattleProcessStore = defineStore('battleProcess', () => {
     results.value = value
   }
 
-  const runCooldown = (skillType: BattleActionType) => {
-    const { duration } = state.value.skills[skillType].cooldown
+  const runCooldown = (skillType: BattleActionType, customDuration?: number) => {
+    const duration = customDuration ?? state.value.skills[skillType].cooldown.duration
     
     cooldown.value[skillType] = {
       duration,

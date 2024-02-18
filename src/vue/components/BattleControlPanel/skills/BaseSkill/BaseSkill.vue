@@ -18,7 +18,7 @@
         <span class="BaseSkill__levelUpText">+</span>
       </button>
     </template>
-    <template v-if="level !== undefined">
+    <template v-if="params">
       <div class="BaseSkill__levelBar">
         <template v-for="n in 4">
           <div
