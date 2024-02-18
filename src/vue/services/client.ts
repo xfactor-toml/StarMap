@@ -5,9 +5,8 @@ import { debounce } from "typescript-debounce-decorator";
 import { logger } from '@/services/logger';
 import { useBattleStore, useScenesStore } from '@/stores';
 import { BattleActionType, SceneName } from '@/types';
-import { wait } from '@/utils';
 import { LogMng } from '~/game/utils/LogMng';
-import { default as anime } from 'animejs';
+import { playersConnectMock } from '@/mocks';
 
 export class ClientService {
   constructor(private dispatcher: typeof FrontEvents) {}
@@ -101,35 +100,7 @@ export class ClientService {
     LogMng.debug('Front: start game click');
 
     // mock start
-    const scenes = useScenesStore()
-    const battle = useBattleStore()
-    
-    scenes.setScene(SceneName.Battle)
-
-    // Accept
-    // scenes.setSceneMode('accept');
-    // battle.connecting.setAcceptTime(10)
-
-    // Connect
-    scenes.setSceneMode('connect');
-    battle.connecting.setAcceptTime(10)
-
-    // Loading
-    // scenes.setSceneMode('loading');
-
-    // anime({
-    //   targets: { progress: 0 },
-    //   progress: 100,
-    //   easing: 'linear',
-    //   duration: 10000,
-    //   update(anim) {
-    //     battle.connecting.setLoadingProgress(anim.progress)
-    //   },
-    //   complete() {
-    //     scenes.setScene(SceneName.Galaxy);
-    //   }
-    // })
-
+    playersConnectMock()
     return
     // mock end
 
@@ -142,11 +113,6 @@ export class ClientService {
   }
 
   onBattleAccept() {
-    // mock
-    useScenesStore().setScene(SceneName.Galaxy);
-  }
-
-  onBattleConnectTimeout() {
     // mock
     useScenesStore().setScene(SceneName.Galaxy);
   }

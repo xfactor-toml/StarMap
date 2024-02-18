@@ -10,7 +10,6 @@
 </template>
 
 <script lang="ts">
-import { default as anime } from 'animejs'
 import { BattleConnectIndicator } from '../BattleConnectIndicator'
 
 export default {
@@ -19,27 +18,12 @@ export default {
     BattleConnectIndicator
   },
   props: {
-    // seconds
-    duration: {
+    progress: {
       type: Number,
       required: true,
     },
   },
-  emits: ['click', 'timeout'],
-  data: () => ({
-    progress: 0,
-  }),
-  mounted() {
-    anime({
-      targets: this,
-      progress: [0, 100],
-      duration: this.duration * 1000,
-      easing: 'linear',
-      complete: () => {
-        this.$emit('timeout')
-      }
-    })
-  }
+  emits: ['click'],
 };
 </script>
 

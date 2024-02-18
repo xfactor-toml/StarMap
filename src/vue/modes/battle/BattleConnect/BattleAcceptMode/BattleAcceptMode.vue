@@ -1,9 +1,8 @@
 <template>
   <BattleConnectBase>
     <BattleAcceptButton
-      :duration="battleStore.connecting.acceptTime"
+      :progress="battleStore.connecting.acceptTimeProgress"
       @click="$client.onBattleAccept"
-      @timeout="$client.onBattleConnectTimeout"
     />
   </BattleConnectBase>
 </template>

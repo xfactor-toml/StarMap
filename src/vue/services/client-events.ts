@@ -152,6 +152,7 @@ export class ClientEventsService {
         scenesStore.setScene(SceneName.Battle, {
           mode: 'results'
         })
+
         break;
 
       default:

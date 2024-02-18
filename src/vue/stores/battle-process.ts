@@ -4,6 +4,7 @@ import { BattleActionType, BattleActiveCooldown, BattleCooldown, BattleData, Bat
 import { computed, ref } from 'vue';
 
 import { default as anime } from 'animejs';
+import { cancelAnimation } from '@/utils';
 
 const getInitialState = () => ({
   players: {
@@ -21,13 +22,6 @@ const getInitialCooldown = () => ({
   slowdown: null,
   rocketFire: null,
 })
-
-const cancelAnimation = (animation: anime.AnimeInstance) => {
-  const activeInstances = anime.running;
-  const index = activeInstances.indexOf(animation);
-
-  activeInstances.splice(index, 1);
-}
 
 export const useBattleProcessStore = defineStore('battleProcess', () => {
   const state = ref<BattleData>(getInitialState())
