@@ -29,10 +29,8 @@ export const battleRunMock = async () => {
     },
     skills: {
       satelliteFire: {
-        charges: {
-          count: 3,
-          fractions: 4
-        },
+        level: 1,
+        levelUpAvailable: true,
         cooldown: {
           duration: 3000,
         }

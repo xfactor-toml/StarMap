@@ -1,6 +1,6 @@
 
 import { default as anime } from 'animejs';
-import { secondsToMilliseconds, wait } from '@/utils';
+import { toMilliseconds, wait } from '@/utils';
 import { useBattleStore, useScenesStore } from '@/stores';
 import { SceneName } from '@/types';
 
@@ -18,7 +18,9 @@ export const playersConnectMock = async () => {
   scenes.setSceneMode('accept');
   battle.connecting.setAcceptTime(ACCEPT_TIME)
 
-  await wait(secondsToMilliseconds(ACCEPT_TIME / 3))
+  await wait(toMilliseconds({
+    seconds: ACCEPT_TIME / 3
+  }))
 
   // Connect
   scenes.setSceneMode('connect');
@@ -27,14 +29,18 @@ export const playersConnectMock = async () => {
     max: 2,
   })
 
-  await wait(secondsToMilliseconds(ACCEPT_TIME / 3))
+  await wait(toMilliseconds({
+    seconds: ACCEPT_TIME / 3
+  }))
   
   battle.connecting.setConnectedUsers({
     current: 2,
     max: 2,
   })
 
-  await wait(secondsToMilliseconds(ACCEPT_TIME / 3))
+  await wait(toMilliseconds({
+    seconds: ACCEPT_TIME / 3
+  }))
 
   // Loading
   scenes.setSceneMode('loading');
@@ -43,7 +49,9 @@ export const playersConnectMock = async () => {
     targets: { progress: 0 },
     progress: 100,
     easing: 'linear',
-    duration: secondsToMilliseconds(LOADING_TIME),
+    duration: toMilliseconds({
+      seconds: LOADING_TIME
+    }),
     update({ progress }) {
       battle.connecting.setLoadingProgress(progress)
     },

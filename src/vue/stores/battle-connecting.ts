@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { default as anime } from 'animejs';
-import { cancelAnimation, secondsToMilliseconds } from '@/utils';
+import { cancelAnimation, toMilliseconds } from '@/utils';
 import { BattleConnectedUsers } from '@/types';
 
 export const useBattleConnectingStore = defineStore('battleConnecting', () => {
@@ -27,7 +27,9 @@ export const useBattleConnectingStore = defineStore('battleConnecting', () => {
     acceptTimeProgressAnimation.value = anime({
       targets: { progress: 0 },
       progress: [0, 100],
-      duration: secondsToMilliseconds(time),
+      duration: toMilliseconds({
+        seconds: time
+      }),
       easing: 'linear',
       update({ progress }) {
         acceptTimeProgress.value = progress;

@@ -1,9 +1,5 @@
 <template>
   <div class="BattleControlPanel">
-    <!-- <div class="BattleControlPanel__row">
-      <EmptyControl/>
-      <EmptyControl/>
-    </div> -->
     <div class="BattleControlPanel__row">
       <LevelControl
         :disabled="true"
@@ -25,7 +21,14 @@
         :disabled="isPendingSkill('satelliteFire')"
         @fire="
           $emit('action', {
-            type: 'satelliteFire'
+            action: 'satelliteFire',
+            type: 'call',
+          })
+        "
+        @levelUp="
+          $emit('action', {
+            action: 'satelliteFire',
+            type: 'levelUp',
           })
         "
       />
@@ -49,11 +52,15 @@
 </template>
 
 <script lang="ts">
-import { BattleActionType, BattleCooldown, BattleData } from '@/types';
+import {
+  BattleActionType,
+  BattleCooldown,
+  BattleData,
+  BattleActionPayload
+} from '@/types';
 import { PropType } from 'vue';
 
 import {
-  EmptyControl,
   GoldControl,
   LevelControl,
   ShopControl
@@ -69,7 +76,6 @@ import {
 export default {
   name: 'BattleControlPanel',
   components: {
-    EmptyControl,
     GoldControl,
     InvisibilitySkill,
     LevelControl,
@@ -101,7 +107,7 @@ export default {
     }
   },
   emits: {
-    action: (payload: { type: BattleActionType }) => payload
+    action: (payload: BattleActionPayload) => payload
   },
   computed: {
     satelliteFireSkill(): BattleData['skills']['satelliteFire'] {

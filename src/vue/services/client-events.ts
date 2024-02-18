@@ -107,10 +107,8 @@ export class ClientEventsService {
           },
           skills: {
             satelliteFire: {
-              charges: {
-                count: 3,
-                fractions: 4
-              },
+              level: 4,
+              levelUpAvailable: true,
               cooldown: {
                 duration: clientEvent.timer || 3000,
               }

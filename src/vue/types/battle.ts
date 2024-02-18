@@ -2,7 +2,6 @@ import { Race } from "~/blockchain/types";
 
 export type BattleActionType = 'satelliteFire' | 'rocketFire' | 'slowdown' | 'invisibility';
 
-
 export type BattlePlayer = {
   address: string
   star: string
@@ -16,10 +15,8 @@ export type BattleConnectedUsers = {
 }
 
 export type BattleSkill = {
-  charges: {
-    count: number
-    fractions: number
-  },
+  level: number,
+  levelUpAvailable: boolean,
   cooldown: {
     duration: number,
   }
@@ -62,4 +59,9 @@ export type BattleCooldown = {
 
 export type BattleActiveCooldown = {
   [K in BattleActionType]?: anime.AnimeInstance
+}
+
+export type BattleActionPayload = {
+  action: BattleActionType
+  type: 'call' | 'levelUp'
 }

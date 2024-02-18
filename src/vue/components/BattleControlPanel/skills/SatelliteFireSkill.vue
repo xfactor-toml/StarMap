@@ -1,7 +1,8 @@
 <template>
   <BaseSkill
-    :count="params.charges.count"
-    :fractions="params.charges.fractions"
+    :level="params.level"
+    :canLevelUp="params.levelUpAvailable"
+    @levelUp="$emit('levelUp')"
   >
     <SatelliteFireControl
       :active="params !== undefined"
@@ -37,7 +38,7 @@ export default {
       type: Boolean,
     }
   },
-  emits: ['fire'],
+  emits: ['fire', 'levelUp'],
   methods: {
     toSeconds
   }

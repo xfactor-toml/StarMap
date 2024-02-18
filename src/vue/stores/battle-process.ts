@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { BattleActionType, BattleActiveCooldown, BattleCooldown, BattleData, BattleResults } from '@/types';
+import { BattleActionType, BattleActiveCooldown, BattleCooldown, BattleData, BattleResults, BattleSkill } from '@/types';
 
 import { computed, ref } from 'vue';
 
@@ -50,11 +50,21 @@ export const useBattleProcessStore = defineStore('battleProcess', () => {
     state.value.level = data
   }
 
-  const setCooldown = (skillType: BattleActionType, duration: number) => {
+  const setSkill = (skillType: BattleActionType, data: BattleSkill) => {
+    state.value.skills[skillType] = data
+  }
+
+  const setResults = (value: BattleResults) => {
+    results.value = value
+  }
+
+  const runCooldown = (skillType: BattleActionType) => {
     if (activeCooldown.value[skillType]) {
       cancelAnimation(activeCooldown.value[skillType])
     }
 
+    const { duration } = state.value.skills[skillType].cooldown
+    
     cooldown.value[skillType] = {
       duration,
       progress: 0
@@ -70,17 +80,12 @@ export const useBattleProcessStore = defineStore('battleProcess', () => {
         const timeleft = Math.trunc(duration - timePassed)
 
         cooldown.value[skillType].duration = timeleft
-        
       },
       complete: () => {
         cooldown.value[skillType] = null
         removeSkillFromPendingList(skillType)
       }
     })
-  }
-
-  const setResults = (value: BattleResults) => {
-    results.value = value
   }
 
   const reset = () => {
@@ -101,8 +106,9 @@ export const useBattleProcessStore = defineStore('battleProcess', () => {
     addSkillToPendingList,
     setState,
     setLevel,
-    setCooldown,
+    setSkill,
     setResults,
+    runCooldown,
     reset
   }
 });

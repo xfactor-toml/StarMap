@@ -4,9 +4,9 @@ import { FrontEvents } from '~/game/events/FrontEvents';
 import { debounce } from "typescript-debounce-decorator";
 import { logger } from '@/services/logger';
 import { useBattleStore, useScenesStore } from '@/stores';
-import { BattleActionType, SceneName } from '@/types';
+import { BattleActionPayload, SceneName } from '@/types';
 import { LogMng } from '~/game/utils/LogMng';
-import { battleRunMock, playersConnectMock } from '@/mocks';
+import { battleRunMock, levelUpMock, playersConnectMock } from '@/mocks';
 
 export class ClientService {
   constructor(private dispatcher: typeof FrontEvents) {}
@@ -127,12 +127,26 @@ export class ClientService {
     useScenesStore().setScene(SceneName.Galaxy);
   }
 
-  onBattleAction(payload: { type: BattleActionType }) {
+  onBattleAction(payload: BattleActionPayload) {
     const battleStore = useBattleStore()
+
     LogMng.debug(`battle action, ${JSON.stringify(payload)}`);
-    FrontEvents.onBattleAbilityLaserClick.dispatch();
-    // battleStore.addSkillToPendingList(payload.type);
-    battleStore.process.setCooldown(payload.type, 3000);
+
+    switch (payload.type) {
+      case 'call': {
+        FrontEvents.onBattleAbilityLaserClick.dispatch();
+        battleStore.process.runCooldown(payload.action);
+
+        break;
+      }
+
+      case 'levelUp': {
+        // mock
+        levelUpMock(payload)
+
+        break;
+      }
+    }
   }
 
   onClaim() {
