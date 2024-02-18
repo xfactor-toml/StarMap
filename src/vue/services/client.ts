@@ -6,7 +6,7 @@ import { logger } from '@/services/logger';
 import { useBattleStore, useScenesStore } from '@/stores';
 import { BattleActionType, SceneName } from '@/types';
 import { LogMng } from '~/game/utils/LogMng';
-import { playersConnectMock } from '@/mocks';
+import { battleRunMock, playersConnectMock } from '@/mocks';
 
 export class ClientService {
   constructor(private dispatcher: typeof FrontEvents) {}
@@ -100,7 +100,12 @@ export class ClientService {
     LogMng.debug('Front: start game click');
 
     // mock start
-    playersConnectMock()
+    // player connect
+    // playersConnectMock()
+
+    // battle run
+    battleRunMock()
+
     return
     // mock end
 

@@ -2,18 +2,14 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { default as anime } from 'animejs';
 import { cancelAnimation, secondsToMilliseconds } from '@/utils';
-
-type ConnectedUsers = {
-  current: number
-  max: number
-}
+import { BattleConnectedUsers } from '@/types';
 
 export const useBattleConnectingStore = defineStore('battleConnecting', () => {
   const playerSearching = ref(false)
   const acceptTimeProgress = ref(0)
   const acceptTimeProgressAnimation = ref<anime.AnimeInstance | null>(null)
   const loadingProgress = ref(0)
-  const connectedUsers = ref<ConnectedUsers>({
+  const connectedUsers = ref<BattleConnectedUsers>({
     current: 0,
     max: 0,
   })
@@ -29,7 +25,7 @@ export const useBattleConnectingStore = defineStore('battleConnecting', () => {
     }
 
     acceptTimeProgressAnimation.value = anime({
-      targets: this,
+      targets: { progress: 0 },
       progress: [0, 100],
       duration: secondsToMilliseconds(time),
       easing: 'linear',
@@ -44,7 +40,7 @@ export const useBattleConnectingStore = defineStore('battleConnecting', () => {
     loadingProgress.value = value;
   }
 
-  const setConnectedUsers = (value: ConnectedUsers) => {
+  const setConnectedUsers = (value: BattleConnectedUsers) => {
     connectedUsers.value = value;
   }
 

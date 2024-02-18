@@ -101,7 +101,10 @@ export class ClientEventsService {
             },
           },
           gold: 1000,
-          level: 1,
+          level: {
+            current: 1,
+            progress: 0
+          },
           skills: {
             satelliteFire: {
               charges: {

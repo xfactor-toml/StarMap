@@ -12,7 +12,10 @@ const getInitialState = () => ({
     current: null,
   },
   gold: 0,
-  level: 1,
+  level: {
+    current: 1,
+    progress: 0
+  },
   skills: {}
 })
 
@@ -43,6 +46,10 @@ export const useBattleProcessStore = defineStore('battleProcess', () => {
     state.value = newState;
   }
 
+  const setLevel = (data: BattleData['level']) => {
+    state.value.level = data
+  }
+
   const setCooldown = (skillType: BattleActionType, duration: number) => {
     if (activeCooldown.value[skillType]) {
       cancelAnimation(activeCooldown.value[skillType])
@@ -63,6 +70,7 @@ export const useBattleProcessStore = defineStore('battleProcess', () => {
         const timeleft = Math.trunc(duration - timePassed)
 
         cooldown.value[skillType].duration = timeleft
+        
       },
       complete: () => {
         cooldown.value[skillType] = null
@@ -92,6 +100,7 @@ export const useBattleProcessStore = defineStore('battleProcess', () => {
     results,
     addSkillToPendingList,
     setState,
+    setLevel,
     setCooldown,
     setResults,
     reset

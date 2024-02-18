@@ -7,8 +7,8 @@
     <div class="BattleControlPanel__row">
       <LevelControl
         :disabled="true"
-        :level="level"
-        :progress="0"
+        :level="level.current"
+        :progress="level.progress"
       />
       <GoldControl
         :disabled="true"
@@ -92,7 +92,7 @@ export default {
       required: true
     },
     level: {
-      type: Number,
+      type: Object as PropType<BattleData['level']>,
       required: true
     },
     gold: {

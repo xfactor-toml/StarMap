@@ -2,11 +2,17 @@ import { Race } from "~/blockchain/types";
 
 export type BattleActionType = 'satelliteFire' | 'rocketFire' | 'slowdown' | 'invisibility';
 
+
 export type BattlePlayer = {
   address: string
   star: string
   name: string
   race: Race
+}
+
+export type BattleConnectedUsers = {
+  current: number
+  max: number
 }
 
 export type BattleSkill = {
@@ -24,7 +30,10 @@ export type BattleData = {
     current: BattlePlayer,
     connected: BattlePlayer,
   },
-  level: number,
+  level: {
+    current: number,
+    progress: number
+  },
   gold: number,
   skills: {
     [K in BattleActionType]?: BattleSkill
