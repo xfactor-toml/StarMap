@@ -101,13 +101,14 @@ export class ClientEventsService {
             },
           },
           gold: 1000,
-          level: 1,
+          level: {
+            current: 1,
+            progress: 0
+          },
           skills: {
             satelliteFire: {
-              charges: {
-                count: 3,
-                fractions: 4
-              },
+              level: 4,
+              levelUpAvailable: true,
               cooldown: {
                 duration: clientEvent.timer || 3000,
               }
@@ -152,6 +153,7 @@ export class ClientEventsService {
         scenesStore.setScene(SceneName.Battle, {
           mode: 'results'
         })
+
         break;
 
       default:

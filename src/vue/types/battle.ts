@@ -9,11 +9,14 @@ export type BattlePlayer = {
   race: Race
 }
 
+export type BattleConnectedUsers = {
+  current: number
+  max: number
+}
+
 export type BattleSkill = {
-  charges: {
-    count: number
-    fractions: number
-  },
+  level: number,
+  levelUpAvailable: boolean,
   cooldown: {
     duration: number,
   }
@@ -24,7 +27,10 @@ export type BattleData = {
     current: BattlePlayer,
     connected: BattlePlayer,
   },
-  level: number,
+  level: {
+    current: number,
+    progress: number
+  },
   gold: number,
   skills: {
     [K in BattleActionType]?: BattleSkill
@@ -53,4 +59,9 @@ export type BattleCooldown = {
 
 export type BattleActiveCooldown = {
   [K in BattleActionType]?: anime.AnimeInstance
+}
+
+export type BattleActionPayload = {
+  action: BattleActionType
+  type: 'call' | 'levelUp'
 }

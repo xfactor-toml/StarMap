@@ -7,8 +7,8 @@
           <VolumeControl
             :initialVolume="musicVolume"
             @change="$emit('setMusicVolume', $event)"
-            @click="$emit('volumeButtonClick')"
-            @mouseenter="$emit('volumeButtonHover')"
+            @click="$emit('click')"
+            @mouseenter="$emit('hover')"
           />
         </div>
       </li>
@@ -18,8 +18,8 @@
           <VolumeControl
             :initialVolume="sfxVolume"
             @change="$emit('setSfxVolume', $event)"
-            @click="$emit('volumeButtonClick')"
-            @mouseenter="$emit('volumeButtonHover')"
+            @click="$emit('click')"
+            @mouseenter="$emit('hover')"
           />
         </div>
       </li>
@@ -29,11 +29,20 @@
           <button
             class="settings-popup__fullscreen"
             :class="{ 'is-active': fullscreen }"
-            @click="$emit('toggleFullscreen'), $emit('fullscreenToggleClick')"
-            @mouseenter="$emit('fullscreenToggleHover')"
+            @click="$emit('toggleFullscreen'), $emit('click')"
+            @mouseenter="$emit('hover')"
           />
         </div>
       </li>
+      <template v-if="battle">
+        <li class="settings-popup__item">
+          <button
+            class="settings-popup__exit"
+            @click="$emit('exitFromBattle'), $emit('click')"
+            @mouseenter="$emit('hover')"
+          >Exit</button>
+        </li>
+      </template>
     </ul>
   </div>
 </template>
@@ -55,11 +64,23 @@ export default {
     sfxVolume: {
       type: Number,
       required: true
-    }
+    },
+    battle: {
+      type: Boolean,
+      default: false
+    },
   },
   components: {
     VolumeControl
-  }
+  },
+  emits: [
+    'click',
+    'hover',
+    'setMusicVolume',
+    'setSfxVolume',
+    'toggleFullscreen',
+    'exitFromBattle'
+  ],
 };
 </script>
 

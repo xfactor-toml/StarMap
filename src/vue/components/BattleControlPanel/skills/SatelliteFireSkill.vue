@@ -1,13 +1,13 @@
 <template>
   <BaseSkill
-    :count="params.charges.count"
-    :fractions="params.charges.fractions"
+    :params="params"
+    @levelUp="$emit('levelUp')"
   >
     <SatelliteFireControl
       :active="params !== undefined"
       :disabled="disabled"
       :cooldown="cooldown === null ? null : toSeconds(cooldown.duration)"
-      :progress="cooldown ? cooldown.progress / 100 : 0"
+      :progress="cooldown ? cooldown.progress : 0"
       @click="$emit('fire')"
     />
   </BaseSkill>
@@ -37,7 +37,7 @@ export default {
       type: Boolean,
     }
   },
-  emits: ['fire'],
+  emits: ['fire', 'levelUp'],
   methods: {
     toSeconds
   }

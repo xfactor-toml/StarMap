@@ -5,8 +5,12 @@ import { createPinia } from 'pinia';
 import { default as App } from '@/App.vue';
 import { ClientService, WalletService } from '@/services';
 
-window.addEventListener('DOMContentLoaded', () => {
+import { default as anime } from 'animejs';
 
+// @ts-ignore
+anime.suspendWhenDocumentHidden = false;
+
+window.addEventListener('DOMContentLoaded', () => {
   const app = createApp(App);
   const store = createPinia();
 
@@ -22,5 +26,4 @@ window.addEventListener('DOMContentLoaded', () => {
   // threejs
   let boot = new GameBoot();
   boot.init();
-  
 });

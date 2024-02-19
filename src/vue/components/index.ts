@@ -5,6 +5,7 @@ export * from './BattleInitMember';
 export * from './LevelsPanel';
 export * from './Logo';
 export * from './ModesPanel';
+export * from './PowerIndicator';
 export * from './PlasmaMintPopup';
 export * from './PlasmaSlider';
 export * from './SearchInput';

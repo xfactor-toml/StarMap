@@ -4,7 +4,7 @@
     :progress="progress"
   >
     <span class="text">
-      <strong>{{ level }}</strong><br>level
+      <strong class="level">{{ level }}</strong><br>level
     </span>
   </BaseControl>
 </template>
@@ -34,7 +34,13 @@ export default {
 
 <style scoped>
 .text {
+  position: relative;
+  top: -2px;
   color: #39B24A;
   text-transform: uppercase;
+}
+
+.level {
+  font-size: 1.2em;
 }
 </style>

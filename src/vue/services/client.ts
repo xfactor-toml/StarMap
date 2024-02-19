@@ -4,10 +4,9 @@ import { FrontEvents } from '~/game/events/FrontEvents';
 import { debounce } from "typescript-debounce-decorator";
 import { logger } from '@/services/logger';
 import { useBattleStore, useScenesStore } from '@/stores';
-import { BattleActionType, SceneName } from '@/types';
-import { wait } from '@/utils';
+import { BattleActionPayload, SceneName } from '@/types';
 import { LogMng } from '~/game/utils/LogMng';
-import { default as anime } from 'animejs';
+import { battleRunMock, levelUpMock, playersConnectMock } from '@/mocks';
 
 export class ClientService {
   constructor(private dispatcher: typeof FrontEvents) {}
@@ -101,34 +100,11 @@ export class ClientService {
     LogMng.debug('Front: start game click');
 
     // mock start
-    const scenes = useScenesStore()
-    const battle = useBattleStore()
-    
-    scenes.setScene(SceneName.Battle)
+    // player connect
+    // playersConnectMock()
 
-    // Accept
-    // scenes.setSceneMode('accept');
-    // battle.connecting.setAcceptTime(10)
-
-    // Connect
-    scenes.setSceneMode('connect');
-    battle.connecting.setAcceptTime(10)
-
-    // Loading
-    // scenes.setSceneMode('loading');
-
-    // anime({
-    //   targets: { progress: 0 },
-    //   progress: 100,
-    //   easing: 'linear',
-    //   duration: 10000,
-    //   update(anim) {
-    //     battle.connecting.setLoadingProgress(anim.progress)
-    //   },
-    //   complete() {
-    //     scenes.setScene(SceneName.Galaxy);
-    //   }
-    // })
+    // battle run
+    battleRunMock()
 
     return
     // mock end
@@ -146,22 +122,37 @@ export class ClientService {
     useScenesStore().setScene(SceneName.Galaxy);
   }
 
-  onBattleConnectTimeout() {
-    // mock
-    useScenesStore().setScene(SceneName.Galaxy);
-  }
-
   onBattleConnectExit() {
     // mock
     useScenesStore().setScene(SceneName.Galaxy);
   }
 
-  onBattleAction(payload: { type: BattleActionType }) {
+  onBattleAction(payload: BattleActionPayload) {
     const battleStore = useBattleStore()
+
     LogMng.debug(`battle action, ${JSON.stringify(payload)}`);
-    FrontEvents.onBattleAbilityLaserClick.dispatch();
-    // battleStore.addSkillToPendingList(payload.type);
-    battleStore.process.setCooldown(payload.type, 3000);
+
+    switch (payload.type) {
+      case 'call': {
+        FrontEvents.onBattleAbilityLaserClick.dispatch();
+        battleStore.process.runCooldown(payload.action);
+        // battleStore.process.addSkillToPendingList(payload.action);
+
+        break;
+      }
+
+      case 'levelUp': {
+        // mock
+        levelUpMock(payload)
+
+        break;
+      }
+    }
+  }
+
+  onBattleExit() {
+    // mock
+    useScenesStore().setScene(SceneName.Galaxy);
   }
 
   onClaim() {

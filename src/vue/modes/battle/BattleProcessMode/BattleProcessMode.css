@@ -40,3 +40,29 @@
   font-size: 13px;
   text-align: center;
 }
+
+.BattleProcessMode__settingsButton {
+  display: block;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  border: none;
+  background-color: transparent;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-image: url(../gui/images/settings-2.svg);
+  pointer-events: all;
+  will-change: filter;
+  transition: ease filter 200ms;
+}
+
+.BattleProcessMode__settingsPopup {
+  position: absolute;
+  right: 20px;
+  top: 60px;
+  pointer-events: all;
+}

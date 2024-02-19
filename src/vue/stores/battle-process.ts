@@ -1,9 +1,10 @@
 import { defineStore } from 'pinia';
-import { BattleActionType, BattleActiveCooldown, BattleCooldown, BattleData, BattleResults } from '@/types';
+import { BattleActionType, BattleActiveCooldown, BattleCooldown, BattleData, BattleResults, BattleSkill } from '@/types';
 
 import { computed, ref } from 'vue';
 
 import { default as anime } from 'animejs';
+import { cancelAnimation } from '@/utils';
 
 const getInitialState = () => ({
   players: {
@@ -11,7 +12,10 @@ const getInitialState = () => ({
     current: null,
   },
   gold: 0,
-  level: 1,
+  level: {
+    current: 1,
+    progress: 0
+  },
   skills: {}
 })
 
@@ -21,13 +25,6 @@ const getInitialCooldown = () => ({
   slowdown: null,
   rocketFire: null,
 })
-
-const cancelAnimation = (animation: anime.AnimeInstance) => {
-  const activeInstances = anime.running;
-  const index = activeInstances.indexOf(animation);
-
-  activeInstances.splice(index, 1);
-}
 
 export const useBattleProcessStore = defineStore('battleProcess', () => {
   const state = ref<BattleData>(getInitialState())
@@ -49,11 +46,21 @@ export const useBattleProcessStore = defineStore('battleProcess', () => {
     state.value = newState;
   }
 
-  const setCooldown = (skillType: BattleActionType, duration: number) => {
-    if (activeCooldown.value[skillType]) {
-      cancelAnimation(activeCooldown.value[skillType])
-    }
+  const setLevel = (data: BattleData['level']) => {
+    state.value.level = data
+  }
 
+  const setSkill = (skillType: BattleActionType, data: BattleSkill) => {
+    state.value.skills[skillType] = data
+  }
+
+  const setResults = (value: BattleResults) => {
+    results.value = value
+  }
+
+  const runCooldown = (skillType: BattleActionType, customDuration?: number) => {
+    const duration = customDuration ?? state.value.skills[skillType].cooldown.duration
+    
     cooldown.value[skillType] = {
       duration,
       progress: 0
@@ -77,10 +84,6 @@ export const useBattleProcessStore = defineStore('battleProcess', () => {
     })
   }
 
-  const setResults = (value: BattleResults) => {
-    results.value = value
-  }
-
   const reset = () => {
     results.value = null
     state.value = getInitialState()
@@ -98,8 +101,10 @@ export const useBattleProcessStore = defineStore('battleProcess', () => {
     results,
     addSkillToPendingList,
     setState,
-    setCooldown,
+    setLevel,
+    setSkill,
     setResults,
+    runCooldown,
     reset
   }
 });
