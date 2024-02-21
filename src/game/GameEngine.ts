@@ -18,6 +18,7 @@ export class GameEngine extends MyBasicClass {
     private _renderer: GameRenderer;
     private _galaxyScene: GalaxyScene;
     private _battleScene: BattleScene;
+    private _gameCompleteData: GameCompleteData;
     private clock: THREE.Clock;
     private stats: Stats;
 
@@ -44,6 +45,28 @@ export class GameEngine extends MyBasicClass {
         this.stats = new Stats();
         this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
         document.body.appendChild(this.stats.dom);
+    }
+
+    private async claimBattleReward() {
+        let oldBalance = Math.trunc(await getUserWinContractBalance(getWalletAddress()));
+        this._battleScene.connection.socket.once(PackTitle.claimReward, async (aData: {
+            msg: 'accept' | 'reject',
+            reasone?: any
+        }) => {
+            this.logDebug(`claimReward recieved`);
+            switch (aData.msg) {
+                case 'accept':
+                    let newBalance = Math.trunc(await getUserWinContractBalance(getWalletAddress()));
+                    const rewardValue = Math.trunc(newBalance - oldBalance);
+                    alert(`Reward: ${rewardValue}; Balance: ${newBalance}`);
+                    break;
+                case 'reject':
+                    alert(`Error: Server RecordWinnerWithChoose reject: ${aData.reasone}`);
+                    break;
+            }
+            this.switchSceneToGalaxy();
+        });
+        this._battleScene.connection.sendClaimReward();
     }
 
     private initDebugGui() {
@@ -136,6 +159,7 @@ export class GameEngine extends MyBasicClass {
 
     private onBattleComplete(aData: GameCompleteData) {
         this.logDebug(`onBattleComplete...`);
+        this._gameCompleteData = aData;
         GameEventDispatcher.battleComplete(aData);
     }
 
@@ -147,7 +171,17 @@ export class GameEngine extends MyBasicClass {
     }
 
     private onFrontClaimClick() {
-        this.switchSceneToGalaxy();
+
+        switch (this._gameCompleteData.status) {
+            case 'win':
+            // case 'lose':
+                this.claimBattleReward();
+                break;
+            default:
+                this.switchSceneToGalaxy();
+                break;
+        }
+
     }
 
     private switchSceneToGalaxy() {
