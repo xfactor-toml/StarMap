@@ -165,6 +165,12 @@ export class ClientService {
     FrontEvents.onBattleFinalOpenBoxClick.dispatch();
   }
 
+  onCloseBox() {
+    logger.log('closeBox');
+    // mock
+    useScenesStore().setScene(SceneName.Galaxy);
+  }
+
   static VuePlugin = {
     install: app => {
       app.config.globalProperties.$client = markRaw(new ClientService(FrontEvents));

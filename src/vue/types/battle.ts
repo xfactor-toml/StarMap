@@ -69,3 +69,8 @@ export type BattleActionPayload = {
   action: BattleActionType
   type: 'call' | 'levelUp'
 }
+
+export type BattleReward = {
+  name: string,
+  image: string
+}

@@ -44,7 +44,7 @@
           class="BattleResultsMode__button"
           @click="$client.onOpenBox"
         >Open Box lv.{{ results.box.level }}
-      </button>
+        </button>
         <button
           class="BattleResultsMode__button"
           @click="$client.onClaim"
@@ -57,21 +57,16 @@
 </template>
 
 <script lang="ts">
-import { useBattleStore, useScenesStore, useUiStore } from '@/stores';
-import { BattleControlPanel } from '@/components';
+import { useBattleStore, useUiStore } from '@/stores';
 import { getShortAddress, formatNumber } from '@/utils';
 import { mapStores } from 'pinia'; 
-import { SceneName } from '@/types';
 
 export default {
   name: 'BattleResultsMode',
-  components: {
-    BattleControlPanel,
-  },
   computed: {
-    ...mapStores(useBattleStore, useScenesStore, useUiStore),
+    ...mapStores(useBattleStore, useUiStore),
     results() {
-      return this.battleStore.process.results
+      return this.battleStore.results.state
     },
     ratingChange() {
       return this.results.rating.current - this.results.rating.prevoius
