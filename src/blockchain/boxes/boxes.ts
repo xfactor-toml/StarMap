@@ -1,4 +1,3 @@
-require('dotenv').config();
 import Web3 from 'web3';
 import * as ABIs from "./config/ABI";
 import * as contracts from "./config/contracts"
@@ -73,6 +72,11 @@ export async function getUserBoxesToOpen (_user: string) {
         if (!dt.isPaid) list.push(allBoxes[j]);
     }
     return list;
+}
+
+export async function getUserWinContractBalance (_user: string) {
+    const balance = await rewardContract.methods.balanceOf(_user).call();
+	return Number(balance);
 }
 
 export async function OpenBox (address: string, _boxId: number) {
