@@ -57,3 +57,19 @@ export type StarList = StarData[]
 export type fuelTarget = "existence" | "levelup"
 
 export type account = string | null
+
+
+export interface WinData {
+  winner: string,
+  rewardAddress: string,
+  rewardAmount: number,
+  rewardId: number
+}
+
+export interface BoxData {
+  rewardAddress: string;
+  rewardId: number;
+  rewardAmount: number;
+  isPaid: boolean;
+}
+
