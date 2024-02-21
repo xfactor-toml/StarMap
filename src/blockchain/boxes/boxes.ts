@@ -1,7 +1,7 @@
 import Web3 from 'web3';
 import * as ABIs from "./config/ABI";
 import * as contracts from "./config/contracts"
-import { env, networkParams } from '../config';
+import { env, networkParams, plasmaDecimals } from '../config';
 import { BoxData, WinData } from '../types';
 
 const web3 = new Web3(networkParams.rpcUrl)
@@ -74,9 +74,9 @@ export async function getUserBoxesToOpen (_user: string) {
     return list;
 }
 
-export async function getUserWinContractBalance (_user: string) {
+export async function getUserWinContractBalance(_user: string) {
     const balance = await rewardContract.methods.balanceOf(_user).call();
-	return Number(balance);
+    return Number(balance / (10 ** plasmaDecimals));
 }
 
 export async function OpenBox (address: string, _boxId: number) {

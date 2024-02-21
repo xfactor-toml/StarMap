@@ -8,10 +8,11 @@ import { GalaxyScene } from "./scenes/GalaxyScene";
 import { MyBasicClass } from "./basics/MyBasicClass";
 import { ThreeLoader } from "./utils/threejs/ThreeLoader";
 import { BattleScene, BattleSceneEvent } from "./scenes/BattleScene";
-import { GameCompleteData, StartGameData } from "./battle/Types";
+import { GameCompleteData, PackTitle, StartGameData } from "./battle/Types";
 import { GameEvent, GameEventDispatcher } from "./events/GameEvents";
 import { getWalletAddress } from "~/blockchain/functions/auth";
 import { FrontEvents } from "./events/FrontEvents";
+import { getUserWinContractBalance } from "~/blockchain/boxes";
 
 export class GameEngine extends MyBasicClass {
     private _renderer: GameRenderer;
@@ -49,7 +50,23 @@ export class GameEngine extends MyBasicClass {
 
         const BLOCKCHAIN_DEBUG_GUI = {
             boxId: '0',
-            claimReward: () => {
+            claimReward: async () => {
+                let oldBalance = Math.trunc(await getUserWinContractBalance(getWalletAddress()));
+                this._battleScene.connection.socket.once(PackTitle.claimReward, async (aData: {
+                    msg: 'accept' | 'reject',
+                    reasone?: any
+                }) => {
+                    this.logDebug(`claimReward recieved`);
+                    switch (aData.msg) {
+                        case 'accept':
+                            let newBalance = Math.trunc(await getUserWinContractBalance(getWalletAddress()));
+                            alert(`oldBalance: ${oldBalance}; newBalance: ${newBalance}`);
+                            break;
+                        case 'reject':
+                            alert(`server RecordWinnerWithChoose reject: ${aData.reasone}`);
+                            break;
+                    }
+                });
                 this._battleScene.connection.sendClaimReward();
             },
             claimBox: () => {
@@ -62,12 +79,13 @@ export class GameEngine extends MyBasicClass {
 
         let gui = Settings.datGui;
         let f = gui.addFolder('Blockchain');
-        
+    
+        f.add(BLOCKCHAIN_DEBUG_GUI, 'claimReward');
+
         f.add(BLOCKCHAIN_DEBUG_GUI, 'boxId').onChange((aValue: string) => {
             this.logDebug(`boxId: ${BLOCKCHAIN_DEBUG_GUI.boxId}`);
         }).name(`Box id`);
 
-        f.add(BLOCKCHAIN_DEBUG_GUI, 'claimReward');
         f.add(BLOCKCHAIN_DEBUG_GUI, 'claimBox');
 
     }
