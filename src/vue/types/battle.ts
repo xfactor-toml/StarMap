@@ -47,6 +47,10 @@ export type BattleResults = {
   rating: {
     prevoius: number
     current: number
+  },
+  box: {
+    show: boolean,
+    level: number
   }
 }
 

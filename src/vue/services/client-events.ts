@@ -6,7 +6,6 @@ import { GameEvent } from '~/game/events/GameEvents';
 import { LogMng } from '~/game/utils/LogMng';
 
 export class ClientEventsService {
-
   static async handleEvent({ detail: clientEvent }: Event & { detail: ClientEvent }) {
     const battleStore = useBattleStore();
     const scenesStore = useScenesStore();
@@ -14,7 +13,6 @@ export class ClientEventsService {
     const uiStore = useUiStore();
 
     switch (clientEvent.eventName) {
-
       case GameEvent.GAME_LOADING:
         break;
 
@@ -148,6 +146,10 @@ export class ClientEventsService {
             prevoius: 1310,
             current: 1422
           },
+          box: {
+            show: clientEvent.showBoxClaim,
+            level: clientEvent.boxLevel
+          }
         })
 
         scenesStore.setScene(SceneName.Battle, {

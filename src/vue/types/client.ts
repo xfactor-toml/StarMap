@@ -1,6 +1,7 @@
+import { GameCompleteData } from '~/game/battle/Types';
 import { ServerStarData } from '~/game/data/Types';
 import { FrontEvents } from '~/game/events/FrontEvents';
-import { GameEvent, GameEventDispatcher } from '~/game/events/GameEvents';
+import { GameEvent } from '~/game/events/GameEvents';
 
 interface BaseEvent {
   eventName: GameEvent;
@@ -83,11 +84,8 @@ export interface BattlePrerollShow extends BaseEvent {
   playerWallet: string;
   enemyWallet: string;
 }
-export interface BattleCompleteShow extends BaseEvent {
+export interface BattleCompleteShow extends BaseEvent, GameCompleteData {
   eventName: GameEvent.BATTLE_COMPLETE_SHOW;
-  status: 'win' | 'lose' | 'draw';
-  playerWallet: string;
-  enemyWallet: string;
 }
 
 export type ClientEvent =
