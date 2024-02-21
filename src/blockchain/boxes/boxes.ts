@@ -1,4 +1,3 @@
-require('dotenv').config();
 import Web3 from 'web3';
 import * as ABIs from "./config/ABI";
 import * as contracts from "./config/contracts"
