@@ -62,6 +62,8 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
         FrontEvents.onBattleStopSearch.add(this.onFrontStopBattleSearch, this);
         FrontEvents.onBattleExit.add(this.onFrontExitBattle, this);
         FrontEvents.onBattleAbilityLaserClick.add(this.onFrontLaserClick, this);
+        FrontEvents.onBattleFinalOpenBoxClick.add(this.onFrontOpenBoxClick, this);
+
     }
 
     private initDebug() {
@@ -104,6 +106,14 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
                 }
                 this.emit(BattleSceneEvent.onGameComplete, data);
             },
+            testBattleWin: () => {
+                GameEventDispatcher.battleComplete({
+                    status: 'win',
+                    showBoxClaim: true,
+                    boxLevel: 1
+                });
+            },
+            
         }
 
         const f = aFolder;
@@ -112,6 +122,8 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
         // f.add(DATA, 'withdrawgame').name('Withdraw');
         f.add(DATA, 'exitgame').name('Exit Game');
         // f.add(DATA, 'winScreenTest').name('Win Screen Test');
+        f.add(DATA, 'testBattleWin').name('Test Battle Win');
+
     }
 
     private onFrontStarBattleSearch() {
@@ -134,7 +146,11 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
     private onFrontLaserClick() {
         this._connection.sendLaserClick();
     }
-
+    
+    private onFrontOpenBoxClick() {
+        this._connection.sendOpenBox();
+    }
+    
     private onGameSearchPack(aData: {
         cmd: 'start' | 'stop'
     }) {
@@ -177,6 +193,10 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
                 // this._view
                 break;
         }
+    }
+
+    public get connection(): BattleConnection {
+        return this._connection;
     }
 
     show() {

@@ -401,8 +401,8 @@ export class GalaxyMng implements ILogger {
         const gui = Settings.datGui;
 
         // gui.add(DEBUG_PARAMS, 'testGetRace');
-        gui.add(DEBUG_PARAMS, 'testCreateStar');
-        gui.add(DEBUG_PARAMS, 'testUpStar');
+        // gui.add(DEBUG_PARAMS, 'testCreateStar');
+        // gui.add(DEBUG_PARAMS, 'testUpStar');
 
         let galaxyFolder = gui.addFolder('Galaxy');
 

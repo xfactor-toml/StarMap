@@ -158,10 +158,12 @@ export class BattleConnection extends MyEventDispatcher {
         this._socket.emit(PackTitle.exitGame);
     }
 
-    sendPlanetFire() {
-        // this.sendPacket({
-        //     action: "planetFire"
-        // });
+    sendClaimReward() {
+        this._socket.emit(PackTitle.claimReward);
+    }
+
+    sendOpenBox() {
+        this._socket.emit(PackTitle.openBox);
     }
 
 }

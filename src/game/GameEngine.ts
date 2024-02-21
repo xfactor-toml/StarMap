@@ -46,8 +46,30 @@ export class GameEngine extends MyBasicClass {
     }
 
     private initDebugGui() {
+
+        const BLOCKCHAIN_DEBUG_GUI = {
+            boxId: '0',
+            claimReward: () => {
+                this._battleScene.connection.sendClaimReward();
+            },
+            claimBox: () => {
+
+            },
+        }
+
         Settings.datGui = new datGui.GUI();
         Settings.datGui.close();
+
+        let gui = Settings.datGui;
+        let f = gui.addFolder('Blockchain');
+        
+        f.add(BLOCKCHAIN_DEBUG_GUI, 'boxId').onChange((aValue: string) => {
+            this.logDebug(`boxId: ${BLOCKCHAIN_DEBUG_GUI.boxId}`);
+        }).name(`Box id`);
+
+        f.add(BLOCKCHAIN_DEBUG_GUI, 'claimReward');
+        f.add(BLOCKCHAIN_DEBUG_GUI, 'claimBox');
+
     }
 
     private initSkybox() {

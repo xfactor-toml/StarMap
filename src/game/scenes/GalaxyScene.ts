@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { MyEventDispatcher } from "../basics/MyEventDispatcher";
-import { GalaxyMng } from "../galaxy/Galaxy";
+import { GalaxyMng } from "../galaxy/GalaxyMng";
 import { FrontEvents } from '../events/FrontEvents';
 import { ServerStarData } from '../data/Types';
 import { Settings } from '../data/Settings';

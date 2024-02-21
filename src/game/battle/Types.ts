@@ -19,7 +19,12 @@ export enum PackTitle {
     rayStart = 'rayStart',
     rayStop = 'rayStop',
     planetLaser = 'planetLaser',
-    damage = 'damage'
+    damage = 'damage',
+    exp = 'exp',
+
+    claimReward = 'claimReward',
+    openBox = 'openBox',
+
 }
 
 export type ObjectType = 'Star' | 'Planet' | 'Tower' | 'FighterShip' | 'BattleShip' | 'Homing';
@@ -36,7 +41,9 @@ export type StartGameData = {
 }
 
 export type GameCompleteData = {
-    status: 'win' | 'lose' | 'draw'
+    status: 'win' | 'lose' | 'draw',
+    showBoxClaim?: boolean,
+    boxLevel?: number
 }
 
 export type FieldInitData = {
