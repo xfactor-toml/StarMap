@@ -74,6 +74,11 @@ export async function getUserBoxesToOpen (_user: string) {
     return list;
 }
 
+export async function getUserWinContractBalance (_user: string) {
+    const balance = await rewardContract.methods.balanceOf(_user).call();
+	return Number(balance);
+}
+
 export async function OpenBox (address: string, _boxId: number) {
     return new Promise(async (resolve, reject) => {
         const contract  = new envWeb3.eth.Contract(ABIs.BoxNFT, contracts.BoxNFT);
