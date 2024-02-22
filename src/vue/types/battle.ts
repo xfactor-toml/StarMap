@@ -47,6 +47,10 @@ export type BattleResults = {
   rating: {
     prevoius: number
     current: number
+  },
+  box: {
+    show: boolean,
+    level: number
   }
 }
 
@@ -64,4 +68,9 @@ export type BattleActiveCooldown = {
 export type BattleActionPayload = {
   action: BattleActionType
   type: 'call' | 'levelUp'
+}
+
+export type BattleReward = {
+  name: string,
+  image: string
 }

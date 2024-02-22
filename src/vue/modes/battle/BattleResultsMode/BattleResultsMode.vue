@@ -40,8 +40,14 @@
       </div>
       <div class="BattleResultsMode__footer">
         <button
+          v-if="results.box.show"
           class="BattleResultsMode__button"
-          @click="claim"
+          @click="$client.onOpenBox"
+        >Open Box lv.{{ results.box.level }}
+        </button>
+        <button
+          class="BattleResultsMode__button"
+          @click="$client.onClaim"
         >Claim rewards
       </button>
     </div>
@@ -51,21 +57,16 @@
 </template>
 
 <script lang="ts">
-import { useBattleStore, useScenesStore } from '@/stores';
-import { BattleControlPanel } from '@/components';
+import { useBattleStore, useUiStore } from '@/stores';
 import { getShortAddress, formatNumber } from '@/utils';
 import { mapStores } from 'pinia'; 
-import { SceneName } from '@/types';
 
 export default {
   name: 'BattleResultsMode',
-  components: {
-    BattleControlPanel,
-  },
   computed: {
-    ...mapStores(useBattleStore, useScenesStore),
+    ...mapStores(useBattleStore, useUiStore),
     results() {
-      return this.battleStore.process.results
+      return this.battleStore.results.state
     },
     ratingChange() {
       return this.results.rating.current - this.results.rating.prevoius
@@ -96,10 +97,12 @@ export default {
   methods: {
     getShortAddress,
     formatNumber,
-    claim() {
-      this.$client.onClaim()
-      this.scenesStore.setScene(SceneName.Galaxy)
-    }
+  },
+  mounted() {
+    this.uiStore.blur.enable()
+  },
+  beforeUnmount() {
+    this.uiStore.blur.disable()
   }
 };
 </script>

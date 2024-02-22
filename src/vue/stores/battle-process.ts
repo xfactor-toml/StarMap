@@ -1,5 +1,11 @@
 import { defineStore } from 'pinia';
-import { BattleActionType, BattleActiveCooldown, BattleCooldown, BattleData, BattleResults, BattleSkill } from '@/types';
+import {
+  BattleActionType,
+  BattleActiveCooldown,
+  BattleCooldown,
+  BattleData,
+  BattleSkill
+} from '@/types';
 
 import { computed, ref } from 'vue';
 
@@ -29,7 +35,6 @@ const getInitialCooldown = () => ({
 export const useBattleProcessStore = defineStore('battleProcess', () => {
   const state = ref<BattleData>(getInitialState())
   const cooldown = ref<BattleCooldown>(getInitialCooldown())
-  const results = ref<BattleResults | null>(null)
   const skillsPendingList = ref<BattleActionType[]>([])
   const activeCooldown = ref<BattleActiveCooldown>({})
   const players = computed(() => state.value.players)
@@ -52,10 +57,6 @@ export const useBattleProcessStore = defineStore('battleProcess', () => {
 
   const setSkill = (skillType: BattleActionType, data: BattleSkill) => {
     state.value.skills[skillType] = data
-  }
-
-  const setResults = (value: BattleResults) => {
-    results.value = value
   }
 
   const runCooldown = (skillType: BattleActionType, customDuration?: number) => {
@@ -85,7 +86,6 @@ export const useBattleProcessStore = defineStore('battleProcess', () => {
   }
 
   const reset = () => {
-    results.value = null
     state.value = getInitialState()
     cooldown.value = getInitialCooldown()
     skillsPendingList.value = []
@@ -98,12 +98,10 @@ export const useBattleProcessStore = defineStore('battleProcess', () => {
     players,
     state,
     skillsPendingList,
-    results,
     addSkillToPendingList,
     setState,
     setLevel,
     setSkill,
-    setResults,
     runCooldown,
     reset
   }

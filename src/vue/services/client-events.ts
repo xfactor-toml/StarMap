@@ -6,7 +6,6 @@ import { GameEvent } from '~/game/events/GameEvents';
 import { LogMng } from '~/game/utils/LogMng';
 
 export class ClientEventsService {
-
   static async handleEvent({ detail: clientEvent }: Event & { detail: ClientEvent }) {
     const battleStore = useBattleStore();
     const scenesStore = useScenesStore();
@@ -14,7 +13,6 @@ export class ClientEventsService {
     const uiStore = useUiStore();
 
     switch (clientEvent.eventName) {
-
       case GameEvent.GAME_LOADING:
         break;
 
@@ -137,7 +135,7 @@ export class ClientEventsService {
           draw: 'defeat'
         }
 
-        battleStore.process.setResults({
+        battleStore.results.setResults({
           type: typeByStatus[clientEvent.status],
           player: '0xA089D195D994e8145dda68993A91C4a6D1704535',
           owner: '0xA089D195D994e8145dda68993A91C4a6D1704535',
@@ -148,11 +146,34 @@ export class ClientEventsService {
             prevoius: 1310,
             current: 1422
           },
+          box: {
+            show: clientEvent.showBoxClaim,
+            level: clientEvent.boxLevel
+          }
         })
+
+        // test
+        if (true) {
+          battleStore.rewards.setRewards([
+            { name: 'test1', image: '/gui/images/box.png' },
+            { name: 'test2', image: '/gui/images/box.png' },
+            { name: 'test3', image: '/gui/images/box.png' },
+            { name: 'test4', image: '/gui/images/box.png' },
+            { name: 'test5', image: '/gui/images/box.png' },
+          ])
+  
+          scenesStore.setScene(SceneName.Battle, {
+            mode: 'rewards'
+          })
+  
+          return
+        }
+        // test end
 
         scenesStore.setScene(SceneName.Battle, {
           mode: 'results'
         })
+
 
         break;
 

@@ -30,19 +30,20 @@
           battleStore.process.players.connected,
           battleStore.process.players.current
         ]"
-        :key="player.address"
         class="BattleProcessMode__section"
       >
-        <div class="BattleProcessMode__column">
-          <div class="BattleProcessMode__caption">
-            Player<br>{{ getShortAddress(player.address) }}
+        <template v-if="player" :key="player.address">
+          <div class="BattleProcessMode__column">
+            <div class="BattleProcessMode__caption">
+              Player<br>{{ getShortAddress(player.address) }}
+            </div>
           </div>
-        </div>
-        <div class="BattleProcessMode__column">
-          <div class="BattleProcessMode__caption">
-            Star<br>{{ player.star }}
+          <div class="BattleProcessMode__column">
+            <div class="BattleProcessMode__caption">
+              Star<br>{{ player.star }}
+            </div>
           </div>
-        </div>
+        </template>
       </div>
     </div>
     <BattleControlPanel

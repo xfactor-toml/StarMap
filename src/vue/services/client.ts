@@ -101,10 +101,10 @@ export class ClientService {
 
     // mock start
     // player connect
-    // playersConnectMock()
+    playersConnectMock()
 
     // battle run
-    battleRunMock()
+    // battleRunMock()
 
     return
     // mock end
@@ -151,13 +151,24 @@ export class ClientService {
   }
 
   onBattleExit() {
-    // mock
-    useScenesStore().setScene(SceneName.Galaxy);
+    logger.log('battle exit');
+    FrontEvents.onBattleExit.dispatch();
   }
 
   onClaim() {
     logger.log('claim');
     FrontEvents.onBattleClaimClick.dispatch();
+  }
+
+  onOpenBox() {
+    logger.log('openBox');
+    FrontEvents.onBattleFinalOpenBoxClick.dispatch();
+  }
+
+  onCloseBox() {
+    logger.log('closeBox');
+    // mock
+    useScenesStore().setScene(SceneName.Galaxy);
   }
 
   static VuePlugin = {
