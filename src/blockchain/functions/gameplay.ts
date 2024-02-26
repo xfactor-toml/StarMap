@@ -57,6 +57,25 @@ export async function GameAuth(account: string): Promise<WebSocket | null> {
     });
 }
 
+export async function GenerateSignature(account: string): Promise<string> {
+    return new Promise (async (resolve, reject) => {
+        if (!env) reject("Web3 not found!");
+        const web3 = new Web3(env);
+        const dt = new Date().getTime();
+        const signMsg = "auth_" + String(dt - (dt % 600000));
+        try {
+            const signature = await web3.eth.personal.sign(
+                signMsg,
+                account,
+                ""
+            );
+            resolve(signature);
+        } catch (e) {
+            reject("Sign failed : " + e.message)
+        }
+    })
+}
+
 export async function newGameAuth(account: string): Promise<string> {
     const funcName = 'newGameAuth()';
 

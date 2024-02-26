@@ -196,7 +196,7 @@ async function CreateNewStar (owner : account, name : string, uri = `${document.
 			const gs = await web3.eth.getGasPrice()
             await writeable.methods.safeMint(owner, uri, name, race, coordX, coordY, coordZ).send({
                 from: owner,
-				gasPrice: gs
+				gasPrice: String(gs)
               })
             const count = await GetStarsCount ()
             if (count > 0) {
@@ -248,12 +248,12 @@ async function RefuelStar ( account : account,
         if (target === "existence") {
             await writeable.methods.UpdateStarFuel(starId, fuel).send({
                 from: account,
-				gasPrice: gs
+				gasPrice: String(gs)
               })
         } else {
             await writeable.methods.UpdateStarLevelFuel(starId, fuel).send({
                 from: account,
-				gasPrice: gs
+				gasPrice: String(gs)
               })
         }
 
@@ -275,7 +275,7 @@ async function IncreaseStarLevel (owner : account, starId : number) : Promise<St
 
         try {
             const CurrentData = await GetSingleStarData(starId)
-            const starOwner = await contract.methods.ownerOf(starId).call()
+            const starOwner = String(await contract.methods.ownerOf(starId).call())
             const newLevel = CurrentData.params.level + 1
             if (newLevel > maxStarLevel) {
                 reject("Star maximum level reached");
@@ -307,7 +307,7 @@ async function IncreaseStarLevel (owner : account, starId : number) : Promise<St
     const gs = await web3.eth.getGasPrice()
     await writeable.methods.IncreaseStarLevel(starId).send({
         from: owner,
-        gasPrice: gs
+        gasPrice: String(gs)
     })
     const result = await GetSingleStarData(starId)
      resolve(result);

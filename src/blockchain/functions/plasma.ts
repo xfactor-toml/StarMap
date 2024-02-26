@@ -26,7 +26,7 @@ async function MintPlasma (account : string, amount : number) : Promise<number> 
 
             await contract.methods.Mint(String(amount * (10 ** 18)), account).send({
                 from: account,
-                gasPrice: Number(GasPrice) < 1600000000 ? '1600000000' : GasPrice
+                gasPrice: Number(GasPrice) < 1600000000 ? '1600000000' : String(Number(GasPrice))
             })
             resolve(await GetBalance(account))
 
@@ -77,7 +77,7 @@ async function ApprovePlasma (owner: account, amount: number, spender : account 
         const gs = await web3.eth.getGasPrice()
         await w3.methods.approve(spender, amt).send({
             from: owner,
-            gasPrice: gs
+            gasPrice: String(Number(gs))
           })
 
     } catch (e) {
