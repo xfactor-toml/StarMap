@@ -59,6 +59,10 @@ export const useBattleProcessStore = defineStore('battleProcess', () => {
     state.value.skills[skillType] = data
   }
 
+  const setGold = (count: number) => {
+    state.value.gold = count
+  }
+
   const runCooldown = (skillType: BattleActionType, customDuration?: number) => {
     const duration = customDuration ?? state.value.skills[skillType].cooldown.duration
     
@@ -102,6 +106,7 @@ export const useBattleProcessStore = defineStore('battleProcess', () => {
     setState,
     setLevel,
     setSkill,
+    setGold,
     runCooldown,
     reset
   }
