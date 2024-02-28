@@ -1,4 +1,4 @@
-import { GameCompleteData } from "../battle/Types";
+import { ExpData, GameCompleteData } from "../battle/Types";
 
 export enum GameEvent {
     GAME_LOADING = 'GAME_LOADING',
@@ -41,6 +41,7 @@ export enum GameEvent {
     BATTLE_SEARCHING_ERROR = 'BATTLE_SEARCHING_ERROR',
     BATTLE_PREROLL_SHOW = 'BATTLE_PREROLL_SHOW',
     BATTLE_COMPLETE_SHOW = 'BATTLE_COMPLETE_SHOW',
+    BATTLE_EXP_DATA = 'BATTLE_EXP_DATA',
 }
 
 export class GameEventDispatcher {
@@ -63,6 +64,13 @@ export class GameEventDispatcher {
 
     static battleComplete(aData: GameCompleteData) {
         aData[`eventName`] = GameEvent.BATTLE_COMPLETE_SHOW;
+        window.dispatchEvent(new CustomEvent('gameEvent', {
+            detail: aData
+        }));
+    }
+
+    static battleExpUpdate(aData: ExpData) {
+        aData[`eventName`] = GameEvent.BATTLE_EXP_DATA;
         window.dispatchEvent(new CustomEvent('gameEvent', {
             detail: aData
         }));

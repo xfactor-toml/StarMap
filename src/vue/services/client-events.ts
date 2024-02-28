@@ -1,5 +1,5 @@
 import { useBattleStore, useScenesStore, useStarsStore, useUiStore } from '@/stores';
-import { ClientEvent, SceneName } from '@/types';
+import { BattleActionType, ClientEvent, SceneName } from '@/types';
 import { wait } from '@/utils';
 import { Settings } from '~/game/data/Settings';
 import { GameEvent } from '~/game/events/GameEvents';
@@ -98,15 +98,15 @@ export class ClientEventsService {
               star: '2048RX',
             },
           },
-          gold: 1000,
+          gold: 0,
           level: {
             current: 1,
             progress: 0
           },
           skills: {
             satelliteFire: {
-              level: 4,
-              levelUpAvailable: true,
+              level: 1,
+              levelUpAvailable: false,
               cooldown: {
                 duration: clientEvent.timer || 3000,
               }
@@ -173,8 +173,30 @@ export class ClientEventsService {
         scenesStore.setScene(SceneName.Battle, {
           mode: 'results'
         })
+        break;
+      
+      case GameEvent.BATTLE_EXP_DATA:
 
+        LogMng.debug(`GUI: update level progress: ${clientEvent.levelExpPercent}`);
+        const actionTypes: BattleActionType[] = ['satelliteFire', 'rocketFire', 'slowdown', 'invisibility'];
+        
+        battleStore.process.setLevel({
+          current: clientEvent.level,
+          progress: clientEvent.levelExpPercent
+        });
 
+        for (let i = 0; i < clientEvent.skills.length; i++) {
+          const sd = clientEvent.skills[i];
+          battleStore.process.setSkill(actionTypes[i], {
+            level: sd.level,
+            levelUpAvailable: sd.levelUpAvailable,
+            cooldown: {
+              duration: sd.cooldown.duration
+            }
+          });
+          
+        }
+        
         break;
 
       default:

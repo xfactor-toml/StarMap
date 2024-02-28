@@ -6,7 +6,7 @@ import { BattleView } from '../battle/BattleView';
 import { FrontEvents } from '../events/FrontEvents';
 import { GUI } from 'dat.gui';
 import { BattleConnection, ConnectionEvent } from '../battle/BattleConnection';
-import { GameCompleteData, PackTitle, StartGameData } from '../battle/Types';
+import { ExpData, GameCompleteData, PackTitle, StartGameData } from '../battle/Types';
 import { GameEvent, GameEventDispatcher } from '../events/GameEvents';
 
 export enum BattleSceneEvent {
@@ -43,6 +43,9 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
         this._connection.on(PackTitle.gameStart, this.onGameStartPack, this);
         this._connection.on(PackTitle.gameComplete, this.onGameCompletePack, this);
         this._connection.on(ConnectionEvent.disconnect, this.onSocketDisconnect, this);
+        this._connection.socket.on(PackTitle.exp, (aData: ExpData) => {
+            this.onExpUpdatePack(aData);
+        });
 
     }
 
@@ -61,7 +64,7 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
         FrontEvents.onBattleSearch.add(this.onFrontStarBattleSearch, this);
         FrontEvents.onBattleStopSearch.add(this.onFrontStopBattleSearch, this);
         FrontEvents.onBattleExit.add(this.onFrontExitBattle, this);
-        FrontEvents.onBattleAbilityLaserClick.add(this.onFrontLaserClick, this);
+        FrontEvents.onBattleAbilityClick.add(this.onFrontSkillClick, this);
         FrontEvents.onBattleFinalOpenBoxClick.add(this.onFrontOpenBoxClick, this);
 
     }
@@ -149,8 +152,14 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
         
     }
 
-    private onFrontLaserClick() {
-        this._connection.sendLaserClick();
+    private onFrontSkillClick(aSkillId: number) {
+        switch (aSkillId) {
+            case 0:
+                this._connection.sendLaserClick();
+                break;
+            default:
+                break;
+        }
     }
     
     private onFrontOpenBoxClick() {
@@ -199,6 +208,10 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
                 // this._view
                 break;
         }
+    }
+
+    private onExpUpdatePack(aExpData: ExpData) {
+        GameEventDispatcher.battleExpUpdate(aExpData);
     }
 
     public get connection(): BattleConnection {

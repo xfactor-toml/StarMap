@@ -1,4 +1,4 @@
-import { GameCompleteData } from '~/game/battle/Types';
+import { ExpData, GameCompleteData } from '~/game/battle/Types';
 import { ServerStarData } from '~/game/data/Types';
 import { FrontEvents } from '~/game/events/FrontEvents';
 import { GameEvent } from '~/game/events/GameEvents';
@@ -87,6 +87,9 @@ export interface BattlePrerollShow extends BaseEvent {
 export interface BattleCompleteShow extends BaseEvent, GameCompleteData {
   eventName: GameEvent.BATTLE_COMPLETE_SHOW;
 }
+export interface BattleExpData extends BaseEvent, ExpData {
+  eventName: GameEvent.BATTLE_EXP_DATA;
+}
 
 export type ClientEvent =
   | GameLoadingEvent
@@ -106,7 +109,8 @@ export type ClientEvent =
   | BattleSearchingStop
   | BattleSearchingError
   | BattlePrerollShow
-  | BattleCompleteShow;
+  | BattleCompleteShow
+  | BattleExpData;
 
 export type GuiLevel = {
   value: number;

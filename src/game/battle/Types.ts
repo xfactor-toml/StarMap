@@ -107,3 +107,18 @@ export type DamageData = {
     pos: { x: number, y: number, z: number },
     info: DamageInfo
 }
+
+export type SkillData = {
+    level: number,
+    levelUpAvailable: boolean,
+    cooldown: {
+        duration: number
+    }
+}
+
+export type ExpData = {
+    exp: number,
+    level: number,
+    levelExpPercent: number,
+    skills: SkillData[]
+}
