@@ -129,10 +129,16 @@ export class ClientService {
 
   onBattleAction(payload: BattleActionPayload) {
     const battleStore = useBattleStore()
-    const actionTypes: BattleActionType[] = ['satelliteFire', 'rocketFire', 'slowdown', 'invisibility'];
-    const skillId = actionTypes[payload.action];
+    let skillId = -1;
 
-    LogMng.debug(`battle action, ${JSON.stringify(payload)}`);
+    switch (payload.action) {
+      case 'satelliteFire': skillId = 0; break;
+      case 'rocketFire': skillId = 1; break;
+      case 'slowdown': skillId = 2; break;
+      case 'invisibility': skillId = 3; break;
+    }
+
+    LogMng.debug(`battle action, ${JSON.stringify(payload)}, skillId: ${skillId}`);
 
     switch (payload.type) {
       case 'call': {

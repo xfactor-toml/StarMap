@@ -117,6 +117,20 @@ export class ClientEventsService {
               cooldown: {
                 duration: clientEvent.timer || 3000,
               }
+            },
+            slowdown: {
+              level: 0,
+              levelUpAvailable: false,
+              cooldown: {
+                duration: clientEvent.timer || 3000,
+              }
+            },
+            invisibility: {
+              level: 0,
+              levelUpAvailable: false,
+              cooldown: {
+                duration: clientEvent.timer || 3000,
+              }
             }
           }
         });
@@ -192,8 +206,11 @@ export class ClientEventsService {
           progress: clientEvent.levelExpPercent
         });
 
+        LogMng.debug(`GUI: update skiils: ${clientEvent.skills}`);
+
         for (let i = 0; i < clientEvent.skills.length; i++) {
           const sd = clientEvent.skills[i];
+          // debugger;
           battleStore.process.setSkill(actionTypes[i], {
             level: sd.level,
             levelUpAvailable: sd.levelUpAvailable,
