@@ -19,7 +19,6 @@
         "@types/stats": "^0.16.30",
         "@types/three": "^0.144.0",
         "@types/ua-parser-js": "^0.7.36",
-        "@types/web3": "^1.2.2",
         "clean-webpack-plugin": "^4.0.0",
         "copy-webpack-plugin": "^11.0.0",
         "css-loader": "^6.7.3",
@@ -51,7 +50,7 @@
         "ua-parser-js": "^1.0.33",
         "vue": "^3.2.47",
         "vue-slider-component": "^4.1.0-beta.7",
-        "web3": "1.8.1",
+        "web3": "^4.5.0",
         "websocket": "^1.0.34"
     }
 }

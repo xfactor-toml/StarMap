@@ -75,7 +75,7 @@ export async function getUserBoxesToOpen (_user: string) {
 }
 
 export async function getUserWinContractBalance(_user: string) {
-    const balance = await rewardContract.methods.balanceOf(_user).call();
+    const balance = Number(await rewardContract.methods.balanceOf(_user).call());
     return Number(balance / (10 ** plasmaDecimals));
 }
 
@@ -87,7 +87,7 @@ export async function OpenBox (address: string, _boxId: number) {
             const gasPrice = await envWeb3.eth.getGasPrice();
             await contract.methods.openBox(_boxId).send({
                 from: address,
-                gasPrice: gasPrice
+                gasPrice: String(gasPrice)
             })
             resolve(true)
         } catch (e) {
