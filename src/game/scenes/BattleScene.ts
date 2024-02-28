@@ -100,13 +100,18 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
             exitgame: () => {
                 this._connection.sendExitGame();
             },
-            winScreenTest: () => {
-                let data: GameCompleteData = {
-                    status: 'win'
-                }
-                this.emit(BattleSceneEvent.onGameComplete, data);
-            },
             testBattleWin: () => {
+                // let data: GameCompleteData = {
+                //     status: 'win'
+                // }
+                // this.emit(BattleSceneEvent.onGameComplete, data);
+                GameEventDispatcher.battleComplete({
+                    status: 'win',
+                    // showBoxClaim: false,
+                    // boxLevel: 1
+                });
+            },
+            testBattleWinBox: () => {
                 GameEventDispatcher.battleComplete({
                     status: 'win',
                     showBoxClaim: true,
@@ -122,7 +127,8 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
         // f.add(DATA, 'withdrawgame').name('Withdraw');
         f.add(DATA, 'exitgame').name('Exit Game');
         // f.add(DATA, 'winScreenTest').name('Win Screen Test');
-        f.add(DATA, 'testBattleWin').name('Test Battle Win');
+        f.add(DATA, 'testBattleWin').name('Test Battle Win NO Box');
+        f.add(DATA, 'testBattleWinBox').name('Test Battle Win Box');
 
     }
 
