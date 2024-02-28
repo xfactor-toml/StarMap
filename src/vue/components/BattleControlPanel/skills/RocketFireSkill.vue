@@ -4,7 +4,7 @@
     @levelUp="$emit('levelUp')"
   >
     <RocketFireControl
-      :active="params !== undefined"
+      :active="params?.level > 0"
       :disabled="disabled"
       :cooldown="cooldown === null ? null : toSeconds(cooldown.duration)"
       :progress="cooldown ? cooldown.progress : 0"

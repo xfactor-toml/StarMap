@@ -69,4 +69,6 @@ export const battleRunMock = async () => {
     current: 2,
     progress: 10
   });
+  
+  battle.process.setGold(100);
 }
