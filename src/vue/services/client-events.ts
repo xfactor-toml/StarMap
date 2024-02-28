@@ -110,6 +110,13 @@ export class ClientEventsService {
               cooldown: {
                 duration: clientEvent.timer || 3000,
               }
+            },
+            rocketFire: {
+              level: 0,
+              levelUpAvailable: false,
+              cooldown: {
+                duration: clientEvent.timer || 3000,
+              }
             }
           }
         });
