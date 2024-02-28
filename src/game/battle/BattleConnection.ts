@@ -4,7 +4,7 @@ import { newGameAuth } from "~/blockchain/functions/gameplay";
 import { Socket, io } from "socket.io-client";
 import { Settings } from "../data/Settings";
 import { getWalletAddress, isWalletConnected } from "~/blockchain/functions/auth";
-import { GameCompleteData, PackTitle, StartGameData } from "./Types";
+import { GameCompleteData, PackTitle, SkillRequest, StartGameData } from "./Types";
 import { GameEvent, GameEventDispatcher } from "../events/GameEvents";
 import { Signal } from "../utils/events/Signal";
 
@@ -138,10 +138,26 @@ export class BattleConnection extends MyEventDispatcher {
         this._socket.emit(PackTitle.startSearchGame);
     }
 
-    sendLaserClick() {
-        this._socket.emit(PackTitle.planetLaser, {
-            cmd: 'click'
-        });
+    // sendLaserClick() {
+    //     this._socket.emit(PackTitle.planetLaser, {
+    //         cmd: 'click'
+    //     });
+    // }
+
+    sendSkillActionClick(aSkillId: number) {
+        let data: SkillRequest = {
+            action: 'click',
+            skillId: aSkillId
+        }
+        this._socket.emit(PackTitle.skill, data);
+    }
+
+    sendSkillLevelUpClick(aSkillId: number) {
+        let data: SkillRequest = {
+            action: 'levelUp',
+            skillId: aSkillId
+        }
+        this._socket.emit(PackTitle.skill, data);
     }
 
     sendSearchGameBot() {

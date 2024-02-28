@@ -65,6 +65,7 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
         FrontEvents.onBattleStopSearch.add(this.onFrontStopBattleSearch, this);
         FrontEvents.onBattleExit.add(this.onFrontExitBattle, this);
         FrontEvents.onBattleAbilityClick.add(this.onFrontSkillClick, this);
+        FrontEvents.onBattleAbilityLevelUpClick.add(this.onFrontSkillUpClick, this);
         FrontEvents.onBattleFinalOpenBoxClick.add(this.onFrontOpenBoxClick, this);
 
     }
@@ -153,13 +154,11 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
     }
 
     private onFrontSkillClick(aSkillId: number) {
-        switch (aSkillId) {
-            case 0:
-                this._connection.sendLaserClick();
-                break;
-            default:
-                break;
-        }
+        this._connection.sendSkillActionClick(aSkillId);
+    }
+
+    private onFrontSkillUpClick(aSkillId: number) {
+        this._connection.sendSkillLevelUpClick(aSkillId);
     }
     
     private onFrontOpenBoxClick() {
