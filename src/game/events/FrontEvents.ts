@@ -58,8 +58,9 @@ export const FrontEvents = {
     onBattleExit: new Signal(),
     onBattleAbilityClick: new Signal(),
     onBattleAbilityLevelUpClick: new Signal(),
-    onBattleClaimClick: new Signal(),
-    onBattleFinalOpenBoxClick: new Signal(),
+
+    onBattleFinalClaimRewardClick: new Signal(),
+    onBattleFinalClaimBoxClick: new Signal(),
 
 
 

@@ -174,26 +174,26 @@ export class ClientEventsService {
         })
 
         // test
-        if (true) {
+        if (false) {
           battleStore.rewards.setRewards([
             { name: 'test1', image: '/gui/images/box.png' },
             { name: 'test2', image: '/gui/images/box.png' },
             { name: 'test3', image: '/gui/images/box.png' },
             { name: 'test4', image: '/gui/images/box.png' },
             { name: 'test5', image: '/gui/images/box.png' },
-          ])
+          ]);
   
           scenesStore.setScene(SceneName.Battle, {
             mode: 'rewards'
-          })
+          });
   
-          return
+          return;
         }
         // test end
 
         scenesStore.setScene(SceneName.Battle, {
           mode: 'results'
-        })
+        });
         break;
       
       case GameEvent.BATTLE_EXP_DATA:

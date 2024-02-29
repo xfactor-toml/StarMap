@@ -6,18 +6,23 @@ import { BattleView } from '../battle/BattleView';
 import { FrontEvents } from '../events/FrontEvents';
 import { GUI } from 'dat.gui';
 import { BattleConnection, ConnectionEvent } from '../battle/BattleConnection';
-import { ExpData, GameCompleteData, PackTitle, StartGameData } from '../battle/Types';
+import { ClaimRewardData, ExpData, GameCompleteData, PackTitle, StartGameData } from '../battle/Types';
 import { GameEvent, GameEventDispatcher } from '../events/GameEvents';
+import { getUserBoxesToOpen, getUserWinContractBalance } from '~/blockchain/boxes';
+import { getWalletAddress } from '~/blockchain/functions/auth';
 
 export enum BattleSceneEvent {
     onGameStart = 'onEnterGame',
     onGameComplete = 'onGameComplete',
     onDisconnect = 'onDisconnect',
+    onCloseBattle = 'onCloseBattle',
 }
 
 enum BattleSceneState {
     none = 'none',
-    game = 'game'
+    game = 'game',
+    win = 'win',
+    loss = 'loss'
 }
 
 export class BattleScene extends MyEventDispatcher implements IUpdatable {
@@ -66,8 +71,8 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
         FrontEvents.onBattleExit.add(this.onFrontExitBattle, this);
         FrontEvents.onBattleAbilityClick.add(this.onFrontSkillClick, this);
         FrontEvents.onBattleAbilityLevelUpClick.add(this.onFrontSkillUpClick, this);
-        FrontEvents.onBattleFinalOpenBoxClick.add(this.onFrontOpenBoxClick, this);
-
+        FrontEvents.onBattleFinalClaimRewardClick.add(this.onFrontClaimRewardClick, this);
+        FrontEvents.onBattleFinalClaimBoxClick.add(this.onFrontClaimBoxClick, this);
     }
 
     private initDebug() {
@@ -122,7 +127,12 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
                     boxLevel: 1
                 });
             },
-            
+            testBattleLoss: () => {
+                GameEventDispatcher.battleComplete({
+                    status: 'lose'
+                });
+            },
+
         }
 
         const f = aFolder;
@@ -133,6 +143,7 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
         // f.add(DATA, 'winScreenTest').name('Win Screen Test');
         f.add(DATA, 'testBattleWin').name('Test Battle Win NO Box');
         f.add(DATA, 'testBattleWinBox').name('Test Battle Win Box');
+        f.add(DATA, 'testBattleLoss').name('Test Battle Loss');
 
     }
 
@@ -160,9 +171,23 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
     private onFrontSkillUpClick(aSkillId: number) {
         this._connection.sendSkillLevelUpClick(aSkillId);
     }
+
+    private onFrontClaimRewardClick() {
+        this.logDebug('onFrontClaimClick...');
+        switch (this._state) {
+            case 'win':
+                // case 'lose':
+                this.claimReward();
+                break;
+            case 'loss':
+                this.emit(BattleSceneEvent.onCloseBattle);
+                break;
+        }
+    }
     
-    private onFrontOpenBoxClick() {
-        this._connection.sendOpenBox();
+    private onFrontClaimBoxClick() {
+        this.logDebug('onFrontOpenBoxClick...');
+        this.claimBox();
     }
     
     private onGameSearchPack(aData: {
@@ -194,7 +219,7 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
     }
 
     private onGameCompletePack(aData: GameCompleteData) {
-        this._state = BattleSceneState.none;
+        this._state = aData.status == 'win' ? BattleSceneState.win : BattleSceneState.loss;
         this.emit(BattleSceneEvent.onGameComplete, aData);
     }
 
@@ -211,6 +236,46 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
 
     private onExpUpdatePack(aExpData: ExpData) {
         GameEventDispatcher.battleExpUpdate(aExpData);
+    }
+
+    private async claimReward() {
+        const wallet = getWalletAddress();
+        let oldBalance = Math.trunc(await getUserWinContractBalance(wallet));
+        this._connection.socket.once(PackTitle.claimReward, async (aData: ClaimRewardData) => {
+            this.logDebug(`Claim Reward recieved`);
+            switch (aData.action) {
+                case 'accept':
+                    let newBalance = Math.trunc(await getUserWinContractBalance(wallet));
+                    const rewardValue = Math.trunc(newBalance - oldBalance);
+                    alert(`Reward: ${rewardValue}; Balance: ${newBalance}`);
+                    break;
+                case 'reject':
+                    alert(`Error: Server RecordWinnerWithChoose reject: ${aData.reasone}`);
+                    break;
+            }
+            this.emit(BattleSceneEvent.onCloseBattle);
+        });
+        this._connection.sendClaimReward({ type: 'reward', action: 'request' });
+    }
+
+    private async claimBox() {
+        const wallet = getWalletAddress();
+        this._connection.socket.once(PackTitle.claimReward, async (aData: ClaimRewardData) => {
+            this.logDebug(`Claim Box recieved`);
+            switch (aData.action) {
+                case 'accept':
+                    getUserBoxesToOpen(wallet).then((aList: number[]) => {
+                        this.logDebug(`Boxes to open:`);
+                        if (Settings.isDebugMode) console.log(aList);
+                    });
+                    break;
+                case 'reject':
+                    alert(`Error: Server RecordWinnerWithChoose reject: ${aData.reasone}`);
+                    break;
+            }
+            this.emit(BattleSceneEvent.onCloseBattle);
+        });
+        this._connection.sendClaimReward({ type: 'box', action: 'request' });
     }
 
     public get connection(): BattleConnection {

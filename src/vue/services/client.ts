@@ -164,12 +164,12 @@ export class ClientService {
 
   onClaim() {
     logger.log('claim');
-    FrontEvents.onBattleClaimClick.dispatch();
+    FrontEvents.onBattleFinalClaimRewardClick.dispatch();
   }
 
   onOpenBox() {
     logger.log('openBox');
-    FrontEvents.onBattleFinalOpenBoxClick.dispatch();
+    FrontEvents.onBattleFinalClaimBoxClick.dispatch();
   }
 
   onCloseBox() {

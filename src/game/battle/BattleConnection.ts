@@ -4,7 +4,7 @@ import { newGameAuth } from "~/blockchain/functions/gameplay";
 import { Socket, io } from "socket.io-client";
 import { Settings } from "../data/Settings";
 import { getWalletAddress, isWalletConnected } from "~/blockchain/functions/auth";
-import { GameCompleteData, PackTitle, SkillRequest, StartGameData } from "./Types";
+import { ClaimRewardData, GameCompleteData, PackTitle, SkillRequest, StartGameData } from "./Types";
 import { GameEvent, GameEventDispatcher } from "../events/GameEvents";
 import { Signal } from "../utils/events/Signal";
 
@@ -174,12 +174,8 @@ export class BattleConnection extends MyEventDispatcher {
         this._socket.emit(PackTitle.exitGame);
     }
 
-    sendClaimReward() {
-        this._socket.emit(PackTitle.claimReward);
-    }
-
-    sendOpenBox() {
-        this._socket.emit(PackTitle.openBox);
+    sendClaimReward(aData: ClaimRewardData) {
+        this._socket.emit(PackTitle.claimReward, aData);
     }
 
 }

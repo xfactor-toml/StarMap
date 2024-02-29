@@ -24,7 +24,6 @@ export enum PackTitle {
     skill = 'skill',
 
     claimReward = 'claimReward',
-    openBox = 'openBox',
 
 }
 
@@ -42,7 +41,7 @@ export type StartGameData = {
 }
 
 export type GameCompleteData = {
-    status: 'win' | 'lose' | 'draw',
+    status: 'win' | 'lose',
     showBoxClaim?: boolean,
     boxLevel?: number
 }
@@ -127,4 +126,10 @@ export type ExpData = {
 export type SkillRequest = {
     action: 'levelUp' | 'click',
     skillId: number
+}
+
+export type ClaimRewardData = {
+    type: 'reward' | 'box',
+    action?: 'request' | 'accept' | 'reject',
+    reasone?: any
 }

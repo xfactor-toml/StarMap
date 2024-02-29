@@ -18,7 +18,6 @@ export class GameEngine extends MyBasicClass {
     private _renderer: GameRenderer;
     private _galaxyScene: GalaxyScene;
     private _battleScene: BattleScene;
-    private _gameCompleteData: GameCompleteData;
     private clock: THREE.Clock;
     private stats: Stats;
 
@@ -47,50 +46,12 @@ export class GameEngine extends MyBasicClass {
         document.body.appendChild(this.stats.dom);
     }
 
-    private async claimBattleReward() {
-        let oldBalance = Math.trunc(await getUserWinContractBalance(getWalletAddress()));
-        this._battleScene.connection.socket.once(PackTitle.claimReward, async (aData: {
-            msg: 'accept' | 'reject',
-            reasone?: any
-        }) => {
-            this.logDebug(`claimReward recieved`);
-            switch (aData.msg) {
-                case 'accept':
-                    let newBalance = Math.trunc(await getUserWinContractBalance(getWalletAddress()));
-                    const rewardValue = Math.trunc(newBalance - oldBalance);
-                    alert(`Reward: ${rewardValue}; Balance: ${newBalance}`);
-                    break;
-                case 'reject':
-                    alert(`Error: Server RecordWinnerWithChoose reject: ${aData.reasone}`);
-                    break;
-            }
-            this.switchSceneToGalaxy();
-        });
-        this._battleScene.connection.sendClaimReward();
-    }
-
     private initDebugGui() {
 
         const BLOCKCHAIN_DEBUG_GUI = {
             boxId: '0',
             claimReward: async () => {
-                let oldBalance = Math.trunc(await getUserWinContractBalance(getWalletAddress()));
-                this._battleScene.connection.socket.once(PackTitle.claimReward, async (aData: {
-                    msg: 'accept' | 'reject',
-                    reasone?: any
-                }) => {
-                    this.logDebug(`claimReward recieved`);
-                    switch (aData.msg) {
-                        case 'accept':
-                            let newBalance = Math.trunc(await getUserWinContractBalance(getWalletAddress()));
-                            alert(`oldBalance: ${oldBalance}; newBalance: ${newBalance}`);
-                            break;
-                        case 'reject':
-                            alert(`server RecordWinnerWithChoose reject: ${aData.reasone}`);
-                            break;
-                    }
-                });
-                this._battleScene.connection.sendClaimReward();
+                
             },
             claimBox: () => {
 
@@ -136,9 +97,9 @@ export class GameEngine extends MyBasicClass {
         this._battleScene.on(BattleSceneEvent.onGameStart, this.onBattleGameStart, this);
         this._battleScene.on(BattleSceneEvent.onGameComplete, this.onBattleComplete, this);
         this._battleScene.on(BattleSceneEvent.onDisconnect, this.onBattleDisconnect, this);
-
-        FrontEvents.onBattleClaimClick.add(this.onFrontClaimClick, this);
-
+        this._battleScene.on(BattleSceneEvent.onCloseBattle, () => {
+            this.switchSceneToGalaxy();
+        }, this);
     }
 
     private onBattleGameStart(aData: StartGameData) {
@@ -159,7 +120,6 @@ export class GameEngine extends MyBasicClass {
 
     private onBattleComplete(aData: GameCompleteData) {
         this.logDebug(`onBattleComplete...`);
-        this._gameCompleteData = aData;
         GameEventDispatcher.battleComplete(aData);
     }
 
@@ -168,20 +128,6 @@ export class GameEngine extends MyBasicClass {
         alert(`Disconnect...`);
         GameEventDispatcher.dispatchEvent(GameEvent.GALAXY_MODE);
         this.switchSceneToGalaxy();
-    }
-
-    private onFrontClaimClick() {
-
-        switch (this._gameCompleteData.status) {
-            case 'win':
-            // case 'lose':
-                this.claimBattleReward();
-                break;
-            default:
-                this.switchSceneToGalaxy();
-                break;
-        }
-
     }
 
     private switchSceneToGalaxy() {
