@@ -29,6 +29,7 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
     private _state: BattleSceneState;
     private _connection: BattleConnection;
     private _view: BattleView;
+    private _boxIdList: number[];
 
     constructor(aParams: {
         scene: THREE.Scene,
@@ -261,15 +262,24 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
             switch (aData.action) {
                 case 'accept':
                     getUserBoxesToOpen(wallet).then((aList: number[]) => {
-                        this.logDebug(`Boxes to open:`);
+                        aList.map(val => Number(val));
+                        this.logDebug(`Box ids to open:`);
                         if (Settings.isDebugMode) console.log(aList);
+                        if (aList.length > 0) {
+                            this._boxIdList = aList;
+                            GameEventDispatcher.showBoxOpenScreen();
+                        }
+                        else {
+                            alert(`No box found for this user...`);
+                            this.emit(BattleSceneEvent.onCloseBattle);
+                        }
                     });
                     break;
                 case 'reject':
                     alert(`Error: Server RecordWinnerWithChoose reject: ${aData.reasone}`);
+                    this.emit(BattleSceneEvent.onCloseBattle);
                     break;
             }
-            this.emit(BattleSceneEvent.onCloseBattle);
         });
         this._connection.sendClaimReward({ type: 'box', action: 'request' });
     }

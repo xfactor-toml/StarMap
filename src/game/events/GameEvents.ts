@@ -43,6 +43,7 @@ export enum GameEvent {
     // battle results
     BATTLE_COMPLETE_SHOW = 'BATTLE_COMPLETE_SHOW',
     BATTLE_COMPLETE_HIDE = 'BATTLE_COMPLETE_HIDE',
+    SHOW_BOX_OPEN = 'SHOW_BOX_OPEN',
     // battle process
     BATTLE_EXP_DATA = 'BATTLE_EXP_DATA',
 }
@@ -85,6 +86,15 @@ export class GameEventDispatcher {
         aData[`eventName`] = GameEvent.BATTLE_EXP_DATA;
         window.dispatchEvent(new CustomEvent('gameEvent', {
             detail: aData
+        }));
+    }
+
+    static showBoxOpenScreen() {
+        let data = {
+            eventName: GameEvent.SHOW_BOX_OPEN
+        };
+        window.dispatchEvent(new CustomEvent('gameEvent', {
+            detail: data
         }));
     }
 

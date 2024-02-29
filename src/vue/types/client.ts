@@ -90,6 +90,9 @@ export interface BattleCompleteShow extends BaseEvent, GameCompleteData {
 export interface BattleCompleteHide extends BaseEvent, GameCompleteData {
   eventName: GameEvent.BATTLE_COMPLETE_HIDE;
 }
+export interface BattleShowBoxOpen extends BaseEvent, ExpData {
+  eventName: GameEvent.SHOW_BOX_OPEN;
+}
 export interface BattleExpData extends BaseEvent, ExpData {
   eventName: GameEvent.BATTLE_EXP_DATA;
 }
@@ -114,6 +117,7 @@ export type ClientEvent =
   | BattlePrerollShow
   | BattleCompleteShow
   | BattleCompleteHide
+  | BattleShowBoxOpen
   | BattleExpData;
 
 export type GuiLevel = {

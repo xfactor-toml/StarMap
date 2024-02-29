@@ -200,6 +200,11 @@ export class ClientEventsService {
         scenesStore.setScene(SceneName.Galaxy);
         break;
       
+      case GameEvent.SHOW_BOX_OPEN:
+        // show box open screen (2nd screen of rewards)
+        
+        break;
+      
       case GameEvent.BATTLE_EXP_DATA:
 
         LogMng.debug(`GUI: update level progress: ${clientEvent.levelExpPercent}`);
