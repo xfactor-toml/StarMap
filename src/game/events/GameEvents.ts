@@ -37,10 +37,12 @@ export enum GameEvent {
     BATTLE_SEARCHING_STOP = 'BATTLE_SEARCHING_STOP',
     /**
      * reason: string
-     */
+    */
     BATTLE_SEARCHING_ERROR = 'BATTLE_SEARCHING_ERROR',
     BATTLE_PREROLL_SHOW = 'BATTLE_PREROLL_SHOW',
+    // battle results
     BATTLE_COMPLETE_SHOW = 'BATTLE_COMPLETE_SHOW',
+    // battle process
     BATTLE_EXP_DATA = 'BATTLE_EXP_DATA',
 }
 

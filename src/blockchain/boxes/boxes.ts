@@ -23,52 +23,52 @@ const nftContracts = {
 
 const rewardContract = new web3.eth.Contract(ABIs.RewardSenderWithChoose, contracts.RewardSender);
 
-export async function getNextWinId () {
+export async function getNextWinId() {
     return await rewardContract.methods.getGameCount().call()
 }
 
-export async function getWinData (_winId: number): Promise<WinData> {
-    const winData: WinData =  await rewardContract.methods.getVictoryData(_winId).call()
+export async function getWinData(_winId: number): Promise<WinData> {
+    const winData: WinData = await rewardContract.methods.getVictoryData(_winId).call()
     return winData
 }
 
-export async function getLaserLevel (_laserId: number) {
+export async function getLaserLevel(_laserId: number) {
     const laserLevel: number = await nftContracts.LaserNFT.methods.GetTokenLevel(_laserId).call()
     return laserLevel;
 }
 
-export async function getUserLaserList (_user: string) {
+export async function getUserLaserList(_user: string) {
     const laserList: number[] = await nftContracts.LaserNFT.methods.getUserCreationHistory(_user).call();
     return laserList;
 }
 
-export async function getUserAvailableLaserLevels (_user: string) {
+export async function getUserAvailableLaserLevels(_user: string) {
     const list: number[] = [];
-    const laserNFTs = await getUserLaserList (_user);
+    const laserNFTs = await getUserLaserList(_user);
     for (let j = 0; j < laserNFTs.length; j++) {
-       const laserLevel = await getLaserLevel(Number(laserNFTs[j]));
-       if (list.indexOf(laserLevel) === -1) {
-        list.push(laserLevel);
-       }
+        const laserLevel = await getLaserLevel(Number(laserNFTs[j]));
+        if (list.indexOf(laserLevel) === -1) {
+            list.push(laserLevel);
+        }
     }
     return list
 }
 
-export async function getUserBoxes (_user: string) {
+export async function getUserBoxes(_user: string) {
     const boxList: number[] = await nftContracts.BoxNFT.methods.getUserCreationHistory(_user).call();
     return boxList;
 }
 
-export async function getBoxData (_boxId: number) {
+export async function getBoxData(_boxId: number) {
     const boxData: BoxData = await nftContracts.BoxNFT.methods.getBoxInfo(_boxId).call();
     return boxData;
 }
 
-export async function getUserBoxesToOpen (_user: string) {
+export async function getUserBoxesToOpen(_user: string) {
     const list: number[] = [];
-    const allBoxes = await getUserBoxes (_user);
+    const allBoxes = await getUserBoxes(_user);
     for (let j = 0; j < allBoxes.length; j++) {
-        const dt = await getBoxData (allBoxes[j]);
+        const dt = await getBoxData(allBoxes[j]);
         if (!dt.isPaid) list.push(allBoxes[j]);
     }
     return list;
@@ -79,11 +79,11 @@ export async function getUserWinContractBalance(_user: string) {
     return Number(balance / (10 ** plasmaDecimals));
 }
 
-export async function OpenBox (address: string, _boxId: number) {
+export async function OpenBox(address: string, _boxId: number) {
     return new Promise(async (resolve, reject) => {
-        const contract  = new envWeb3.eth.Contract(ABIs.BoxNFT, contracts.BoxNFT);
+        const contract = new envWeb3.eth.Contract(ABIs.BoxNFT, contracts.BoxNFT);
 
-        try{
+        try {
             const gasPrice = await envWeb3.eth.getGasPrice();
             await contract.methods.openBox(_boxId).send({
                 from: address,
@@ -96,7 +96,7 @@ export async function OpenBox (address: string, _boxId: number) {
     })
 }
 
-export function GetBoxPrizeType (prizeAddress: string) {
+export function GetBoxPrizeType(prizeAddress: string) {
     if (prizeAddress = contracts.LaserNFT) {
         return "laser"
     }
