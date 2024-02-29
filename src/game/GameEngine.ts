@@ -131,6 +131,7 @@ export class GameEngine extends MyBasicClass {
     }
 
     private switchSceneToGalaxy() {
+        GameEventDispatcher.dispatchEvent(GameEvent.GALAXY_MODE);
         this._battleScene.hide();
         this._battleScene.clear();
         this._galaxyScene.show();

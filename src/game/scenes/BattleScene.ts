@@ -110,14 +110,8 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
                 this._connection.sendExitGame();
             },
             testBattleWin: () => {
-                // let data: GameCompleteData = {
-                //     status: 'win'
-                // }
-                // this.emit(BattleSceneEvent.onGameComplete, data);
                 GameEventDispatcher.battleComplete({
-                    status: 'win',
-                    // showBoxClaim: false,
-                    // boxLevel: 1
+                    status: 'win'
                 });
             },
             testBattleWinBox: () => {
@@ -129,7 +123,7 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
             },
             testBattleLoss: () => {
                 GameEventDispatcher.battleComplete({
-                    status: 'lose'
+                    status: 'loss'
                 });
             },
 
@@ -173,13 +167,15 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
     }
 
     private onFrontClaimRewardClick() {
-        this.logDebug('onFrontClaimClick...');
         switch (this._state) {
             case 'win':
+                this.logDebug('onFrontClaimClick: win handling...');
                 // case 'lose':
                 this.claimReward();
                 break;
-            case 'loss':
+            default:
+                this.logDebug('onFrontClaimClick: default handling...');
+                GameEventDispatcher.battleCompleteHide();
                 this.emit(BattleSceneEvent.onCloseBattle);
                 break;
         }

@@ -41,7 +41,7 @@ export type StartGameData = {
 }
 
 export type GameCompleteData = {
-    status: 'win' | 'lose',
+    status: 'win' | 'loss',
     showBoxClaim?: boolean,
     boxLevel?: number
 }

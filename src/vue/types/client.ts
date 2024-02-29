@@ -87,6 +87,9 @@ export interface BattlePrerollShow extends BaseEvent {
 export interface BattleCompleteShow extends BaseEvent, GameCompleteData {
   eventName: GameEvent.BATTLE_COMPLETE_SHOW;
 }
+export interface BattleCompleteHide extends BaseEvent, GameCompleteData {
+  eventName: GameEvent.BATTLE_COMPLETE_HIDE;
+}
 export interface BattleExpData extends BaseEvent, ExpData {
   eventName: GameEvent.BATTLE_EXP_DATA;
 }
@@ -110,6 +113,7 @@ export type ClientEvent =
   | BattleSearchingError
   | BattlePrerollShow
   | BattleCompleteShow
+  | BattleCompleteHide
   | BattleExpData;
 
 export type GuiLevel = {

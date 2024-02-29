@@ -42,6 +42,7 @@ export enum GameEvent {
     BATTLE_PREROLL_SHOW = 'BATTLE_PREROLL_SHOW',
     // battle results
     BATTLE_COMPLETE_SHOW = 'BATTLE_COMPLETE_SHOW',
+    BATTLE_COMPLETE_HIDE = 'BATTLE_COMPLETE_HIDE',
     // battle process
     BATTLE_EXP_DATA = 'BATTLE_EXP_DATA',
 }
@@ -68,6 +69,15 @@ export class GameEventDispatcher {
         aData[`eventName`] = GameEvent.BATTLE_COMPLETE_SHOW;
         window.dispatchEvent(new CustomEvent('gameEvent', {
             detail: aData
+        }));
+    }
+
+    static battleCompleteHide() {
+        let data = {
+            eventName: GameEvent.BATTLE_COMPLETE_HIDE
+        };
+        window.dispatchEvent(new CustomEvent('gameEvent', {
+            detail: data
         }));
     }
 

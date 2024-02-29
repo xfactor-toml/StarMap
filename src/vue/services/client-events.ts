@@ -152,7 +152,7 @@ export class ClientEventsService {
       case GameEvent.BATTLE_COMPLETE_SHOW:
         const typeByStatus: {[index: string]: 'victory' | 'defeat'} = {
           win: 'victory',
-          lose: 'defeat',
+          loss: 'defeat',
           draw: 'defeat'
         }
 
@@ -196,6 +196,10 @@ export class ClientEventsService {
         });
         break;
       
+      case GameEvent.BATTLE_COMPLETE_HIDE:
+        scenesStore.setScene(SceneName.Galaxy);
+        break;
+      
       case GameEvent.BATTLE_EXP_DATA:
 
         LogMng.debug(`GUI: update level progress: ${clientEvent.levelExpPercent}`);
@@ -210,7 +214,6 @@ export class ClientEventsService {
 
         for (let i = 0; i < clientEvent.skills.length; i++) {
           const sd = clientEvent.skills[i];
-          // debugger;
           battleStore.process.setSkill(actionTypes[i], {
             level: sd.level,
             levelUpAvailable: sd.levelUpAvailable,
