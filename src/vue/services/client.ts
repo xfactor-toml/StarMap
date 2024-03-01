@@ -98,18 +98,18 @@ export class ClientService {
 
   async onGameStart() {
     LogMng.debug('Front: start game click');
+    FrontEvents.onBattleSearch.dispatch();
 
     // mock start
     // player connect
-    playersConnectMock()
+    // playersConnectMock()
 
     // battle run
     // battleRunMock()
 
     return
     // mock end
-
-    FrontEvents.onBattleSearch.dispatch();
+    
   }
   
   onSearchingClick() {
