@@ -257,22 +257,25 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
 
     private async claimBox() {
         const wallet = getWalletAddress();
+
         this._connection.socket.once(PackTitle.claimReward, async (aData: ClaimRewardData) => {
             this.logDebug(`Claim Box recieved`);
             switch (aData.action) {
                 case 'accept':
                     getUserBoxesToOpen(wallet).then((aList: number[]) => {
-                        aList.map(val => Number(val));
+                        let list = aList.map(val => Number(val));
                         this.logDebug(`Box ids to open:`);
-                        if (Settings.isDebugMode) console.log(aList);
-                        if (aList.length > 0) {
-                            this._boxIdList = aList;
+                        if (Settings.isDebugMode) console.log(list);
+                        if (list.length > 0) {
+                            this._boxIdList = list;
+                            alert(`You have ${list.length} boxes for open`);
                             GameEventDispatcher.showBoxOpenScreen();
                         }
                         else {
                             alert(`No box found for this user...`);
-                            this.emit(BattleSceneEvent.onCloseBattle);
                         }
+                        // temp
+                        this.emit(BattleSceneEvent.onCloseBattle);
                     });
                     break;
                 case 'reject':
@@ -281,7 +284,10 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
                     break;
             }
         });
+
         this._connection.sendClaimReward({ type: 'box', action: 'request' });
+
+        alert(`Box generation in process, wait please...`);
     }
 
     public get connection(): BattleConnection {
