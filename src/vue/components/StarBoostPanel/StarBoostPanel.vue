@@ -207,7 +207,7 @@ export default {
         energy: 'refuelStarExistence'
       };
 
-      const updatedStar = await this.$wallet[boostMethod[this.type]](
+      const updatedStar = await this.$wallet.provider[boostMethod[this.type]](
         this.star.id,
         this.requiredPlasma
       );
