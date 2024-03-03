@@ -51,6 +51,9 @@
         "vue": "^3.2.47",
         "vue-slider-component": "^4.1.0-beta.7",
         "web3": "^4.5.0",
-        "websocket": "^1.0.34"
+        "websocket": "^1.0.34",
+        "@web3modal/ethers5": "^4.0.11",
+        "@web3modal/wagmi": "^4.0.11",
+        "ethers": "5.7.2"
     }
 }
