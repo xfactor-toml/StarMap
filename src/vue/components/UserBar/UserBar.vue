@@ -40,10 +40,18 @@
     <button
       v-else
       class="UserBar__button is-wallet"
-      :class="{ active: settingsVisible }"
+      :class="{ active: walletConnectVisible }"
       @mouseenter="$client.onHover()"
-      @click="connect"
+      @click="openWalletConnect"
     />
+    <div
+      class="UserBar__popup"
+      v-if="walletConnectVisible"
+    >
+      <WalletConnectPopup
+        @close="hideWalletConnect"
+      />
+    </div>
     <div
       class="UserBar__popup"
       v-if="settingsVisible"
@@ -67,6 +75,7 @@
 
 import { SettingsPopup } from '@/components/SettingsPopup';
 import { SearchInput } from '@/components/SearchInput';
+import { WalletConnectPopup } from '@/components/WalletConnectPopup';
 import { useSettingsStore, useUiStore, useWalletStore } from '@/stores';
 import { default as vClickOutside } from 'click-outside-vue3';
 import { mapStores } from 'pinia';
@@ -76,6 +85,7 @@ export default {
   components: {
     SearchInput,
     SettingsPopup,
+    WalletConnectPopup,
   },
   directives: {
     clickOutside: vClickOutside.directive
@@ -83,7 +93,8 @@ export default {
   data: () => ({
     settingsVisible: false,
     searchVisible: false,
-    searchKey: ''
+    searchKey: '',
+    walletConnectVisible: false,
   }),
   watch: {
     searchKey() {
@@ -94,15 +105,19 @@ export default {
     ...mapStores(useSettingsStore, useUiStore, useWalletStore),
   },
   methods: {
-    connect() {
-      this.$wallet.connect();
-    },
     toggleSettings() {
       this.$client.onClick();
       this.settingsVisible = !this.settingsVisible;
     },
     hideSettingsPopup() {
       this.settingsVisible = false;
+    },
+    openWalletConnect() {
+      this.$client.onClick();
+      this.walletConnectVisible = true
+    },
+    hideWalletConnect() {
+      this.walletConnectVisible = false;
     },
     openSearchField() {
       if (!this.searchKey) {
