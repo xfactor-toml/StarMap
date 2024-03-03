@@ -561,7 +561,7 @@ export default {
       this.$emit('callStarBoost', { type: 'energy', starId: this.star.id });
     },
     async fetchData() {
-      this.creationCost = await this.$wallet.getCreationCost(this.star.params.level + 1);
+      this.creationCost = await this.$wallet.provider.getCreationCost(this.star.params.level + 1);
     }
   },
   async created() {

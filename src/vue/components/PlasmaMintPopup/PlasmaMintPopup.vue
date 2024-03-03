@@ -25,7 +25,7 @@ export default {
   methods: {
     async submit() {
       this.pending = true
-      await this.$wallet.mintPlasma(this.amount)
+      await this.$wallet.provider.mintPlasma(this.amount)
       this.pending = false
       this.$emit('close')
     }

@@ -24,7 +24,7 @@
             class="WalletConnectPopup__wallet is-walletconnect"
             type="button"
             @click="walletConnect"
-          >Walletconnect
+          >WalletСonnect
           </button>
         </div>
       </div>
