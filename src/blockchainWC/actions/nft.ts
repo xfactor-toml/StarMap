@@ -53,7 +53,7 @@ export async function CreateNewStarWC(dt: CreateStarWCArgs) {
         reject("Transaction not included in block");
         return;
       }
-      resolve(Number(await StarContract.GetTotalStarCount()) - 1);
+      resolve(true);
     } catch (e) {
       reject("Txn failed : " + e.message);
     }
@@ -95,8 +95,8 @@ export async function RefuelStar(dt: ReFuelWCArgs) {
         reject("Transaction not included in block");
         return;
       }
-      const result = await StarContract.GetStarParams(String(dt.starId));
-      resolve(result);
+      // const result = await StarContract.GetStarParams(String(dt.starId));
+      resolve(true);
     } catch (e) {
       reject(e.message);
       return null;
@@ -123,8 +123,8 @@ export async function IncreaseStarLevel(
         reject("Transaction not included in block");
         return;
       }
-      const result = await StarContract.GetStarParams(String(starId));
-      resolve(result);
+      // const result = await StarContract.GetStarParams(String(starId));
+      resolve(true);
     } catch (e) {
       reject("Txn failed : " + e.message);
     }
