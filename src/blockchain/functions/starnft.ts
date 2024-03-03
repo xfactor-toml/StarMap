@@ -12,7 +12,7 @@ reader.setProvider(new Web3.providers.HttpProvider(reserveRpcs[1]))
 const contract = new reader.eth.Contract(StarNFTABI, nft)
 const writeable = new web3.eth.Contract(StarNFTABI, nft)
 
-function ExtractRace ( str : string) : Race {
+export function ExtractRace ( str : string) : Race {
     switch (str) {
         case "Waters" :
             return "Waters";
