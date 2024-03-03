@@ -2,7 +2,7 @@ import { BaseProvider } from "./base-provider";
 import { ref } from "vue";
 
 export class ReaderProvider extends BaseProvider {
-  account;
+  account = ref('');
 
   async connect() {
     return ref('')

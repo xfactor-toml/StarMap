@@ -507,7 +507,7 @@ export default {
       return this.starsStore.getById(this.starId);
     },
     isOwner() {
-      return this.star.owner === this.walletStore.account;
+      return this.walletStore.isOwner(this.star.owner);
     },
     description() {
       return `Federation of ${this.star.description.toLowerCase()}`;
