@@ -23,11 +23,16 @@ export const useWalletStore = defineStore('wallet', () => {
     connected.value = state.connected
   }
 
+  const isOwner = (address: string) => {
+    return account.value && account.value.toLowerCase() === address.toLowerCase(); 
+  }
+
   return {
     account,
     connected,
     installed,
     shortAddress,
+    isOwner,
     setState
   }
 });

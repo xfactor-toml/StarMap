@@ -1,4 +1,5 @@
 const path = require('path');
+const Dotenv = require('dotenv-webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin').CleanWebpackPlugin;
@@ -20,7 +21,7 @@ module.exports = {
       new TsconfigPathsPlugin({
         baseUrl: __dirname,
         configFile: path.join(__dirname, 'tsconfig.json')
-      })
+      }),
     ],
     extensions: ['.ts', '.js', 'd.ts', '.vue']
   },
@@ -63,6 +64,7 @@ module.exports = {
   },
 
   plugins: [
+    new Dotenv(),
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin({
       patterns: [

@@ -159,7 +159,7 @@ export default {
     async approve() {
       this.approving = true;
 
-      const approvedPlasma = await this.$wallet.approvePlasma(this.creationCost);
+      const approvedPlasma = await this.$wallet.provider.approvePlasma(this.creationCost);
 
       this.approving = false;
       this.approved = approvedPlasma >= this.creationCost;
@@ -167,7 +167,7 @@ export default {
     async create() {
       this.creating = true;
 
-      const createdStar = await this.$wallet.createStar(
+      const createdStar = await this.$wallet.provider.createStar(
         this.starName,
         this.starPosition.galaxy.toContractFormat()
       );
@@ -187,8 +187,8 @@ export default {
   },
   async mounted() {
     this.fetching = true;
-    this.balance = await this.$wallet.getBalance();
-    this.creationCost = await this.$wallet.getCreationCost();
+    this.balance = await this.$wallet.provider.getBalance();
+    this.creationCost = await this.$wallet.provider.getCreationCost();
 
     if (this.walletStore.connected) {
       (this.$refs.input as HTMLElement)?.focus();
