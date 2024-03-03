@@ -29,6 +29,8 @@ export abstract class BaseProvider {
 
   abstract mintPlasma(amount: number): Promise<any>
 
+  abstract openBox(boxId: number): Promise<any>
+
   async getAllowance() {
     return this.checkConnection(() => GetAllowance(this.account.value));
   }

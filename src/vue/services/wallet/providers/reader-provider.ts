@@ -15,4 +15,5 @@ export class ReaderProvider extends BaseProvider {
   async refuelStarExistence() {}
   async increaseStarLevel() {}
   async mintPlasma() {}
+  async openBox() {}
 }

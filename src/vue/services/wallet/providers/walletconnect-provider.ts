@@ -10,6 +10,7 @@ import {
   CreateNewStarWC,
   IncreaseStarLevel,
   MintToken,
+  OpenBox,
   RefuelStar,
   contracts
 } from "~/blockchainWC";
@@ -96,5 +97,9 @@ export class WalletConnectProvider extends BaseProvider {
       amount,
       token: contracts.plasma
     });
+  }
+
+  async openBox(boxId: number) {
+    return OpenBox(this.walletProvider.value, boxId);
   }
 }

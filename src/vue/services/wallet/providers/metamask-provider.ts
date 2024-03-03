@@ -11,6 +11,7 @@ import { Coords, fuelTarget } from "~/blockchain/types";
 import { BaseProvider } from "./base-provider";
 import { Star } from "@/models";
 import { ref } from "vue";
+import { OpenBox } from "~/blockchain/boxes";
 
 export class MetamaskProvider extends BaseProvider {
   account = ref('');
@@ -61,5 +62,9 @@ export class MetamaskProvider extends BaseProvider {
 
   async mintPlasma(amount: number): Promise<number> {
     return MintPlasma(this.account.value, amount);
+  }
+
+  async openBox(boxId: number) {
+    return OpenBox(this.account.value, boxId);
   }
 }
