@@ -28,7 +28,7 @@ export async function OpenBox(
   });
 }
 
-export async function GenerateSignature(walletProvider: ethers.providers.ExternalProviderб account: string): Promise<string> {
+export async function GenerateSignature(walletProvider: ethers.providers.ExternalProvider, account: string): Promise<string> {
   return new Promise (async (resolve, reject) => {
       if (!walletProvider) reject("Web3 not found!");
       const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
