@@ -25,6 +25,7 @@ export class WalletService {
   connected = false;
   installed = false;
   currency = 'plasma';
+  walletType: 'metamask' | 'walletconnect';
   subscribed = false;
 
   stateListeners = []
@@ -37,11 +38,14 @@ export class WalletService {
     }
   }
 
-  async connect() {
+  async connect(type: WalletService['walletType']) {
     if (!this.subscribed) {
       this.subscribe();
     }
 
+    this.walletType = type
+
+    // return this.updateState(await NetworkAuth(this.walletType));
     return this.updateState(await NetworkAuth());
   }
 
@@ -106,7 +110,7 @@ export class WalletService {
     method: T,
     defaultValue?: Awaited<ReturnType<T>>
   ) {
-    return (await this.connect()) ? method() : defaultValue;
+    return (await this.connect(this.walletType)) ? method() : defaultValue;
   }
 
   private updateState(auth: string | null) {

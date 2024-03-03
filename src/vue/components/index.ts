@@ -22,3 +22,4 @@ export * from './StarTooltipV2';
 export * from './UserBar';
 export * from './ViewsPanel';
 export * from './VolumeControl';
+export * from './WalletConnectPopup';
