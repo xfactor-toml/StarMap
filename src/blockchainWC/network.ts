@@ -6,7 +6,7 @@ export const opBSCTestnet = {
   rpcUrl: "https://opbnb-testnet-rpc.bnbchain.org",
 };
 
-export const projectId = "6ac20dab9dbf96bd765289d65e646af7"
+export const projectId = process.env.WALLETCONNECT_PROJECT_ID;
 
 export const metadata = {
     name: 'Vorpal',
