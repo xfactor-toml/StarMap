@@ -1,6 +1,14 @@
 import { Ref } from "vue";
-import { GetAllStarData, GetAllowance, GetBalance, GetCreationCost, RequiredPlasmaToApprove } from "~/blockchain";
-import { Coords, StarList, fuelTarget } from "~/blockchain/types";
+import {
+  GetAllStarData,
+  GetAllowance,
+  GetBalance,
+  GetCreationCost,
+  GetSingleStarData,
+  GetStarsCount,
+  RequiredPlasmaToApprove
+} from "~/blockchain";
+import { Coords, StarData, StarList, fuelTarget } from "~/blockchain/types";
 
 export abstract class BaseProvider {
   abstract account: Ref<string>
@@ -35,6 +43,14 @@ export abstract class BaseProvider {
 
   async getStars(): Promise<StarList> {
     return GetAllStarData();
+  }
+
+  async getStarById(starId: number): Promise<StarData> {
+    return GetSingleStarData(starId);
+  }
+
+  async getStarsCount(): Promise<number> {
+    return GetStarsCount();
   }
 
   async requiredPlasmaToApprove() {

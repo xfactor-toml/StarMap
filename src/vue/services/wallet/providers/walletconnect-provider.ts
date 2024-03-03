@@ -4,7 +4,15 @@ import { useWeb3ModalAccount, useWeb3ModalProvider } from "@web3modal/ethers5/vu
 import { ethers } from "ethers";
 import { Ref, ref } from "vue";
 import { Coords, fuelTarget } from "~/blockchain/types";
-import { ApproveFor, ConnectWalletWC, CreateNewStarWC, IncreaseStarLevel, MintToken, RefuelStar, contracts } from "~/blockchainWC";
+import {
+  ApproveFor,
+  ConnectWalletWC,
+  CreateNewStarWC,
+  IncreaseStarLevel,
+  MintToken,
+  RefuelStar,
+  contracts
+} from "~/blockchainWC";
 
 export class WalletConnectProvider extends BaseProvider {
   account = ref('');
@@ -17,7 +25,7 @@ export class WalletConnectProvider extends BaseProvider {
     }
 
     this.account = await ConnectWalletWC()
-    
+
     const { walletProvider } = useWeb3ModalProvider()
     const { isConnected } = useWeb3ModalAccount()
 
@@ -42,7 +50,7 @@ export class WalletConnectProvider extends BaseProvider {
     const uri = `${document.location.hostname}`;
     const race = Star.getRandomRace();
 
-    return this.checkConnection(() => CreateNewStarWC({
+    await this.checkConnection(() => CreateNewStarWC({
       walletProvider: this.walletProvider.value,
       owner,
       name,
@@ -50,16 +58,22 @@ export class WalletConnectProvider extends BaseProvider {
       race,
       coords
     }), null);
+
+    const starsCount = await this.getStarsCount()
+
+    return  this.getStarById(starsCount - 1)
   }
 
   async refuelStar(starId: number, amount: number, target: fuelTarget) {
-    return this.checkConnection(() => RefuelStar({
+    await this.checkConnection(() => RefuelStar({
       walletProvider: this.walletProvider.value,
       user: this.account.value,
       starId,
       amount,
       target
     }), null);
+
+    return this.getStarById(starId)
   }
 
   async refuelStarLevelUp(starId: number, amount: number) {
@@ -71,7 +85,8 @@ export class WalletConnectProvider extends BaseProvider {
   }
 
   async increaseStarLevel(starId: number) {
-    return this.checkConnection(() => IncreaseStarLevel(this.walletProvider.value, starId), null);
+    await this.checkConnection(() => IncreaseStarLevel(this.walletProvider.value, starId), null);
+    return this.getStarById(starId)
   }
 
   async mintPlasma(amount: number): Promise<any> {
