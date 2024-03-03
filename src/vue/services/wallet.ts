@@ -15,8 +15,8 @@ import {
   RequiredPlasmaToApprove,
   SubscribeOnAccountChanging
 } from '~/blockchain';
-import { fuelTarget } from '~/blockchain/types';
-import { Coords, StarList } from '~/blockchain/types';
+import { fuelTarget, Coords, StarList } from '~/blockchain/types';
+import { ConnectWalletWC, InitWalletconnectModal } from '~/blockchainWC';
 
 let walletInstance: WalletService | null = null
 
@@ -30,6 +30,10 @@ export class WalletService {
 
   stateListeners = []
 
+  constructor() {
+    InitWalletconnectModal()
+  }
+
   get state(): WalletStoreState {
     return {
       account: this.account,
@@ -39,13 +43,17 @@ export class WalletService {
   }
 
   async connect(type: WalletService['walletType']) {
+    if (type === 'walletconnect') {
+      ConnectWalletWC()
+      return
+    }
+
     if (!this.subscribed) {
       this.subscribe();
     }
 
     this.walletType = type
 
-    // return this.updateState(await NetworkAuth(this.walletType));
     return this.updateState(await NetworkAuth());
   }
 
