@@ -18,6 +18,7 @@ export class WalletService {
   stateListeners = []
 
   constructor() {
+    walletInstance = this
     InitWalletconnectModal()
   }
 
@@ -74,8 +75,7 @@ export class WalletService {
   }
 
   static getWalletInstance() {
-    const instance = walletInstance || new WalletService()
-    return instance
+    return walletInstance || new WalletService()
   }
 
   static VuePlugin = {

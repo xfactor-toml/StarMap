@@ -1,4 +1,4 @@
-import { ExpData, GameCompleteData } from '~/game/battle/Types';
+import { BoxOpenData, ExpData, GameCompleteData } from '~/game/battle/Types';
 import { ServerStarData } from '~/game/data/Types';
 import { FrontEvents } from '~/game/events/FrontEvents';
 import { GameEvent } from '~/game/events/GameEvents';
@@ -90,7 +90,7 @@ export interface BattleCompleteShow extends BaseEvent, GameCompleteData {
 export interface BattleCompleteHide extends BaseEvent, GameCompleteData {
   eventName: GameEvent.BATTLE_COMPLETE_HIDE;
 }
-export interface BattleShowBoxOpen extends BaseEvent, ExpData {
+export interface BattleShowBoxOpen extends BaseEvent, BoxOpenData {
   eventName: GameEvent.SHOW_BOX_OPEN;
 }
 export interface BattleExpData extends BaseEvent, ExpData {

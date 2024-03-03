@@ -173,27 +173,10 @@ export class ClientEventsService {
           }
         })
 
-        // test
-        if (false) {
-          battleStore.rewards.setRewards([
-            { name: 'test1', image: '/gui/images/box.png' },
-            { name: 'test2', image: '/gui/images/box.png' },
-            { name: 'test3', image: '/gui/images/box.png' },
-            { name: 'test4', image: '/gui/images/box.png' },
-            { name: 'test5', image: '/gui/images/box.png' },
-          ]);
-  
-          scenesStore.setScene(SceneName.Battle, {
-            mode: 'rewards'
-          });
-  
-          return;
-        }
-        // test end
-
         scenesStore.setScene(SceneName.Battle, {
           mode: 'results'
         });
+
         break;
       
       case GameEvent.BATTLE_COMPLETE_HIDE:
@@ -201,12 +184,23 @@ export class ClientEventsService {
         break;
       
       case GameEvent.SHOW_BOX_OPEN:
-        // show box open screen (2nd screen of rewards)
+        // battleStore.rewards.setRewards([
+        //   { name: 'test1', image: '/gui/images/box.png' },
+        //   { name: 'test2', image: '/gui/images/box.png' },
+        //   { name: 'test3', image: '/gui/images/box.png' },
+        //   { name: 'test4', image: '/gui/images/box.png' },
+        //   { name: 'test5', image: '/gui/images/box.png' },
+        // ]);
+
+        battleStore.rewards.setBoxesIds(clientEvent.list);
+
+        scenesStore.setScene(SceneName.Battle, {
+          mode: 'rewards'
+        });
         
         break;
       
       case GameEvent.BATTLE_EXP_DATA:
-
         LogMng.debug(`GUI: update level progress: ${clientEvent.levelExpPercent}`);
         const actionTypes: BattleActionType[] = ['satelliteFire', 'rocketFire', 'slowdown', 'invisibility'];
         

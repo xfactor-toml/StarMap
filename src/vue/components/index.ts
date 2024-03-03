@@ -3,6 +3,7 @@ export * from './BattleConnectIndicator';
 export * from './BattleControlPanel';
 export * from './BattleInitMember';
 export * from './LevelsPanel';
+export * from './Loader';
 export * from './Logo';
 export * from './ModesPanel';
 export * from './PowerIndicator';

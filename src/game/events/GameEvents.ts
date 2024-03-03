@@ -1,4 +1,4 @@
-import { ExpData, GameCompleteData } from "../battle/Types";
+import { BoxOpenData, ExpData, GameCompleteData } from "../battle/Types";
 
 export enum GameEvent {
     GAME_LOADING = 'GAME_LOADING',
@@ -88,13 +88,11 @@ export class GameEventDispatcher {
             detail: aData
         }));
     }
-
-    static showBoxOpenScreen() {
-        let data = {
-            eventName: GameEvent.SHOW_BOX_OPEN
-        };
+    
+    static showBoxOpenScreen(aData: BoxOpenData) {
+        aData[`eventName`] = GameEvent.SHOW_BOX_OPEN;
         window.dispatchEvent(new CustomEvent('gameEvent', {
-            detail: data
+            detail: aData
         }));
     }
 

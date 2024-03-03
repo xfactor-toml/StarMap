@@ -269,13 +269,13 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
                         if (list.length > 0) {
                             this._boxIdList = list;
                             alert(`You have ${list.length} boxes for open`);
-                            GameEventDispatcher.showBoxOpenScreen();
+                            GameEventDispatcher.showBoxOpenScreen({list});
                         }
                         else {
                             alert(`No box found for this user...`);
                         }
                         // temp
-                        this.emit(BattleSceneEvent.onCloseBattle);
+                        // this.emit(BattleSceneEvent.onCloseBattle);
                     });
                     break;
                 case 'reject':

@@ -604,7 +604,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
     private onDamage(aData: DamageData) {
         let obj = this.getObjectById(aData.id);
-        if (this.isCurrentOwner(obj.owner) && !DEBUG_GUI.showMyDamage) {
+        if (this.isCurrentOwner(obj?.owner) && !DEBUG_GUI.showMyDamage) {
             return;
         }
         let pos = this.getPositionByServerV3(aData.pos);
