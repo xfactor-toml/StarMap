@@ -27,3 +27,19 @@ export async function OpenBox(
     }
   });
 }
+
+export async function GenerateSignature(walletProvider: ethers.providers.ExternalProviderб account: string): Promise<string> {
+  return new Promise (async (resolve, reject) => {
+      if (!walletProvider) reject("Web3 not found!");
+      const ethersProvider = new ethers.providers.Web3Provider(walletProvider);
+      const signer = ethersProvider.getSigner();
+      const dt = new Date().getTime();
+      const signMsg = "auth_" + String(dt - (dt % 600000));
+      try {
+          const signature = await signer.signMessage(signMsg);
+          resolve(signature);
+      } catch (e) {
+          reject("Sign failed : " + e.message)
+      }
+  })
+}
