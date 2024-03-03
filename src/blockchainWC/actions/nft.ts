@@ -34,9 +34,16 @@ export async function CreateNewStarWC(dt: CreateStarWCArgs) {
       StarNFTAbi,
       signer
     );
-    const coordX = String(Math.round(dt.coords.X * 1000000));
-    const coordY = String(Math.round(dt.coords.Y * 1000000));
-    const coordZ = String(Math.round(dt.coords.Z * 1000000));
+
+    const crds = {
+      X: dt.coords.X + 1000000,
+      Y: dt.coords.Y + 1000000,
+      Z: dt.coords.Z + 1000000
+    }
+    
+    const coordX = String(Math.round(crds.X * 1000000));
+    const coordY = String(Math.round(crds.Y * 1000000));
+    const coordZ = String(Math.round(crds.Z * 1000000));
 
     try {
       const tx = await StarContract.safeMint(
