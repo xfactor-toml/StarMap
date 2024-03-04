@@ -38,16 +38,19 @@ export const useBattleRewardsStore = defineStore('battleRewards', () => {
       const scenes = useScenesStore()
       const success = await wallet.provider.openBox(firstBoxId)
 
-      waitingBox.value = false
-
       if (success) {
         boxesIds.value = boxesIds.value.slice(1)
         console.log(`boxes left: ${boxesIds.value}`);
+
+        const boxData = await wallet.provider.getBoxData(firstBoxId)
+        const laserLevel = await wallet.provider.getLaserLevel(boxData.rewardId)
+
+        setRewards([
+          { name: `Laser ${laserLevel}`, image: '/gui/images/box.svg' },
+        ]);
       }
 
-      if (boxesIds.value.length === 0) {
-        scenes.setScene(SceneName.Galaxy)
-      }
+      waitingBox.value = false
     }
   }
 
