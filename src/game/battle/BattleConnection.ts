@@ -135,14 +135,17 @@ export class BattleConnection extends MyEventDispatcher {
     }
 
     sendSearchGame() {
-        this._socket.emit(PackTitle.startSearchGame);
+        this._socket.emit(PackTitle.startSearchGame, {
+            isFreeConnect: Settings.BATTLE.freeConnect
+        });
     }
 
-    // sendLaserClick() {
-    //     this._socket.emit(PackTitle.planetLaser, {
-    //         cmd: 'click'
-    //     });
-    // }
+    sendSearchGameBot() {
+        this._socket.emit(PackTitle.startSearchGame, {
+            withBot: true,
+            isFreeConnect: Settings.BATTLE.freeConnect
+        });
+    }
 
     sendSkillActionClick(aSkillId: number) {
         let data: SkillRequest = {
@@ -158,12 +161,6 @@ export class BattleConnection extends MyEventDispatcher {
             skillId: aSkillId
         }
         this._socket.emit(PackTitle.skill, data);
-    }
-
-    sendSearchGameBot() {
-        this._socket.emit(PackTitle.startSearchGame, {
-            withBot: true
-        });
     }
 
     sendStopSearchingGame() {

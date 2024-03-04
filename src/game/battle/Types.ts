@@ -88,11 +88,14 @@ export type AttackData = {
     isCrit?: boolean
 }
 
+export type PlanetLaserSkin = 'blue' | 'red' | 'green' | 'violet';
+
 export type PlanetLaserData = {
     planetId: number,
-    pos: { x, y, z },
-    dir: { x, y, z },
-    length: number
+    pos: { x: number, y: number, z: number },
+    dir: { x: number, y: number, z: number },
+    length: number,
+    skin: PlanetLaserSkin
 }
 
 export type DamageInfo = {

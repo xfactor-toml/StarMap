@@ -13,7 +13,7 @@ import { BattleCameraMng } from './BattleCameraMng';
 import { ObjectHpViewer } from './ObjectHpViewer';
 import { Linkor } from '../objects/battle/Linkor';
 import { Settings } from '../data/Settings';
-import { FieldInitData, PlanetLaserData, ObjectCreateData, ObjectType, ObjectUpdateData, PackTitle, AttackData, DamageData } from './Types';
+import { FieldInitData, PlanetLaserData, ObjectCreateData, ObjectType, ObjectUpdateData, PackTitle, AttackData, DamageData, PlanetLaserSkin } from './Types';
 import { BattleConnection } from './BattleConnection';
 import { FieldCell } from '../objects/battle/FieldCell';
 import { getWalletAddress } from '~/blockchain/functions/auth';
@@ -255,8 +255,27 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         return this._walletNumber == aWalletAddr;
     }
 
-    private getLaserColor(aOwner: string): string {
-        return this.isCurrentOwner(aOwner) ? '#0072ff' : '#ff0000'
+    private getPlanetLaserColor(aSkin: PlanetLaserSkin): string {
+        let color = '#0072ff';
+        switch (aSkin) {
+            case 'blue':
+                color = '#0072ff';
+                break;
+            case 'red':
+                color = '#ff0000';
+                break;
+            case 'green':
+                color = '#00ff00';
+                break; 
+            case 'violet':
+                color = '#0072ff';
+                break;
+        }
+        return color;
+    }
+
+    private getShipLaserColor(aOwner: string): string {
+        return this.isCurrentOwner(aOwner) ? '#0072ff' : '#ff0000';
     }
 
     private getRandomShip(exclude?: BattleObject[]): BattleObject {
@@ -501,7 +520,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             return;
         }
 
-        let laserColor = this.getLaserColor(objFrom.owner);
+        let laserColor = this.getShipLaserColor(objFrom.owner);
 
         switch (aData.attackType) {
 
@@ -571,7 +590,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             return;
         }
 
-        let laserColor = this.getLaserColor(objFrom.owner);
+        let laserColor = this.getShipLaserColor(objFrom.owner);
 
         // create ray
 
@@ -618,7 +637,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             return;
         }
 
-        let laserColor = this.getLaserColor(planet.owner);
+        let laserColor = this.getPlanetLaserColor(aData.skin);
         let originPos = this.getPositionByServerV3(aData.pos);
         let dir = new THREE.Vector3(aData.dir.x, aData.dir.y, aData.dir.z);
         dir.multiplyScalar(aData.length);

@@ -130,7 +130,8 @@ export class Settings {
     static BATTLE = {
         // serverAddr: wsServerUrl,
         serverAddr: 'https://staging-api.vorpal.finance',
-        localConnect: false
+        localConnect: false,
+        freeConnect: false
     };
 
     // audio

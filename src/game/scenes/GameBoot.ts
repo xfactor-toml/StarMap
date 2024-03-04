@@ -79,6 +79,14 @@ export class GameBoot implements ILogger {
                     Settings.BATTLE.localConnect = aValue == '1';
                     LogMng.debug(`Settings.BATTLE.localConnect = ${Settings.BATTLE.localConnect}`);
                 }
+            },
+            {
+                // battle free link connection
+                keys: ['bfc'],
+                onReadHandler: (aValue: string) => {
+                    Settings.BATTLE.freeConnect = aValue == '1';
+                    LogMng.debug(`Settings.BATTLE.localConnect = ${Settings.BATTLE.localConnect}`);
+                }
             }
         ];
 

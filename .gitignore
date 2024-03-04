@@ -5,6 +5,7 @@ build/
 .VSCodeCounter
 yarn.lock
 package-lock.json
+.env.local
 
 # Compiled Java class files
 *.class
