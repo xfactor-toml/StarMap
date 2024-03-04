@@ -192,4 +192,11 @@ export class BattleConnection extends MyEventDispatcher {
         this._socket.emit(PackTitle.debugTest, data);
     }
 
+    sendTestLossBattle() {
+        let data: DebugTestData = {
+            action: 'loss'
+        }
+        this._socket.emit(PackTitle.debugTest, data);
+    }
+
 }

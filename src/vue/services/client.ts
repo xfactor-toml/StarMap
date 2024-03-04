@@ -164,6 +164,7 @@ export class ClientService {
 
   onClaim() {
     logger.log('claim');
+    LogMng.debug(`vue: claim`);
     FrontEvents.onBattleFinalClaimRewardClick.dispatch();
     // hide btns
     
@@ -171,6 +172,7 @@ export class ClientService {
 
   onOpenBox() {
     logger.log('openBox');
+    LogMng.debug(`vue: onOpenBox`);
     FrontEvents.onBattleFinalClaimBoxClick.dispatch();
     // hide btns
 
@@ -178,6 +180,7 @@ export class ClientService {
 
   onCloseBox() {
     logger.log('closeBox');
+    LogMng.debug(`vue: closeBox`);
     // mock
     useScenesStore().setScene(SceneName.Galaxy);
   }

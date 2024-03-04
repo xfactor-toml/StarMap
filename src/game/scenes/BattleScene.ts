@@ -111,9 +111,6 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
                 this._connection.sendExitGame();
             },
             testBattleWin: () => {
-                // GameEventDispatcher.battleComplete({
-                //     status: 'win'
-                // });
                 this._connection.sendTestWinBattle();
             },
             // testBattleWinBox: () => {
@@ -124,9 +121,7 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
             //     });
             // },
             testBattleLoss: () => {
-                GameEventDispatcher.battleComplete({
-                    status: 'loss'
-                });
+                this._connection.sendTestLossBattle();
             },
 
         }
