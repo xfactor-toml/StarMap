@@ -42,7 +42,7 @@ export const useBattleRewardsStore = defineStore('battleRewards', () => {
 
       if (success) {
         boxesIds.value = boxesIds.value.slice(1)
-        console.log(`boxes: ${boxesIds.value}`);
+        console.log(`boxes left: ${boxesIds.value}`);
       }
 
       if (boxesIds.value.length === 0) {

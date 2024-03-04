@@ -65,6 +65,13 @@ export class MetamaskProvider extends BaseProvider {
   }
 
   async openBox(boxId: number) {
-    return OpenBox(this.account.value, boxId);
+    try {
+      await OpenBox(this.account.value, boxId);
+
+      return true
+    } catch (error) {
+      console.error(error);
+      return false
+    }
   }
 }
