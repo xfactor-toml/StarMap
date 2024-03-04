@@ -18,7 +18,7 @@ export const useStarsStore = defineStore('stars', () => {
   })
 
   const fetchStars = async () => {
-    stars.value = (await wallet.getStars()).map(star => new Star(star));
+    stars.value = (await wallet.provider.getStars()).map(star => new Star(star));
   }
 
   const addStar = (star: Star) => {

@@ -34,9 +34,16 @@ export async function CreateNewStarWC(dt: CreateStarWCArgs) {
       StarNFTAbi,
       signer
     );
-    const coordX = String(Math.round(dt.coords.X * 1000000));
-    const coordY = String(Math.round(dt.coords.Y * 1000000));
-    const coordZ = String(Math.round(dt.coords.Z * 1000000));
+
+    const crds = {
+      X: dt.coords.X + 1000000,
+      Y: dt.coords.Y + 1000000,
+      Z: dt.coords.Z + 1000000
+    }
+    
+    const coordX = String(Math.round(crds.X * 1000000));
+    const coordY = String(Math.round(crds.Y * 1000000));
+    const coordZ = String(Math.round(crds.Z * 1000000));
 
     try {
       const tx = await StarContract.safeMint(
@@ -53,7 +60,7 @@ export async function CreateNewStarWC(dt: CreateStarWCArgs) {
         reject("Transaction not included in block");
         return;
       }
-      resolve(Number(await StarContract.GetTotalStarCount()) - 1);
+      resolve(true);
     } catch (e) {
       reject("Txn failed : " + e.message);
     }
@@ -95,8 +102,8 @@ export async function RefuelStar(dt: ReFuelWCArgs) {
         reject("Transaction not included in block");
         return;
       }
-      const result = await StarContract.GetStarParams(String(dt.starId));
-      resolve(result);
+      // const result = await StarContract.GetStarParams(String(dt.starId));
+      resolve(true);
     } catch (e) {
       reject(e.message);
       return null;
@@ -123,8 +130,8 @@ export async function IncreaseStarLevel(
         reject("Transaction not included in block");
         return;
       }
-      const result = await StarContract.GetStarParams(String(starId));
-      resolve(result);
+      // const result = await StarContract.GetStarParams(String(starId));
+      resolve(true);
     } catch (e) {
       reject("Txn failed : " + e.message);
     }

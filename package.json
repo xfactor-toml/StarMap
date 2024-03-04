@@ -42,6 +42,7 @@
         "dat.gui": "^0.7.9",
         "debounce": "^1.2.1",
         "dotenv": "^16.4.5",
+        "dotenv-webpack": "^8.0.1",
         "ethers": "5.7.2",
         "gsap": "^3.11.4",
         "pinia": "^2.1.3",
