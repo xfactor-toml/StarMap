@@ -57,14 +57,14 @@
 </template>
 
 <script lang="ts">
-import { useBattleStore, useUiStore } from '@/stores';
+import { useBattleStore, useUiStore, useScenesStore } from '@/stores';
 import { getShortAddress, formatNumber } from '@/utils';
 import { mapStores } from 'pinia'; 
 
 export default {
   name: 'BattleResultsMode',
   computed: {
-    ...mapStores(useBattleStore, useUiStore),
+    ...mapStores(useBattleStore, useUiStore, useScenesStore),
     results() {
       return this.battleStore.results.state
     },

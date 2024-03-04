@@ -25,14 +25,31 @@
   background-position: 50% 0%;
 }
 
-.BattleRewardsMode__title {
+.BattleRewardsMode__loader {
+  flex-grow: 1;
+}
+
+.BattleRewardsMode__button {
   width: 280px;
   height: 160px;
   margin: -30px 0;
+  padding: 0;
   background-image: url(../gui/images/battle-results/open-box.svg);
   background-repeat: no-repeat;
   background-size: contain;
   background-position: 50%;
+  background-color: transparent;
+  border: none;
+  will-change: transform;
+  transition: ease transform 200ms;
+}
+
+.BattleRewardsMode__button:hover {
+  transform: scale(1.05);
+}
+
+.BattleRewardsMode__button:active {
+  transform: scale(0.95);
 }
 
 .BattleRewardsMode__content {
@@ -97,7 +114,7 @@
   gap: 16px;
 }
 
-.BattleRewardsMode__button {
+.BattleRewardsMode__close {
   min-width: 174px;
   padding: 12px 24px;
   border: none;

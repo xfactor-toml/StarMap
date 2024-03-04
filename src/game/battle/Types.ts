@@ -126,6 +126,10 @@ export type ExpData = {
     skills: SkillData[]
 }
 
+export type BoxOpenData = {
+    list: number[]
+}
+
 export type SkillRequest = {
     action: 'levelUp' | 'click',
     skillId: number
