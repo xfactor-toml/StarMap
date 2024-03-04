@@ -25,6 +25,8 @@ export enum PackTitle {
 
     claimReward = 'claimReward',
 
+    debugTest = 'debugTest'
+
 }
 
 export type ObjectType = 'Star' | 'Planet' | 'Tower' | 'FighterShip' | 'BattleShip' | 'Homing';
@@ -139,4 +141,8 @@ export type ClaimRewardData = {
     type: 'reward' | 'box',
     action?: 'request' | 'accept' | 'reject',
     reasone?: any
+}
+
+export type DebugTestData = {
+    action: 'win'
 }

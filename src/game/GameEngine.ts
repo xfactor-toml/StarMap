@@ -13,6 +13,7 @@ import { GameEvent, GameEventDispatcher } from "./events/GameEvents";
 import { getWalletAddress } from "~/blockchain/functions/auth";
 import { FrontEvents } from "./events/FrontEvents";
 import { OpenBox, getUserBoxesToOpen, getUserWinContractBalance } from "~/blockchain/boxes";
+import { useWallet } from "@/services";
 
 export class GameEngine extends MyBasicClass {
     private _renderer: GameRenderer;
@@ -54,12 +55,15 @@ export class GameEngine extends MyBasicClass {
                 
             },
             openBox: async () => {
-                const wallet = getWalletAddress();
+                let ws = useWallet();
+                if (!ws.connected) {
+                    alert('Wallet Not Connected!');
+                    return;
+                }
                 const boxId = Number(BLOCKCHAIN_DEBUG_GUI.boxId);
                 alert(`Trying to open Box ${boxId}`);
-                let openResult = await OpenBox(wallet, boxId);
+                let openResult = ws.provider.openBox(boxId);
                 console.log(`openResult:`, openResult);
-                
             },
             getBoxList: async () => {
                 const wallet = getWalletAddress();
