@@ -61,9 +61,14 @@ export async function getUserBoxes(_user: string) {
 
 export async function getBoxData(_boxId: number) {
     const boxData: BoxData = await nftContracts.BoxNFT.methods.getBoxInfo(_boxId).call();
-    return boxData;
+    const data = {
+        type: contracts.prizeNames[boxData.rewardAddress],
+        value: boxData.rewardAddress === contracts.LaserNFT ? null : Number(boxData.rewardAmount),
+        laserLevel: boxData.rewardAddress === contracts.LaserNFT ? await getLaserLevel(boxData.rewardId) : null,
+        isPaid: boxData.isPaid
+    }
+    return data;
 }
-
 export async function getUserBoxesToOpen(_user: string) {
     const list: number[] = [];
     const allBoxes = await getUserBoxes(_user);
