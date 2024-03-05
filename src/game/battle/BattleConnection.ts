@@ -102,12 +102,6 @@ export class BattleConnection extends MyEventDispatcher {
     private signProcess1() {
         let ws = useWallet();
         if (!ws.connected) {
-            // NetworkAuth().then((aWallet: string) => {
-            //     this.signProcess2();
-            // }).catch((reason) => {
-            //     alert(reason);
-            //     GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_ERROR, { reason: reason });
-            // });
             ws.connect('metamask').then((aIsSuccess: boolean) => {
                 if (aIsSuccess) {
                     this.signProcess2();
