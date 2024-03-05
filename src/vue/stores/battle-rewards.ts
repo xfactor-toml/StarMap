@@ -36,18 +36,30 @@ export const useBattleRewardsStore = defineStore('battleRewards', () => {
 
       const wallet = useWallet()
       const scenes = useScenesStore()
-      const success = await wallet.provider.openBox(firstBoxId)
+      const success = true; // await wallet.provider.openBox(firstBoxId)
 
       if (success) {
         boxesIds.value = boxesIds.value.slice(1)
         console.log(`boxes left: ${boxesIds.value}`);
 
-        const boxData = await wallet.provider.getBoxData(firstBoxId)
-        const laserLevel = await wallet.provider.getLaserLevel(boxData.rewardId)
+        // const boxData = await wallet.provider.getBoxData(firstBoxId)
+        // const laserLevel = await wallet.provider.getLaserLevel(boxData.rewardId)
+        // const rankByLevel = ['common', 'uncommon', 'rare'];
 
-        setRewards([
-          { name: `Laser ${laserLevel}`, image: '/gui/images/box.svg' },
-        ]);
+        const testList = [
+          // { name: `Laser (${rankByLevel[laserLevel] || laserLevel})`, image: '/gui/images/box.svg' },
+          { name: `VRP +500`, image: '/gui/images/icons/coins.png' },
+          { name: `Biomass +50`, image: '/gui/images/icons/biomass.png' },
+          { name: `Carbon +150`, image: '/gui/images/icons/carbon.png' },
+          { name: `Metal +10`, image: '/gui/images/icons/metal.png' },
+          { name: `Spice +100`, image: '/gui/images/icons/spice.png' },
+          { name: `Spores +80`, image: '/gui/images/icons/spores.png' },
+          { name: `Laser Lv.1`, image: '/gui/images/icons/laser-red.png' },
+          { name: `Laser Lv.2`, image: '/gui/images/icons/laser-white.png' },
+          { name: `Laser Lv.3`, image: '/gui/images/icons/laser-violet.png' },
+        ]
+
+        setRewards(testList);
       }
 
       waitingBox.value = false
