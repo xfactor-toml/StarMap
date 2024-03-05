@@ -63,7 +63,7 @@ export async function getBoxData(_boxId: number) {
     const boxData: BoxData = await nftContracts.BoxNFT.methods.getBoxInfo(_boxId).call();
     const data = {
         type: contracts.prizeNames[boxData.rewardAddress],
-        value: boxData.rewardAddress === contracts.LaserNFT ? null : Number(boxData.rewardAmount / (10 ** plasmaDecimals)),
+        value: boxData.rewardAddress === contracts.LaserNFT ? null : (Number(boxData.rewardAmount) / (10 ** plasmaDecimals)),
         laserLevel: boxData.rewardAddress === contracts.LaserNFT ? await getLaserLevel(boxData.rewardId) : null,
         isPaid: boxData.isPaid
     }
