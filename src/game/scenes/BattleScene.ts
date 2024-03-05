@@ -74,6 +74,7 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
         FrontEvents.onBattleAbilityLevelUpClick.add(this.onFrontSkillUpClick, this);
         FrontEvents.onBattleFinalClaimRewardClick.add(this.onFrontClaimRewardClick, this);
         FrontEvents.onBattleFinalClaimBoxClick.add(this.onFrontClaimBoxClick, this);
+        FrontEvents.onBattleRewardCloseClick.add(this.onBattleRewardCloseClick, this);
     }
 
     private initDebug() {
@@ -181,6 +182,10 @@ export class BattleScene extends MyEventDispatcher implements IUpdatable {
     private onFrontClaimBoxClick() {
         this.logDebug('onFrontOpenBoxClick...');
         this.claimBox();
+    }
+
+    private onBattleRewardCloseClick() {
+        this.emit(BattleSceneEvent.onCloseBattle);
     }
     
     private onGameSearchPack(aData: {

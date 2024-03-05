@@ -42,15 +42,18 @@ export const useBattleRewardsStore = defineStore('battleRewards', () => {
         boxesIds.value = boxesIds.value.slice(1)
         console.log(`boxes left: ${boxesIds.value}`);
 
-        // const boxData = await wallet.provider.getBoxData(firstBoxId)
+        const boxData = await wallet.provider.getBoxData(firstBoxId);
+        console.log(`boxData:`, boxData);
         // const laserLevel = await wallet.provider.getLaserLevel(boxData.rewardId)
         // const rankByLevel = ['common', 'uncommon', 'rare'];
 
-        let field: {
+        let list: {
           type: 'vrp' | 'biomass' | 'carbon' | 'metal' | 'spice' | 'spores' | 'laser',
           value?: number, // for res
           laserLevel?: number // 1-3
-        }
+        }[] = [];
+
+        
 
         const testList = [
           // { name: `Laser (${rankByLevel[laserLevel] || laserLevel})`, image: '/gui/images/box.svg' },

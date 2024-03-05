@@ -181,6 +181,7 @@ export class ClientService {
   onCloseBox() {
     logger.log('closeBox');
     LogMng.debug(`vue: closeBox`);
+    FrontEvents.onBattleRewardCloseClick.dispatch();
     // mock
     useScenesStore().setScene(SceneName.Galaxy);
   }
