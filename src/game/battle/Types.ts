@@ -90,7 +90,7 @@ export type AttackData = {
     isCrit?: boolean
 }
 
-export type PlanetLaserSkin = 'blue' | 'red' | 'green' | 'violet';
+export type PlanetLaserSkin = 'blue' | 'red' | 'white' | 'violet';
 
 export type PlanetLaserData = {
     planetId: number,

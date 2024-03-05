@@ -264,11 +264,11 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             case 'red':
                 color = '#ff0000';
                 break;
-            case 'green':
-                color = '#00ff00';
+            case 'white':
+                color = '#ffffff';
                 break; 
             case 'violet':
-                color = '#0072ff';
+                color = '#ba00ff';
                 break;
         }
         return color;

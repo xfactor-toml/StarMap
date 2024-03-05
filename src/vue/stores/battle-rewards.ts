@@ -46,11 +46,17 @@ export const useBattleRewardsStore = defineStore('battleRewards', () => {
         // const laserLevel = await wallet.provider.getLaserLevel(boxData.rewardId)
         // const rankByLevel = ['common', 'uncommon', 'rare'];
 
+        let field: {
+          type: 'vrp' | 'biomass' | 'carbon' | 'metal' | 'spice' | 'spores' | 'laser',
+          value?: number, // for res
+          laserLevel?: number // 1-3
+        }
+
         const testList = [
           // { name: `Laser (${rankByLevel[laserLevel] || laserLevel})`, image: '/gui/images/box.svg' },
           { name: `VRP +500`, image: '/gui/images/icons/coins.png' },
           { name: `Biomass +50`, image: '/gui/images/icons/biomass.png' },
-          { name: `Carbon +150`, image: '/gui/images/icons/carbon.png' },
+          { name: `Carbon +150`, image: '/gui/images/icons/hydrocarbon.png' },
           { name: `Metal +10`, image: '/gui/images/icons/metal.png' },
           { name: `Spice +100`, image: '/gui/images/icons/spice.png' },
           { name: `Spores +80`, image: '/gui/images/icons/spores.png' },
