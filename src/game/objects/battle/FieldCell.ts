@@ -20,7 +20,7 @@ export class FieldCell extends MyObject3D {
         const material = new THREE.MeshBasicMaterial({
             color: 0x00f0ff,
             transparent: true,
-            opacity: .2,
+            opacity: .1,
             depthWrite: false
         });
         const torus = new THREE.Mesh(geometry, material);
