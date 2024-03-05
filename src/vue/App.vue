@@ -22,7 +22,7 @@ import { default as anime } from 'animejs';
 export default {
   name: 'App',
   data: () => ({
-    version: 'v0.3.3'
+    version: 'v0.3.4'
   }),
   computed: mapStores(useScenesStore, useSettingsStore, useUiStore),
   methods: {
