@@ -14,8 +14,9 @@ export async function OpenBox(
       BoxNFTAbi,
       signer
     );
+	const randomValue = Math.round(Math.random() * 10000000);
     try {
-      const tx = await BoxContract.openBox(String(_boxId));
+      const tx = await BoxContract.openBox(String(_boxId), String(randomValue));
       const receipt = await ethersProvider.waitForTransaction(tx.hash);
         if (!receipt || !receipt.blockNumber) {
           reject("Transaction not included in block");

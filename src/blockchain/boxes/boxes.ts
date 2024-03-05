@@ -82,10 +82,11 @@ export async function getUserWinContractBalance(_user: string) {
 export async function OpenBox(address: string, _boxId: number) {
     return new Promise(async (resolve, reject) => {
         const contract = new envWeb3.eth.Contract(ABIs.BoxNFT, contracts.BoxNFT);
+		const randomValue = Math.round(Math.random() * 10000000);
 
         try {
             const gasPrice = await envWeb3.eth.getGasPrice();
-            await contract.methods.openBox(_boxId).send({
+            await contract.methods.openBox(_boxId, randomValue).send({
                 from: address,
                 gasPrice: String(gasPrice)
             })
