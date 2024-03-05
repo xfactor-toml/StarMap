@@ -2,7 +2,7 @@ import { BaseProvider } from '@/services/wallet/providers/base-provider';
 import { MetamaskProvider } from '@/services/wallet/providers/metamask-provider';
 import { ReaderProvider } from '@/services/wallet/providers/reader-provider';
 import { WalletConnectProvider } from '@/services/wallet/providers/walletconnect-provider';
-import { WalletStoreState } from '@/stores';
+import { WalletStoreState, useBattleStore } from '@/stores';
 import { markRaw } from 'vue';
 import { InitWalletconnectModal } from '~/blockchainWC';
 
@@ -42,6 +42,10 @@ export class WalletService {
     if (!this.provider) {
       throw new Error('provider not defined')
     }
+
+    useBattleStore().rewards.setBoxesIds(
+      await this.provider.getUserBoxesToOpen()
+    );
 
     return this.updateState((await this.provider.connect()).value);
   }

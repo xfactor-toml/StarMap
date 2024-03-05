@@ -100,6 +100,14 @@ export class WalletConnectProvider extends BaseProvider {
   }
 
   async openBox(boxId: number) {
-    return OpenBox(this.walletProvider.value, boxId);
+    try {
+      await OpenBox(this.walletProvider.value, boxId);
+
+      return true
+    } catch (error) {
+      console.error(error);
+      return false
+    }
   }
+  
 }

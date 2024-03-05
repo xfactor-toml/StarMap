@@ -15,11 +15,13 @@
               v-for="(reward, index) in rewards.list"
               :key="reward.name + index"
             >
-              <div class="BattleRewardsMode__reward" >
-                <img
-                  class="BattleRewardsMode__pic"
-                  :src="reward.image"
-                />
+              <div class="BattleRewardsMode__reward">
+                <div class="BattleRewardsMode__rewardTile">
+                  <img
+                    class="BattleRewardsMode__rewardImage"
+                    :src="reward.image"
+                  />
+                </div>
                 <div class="BattleRewardsMode__caption">
                   {{ reward.name }}
                 </div>

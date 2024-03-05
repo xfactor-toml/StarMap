@@ -33,10 +33,19 @@
       @mouseenter="$client.onHover()"
       @click="toggleSettings"
     />
-    <div
-      v-if="walletStore.connected"
-      class="UserBar__account"
-    >{{ walletStore.shortAddress }}</div>
+    <template v-if="walletStore.connected">
+      <template v-if="userBoxes.length > 0">
+        <button
+          class="UserBar__button is-box"
+          :data-count="userBoxes.length"
+          @mouseenter="$client.onHover()"
+          @click="openBox"
+        />
+      </template>
+      <div class="UserBar__account">
+        {{ walletStore.shortAddress }}
+      </div>
+    </template>
     <button
       v-else
       class="UserBar__button is-wallet"
@@ -76,9 +85,10 @@
 import { SettingsPopup } from '@/components/SettingsPopup';
 import { SearchInput } from '@/components/SearchInput';
 import { WalletConnectPopup } from '@/components/WalletConnectPopup';
-import { useSettingsStore, useUiStore, useWalletStore } from '@/stores';
+import { useBattleStore, useScenesStore, useSettingsStore, useUiStore, useWalletStore } from '@/stores';
 import { default as vClickOutside } from 'click-outside-vue3';
 import { mapStores } from 'pinia';
+import { SceneName } from '@/types';
 
 export default {
   name: 'UserBar',
@@ -102,7 +112,10 @@ export default {
     }
   },
   computed: {
-    ...mapStores(useSettingsStore, useUiStore, useWalletStore),
+    ...mapStores(useBattleStore, useSettingsStore, useScenesStore, useUiStore, useWalletStore),
+    userBoxes() {
+      return this.battleStore.rewards.boxesIds
+    }
   },
   methods: {
     toggleSettings() {
@@ -134,9 +147,13 @@ export default {
       this.searchVisible = false;
       this.searchKey = ''
     },
+    openBox() {
+      this.scenesStore.setScene(SceneName.Battle, {
+        mode: 'rewards'
+      });
+    }
   },
 };
-
 </script>
 
 <style scoped src="./UserBar.css"></style>

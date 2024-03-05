@@ -46,6 +46,7 @@
   background-size: contain;
   pointer-events: all;
   will-change: filter;
+  font-family: inherit;
   transition: ease filter 200ms;
 }
 
@@ -67,6 +68,27 @@
 
 .UserBar__button.is-search {
   background-image: url(../gui/images/search.svg);
+}
+
+.UserBar__button.is-box {
+  background-image: url(../gui/images/box.svg);
+}
+
+.UserBar__button.is-box[data-count]::after {
+  content: attr(data-count);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  right: -4px;
+  top: -4px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: red;
+  color: white;
+  text-align: center;
+  font-size: 10px;
 }
 
 .UserBar__button.is-settings {

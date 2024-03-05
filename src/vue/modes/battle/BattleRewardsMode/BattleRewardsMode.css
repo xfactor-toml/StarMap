@@ -93,13 +93,20 @@
   align-items: center;
 }
 
-.BattleRewardsMode__pic {
-  display: block;
+.BattleRewardsMode__rewardTile {
   width: 80px;
   height: 80px;
+  padding: 16px;
   border-radius: 8px;
   background-color: rgba(0, 255, 255, 0.15);
+}
+
+.BattleRewardsMode__rewardImage {
+  display: block;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
+  opacity: 0.5;
 }
 
 .BattleRewardsMode__caption {

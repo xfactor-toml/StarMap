@@ -8,6 +8,7 @@ import {
   GetStarsCount,
   RequiredPlasmaToApprove
 } from "~/blockchain";
+import { getBoxData, getLaserLevel, getUserBoxesToOpen } from "~/blockchain/boxes";
 import { Coords, StarData, StarList, fuelTarget } from "~/blockchain/types";
 
 export abstract class BaseProvider {
@@ -30,6 +31,18 @@ export abstract class BaseProvider {
   abstract mintPlasma(amount: number): Promise<any>
 
   abstract openBox(boxId: number): Promise<any>
+  
+  async getUserBoxesToOpen() {
+    return this.checkConnection(() => getUserBoxesToOpen(this.account.value), []);
+  }
+
+  async getBoxData(boxId: number) {
+    return this.checkConnection(() => getBoxData(boxId));
+  }
+
+  async getLaserLevel(laserId: number) {
+    return this.checkConnection(() => getLaserLevel(laserId));
+  }
 
   async getAllowance() {
     return this.checkConnection(() => GetAllowance(this.account.value));
