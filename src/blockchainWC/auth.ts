@@ -11,6 +11,7 @@ export function InitWalletconnectModal() {
         projectId,
         enableAnalytics: true
       })
+    return mdl
 }
 
 export async function ConnectWalletWC () {

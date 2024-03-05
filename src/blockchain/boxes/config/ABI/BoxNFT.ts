@@ -193,6 +193,25 @@ export const BoxNFT : any[] = [
 		"type": "function"
 	},
 	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_minter",
+				"type": "address"
+			}
+		],
+		"name": "IsMinter",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [],
 		"name": "LaserNFT",
 		"outputs": [
@@ -448,6 +467,11 @@ export const BoxNFT : any[] = [
 			{
 				"internalType": "uint256",
 				"name": "_boxId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_random",
 				"type": "uint256"
 			}
 		],
