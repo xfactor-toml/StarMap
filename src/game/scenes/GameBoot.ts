@@ -3,7 +3,7 @@ import { GamePreloader } from "./GamePreloader";
 import * as MyUtils from "../utils/MyUtils";
 import { Settings } from "../data/Settings";
 import { GameRenderer } from "./GameRenderer";
-import { GameEvents } from "../events/GameEvents";
+import { GameEvent, GameEventDispatcher } from "../events/GameEvents";
 import { FrontEvents } from "../events/FrontEvents";
 import { AudioMng } from "../audio/AudioMng";
 import { ILogger } from "../interfaces/ILogger";
@@ -73,9 +73,18 @@ export class GameBoot implements ILogger {
                 }
             },
             {
+                // battle local connection
                 keys: ['blc'],
                 onReadHandler: (aValue: string) => {
                     Settings.BATTLE.localConnect = aValue == '1';
+                    LogMng.debug(`Settings.BATTLE.localConnect = ${Settings.BATTLE.localConnect}`);
+                }
+            },
+            {
+                // battle free link connection
+                keys: ['bfc'],
+                onReadHandler: (aValue: string) => {
+                    Settings.BATTLE.freeConnect = aValue == '1';
                     LogMng.debug(`Settings.BATTLE.localConnect = ${Settings.BATTLE.localConnect}`);
                 }
             }
@@ -135,7 +144,7 @@ export class GameBoot implements ILogger {
         DB.realStars = aRealStars;
         let gameEngine = new GameEngine();
         gameEngine.initGame();
-        GameEvents.dispatchEvent(GameEvents.EVENT_GAME_CREATED);
+        GameEventDispatcher.dispatchEvent(GameEvent.GAME_CREATED);
     }
 
 

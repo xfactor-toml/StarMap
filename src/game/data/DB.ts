@@ -1,7 +1,5 @@
 import { ServerStarData } from "./Types";
 
-export const RACES = ['Robots', 'Humans', 'Simbionts', 'Lizards', 'Insects'];
-
 export const FAR_STAR_COLORS = [
     [0.505, 0.39, 0.3],
     [0.258, 0.282, 0.145],

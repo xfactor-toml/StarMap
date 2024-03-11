@@ -38,8 +38,8 @@ export default {
   computed: {
     tooltipStyle() {
       return {
-        top: `${this.starPosition.screen.y}px`,
-        left: `${this.starPosition.screen.x}px`,
+        top: `${this.starPosition.scene.y}px`,
+        left: `${this.starPosition.scene.x}px`,
         transform: `
           translateX(var(--offset-x))
           translateY(var(--offset-y))
@@ -59,8 +59,8 @@ export default {
       const { width, height } = this.$refs.tooltip.getBoundingClientRect();
 
       return {
-        x: width > innerWidth - this.starPosition.screen.x,
-        y: height > innerHeight - this.starPosition.screen.y
+        x: width > innerWidth - this.starPosition.scene.x,
+        y: height > innerHeight - this.starPosition.scene.y
       };
     },
     hide() {

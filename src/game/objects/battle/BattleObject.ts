@@ -1,47 +1,60 @@
+import { MyMath } from '@/utils';
+import gsap from 'gsap';
 import * as THREE from 'three';
 import { MyObject3D } from "~/game/basics/MyObject3D";
+import { ObjectCreateData, ObjectType } from '~/game/battle/Types';
+
+export type BattleObjectData = ObjectCreateData & {
+    showRadius?: boolean,
+    showAttackRadius?: boolean,
+}
 
 export class BattleObject extends MyObject3D {
-    private _objId: string;
-    private _radius: number;
-    private _maxHp: number;
-    private _hp: number;
-    private _owner: string;
-    private _debugSphere: THREE.Mesh;
-    targetPosition: { x: number, z: number };
-    targetRotation = 0;
+    protected _params: BattleObjectData;
+    protected _hpMax: number;
+    protected _hp: number;
+    private _shieldMax: number;
+    private _shield: number;
+    private _debugRadiusSphere: THREE.Mesh;
+    private _debugAttackRadius: THREE.Mesh;
+    private _targetPosition: { x: number; z: number; };
+    private _dirrection: THREE.Vector3;
+    private _targetQuaternion: THREE.Quaternion;
 
-    constructor(aParams: {
-        id: string,
-        radius?: number,
-        maxHp?: number,
-        owner?: string
-    }, aClassName?: string) {
+    constructor(aParams: BattleObjectData, aClassName?: string) {
         super(aClassName || 'BattleObject');
-        this._objId = aParams.id;
-        this._radius = aParams.radius;
-        this._hp = this._maxHp = aParams.maxHp;
-        this._owner = aParams.owner || '';
+        this._params = aParams;
+        this._hp = this._hpMax = this._params.hp;
+        this._shield = this._shieldMax = this._params.shield;
+        this._dirrection = new THREE.Vector3(0, 0, 1);
+        this._targetQuaternion = this.quaternion.clone();
+
+        if (aParams.showRadius) {
+            this.createDebugRadiusSphere();
+        }
+        if (aParams.showAttackRadius) {
+            this.createDebugAttackSphere();
+        }
     }
 
-    public get objId(): string {
-        return this._objId;
+    public get objId(): number {
+        return this._params.id;
+    }
+
+    public get objType(): ObjectType {
+        return this._params.type;
     }
 
     public get radius(): number {
-        return this._radius;
+        return this._params.radius;
     }
 
     public set radius(value: number) {
-        this._radius = value;
+        this._params.radius = value;
     }
 
-    public get maxHp(): number {
-        return this._maxHp;
-    }
-
-    public set maxHp(value: number) {
-        this._maxHp = value;
+    public get hpMax(): number {
+        return this._hpMax;
     }
 
     public get hp(): number {
@@ -49,39 +62,155 @@ export class BattleObject extends MyObject3D {
     }
     
     public set hp(value: number) {
-        this._hp = value;
+        let newHp = Math.max(0, value);
+        this._hp = newHp;
+    }
+
+    get shieldMax(): number {
+        return this._shieldMax;
+    }
+
+    get shield(): number {
+        return this._shield;
+    }
+
+    set shield(value: number) {
+        let newVal = Math.max(0, value);
+        this._shield = newVal;
     }
 
     public get owner(): string {
-        return this._owner;
+        return this._params.owner;
     }
 
-    createDebugSphere(aRadius: number) {
-        let g = new THREE.SphereGeometry(aRadius);
-        let m = new THREE.MeshBasicMaterial({
-            color: 0x0000ff,
+    public get targetPosition(): { x: number; z: number; } {
+        return this._targetPosition;
+    }
+    public set targetPosition(value: { x: number; z: number; }) {
+        this._targetPosition = value;
+    }
+
+    createDebugRadiusSphere() {
+        if (this._debugRadiusSphere) return;
+        const geometry = new THREE.TorusGeometry(this._params.radius, .2, 2, 20);
+        const material = new THREE.MeshBasicMaterial({
+            color: 0x00ff00,
+            transparent: true,
+            opacity: .3,
+            depthWrite: false
+        });
+        this._debugRadiusSphere = new THREE.Mesh(geometry, material);
+        this._debugRadiusSphere.rotation.x = MyMath.toRadian(-90);
+        this.add(this._debugRadiusSphere);
+    }
+
+    destroyDebugRadiusSphere() {
+        if (!this._debugRadiusSphere) return;
+        this.remove(this._debugRadiusSphere);
+        this._debugRadiusSphere = null;
+    }
+
+    createDebugAttackSphere() {
+        if (this._debugAttackRadius) return;
+        const geometry = new THREE.TorusGeometry(this._params.attackRadius, .15, 2, 20);
+        const material = new THREE.MeshBasicMaterial({
+            color: 0xff0000,
             transparent: true,
             opacity: .2,
-            depthWrite: false,
-            // blending: THREE.AdditiveBlending
+            depthWrite: false
         });
-        this._debugSphere = new THREE.Mesh(g, m);
-        this.add(this._debugSphere);
+        this._debugAttackRadius = new THREE.Mesh(geometry, material);
+        this._debugAttackRadius.rotation.x = MyMath.toRadian(-90);
+        this.add(this._debugAttackRadius);
+    }
+
+    destroyDebugAttackSphere() {
+        if (!this._debugAttackRadius) return;
+        this.remove(this._debugAttackRadius);
+        this._debugAttackRadius = null;
+    }
+
+    getGlobalFirePoint(): THREE.Vector3 {
+        return this.position.clone();
+    }
+
+    rotateToPoint(aPoint: THREE.Vector3, aDuration: number) {
+        let startQ = this.quaternion.clone();
+        this.lookAt(aPoint);
+        let targetQ = this.quaternion.clone();
+        this.quaternion.copy(startQ);
+        const tweenObj = { t: 0 };
+        gsap.to(tweenObj, {
+            t: 1,
+            duration: aDuration / 1000,
+            ease: 'sine.inOut',
+            onUpdate: () => {
+                let q = startQ.clone().slerp(targetQ, tweenObj.t);
+                this.quaternion.copy(q);
+            }
+        });
+    }
+
+    jumpToPoint(aPoint: THREE.Vector3, aDuration: number) {
+        let startPos = this.position.clone();
+        let targetPos = aPoint;
+
+        gsap.to(this.scale, {
+            x: .8,
+            y: .8,
+            duration: aDuration / 1000 / 2,
+            ease: 'power4.in',
+            yoyo: true,
+            repeat: 1
+        });
+
+        const tweenObj = { t: 0 };
+        gsap.to(tweenObj, {
+            t: 1,
+            duration: aDuration / 1000,
+            ease: 'power4.inOut',
+            onUpdate: () => {
+                // let p = targetPos.clone().sub(startPos).normalize().multiplyScalar(tweenObj.t);
+                let p = startPos.clone().lerp(targetPos, tweenObj.t);
+                this.position.copy(p);
+            }
+        });
     }
 
     free() {
-        this._debugSphere = null;
+        this._debugRadiusSphere = null;
+        this._debugAttackRadius = null;
+        this._params = null;
         super.free();
     }
 
+    setQuaternion(q: { x, y, z, w }) {
+        this._targetQuaternion.set(q.x, q.y, q.z, q.w);
+        // this.quaternion.set(q.x, q.y, q.z, q.w);
+    }
+
+    lookByDir(aDir: { x, y, z }) {
+        let dir = new THREE.Vector3(aDir.x, aDir.y, aDir.z);
+        let p = this.position.clone().add(dir);
+        this.lookAt(p);
+    }
+
+    updateQuaternion(dt: number) {
+        this.quaternion.slerp(this._targetQuaternion, .1);
+    }
+
     update(dt: number) {
-        if (this.targetPosition) {
-            this.position.x += (this.targetPosition.x - this.position.x) * dt;
-            this.position.z += (this.targetPosition.z - this.position.z) * dt;
+
+        // move
+        if (this._targetPosition) {
+            const moveFactor = dt * 2;
+            this.position.x += (this._targetPosition.x - this.position.x) * moveFactor;
+            this.position.z += (this._targetPosition.z - this.position.z) * moveFactor;
         }
-        // this.rotation.y += (this.targetRotation - this.rotation.y) * dt;
-        this.rotation.y = this.targetRotation;
-        // this.rotation.y = 0;
+
+        // rotate
+        this.updateQuaternion(dt);
+
     }
 
 }

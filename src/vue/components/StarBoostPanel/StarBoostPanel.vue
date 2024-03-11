@@ -153,7 +153,7 @@ export default {
   computed: {
     ...mapStores(useStarsStore),
     label() {
-      return this.type === 'exp' ? 'exp.' : 'nrg.';
+      return this.type === 'exp' ? 'exp' : 'nrg';
     },
     roundedBalance() {
       return roundNumber(this.balance, this.balance > 1000 ? 2 : 4);
@@ -162,10 +162,10 @@ export default {
       return this.starsStore.getById(this.starId);
     },
     max() {
-      return this.type === 'exp' ? this.creationCost : this.roundedBalance;
+      return this.type === 'exp' ? this.creationCost : 2.5;
     },
     current() {
-      return this.type === 'exp' ? this.star.levelUpFuel : this.allowed;
+      return this.type === 'exp' ? this.star.levelUpFuel : this.star.fuel;
     },
     percent() {
       return Math.min(this.current / (this.max / 100));
@@ -195,7 +195,7 @@ export default {
   methods: {
     async approve(plasmaAmount) {
       this.approving = true;
-      await this.$wallet.approvePlasma(plasmaAmount);
+      await this.$wallet.provider.approvePlasma(plasmaAmount);
       await this.fetchData()
       this.approving = false;
     },
@@ -207,7 +207,7 @@ export default {
         energy: 'refuelStarExistence'
       };
 
-      const updatedStar = await this.$wallet[boostMethod[this.type]](
+      const updatedStar = await this.$wallet.provider[boostMethod[this.type]](
         this.star.id,
         this.requiredPlasma
       );
@@ -224,7 +224,7 @@ export default {
     async levelUp() {
       this.levelUpPending = true;
 
-      const updatedStar = await this.$wallet.increaseStarLevel(this.starId);
+      const updatedStar = await this.$wallet.provider.increaseStarLevel(this.starId);
 
       this.levelUpPending = false;
 
@@ -239,9 +239,9 @@ export default {
     },
     async fetchData() {
       const [allowed, balance, creationCost] = await Promise.all([
-        this.$wallet.getAllowance(),
-        this.$wallet.getBalance(),
-        this.$wallet.getCreationCost(this.star.params.level + 1)
+        this.$wallet.provider.getAllowance(),
+        this.$wallet.provider.getBalance(),
+        this.$wallet.provider.getCreationCost(this.star.params.level + 1)
       ]);
 
       this.allowed = allowed;

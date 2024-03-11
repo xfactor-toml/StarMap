@@ -1,0 +1,89 @@
+.PreloaderMode {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  background-color: #040310;
+  background-image: url(../gui/images/background.jpg);
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.PreloaderScene__logo {
+  width: 284px;
+  height: 92px;
+  background-image: url(../gui/images/preloader/logo-text.svg);
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.PreloaderScene__circles {
+  width: 220px;
+  height: 220px;
+  margin-top: 16px;
+}
+
+.PreloaderScene__text {
+  width: 170px;
+  margin-top: 44px;
+  color: #00f0ff;
+  font-family: 'Inter';
+  font-weight: 500;
+  font-size: 22px;
+  text-align: left;
+  text-shadow: 0px 0px 20px #000000;
+  line-height: 1.12;
+  white-space: nowrap;
+}
+
+.dots::after {
+  content: '';
+  animation: dots 2.5s linear infinite;
+}
+
+.rotation-outer,
+.rotation-inner {
+  transform-origin: 123px 147px;
+  animation: rotation 1.2s linear infinite;
+}
+
+.rotation-inner {
+  animation-direction: reverse;
+  animation: rotation 2.5s linear infinite;
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dots {
+  0% {
+    content: '';
+  }
+
+  33% {
+    content: '.';
+  }
+
+  66% {
+    content: '..';
+  }
+
+  100% {
+    content: '...';
+  }
+}

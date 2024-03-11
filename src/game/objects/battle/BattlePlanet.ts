@@ -1,61 +1,85 @@
 import * as THREE from 'three';
-import { BattleObject } from './BattleObject';
+import { BattleObject, BattleObjectData } from './BattleObject';
+import { ThreeLoader } from '~/game/utils/threejs/ThreeLoader';
+import { TextureAlias } from '~/game/data/TextureData';
+import { MyMath } from '@/utils';
+import { ThreeUtils } from '~/game/utils/threejs/ThreejsUtils';
 
 export class BattlePlanet extends BattleObject {
     protected _mesh: THREE.Mesh;
     protected _settelite: THREE.Mesh;
-    private _orbitRadius;
-    private _rotationSpeed;
-    private _orbitCenter;
-    private _orbitSpeed;
-    private _orbitAngle;
+    protected _setteliteOrbitRadius: number;
+    protected _setteliteRadius: number;
+    protected _localRotateSpd = 0;
 
-    constructor(aId: string, aParams: {
-        radius: number, // object radius
-        orbitRadius: number, // planet orbit radius
-        rotationSpeed: number, // planet rad/sec
-        year: number, // planet period in sec
-        orbitCenter: { x: number, y: number }, // planet orbit center
-        orbitSpeed: number, // planet orbit speed in rad/sec
-        startOrbitAngle: number
-    }) {
-        super({ id: aId, radius: aParams.radius }, 'BattlePlanet');
+    constructor(aParams: BattleObjectData) {
+        super(aParams, 'BattlePlanet');
 
-        this.logDebug(`params:`, aParams);
+        this._setteliteOrbitRadius = this.radius * 2;
+        this._setteliteRadius = this.radius / 2;
 
-        this._orbitRadius = aParams.orbitRadius;
-        this._rotationSpeed = aParams.rotationSpeed;
-        this._orbitCenter = aParams.orbitCenter;
-        this._orbitSpeed = aParams.orbitSpeed;
-        this._orbitAngle = aParams.startOrbitAngle;
+        this._localRotateSpd = MyMath.randomInRange(-2, 4);
 
-        this.updatePosition();
-
-        let g = new THREE.SphereGeometry(this.radius);
-        let m = new THREE.MeshBasicMaterial({
-            color: 0xaaaaaa
-        });
-        this._mesh = new THREE.Mesh(g, m);
-        this.add(this._mesh);
-
-        g = new THREE.SphereGeometry(this.radius / 3);
-        m = new THREE.MeshBasicMaterial({
-            color: 0xff0000
-        });
-        this._settelite = new THREE.Mesh(g, m);
-        this._settelite.position.z = this.radius * 1.7;
-        this.add(this._settelite);
+        this.initPlanet();
+        this.initSetteliteOrbitLine(this, this._setteliteOrbitRadius, 1, 0x00ffff);
+        this.initSettelite(this._setteliteRadius, this._setteliteOrbitRadius);
+        this.initDirrectionArea(this._setteliteOrbitRadius, this._setteliteRadius);
         
     }
 
-    private updatePosition() {
-        this.position.x = this._orbitCenter.x + Math.cos(this._orbitAngle) * this._orbitRadius;
-        this.position.y = 0;
-        this.position.z = this._orbitCenter.y + Math.sin(this._orbitAngle) * this._orbitRadius;
+    private initPlanet() {
+        let g = new THREE.SphereGeometry(this.radius);
+        let t = ThreeLoader.getInstance().getTexture(TextureAlias.planet0_256);
+        let m = new THREE.MeshStandardMaterial({
+            map: t
+        });
+        this._mesh = new THREE.Mesh(g, m);
+        this.add(this._mesh);
     }
 
-    private updateRotation(dt: number) {
-        this.rotation.y += this._rotationSpeed * dt;
+    private initSettelite(aRadius: number, aOrbitRadius: number) {
+        let g = new THREE.SphereGeometry(aRadius);
+        let m = new THREE.MeshBasicMaterial({
+            color: 0x00ffff
+        });
+        this._settelite = new THREE.Mesh(g, m);
+        this._settelite.position.z = aOrbitRadius;
+        this.add(this._settelite);
+    }
+
+    private initSetteliteOrbitLine(aParent: THREE.Group, aOrbitRadius: number, aLineWidth: number, aColor: number): void {
+        let orbitLine = ThreeUtils.drawLineCircle({
+            radius: aOrbitRadius,
+            lineWidth: aLineWidth,
+            color: aColor
+        });
+        orbitLine.rotation.x = MyMath.toRadian(-90);
+        aParent.add(orbitLine);
+    }
+
+    private initDirrectionArea(aSetteliteOrbitRadius: number, aSetteliteRadius: number) {
+        const areaSize = 20;
+        const t = ThreeLoader.getInstance().getTexture(TextureAlias.planetDirrectionArea);
+        const geometry = new THREE.PlaneGeometry(areaSize, areaSize);
+        const material = new THREE.MeshBasicMaterial({
+            map: t,
+            transparent: true,
+            depthWrite: false
+        });
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.rotation.x = MyMath.toRadian(-90);
+        mesh.rotation.z = MyMath.toRadian(-90);
+        mesh.position.z = areaSize / 2 + aSetteliteOrbitRadius;// + aSetteliteRadius;
+        this.add(mesh);
+    }
+
+    private updateMeshRotate(dt: number) {
+        this._mesh.rotation.y -= dt * this._localRotateSpd;
+    }
+
+    update(dt: number) {
+        super.update(dt);
+        this.updateMeshRotate(dt);
     }
 
     free() {
@@ -64,12 +88,6 @@ export class BattlePlanet extends BattleObject {
             this._mesh = null;
         }
         super.free();
-    }
-
-    update(dt: number) {
-        this._orbitAngle += this._orbitSpeed * dt;
-        this.updatePosition();
-        this.updateRotation(dt);
     }
 
 }

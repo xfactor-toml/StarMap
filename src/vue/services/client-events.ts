@@ -1,63 +1,232 @@
-import { useSettingsStore, useStarsStore } from '@/stores';
-import { ClientEvent } from '@/types';
+import { useBattleStore, useScenesStore, useStarsStore, useUiStore } from '@/stores';
+import { BattleActionType, ClientEvent, SceneName } from '@/types';
+import { wait } from '@/utils';
 import { Settings } from '~/game/data/Settings';
+import { GameEvent } from '~/game/events/GameEvents';
+import { LogMng } from '~/game/utils/LogMng';
 
 export class ClientEventsService {
   static async handleEvent({ detail: clientEvent }: Event & { detail: ClientEvent }) {
-    const settingsStore = useSettingsStore();
+    const battleStore = useBattleStore();
+    const scenesStore = useScenesStore();
     const starsStore = useStarsStore();
+    const uiStore = useUiStore();
 
     switch (clientEvent.eventName) {
-      case 'GAME_LOADING':
+      case GameEvent.GAME_LOADING:
         break;
 
-      case 'GAME_LOADED':
+      case GameEvent.GAME_LOADED:
         if (!Settings.isDebugMode) {
           await starsStore.fetchStars();
         }
-        settingsStore.setScreen('welcome');
+        scenesStore.setScene(SceneName.Start, {
+          mode: 'welcome'
+        });
         break;
 
-      case 'GAME_CREATED':
+      case GameEvent.GAME_CREATED:
         break;
 
-      case 'GAME_FULLSCREEN':
+      case GameEvent.GAME_FULLSCREEN:
         break;
 
-      case 'HIDE_STAR_PREVIEW':
-        settingsStore.hideStarTooltip();
+      case GameEvent.HIDE_STAR_PREVIEW:
+        uiStore.star.hideStarTooltip();
         break;
 
-      case 'HIDE_STAR_GUI':
-        settingsStore.hideStarPanel();
+      case GameEvent.HIDE_STAR_GUI:
+        uiStore.star.hideStarPanel();
         break;
 
-      case 'SHOW_STAR_PREVIEW':
-        settingsStore.showStarTooltip(clientEvent, 500);
+      case GameEvent.SHOW_STAR_PREVIEW:
+        uiStore.star.showStarTooltip(clientEvent, 500);
         break;
 
-      case 'SHOW_STAR_GUI':
-        settingsStore.showStarPanel(clientEvent);
+      case GameEvent.SHOW_STAR_GUI:
+        uiStore.star.showStarPanel(clientEvent);
         break;
 
-      case 'PHANTOM_STAR_PREVIEW':
-        settingsStore.showPhantomStarTooltip(clientEvent, 500);
+      case GameEvent.PHANTOM_STAR_PREVIEW:
+        uiStore.star.showPhantomStarTooltip(clientEvent, 500);
         break;
 
-      case 'SHOW_REAL_MODE':
-        settingsStore.setMode('real');
+      case GameEvent.SHOW_REAL_MODE:
+        scenesStore.setSceneMode('real');
         break;
 
-      case 'SHOW_PHANTOM_MODE':
-        settingsStore.setMode('phantom');
+      case GameEvent.SHOW_PHANTOM_MODE:
+        scenesStore.setSceneMode('phantom');
         break;
 
-      case 'EVENT_STAR_MODE':
-        settingsStore.setView('star');
+      case GameEvent.STAR_MODE:
+        scenesStore.setClientScene('star');
         break;
 
-      case 'EVENT_GALAXY_MODE':
-        settingsStore.setView('galaxy');
+      case GameEvent.GALAXY_MODE:
+        scenesStore.setScene(SceneName.Galaxy);
+        scenesStore.setClientScene('galaxy');
+        break;
+
+      case GameEvent.BATTLE_SEARCHING_START:
+        battleStore.connecting.setPlayerSearchingState(true);
+        break;
+
+      case GameEvent.BATTLE_SEARCHING_STOP:
+        battleStore.connecting.setPlayerSearchingState(false);
+        break;
+      
+      case GameEvent.BATTLE_SEARCHING_ERROR:
+        battleStore.connecting.setPlayerSearchingState(false);
+        break;
+
+      case GameEvent.BATTLE_PREROLL_SHOW:
+        battleStore.connecting.setPlayerSearchingState(false);
+        scenesStore.setScene(SceneName.Battle);
+        battleStore.process.setState({
+          players: {
+            connected: {
+              address: clientEvent.enemyWallet || '0xADDR-ENEMY',
+              name: 'Kepler',
+              race: 'Humans',
+              star: '2048RX',
+            },
+            current: {
+              address: clientEvent.playerWallet || '0xADDR-PLAYER',
+              name: 'Anthares',
+              race: 'Insects',
+              star: '2048RX',
+            },
+          },
+          gold: 0,
+          level: {
+            current: 1,
+            progress: 0
+          },
+          skills: {
+            satelliteFire: {
+              level: 1,
+              levelUpAvailable: false,
+              cooldown: {
+                duration: clientEvent.timer || 3000,
+              }
+            },
+            rocketFire: {
+              level: 0,
+              levelUpAvailable: false,
+              cooldown: {
+                duration: clientEvent.timer || 3000,
+              }
+            },
+            slowdown: {
+              level: 0,
+              levelUpAvailable: false,
+              cooldown: {
+                duration: clientEvent.timer || 3000,
+              }
+            },
+            invisibility: {
+              level: 0,
+              levelUpAvailable: false,
+              cooldown: {
+                duration: clientEvent.timer || 3000,
+              }
+            }
+          }
+        });
+
+        await wait(3000);
+
+        scenesStore.setSceneMode('process');
+
+        break;
+
+      // case GameEvent.BATTLE_SHOW_START:
+      //   scenesStore.setSceneMode('process');
+      //   break;
+
+      // case 'GAME_BATTLE_ACTION_COOLDOWN':
+      //   scenesStore.setSceneMode('process');
+      //   break;
+
+      case GameEvent.BATTLE_COMPLETE_SHOW:
+        const typeByStatus: {[index: string]: 'victory' | 'defeat'} = {
+          win: 'victory',
+          loss: 'defeat',
+          draw: 'defeat'
+        }
+
+        battleStore.results.setResults({
+          type: typeByStatus[clientEvent.status],
+          player: '0xA089D195D994e8145dda68993A91C4a6D1704535',
+          owner: '0xA089D195D994e8145dda68993A91C4a6D1704535',
+          demage: 1000,
+          gold: 1000,
+          exp: 51323,
+          rating: {
+            prevoius: 1310,
+            current: 1422
+          },
+          box: {
+            show: clientEvent.showBoxClaim,
+            level: clientEvent.boxLevel
+          }
+        })
+
+        scenesStore.setScene(SceneName.Battle, {
+          mode: 'results'
+        });
+
+        break;
+      
+      case GameEvent.BATTLE_COMPLETE_HIDE:
+        scenesStore.setScene(SceneName.Galaxy);
+        break;
+      
+      case GameEvent.SHOW_BOX_OPEN:
+        // battleStore.rewards.setRewards([
+        //   { name: 'test1', image: '/gui/images/box.png' },
+        //   { name: 'test2', image: '/gui/images/box.png' },
+        //   { name: 'test3', image: '/gui/images/box.png' },
+        //   { name: 'test4', image: '/gui/images/box.png' },
+        //   { name: 'test5', image: '/gui/images/box.png' },
+        // ]);
+
+        battleStore.rewards.setBoxesIds(clientEvent.list);
+
+        scenesStore.setScene(SceneName.Battle, {
+          mode: 'rewards'
+        });
+        
+        break;
+      
+      case GameEvent.BATTLE_EXP_DATA:
+        LogMng.debug(`GUI: update level progress: ${clientEvent.levelExpPercent}`);
+        const actionTypes: BattleActionType[] = ['satelliteFire', 'rocketFire', 'slowdown', 'invisibility'];
+        
+        battleStore.process.setLevel({
+          current: clientEvent.level,
+          progress: clientEvent.levelExpPercent
+        });
+
+        LogMng.debug(`GUI: update skiils: ${clientEvent.skills}`);
+
+        for (let i = 0; i < clientEvent.skills.length; i++) {
+          const sd = clientEvent.skills[i];
+          battleStore.process.setSkill(actionTypes[i], {
+            level: sd.level,
+            levelUpAvailable: sd.levelUpAvailable,
+            cooldown: {
+              duration: sd.cooldown.duration
+            }
+          });
+          
+        }
+        
+        break;
+
+      default:
+        LogMng.error(`Unknown game event:`, clientEvent);
         break;
     }
   }

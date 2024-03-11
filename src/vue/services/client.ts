@@ -2,6 +2,11 @@ import { Star } from '@/models';
 import { markRaw } from 'vue';
 import { FrontEvents } from '~/game/events/FrontEvents';
 import { debounce } from "typescript-debounce-decorator";
+import { logger } from '@/services/logger';
+import { useBattleStore, useScenesStore } from '@/stores';
+import { BattleActionPayload, BattleActionType, SceneName } from '@/types';
+import { LogMng } from '~/game/utils/LogMng';
+import { battleRunMock, levelUpMock, playersConnectMock } from '@/mocks';
 
 export class ClientService {
   constructor(private dispatcher: typeof FrontEvents) {}
@@ -13,7 +18,7 @@ export class ClientService {
     );
   }
 
-  playInitScreenSfx() {
+  playInitSceneSfx() {
     this.dispatcher.playInitScreenSfx.dispatch();
   }
 
@@ -42,12 +47,12 @@ export class ClientService {
   }
 
   updateStarLevelFilter(levels: number[]) {
+    logger.log({ levels });
     this.dispatcher.starLevelFilterChanged.dispatch(levels);
   }
 
   @debounce(200)
   search(key: string) {
-    // console.log(key);
     this.dispatcher.starNameFilterChanged.dispatch(key);
   }
 
@@ -91,6 +96,96 @@ export class ClientService {
     this.dispatcher.onStarUpdated.dispatch(star.toRaw());
   }
 
+  async onGameStart() {
+    LogMng.debug('Front: start game click');
+    FrontEvents.onBattleSearch.dispatch();
+
+    // mock start
+    // player connect
+    // playersConnectMock()
+
+    // battle run
+    // battleRunMock()
+
+    return
+    // mock end
+    
+  }
+  
+  onSearchingClick() {
+    LogMng.debug('Front: stop searching click');
+    FrontEvents.onBattleStopSearch.dispatch();
+  }
+
+  onBattleAccept() {
+    // mock
+    useScenesStore().setScene(SceneName.Galaxy);
+  }
+
+  onBattleConnectExit() {
+    // mock
+    useScenesStore().setScene(SceneName.Galaxy);
+  }
+
+  onBattleAction(payload: BattleActionPayload) {
+    const battleStore = useBattleStore()
+    let skillId = -1;
+
+    switch (payload.action) {
+      case 'satelliteFire': skillId = 0; break;
+      case 'rocketFire': skillId = 1; break;
+      case 'slowdown': skillId = 2; break;
+      case 'invisibility': skillId = 3; break;
+    }
+
+    LogMng.debug(`battle action, ${JSON.stringify(payload)}, skillId: ${skillId}`);
+
+    switch (payload.type) {
+      case 'call': {
+        FrontEvents.onBattleAbilityClick.dispatch(skillId);
+        battleStore.process.runCooldown(payload.action);
+        // battleStore.process.addSkillToPendingList(payload.action);
+        break;
+      }
+
+      case 'levelUp': {
+        FrontEvents.onBattleAbilityLevelUpClick.dispatch(skillId);
+        // mock
+        // levelUpMock(payload);
+        break;
+      }
+    }
+  }
+
+  onBattleExit() {
+    logger.log('battle exit');
+    FrontEvents.onBattleExit.dispatch();
+  }
+
+  onClaim() {
+    logger.log('claim');
+    LogMng.debug(`vue: claim`);
+    FrontEvents.onBattleFinalClaimRewardClick.dispatch();
+    // hide btns
+    
+  }
+
+  onOpenBox() {
+    logger.log('openBox');
+    LogMng.debug(`vue: onOpenBox`);
+    FrontEvents.onBattleFinalClaimBoxClick.dispatch();
+    // hide btns
+
+  }
+
+  onCloseBox() {
+    logger.log('closeBox');
+    LogMng.debug(`vue: closeBox`);
+    FrontEvents.onBattleRewardCloseClick.dispatch();
+    // mock
+    useScenesStore().setScene(SceneName.Galaxy);
+  }
+
   static VuePlugin = {
     install: app => {
       app.config.globalProperties.$client = markRaw(new ClientService(FrontEvents));
@@ -101,3 +196,5 @@ export class ClientService {
     client: markRaw(new ClientService(FrontEvents))
   });
 }
+
+export const useClient = () => new ClientService(FrontEvents)

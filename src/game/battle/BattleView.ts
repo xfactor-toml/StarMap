@@ -2,29 +2,45 @@ import * as THREE from 'three';
 import gsap, { Linear, Sine } from 'gsap';
 import { GUI } from 'dat.gui';
 import { MyEventDispatcher } from "../basics/MyEventDispatcher";
-import { ObjectClass, PackTitle } from "./BattleConnection";
 import { IUpdatable } from "../interfaces/IUpdatable";
 import { BattleObject } from '../objects/battle/BattleObject';
 import { BattleStar } from '../objects/battle/BattleStar';
 import { BattlePlanet } from '../objects/battle/BattlePlanet';
-import { BattleFighter } from '../objects/battle/BattleFighter';
+import { Fighter } from '../objects/battle/Fighter';
 import { LaserLine } from '../objects/battle/LaserLine';
 import { MyMath } from '../utils/MyMath';
 import { BattleCameraMng } from './BattleCameraMng';
-import { BattlePosition } from '../objects/battle/BattlePosition';
-import { ShipEnergyViewer } from './ShipEnergyViewer';
-import { BattleShip } from '../objects/battle/BattleShip';
+import { ObjectHpViewer } from './ObjectHpViewer';
+import { Linkor } from '../objects/battle/Linkor';
 import { Settings } from '../data/Settings';
+import { FieldInitData, PlanetLaserData, ObjectCreateData, ObjectType, ObjectUpdateData, PackTitle, AttackData, DamageData, PlanetLaserSkin } from './Types';
+import { BattleConnection } from './BattleConnection';
+import { FieldCell } from '../objects/battle/FieldCell';
+import { getWalletAddress } from '~/blockchain/functions/auth';
+import { LogMng } from '../utils/LogMng';
+import { FieldGrid } from '../objects/battle/FieldGrid';
+import { ThreeUtils } from '../utils/threejs/ThreejsUtils';
+import { DamageViewer } from './DamageViewer';
+import { Tower } from '../objects/battle/Tower';
+
+type ServerFieldParams = {
+
+}
 
 const SETTINGS = {
 
     server: {
         field: {
             size: {
-                w: 800,
-                h: 1000
-            }
-        }
+                cols: 8,
+                rows: 10,
+                sectorWidth: 10,
+                sectorHeight: 9,
+                w: 8 * 10,
+                h: 10 * 9
+            },
+        },
+
     },
 
     client: {
@@ -34,34 +50,69 @@ const SETTINGS = {
                 h: 100
             }
         }
+    },
+
+    // stars params
+    stars: {
+        light: {
+            height: 6,
+            intens: 1,
+            dist: 50,
+            decay: .2
+        }
+    },
+
+    // tower params
+    towers: {
+        light: {
+            height: 0,
+            intens: 1,
+            dist: 22,
+            decay: .2,
+            ownerColor: 0x0000ff,
+            enemyColor: 0xff0000,
+        }
     }
 
+}
+
+const DEBUG_GUI = {
+    showAxies: false,
+    showObjectRadius: false,
+    showObjectAttackRadius: false,
+    lightHelpers: false,
+    showMyDamage: false
 }
 
 export class BattleView extends MyEventDispatcher implements IUpdatable {
     private _walletNumber: string;
     private _scene: THREE.Scene;
     private _camera: THREE.PerspectiveCamera;
+    private _connection: BattleConnection;
     private _cameraTarget: THREE.Vector3;
     private _cameraMng: BattleCameraMng;
 
     private _dummyMain: THREE.Group;
-    private _gridTop: THREE.GridHelper;
-    private _gridBot: THREE.GridHelper;
 
-    private _objects: Map<string, BattleObject>;
-    private _shipEnergyViewer: ShipEnergyViewer;
+    private _objects: Map<number, BattleObject>;
+
+    private _objectHpViewer: ObjectHpViewer;
+    private _damageViewer: DamageViewer;
+    private _attackRays: { [index: string]: LaserLine } = {};
 
     private _isTopPosition = false;
+    private _axiesHelper: THREE.AxesHelper;
 
     constructor(aParams: {
         scene: THREE.Scene,
         camera: THREE.PerspectiveCamera,
+        connection: BattleConnection
     }) {
-        super('BattleScene');
+        super('BattleView');
 
         this._scene = aParams.scene;
         this._camera = aParams.camera;
+        this._connection = aParams.connection;
 
         this._cameraTarget = new THREE.Vector3();
         this._cameraMng = new BattleCameraMng({
@@ -70,43 +121,73 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         });
 
         this._dummyMain = new THREE.Group();
-        // this._dummyMain.visible = !aIsHided;
-        if (Settings.isDebugMode) {
-            let axiesHelper = new THREE.AxesHelper(150);
-            this._dummyMain.add(axiesHelper);
-        }
         this._scene.add(this._dummyMain);
 
-        this._objects = new Map<string, BattleObject>;
-        this._shipEnergyViewer = new ShipEnergyViewer(this._dummyMain);
+        this._objects = new Map();
+        this._objectHpViewer = new ObjectHpViewer(this._dummyMain);
+        this._damageViewer = new DamageViewer(this._dummyMain, this._camera);
+
+        this.initConnectionListeners();
 
     }
 
+    private initConnectionListeners() {
+        this._connection.socket.on(PackTitle.fieldInit, (aData: FieldInitData) => {
+            this.onFieldInitPack(aData);
+        });
+        this._connection.socket.on(PackTitle.objectCreate, (aData) => {
+            this.onObjectCreatePack(aData);
+        });
+        this._connection.socket.on(PackTitle.objectUpdate, (aData) => {
+            this.onObjectUpdatePack(aData);
+        });
+        this._connection.socket.on(PackTitle.objectDestroy, (aIds: number[]) => {
+            this.onObjectDestroyPack(aIds);
+        });
+        this._connection.socket.on(PackTitle.rotate, (aData) => {
+            this.onRotateObject(aData);
+        });
+        this._connection.socket.on(PackTitle.jump, (aData) => {
+            this.onJumpObject(aData);
+        });
+        this._connection.socket.on(PackTitle.attack, (aData: AttackData) => {
+            this.attack(aData);
+        });
+        this._connection.socket.on(PackTitle.rayStart, (aData) => {
+            this.rayStart(aData);
+        });
+        this._connection.socket.on(PackTitle.rayStop, (aData) => {
+            this.rayStop(aData);
+        });
+        this._connection.socket.on(PackTitle.damage, (aData: DamageData) => {
+            this.onDamage(aData);
+        });
+        // skills
+        this._connection.socket.on(PackTitle.planetLaser, (aData: PlanetLaserData) => {
+            this.planetLaser(aData);
+        });
+    }
+
     private initField() {
+        const fSize = SETTINGS.server.field.size;
 
-        const fw = SETTINGS.client.field.size.w;
-
-        // this._gridTop = new THREE.GridHelper(fw, fw / 10, 0xaa0000);
-        // this._gridTop.position.z = -SETTINGS.client.field.size.h / 4;
-        // this._dummyMain.add(this._gridTop);
-
-        // this._gridBot = new THREE.GridHelper(fw, fw / 10, 0x00aa00);
-        // this._gridBot.position.z = SETTINGS.client.field.size.h / 4;
-        // this._dummyMain.add(this._gridBot);
-
-        this._gridBot = new THREE.GridHelper(fw, fw / 10, 0x999999, 0x333333);
-        this._gridBot.position.y = -1;
-        this._gridBot.position.z = 0;
-        this._dummyMain.add(this._gridBot);
+        for (let cy = 0; cy < fSize.rows; cy++) {
+            for (let cx = 0; cx < fSize.cols; cx++) {
+                let fieldCell = new FieldCell(4);
+                fieldCell.position.copy(this.getPosByCellPos({ x: cx, y: cy }));
+                this._dummyMain.add(fieldCell);
+            }
+        }
 
     }
 
     private initCameraPosition(aIsTop: boolean) {
+        const H = 180;
         let zFactor = aIsTop ? -1 : 1;
         this._cameraMng.moveTo({
-            aCamPos: { x: 0, y: 120, z: 5 * zFactor },
-            aTargetPos: { x: 0, y: 0, z: 1 * zFactor },
-            duration: 2,
+            aCamPos: { x: 0, y: H, z: 25 * zFactor },
+            aTargetPos: { x: 0, y: 0, z: 20 * zFactor },
+            duration: .5
         });
     }
 
@@ -117,14 +198,16 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
     private serverToClientX(aServerX: number): number {
         const factor = SETTINGS.client.field.size.w / SETTINGS.server.field.size.w;
-        const h = SETTINGS.client.field.size.w / 2;
-        return aServerX * factor - h;
+        const wh = SETTINGS.client.field.size.w / 2;
+        const dx = SETTINGS.server.field.size.sectorWidth / 2 * factor;
+        return aServerX * factor - wh + dx;
     }
 
     private serverToClientY(aServerY: number): number {
         const factor = SETTINGS.client.field.size.h / SETTINGS.server.field.size.h;
         const h = SETTINGS.client.field.size.h / 2;
-        return aServerY * factor - h;
+        const dy = SETTINGS.server.field.size.sectorHeight / 2 * factor;
+        return aServerY * factor - h + dy;
     }
 
     private getPositionByServer(aServerPos: { x: number, y: number }): THREE.Vector3 {
@@ -135,100 +218,192 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         );
     }
 
-    private onGameStartPacket(aData: {
-        playerPosition?: 'top' | 'bottom'
-    }) {
-        this.initField();
-        this._isTopPosition = aData.playerPosition == 'top';
-        this._shipEnergyViewer.isTopViewPosition = this._isTopPosition;
-        this.initCameraPosition(this._isTopPosition);
+    private getPositionByServerV3(aV3: { x: number, y: number, z: number }): THREE.Vector3 {
+        return new THREE.Vector3(
+            this.serverToClientX(aV3.x),
+            0,
+            this.serverToClientY(aV3.z)
+        );
     }
 
-    private createObject(aData: {
-        // common params
-        id: string,
-        owner: string,
-        class: ObjectClass,
-        radius?: number,
-        position?: { x: number, y: number },
-        rotation?: number,
-        hp?: number,
-        /**
-         * special data for planets
-         */
-        planetData?: {
-            orbitRadius?: number,
-            orbitCenter?: { x: number, y: number },
-            startOrbitAngle?: number,
-            year?: number,
-            rotationSpeed?: number,
-            orbitSpeed?: number,
+    private getPosByCellPos(aCellPos: { x: number, y: number }): THREE.Vector3 {
+        const fx = SETTINGS.server.field.size.sectorWidth;
+        const fy = SETTINGS.server.field.size.sectorHeight;
+        const dx = aCellPos.y % 2 === 0 ? 0 : fx / 2;
+        return new THREE.Vector3(
+            this.serverToClientX(aCellPos.x * fx + dx),
+            0,
+            this.serverToClientY(aCellPos.y * fy),
+        );
+    }
+
+    private getObjectById(aId: number): BattleObject {
+        return this._objects.get(aId);
+    }
+
+    private getObjectsByType(aType: ObjectType): BattleObject[] {
+        let res: BattleObject[] = [];
+        this._objects.forEach(obj => {
+            if (obj.objType == aType) {
+                res.push(obj);
+            }
+        });
+        return res;
+    }
+
+    private isCurrentOwner(aWalletAddr: string): boolean {
+        return this._walletNumber == aWalletAddr;
+    }
+
+    private getPlanetLaserColor(aSkin: PlanetLaserSkin): string {
+        let color = '#0072ff';
+        switch (aSkin) {
+            case 'blue':
+                color = '#0072ff';
+                break;
+            case 'red':
+                color = '#ff0000';
+                break;
+            case 'white':
+                color = '#ffffff';
+                break; 
+            case 'violet':
+                color = '#ba00ff';
+                break;
         }
-    }) {
+        return color;
+    }
+
+    private getShipLaserColor(aOwner: string): string {
+        return this.isCurrentOwner(aOwner) ? '#0072ff' : '#ff0000';
+    }
+
+    private getRandomShip(exclude?: BattleObject[]): BattleObject {
+        let ships: BattleObject[] = [];
+        this._objects.forEach((aObj) => {
+            if (aObj instanceof Fighter) ships.push(aObj);
+        })
+        if (ships.length <= 0) return null;
+        let id = MyMath.randomIntInRange(0, ships.length - 1);
+        return ships[id];
+    }
+
+    private onFieldInitPack(aData: FieldInitData) {
+
+        // update wallet number
+        this._walletNumber = getWalletAddress();
+
+        SETTINGS.server.field = aData.fieldParams;
+        let fieldSize = SETTINGS.server.field.size;
+        fieldSize.w = fieldSize.cols * fieldSize.sectorWidth;
+        fieldSize.h = fieldSize.rows * fieldSize.sectorHeight;
+        this.initField();
+
+        setTimeout(() => {
+            this._isTopPosition = aData.playerPosition == 'top';
+            this._objectHpViewer.isTopViewPosition = this._isTopPosition;
+            this.initCameraPosition(this._isTopPosition);
+        }, 1000);
+
+    }
+
+    private onObjectCreatePack(aData: ObjectCreateData) {
         let obj: BattleObject;
 
-        switch (aData.class) {
+        switch (aData.type) {
 
-            case ObjectClass.star:
+            case 'Star':
                 obj = new BattleStar({
-                    id: aData.id,
-                    radius: this.serverValueToClient(aData.radius),
-                    maxHp: aData.hp,
-                    camera: this._camera,
+                    ...aData,
+                    ...{
+                        camera: this._camera,
+                        planetOrbitRadius: 15,
+                        light: {
+                            parent: this._dummyMain,
+                            ...SETTINGS.stars.light
+                        }
+                    }
                 });
-                obj.position.copy(this.getPositionByServer({ x: aData.position.x, y: aData.position.y }));
-                // add hp bar
-                this._shipEnergyViewer.addBar(obj);
+                if (aData.pos) obj.position.copy(this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z }));
+                this._objects.set(aData.id, obj);
                 break;
 
-            case ObjectClass.planet:
-                let oCenter = this.getPositionByServer(aData.planetData.orbitCenter);
-                obj = new BattlePlanet(aData.id, {
-                    orbitCenter: {
-                        x: oCenter.x,
-                        y: oCenter.z
-                    },
-                    orbitRadius: this.serverValueToClient(aData.planetData.orbitRadius),
-                    orbitSpeed: aData.planetData.orbitSpeed,
-                    radius: this.serverValueToClient(aData.radius),
-                    rotationSpeed: aData.planetData.rotationSpeed,
-                    year: aData.planetData.year,
-                    startOrbitAngle: aData.planetData.startOrbitAngle
+            case 'Planet':
+                obj = new BattlePlanet(aData);
+                if (aData.pos) obj.position.copy(this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z }));
+                if (aData.q) obj.setQuaternion(aData.q);
+                this._objects.set(aData.id, obj);
+                break;
+            
+            case 'Tower':
+                obj = new Tower({
+                    ...aData,
+                    ...{
+                        race: this.isCurrentOwner(aData.owner) ? 'Waters' : 'Insects',
+                        light: {
+                            parent: this._dummyMain,
+                            ...SETTINGS.towers.light,
+                            color: this.isCurrentOwner(aData.owner) ? SETTINGS.towers.light.ownerColor : SETTINGS.towers.light.enemyColor
+                        },
+                        showRadius: DEBUG_GUI.showObjectRadius,
+                        showAttackRadius: DEBUG_GUI.showObjectAttackRadius
+                    }
                 });
+
+                if (aData.pos) {
+                    const clientPos = this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z });
+                    obj.position.copy(clientPos);
+                }
+
+                // add hp bar
+                this._objectHpViewer.addBar(obj);
                 break;
 
-            case ObjectClass.ship: {
-                let r = this.serverValueToClient(aData.radius);
-                obj = new BattleFighter({
-                    id: aData.id,
-                    radius: r,
-                    maxHp: aData.hp,
-                    owner: aData.owner
+            case 'FighterShip': {
+                obj = new Fighter({
+                    ...aData,
+                    ...{
+                        race: this.isCurrentOwner(aData.owner) ? 'Waters' : 'Insects',
+                        showRadius: DEBUG_GUI.showObjectRadius,
+                        showAttackRadius: DEBUG_GUI.showObjectAttackRadius
+                    }
                 });
-                obj.createDebugSphere(r);
-                obj.position.copy(this.getPositionByServer({ x: aData.position.x, y: aData.position.y }));
-                if (aData.rotation) obj.targetRotation = obj.rotation.y = aData.rotation;
+
+                if (aData.pos) {
+                    const clientPos = this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z });
+                    obj.position.copy(clientPos);
+                }
+
+                if (aData.lookDir) obj.lookByDir(aData.lookDir);
+
                 // add hp bar
-                this._shipEnergyViewer.addBar(obj);
+                this._objectHpViewer.addBar(obj);
             } break;
 
-            case ObjectClass.battleship: {
-                let r = this.serverValueToClient(aData.radius);
-                obj = new BattleShip({
-                    id: aData.id,
-                    radius: r,
-                    maxHp: aData.hp,
-                    owner: aData.owner
+            case 'BattleShip': {
+                this.logDebug(`onObjectCreatePack(): BattleShip:`, aData);
+                obj = new Linkor({
+                    ...aData,
+                    ...{
+                        race: this.isCurrentOwner(aData.owner) ? 'Waters' : 'Insects',
+                        showRadius: DEBUG_GUI.showObjectRadius,
+                        showAttackRadius: DEBUG_GUI.showObjectAttackRadius
+                    }
                 });
-                obj.createDebugSphere(r);
-                obj.position.copy(this.getPositionByServer({ x: aData.position.x, y: aData.position.y }));
-                if (aData.rotation) obj.targetRotation = obj.rotation.y = aData.rotation;
+
+                if (aData.pos) {
+                    const clientPos = this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z });
+                    obj.position.copy(clientPos);
+                }
+
+                if (aData.lookDir) obj.lookByDir(aData.lookDir);
+
                 // add hp bar
-                this._shipEnergyViewer.addBar(obj);
+                this._objectHpViewer.addBar(obj);
             } break;
 
             default:
-                this.logWarn(`createObject(): unknown class:`, aData);
+                this.logWarn(`createObject(): unknown obj type:`, aData);
                 break;
 
         }
@@ -237,149 +412,256 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             this._dummyMain.add(obj);
             this._objects.set(aData.id, obj);
         }
+    }
+
+    private onObjectUpdatePack(aData: ObjectUpdateData[]) {
+        for (let i = 0; i < aData.length; i++) {
+            const data = aData[i];
+
+            let obj = this._objects.get(data.id);
+            if (!obj) {
+                this.logError(`updateObject: !obj for data:`, data);
+                return;
+            }
+
+            if (obj instanceof BattlePlanet) {
+                // this.logDebug(`planet update:`, data);
+            }
+
+            if (obj instanceof Linkor) {
+                // this.logDebug(`BattleShip update:`, data);
+            }
+
+            if (data.pos) {
+                obj.targetPosition = {
+                    x: this.serverToClientX(data.pos.x),
+                    z: this.serverToClientY(data.pos.z)
+                }
+            }
+
+            if (data.q) {
+                obj.setQuaternion(data.q);
+            }
+
+            if (data.hp != undefined) {
+                // let prevHp = obj.hp;
+                // let dtHp = prevHp - data.hp;
+                obj.hp = data.hp;
+                // if (dtHp > 2) {
+                //     this._damageViewer.showDamage(obj, -dtHp);
+                // }
+            }
+
+            if (data.shield != undefined) {
+                // let prevShield = obj.shield;
+                // let dt = prevShield - data.shield;
+                obj.shield = data.shield;
+                // if (dt > 1) {
+                    // this._damageViewer.showShieldDamage(obj, -dt);
+                // }
+            }
+
+        }
 
     }
 
-    private getObjectById(aId: string): BattleObject {
-        return this._objects.get(aId);
+    private onObjectDestroyPack(aIds: number[]) {
+        for (let i = 0; i < aIds.length; i++) {
+            this.destroyObject(aIds[i]);
+        }
     }
 
-    private getRandomShip(exclude?: BattleObject[]): BattleObject {
-        let ships: BattleObject[] = [];
-        this._objects.forEach((aObj) => {
-            if (aObj instanceof BattleFighter) ships.push(aObj);
-        })
-        if (ships.length <= 0) return null;
-        let id = MyMath.randomIntInRange(0, ships.length - 1);
-        return ships[id];
-    }
-
-    private updateObject(aParams: {
-        id: string,
-        event?: 'starAttackPositions',
-        position?: { x: number, y: number },
-        rotation?: number,
-        hp?: number,
-        /**
-         * Any other data
-         */
-        data?: any
+    private onRotateObject(aData: {
+        id: number,
+        type: 'toPoint' | 'toDir',
+        target: { x, y, z },
+        duration: number
     }) {
-
-        let obj = this.getObjectById(aParams.id);
+        let obj = this.getObjectById(aData.id);
         if (!obj) {
-            this.logError(`updateObject: !obj`, aParams);
+            this.logWarn(`rotate: !obj`, aData);
             return;
         }
-
-        switch (aParams.event) {
-
-            case 'starAttackPositions':
-                let posList: {
-                    center: { x, y },
-                    hold: boolean
-                }[] = aParams.data.list;
-
-                for (let i = 0; i < posList.length; i++) {
-                    const pos = posList[i];
-                    // let p = new BattlePosition();
-                }
-
+        switch (aData.type) {
+            case 'toPoint':
+                obj.rotateToPoint(this.getPositionByServerV3(aData.target), aData.duration);
                 break;
-
-            default:
-
-                if (aParams.position) {
-                    // update position
-                    obj.targetPosition = {
-                        x: this.serverToClientX(aParams.position.x),
-                        z: this.serverToClientY(aParams.position.y)
-                    }
-                }
-
-                if (aParams.rotation != undefined) {
-                    // update position
-                    obj.targetRotation = aParams.rotation;
-                }
-
-                if (aParams.hp != undefined) {
-                    // update hp
-                    obj.hp = aParams.hp;
-                }
-
-                break;
-
         }
+    }
+
+    private onJumpObject(aData: {
+        id: number,
+        pos: { x, y, z },
+        duration: number
+    }) {
+        let obj = this.getObjectById(aData.id);
+        if (!obj) {
+            this.logWarn(`jump: !obj`, aData);
+            return;
+        }
+        // obj.rotateToPoint(this.getPositionByServerV3(aData.target), aData.duration);
+        // let pos = this.getPositionByServerV3(aData.pos);
+        // obj.position.copy(pos);
+        obj.jumpToPoint(this.getPositionByServerV3(aData.pos), aData.duration);
 
     }
 
-    private attack(aParams: {
-        type: 'laser' | 'ray',
-        data: {
-            idFrom: string,
-            idTo: string,
-            damage?: number,
-            isMiss?: boolean,
-            state?: 'start' | 'end'
-        }
-    }) {
-
-        let objFrom = this.getObjectById(aParams.data.idFrom);
+    private attack(aData: AttackData) {
+        
+        let objFrom = this.getObjectById(aData.idFrom);
         if (!objFrom) {
-            this.logWarn(`attack: !fromObj`, aParams);
+            this.logWarn(`attack: !fromObj`, aData);
             return;
         }
 
-        let objTo = this.getObjectById(aParams.data.idTo);
+        let objTo = this.getObjectById(aData.idTo);
         if (!objTo) {
-            this.logWarn(`attack: !toObj`, aParams);
+            this.logWarn(`attack: !toObj`, aData);
             return;
         }
 
-        let laserColor = '#0072ff';
-        // const purpleLaserColor = '#5e48ff';
-        if (objFrom.owner.length > 0 && objFrom.owner != this._walletNumber) {
-            laserColor = '#ff0000';
-        }
+        let laserColor = this.getShipLaserColor(objFrom.owner);
 
-        switch (aParams.type) {
-            case 'ray': {
+        switch (aData.attackType) {
+
+            case 'laser':
                 // create laser
-                let laser = new LaserLine(objFrom.position.clone(), objTo.position.clone(), laserColor);
-                this._dummyMain.add(laser);
-                laser.hide({
-                    dur: 1,
-                    cb: () => {
-                        laser.free();
-                    },
-                    ctx: this
+                const laserLen = 2;
+                let r = ThreeUtils.randomVector(objTo.radius / 10);
+                const targetPoint = objTo.position.clone().add(r);
+                const firePoint = objFrom.getGlobalFirePoint();
+                const dir = targetPoint.clone().sub(firePoint).normalize();
+                if (aData.isMiss) {
+                    targetPoint.add(dir.multiplyScalar(objTo.radius * 4));
+                }
+                // let laser = new LaserLine(objFrom.position.clone(), objTo.position.clone(), laserColor);
+                let laser = new LaserLine({
+                    posStart: new THREE.Vector3(0, 0, 0),
+                    posEnd: new THREE.Vector3(0, 0, laserLen),
+                    color: laserColor,
+                    minRadius: .02,
+                    maxRadius: .2
                 });
+                laser.position.copy(firePoint);
+                laser.lookAt(targetPoint);
+
+                // show laser
+                const dur = .25;
+                gsap.to(laser.position, {
+                    x: targetPoint.x,
+                    y: targetPoint.y,
+                    z: targetPoint.z,
+                    duration: dur,
+                    ease: 'none',
+                    onStart: () => {
+                    },
+                    onComplete: () => {
+                        laser.free();
+                    }
+                });
+                this._dummyMain.add(laser);
+                break;
+
+            case 'ray': {
+                
             } break;
 
             default:
-                // create laser
-                let laser = new LaserLine(objFrom.position.clone(), objTo.position.clone(), laserColor);
-                this._dummyMain.add(laser);
-                laser.hide({
-                    dur: 1,
-                    cb: () => {
-                        laser.free();
-                    },
-                    ctx: this
-                });
+                this.logWarn(`onAttackPack: unknown attack type:`, aData);
                 break;
-        }
-
-        if (!aParams.data.isMiss) {
-            objTo.hp -= aParams.data.damage;
         }
 
     }
 
-    private destroyObject(aId: string) {
+    private rayStart(aData: {
+        idFrom: number,
+        idTo: number
+    }) {
 
-        this._shipEnergyViewer.removeBar(aId);
+        let objFrom = this.getObjectById(aData.idFrom);
+        if (!objFrom) {
+            this.logWarn(`rayStart: !fromObj`, aData);
+            return;
+        }
 
+        let objTo = this.getObjectById(aData.idTo);
+        if (!objTo) {
+            this.logWarn(`rayStart: !toObj`, aData);
+            return;
+        }
+
+        let laserColor = this.getShipLaserColor(objFrom.owner);
+
+        // create ray
+
+        let laser = new LaserLine({
+            posStart: objFrom.position.clone(),
+            posEnd: objTo.position.clone(),
+            color: laserColor,
+            minRadius: 0.1,
+            maxRadius: 0.3
+        });
+        this._dummyMain.add(laser);
+
+        this._attackRays[aData.idFrom] = laser;
+
+    }
+
+    private rayStop(aData: {
+        idFrom: number
+    }) {
+        // create ray
+        let laser = this._attackRays[aData.idFrom];
+        laser?.hide({
+            dur: 1,
+            cb: () => {
+                this._dummyMain.add(laser);
+            },
+            ctx: this
+        });
+    }
+
+    private onDamage(aData: DamageData) {
+        let obj = this.getObjectById(aData.id);
+        if (this.isCurrentOwner(obj?.owner) && !DEBUG_GUI.showMyDamage) {
+            return;
+        }
+        let pos = this.getPositionByServerV3(aData.pos);
+        this._damageViewer.showDamage(pos, aData.info);
+    }
+
+    private planetLaser(aData: PlanetLaserData) {
+        let planet = this.getObjectById(aData.planetId);
+        if (!planet) {
+            LogMng.warn(`planetLaser: !planet for...`, aData);
+            return;
+        }
+
+        let laserColor = this.getPlanetLaserColor(aData.skin);
+        let originPos = this.getPositionByServerV3(aData.pos);
+        let dir = new THREE.Vector3(aData.dir.x, aData.dir.y, aData.dir.z);
+        dir.multiplyScalar(aData.length);
+        let targetPos = originPos.clone().add(dir);
+        // create laser
+        let laser = new LaserLine({
+            posStart: originPos,
+            posEnd: targetPos,
+            color: laserColor,
+            minRadius: .02,
+            maxRadius: .5
+        });
+        this._dummyMain.add(laser);
+        laser.hide({
+            dur: 1,
+            cb: () => {
+                laser.free();
+            },
+            ctx: this
+        });
+    }
+
+    private destroyObject(aId: number) {
+        this._objectHpViewer.removeBar(aId);
         let obj = this.getObjectById(aId);
         if (!obj) {
             this.logError(`updateObject(): !obj`, aId);
@@ -387,6 +669,19 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         }
         obj.free();
         this._objects.delete(aId);
+
+        let rayEfect = this._attackRays[aId];
+        if (rayEfect) {
+            rayEfect.hide({
+                dur: .1,
+                cb: () => {
+                    this._attackRays[aId] = null;
+                    rayEfect.free();
+                },
+                ctx: this
+            });
+        }
+
     }
 
     public get walletNumber(): string {
@@ -398,37 +693,123 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     }
 
     initDebugGui(aFolder: GUI) {
-        const DATA = {
-            randomLaserRed: () => {
-                let ship1 = this.getRandomShip();
-                let ship2 = this.getRandomShip();
-                if (!ship1 || !ship2 || ship1.objId == ship2.objId) return;
-                this.attack({
-                    type: 'laser',
-                    data: {
-                        idFrom: ship1.objId,
-                        idTo: ship2.objId,
-                        damage: 10
-                    }
-                });
-            },
-            randomLaserBlue: () => {
-                let ship1 = this.getRandomShip();
-                let ship2 = this.getRandomShip();
-                if (!ship1 || !ship2 || ship1.objId == ship2.objId) return;
-                this.attack({
-                    type: 'laser',
-                    data: {
-                        idFrom: ship1.objId,
-                        idTo: ship2.objId,
-                        damage: 10
-                    }
-                });
-            }
-        }
+        
         const f = aFolder;
-        // f.add(DATA, 'randomLaserRed');
-        // f.add(DATA, 'randomLaserBlue');
+
+        f.add(DEBUG_GUI, 'showAxies').onChange((aShow: boolean) => {
+            if (aShow) {
+                if (this._axiesHelper) return;
+                this._axiesHelper = new THREE.AxesHelper(150);
+                this._dummyMain.add(this._axiesHelper);
+            }
+            else {
+                if (!this._axiesHelper) return;
+                this._dummyMain.remove(this._axiesHelper);
+                this._axiesHelper = null;
+            }
+        }).name(`Axies`);
+
+        f.add(DEBUG_GUI, 'showMyDamage').name(`Damage To Me`);
+
+        f.add(DEBUG_GUI, 'showObjectRadius').onChange((aShow: boolean) => {
+            this._objects.forEach(obj => {
+                if (aShow) {
+                    obj.createDebugRadiusSphere();
+                }
+                else {
+                    obj.destroyDebugRadiusSphere();
+                }
+            });
+        }).name(`Object Radius`);
+
+        f.add(DEBUG_GUI, 'showObjectAttackRadius').onChange((val: boolean) => {
+            this._objects.forEach(obj => {
+                if (val) {
+                    obj.createDebugAttackSphere();
+                }
+                else {
+                    obj.destroyDebugAttackSphere();
+                }
+            });
+        }).name(`Attack Radius`);
+
+        f.add(DEBUG_GUI, 'lightHelpers').name('Light Helpers').onChange((aVal: boolean) => {
+            // stars
+            let stars: BattleStar[] = this.getObjectsByType('Star') as BattleStar[];
+            for (let i = 0; i < stars.length; i++) {
+                const star = stars[i];
+                star.lightHelperVisible = DEBUG_GUI.lightHelpers;
+            }
+            // towers
+            let towers: Tower[] = this.getObjectsByType('Tower') as Tower[];
+            for (let i = 0; i < towers.length; i++) {
+                const tower = towers[i];
+                tower.lightHelperVisible = aVal;
+            }
+        })
+
+        // star lights
+        let starsFolder = f.addFolder('Stars');
+        starsFolder.add(SETTINGS.stars.light, 'height', 0, 50, .1).name('Height').onChange((aVal: number) => {
+            let stars: BattleStar[] = this.getObjectsByType('Star') as BattleStar[];
+            for (let i = 0; i < stars.length; i++) {
+                const star = stars[i];
+                star.lightHeight = aVal;
+            }
+        })
+        starsFolder.add(SETTINGS.stars.light, 'intens', .1, 5, .1).name('Intensity').onChange((aVal: number) => {
+            let stars: BattleStar[] = this.getObjectsByType('Star') as BattleStar[];
+            for (let i = 0; i < stars.length; i++) {
+                const star = stars[i];
+                star.lightIntens = aVal;
+            }
+        })
+        starsFolder.add(SETTINGS.stars.light, 'dist', 0, 100, .1).name('Distance').onChange((aVal: number) => {
+            let stars: BattleStar[] = this.getObjectsByType('Star') as BattleStar[];
+            for (let i = 0; i < stars.length; i++) {
+                const star = stars[i];
+                star.lightDist = aVal;
+            }
+        })
+        starsFolder.add(SETTINGS.stars.light, 'decay', 0, 3, .01).name('Decay').onChange((aVal: number) => {
+            let stars: BattleStar[] = this.getObjectsByType('Star') as BattleStar[];
+            for (let i = 0; i < stars.length; i++) {
+                const star = stars[i];
+                star.lightDecay = aVal;
+            }
+        })
+
+        // tower lights
+        let towerFolder = f.addFolder('Towers');
+        towerFolder.add(SETTINGS.towers.light, 'height', 0, 50, .1).name('Height').onChange((aVal: number) => {
+            let towers: Tower[] = this.getObjectsByType('Tower') as Tower[];
+            for (let i = 0; i < towers.length; i++) {
+                const tower = towers[i];
+                tower.lightHeight = aVal;
+            }
+        })
+        towerFolder.add(SETTINGS.towers.light, 'intens', .1, 5, .1).name('Intensity').onChange((aVal: number) => {
+            let towers: Tower[] = this.getObjectsByType('Tower') as Tower[];
+            for (let i = 0; i < towers.length; i++) {
+                const star = towers[i];
+                star.lightIntens = aVal;
+            }
+        })
+        towerFolder.add(SETTINGS.towers.light, 'dist', 0, 50, .1).name('Distance').onChange((aVal: number) => {
+            let towers: Tower[] = this.getObjectsByType('Tower') as Tower[];
+            for (let i = 0; i < towers.length; i++) {
+                const star = towers[i];
+                star.lightDist = aVal;
+            }
+        })
+        towerFolder.add(SETTINGS.towers.light, 'decay', 0, 3, .01).name('Decay').onChange((aVal: number) => {
+            let towers: Tower[] = this.getObjectsByType('Tower') as Tower[];
+            for (let i = 0; i < towers.length; i++) {
+                const star = towers[i];
+                star.lightDecay = aVal;
+            }
+        })
+
     }
 
     destroyAllObjects() {
@@ -436,54 +817,13 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             obj.free();
         });
         this._objects.clear();
-    }
 
-    onSocketMessage(aData: {
-        title?: string,
-        action?: string,
-        // opponent?: string,
-        // list?: ServerObjectData[],
-        data?: any,
-        class?: 'ship',
-        list?: any[]
-    } & any) {
-
-        const packTitle = aData.title || aData.action;
-
-        switch (packTitle) {
-
-            // case PackTitle.gamestart:
-            //     this.onGameStartPacket(aData || {});
-            //     break;
-
-            case PackTitle.objectCreate: {
-                let list = aData.list;
-                for (let i = 0; i < list.length; i++) {
-                    const objData = list[i];
-                    this.createObject(objData);
-                }
-            } break;
-
-            case PackTitle.objectUpdate:
-                let list: any[] = aData.list;
-                for (let i = 0; i < list.length; i++) {
-                    const objData = list[i];
-                    this.updateObject(objData);
-                }
-                break;
-
-            // case PackTitle.objectdestroy:
-            //     this.destroyObject(aData.id);
-            //     break;
-
-            case PackTitle.attack:
-                this.attack(aData);
-                break;
-
-            default:
-                this.logWarn(`onSocketMessage(): unhandled package (${packTitle}):`, aData);
-                break;
+        for (const key in this._attackRays) {
+            const rayEfect = this._attackRays[key];
+            if (rayEfect) rayEfect.free();
         }
+        this._attackRays = {};
+
     }
 
     show() {
@@ -495,18 +835,9 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     }
 
     clear() {
-        this._shipEnergyViewer.clear();
+        this._objectHpViewer.clear();
         // clear all objects
         this.destroyAllObjects();
-        // destroy grids
-        if (this._gridTop) {
-            this._dummyMain.remove(this._gridTop);
-            this._gridTop = null;
-        }
-        if (this._gridBot) {
-            this._dummyMain.remove(this._gridBot);
-            this._gridBot = null;
-        }
     }
 
     update(dt: number) {
@@ -517,7 +848,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             obj.update(dt);
         });
 
-        this._shipEnergyViewer.update(dt);
+        this._objectHpViewer.update(dt);
 
     }
 

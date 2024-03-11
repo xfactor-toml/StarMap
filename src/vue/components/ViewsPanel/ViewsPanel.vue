@@ -1,13 +1,13 @@
 <template>
-  <div class="ViewsPanel" :class="{ 'is-hidden': settingsStore.viewsPanelHidden }">
+  <div class="ViewsPanel" :class="{ 'is-hidden': !uiStore.panels.visibility.views }">
     <div class="ViewsPanel__group">
-      <template v-for="view in settingsStore.mode.views">
+      <template v-for="view in scenesStore.current.mode?.clientScenes">
         <button
           class="ViewsPanel__button"
           :class="[
             `is-${view.name}`,
             {
-              'is-active': view.name === settingsStore.view,
+              'is-active': view.name === scenesStore.current.clientScene?.name,
               'is-disabled': !view.enabled,
               'is-clickable': view.clickable
             }
@@ -19,27 +19,27 @@
         </button>
       </template>
     </div>
-    <button class="ViewsPanel__toggle" @click="settingsStore.toggleViewsPanel" />
+    <button class="ViewsPanel__toggle" @click="uiStore.panels.togglePanel('views')" />
   </div>
 </template>
 
 <script lang="ts">
-import { useSettingsStore } from '@/stores';
-import { GuiViewName } from '@/types';
+import { useScenesStore, useUiStore } from '@/stores';
+import { GuiClientSceneName } from '@/types';
 import { mapStores } from 'pinia';
 
 export default {
   name: 'ViewsPanel',
   computed: {
-    ...mapStores(useSettingsStore)
+    ...mapStores(useScenesStore, useUiStore)
   },
   methods: {
-    changeView(viewName: GuiViewName) {
+    changeView(sceneName: GuiClientSceneName) {
       this.$client.onClick();
 
-      switch (viewName) {
+      switch (sceneName) {
         case 'galaxy':
-          this.settingsStore.hideStarPanel();
+          this.uiStore.star.hideStarPanel();
           this.$client.onLeftPanelGalaxyClick();
           break;
         case 'planet':
@@ -50,7 +50,7 @@ export default {
           break;
       }
 
-      this.settingsStore.setView(viewName);
+      this.scenesStore.setClientScene(sceneName);
     }
   }
 };

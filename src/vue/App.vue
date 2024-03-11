@@ -1,35 +1,58 @@
 <template>
-  <component :is="screen" />
+  <transition
+    :css="false"
+    @enter="onEnter"
+    @leave="onLeave"
+    @after-leave="onAfterLeave"
+  >
+    <component :is="scenesStore.current.scene.getComponent()" />
+  </transition>
   <div class="version">{{ version }}</div>
 </template>
 
 <script lang="ts">
-import { Component } from 'vue';
 import { mapStores } from 'pinia';
 import { debounce } from 'debounce';
-import { InterfaceScreen, PreloaderScreen, WelcomeScreen } from '@/screens';
-import { GuiScreen } from '@/types';
-import { useSettingsStore } from '@/stores';
+import { useScenesStore, useSettingsStore, useUiStore } from '@/stores';
 import { ClientEventsService } from '@/services';
+import { SCENES } from '@/settings';
+import { SceneName } from '@/types';
+import { default as anime } from 'animejs';
 
 export default {
   name: 'App',
   data: () => ({
-    version: 'v0.3.3'
+    version: 'v0.3.4'
   }),
-  computed: {
-    ...mapStores(useSettingsStore),
-    screen() {
-      const screens: Record<GuiScreen, Component> = {
-        preloader: PreloaderScreen,
-        welcome: WelcomeScreen,
-        interface: InterfaceScreen
-      };
+  computed: mapStores(useScenesStore, useSettingsStore, useUiStore),
+  methods: {
+    async onEnter(el, done) {
+      await anime({
+        targets: el,
+        easing: 'easeInOutQuart',
+        duration: 400,
+        opacity: [0, 1],
+      }).finished
 
-      return screens[this.settingsStore.screen];
+      done()
+    },
+    async onLeave(el, done) {
+      await anime({
+        targets: el,
+        easing: 'easeInOutQuart',
+        duration: 400,
+        opacity: [1, 0],
+      }).finished
+
+      done()
+    },
+    onAfterLeave() {
+      this.scenesStore.previous.scene?.afterLeave?.()
     }
   },
   created() {
+    this.scenesStore.setScenes(SCENES, SceneName.Start)
+
     // Game Events
     window.addEventListener('gameEvent', ClientEventsService.handleEvent);
 
@@ -38,13 +61,15 @@ export default {
       'resize',
       debounce(() => {
         this.$client.onWindowResize();
-        this.settingsStore.setWindowWidth(window.innerWidth);
+        this.uiStore.viewport.setWindowWidth(window.innerWidth);
       }, 200)
     );
 
     // INFO: client didnt send event when press escape
     document.body.addEventListener('fullscreenchange', () => {
-      this.settingsStore.setFullscreenMode(!this.settingsStore.fullscreen);
+      this.uiStore.fullscreen.active
+        ? this.uiStore.fullscreen.disable()
+        : this.uiStore.fullscreen.enable()
     });
   }
 };

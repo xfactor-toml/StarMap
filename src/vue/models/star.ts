@@ -9,6 +9,7 @@ export type StarHudParams = {
   [K in StarHudParam]: {
     percent: number;
     value: number;
+    unit: string
   };
 };
 
@@ -27,6 +28,10 @@ export class Star {
 
   get levelUpFuel() {
     return this.params.levelUpFuel / 1e18;
+  }
+
+  get fuel() {
+    return this.params.fuel / 1e18;
   }
 
   get name() {

@@ -8,6 +8,12 @@ import { GalaxyScene } from "./scenes/GalaxyScene";
 import { MyBasicClass } from "./basics/MyBasicClass";
 import { ThreeLoader } from "./utils/threejs/ThreeLoader";
 import { BattleScene, BattleSceneEvent } from "./scenes/BattleScene";
+import { GameCompleteData, PackTitle, StartGameData } from "./battle/Types";
+import { GameEvent, GameEventDispatcher } from "./events/GameEvents";
+import { getWalletAddress } from "~/blockchain/functions/auth";
+import { FrontEvents } from "./events/FrontEvents";
+import { OpenBox, getUserBoxesToOpen, getUserWinContractBalance } from "~/blockchain/boxes";
+import { useWallet } from "@/services";
 
 export class GameEngine extends MyBasicClass {
     private _renderer: GameRenderer;
@@ -42,8 +48,60 @@ export class GameEngine extends MyBasicClass {
     }
 
     private initDebugGui() {
+
+        const BLOCKCHAIN_DEBUG_GUI = {
+            boxId: '0',
+            claimReward: async () => {
+                
+            },
+            openBox: async () => {
+                let ws = useWallet();
+                if (!ws.connected) {
+                    alert('Wallet Not Connected!');
+                    return;
+                }
+                const boxId = Number(BLOCKCHAIN_DEBUG_GUI.boxId);
+                alert(`Trying to open Box ${boxId}`);
+                let openResult = ws.provider.openBox(boxId);
+                console.log(`openResult:`, openResult);
+            },
+            getBoxList: async () => {
+                const wallet = getWalletAddress();
+                getUserBoxesToOpen(wallet).then((aList: number[]) => {
+                    let list = aList.map(val => Number(val));
+                    this.logDebug(`Box ids to open:`);
+                    if (Settings.isDebugMode) console.log(list);
+                    if (list.length > 0) {
+                        let ids: string = '';
+                        for (let i = 0; i < list.length; i++) {
+                            ids += String(`${list[i]}, `);
+                        }
+                        alert(`You have ${list.length} boxes for open.
+                        ids: ${ids}`);
+                        // GameEventDispatcher.showBoxOpenScreen({ list });
+                    }
+                    else {
+                        alert(`No box found for this user...`);
+                    }
+                });
+            }
+        }
+
         Settings.datGui = new datGui.GUI();
         Settings.datGui.close();
+
+        let gui = Settings.datGui;
+        let f = gui.addFolder('Blockchain');
+    
+        f.add(BLOCKCHAIN_DEBUG_GUI, 'claimReward');
+
+        f.add(BLOCKCHAIN_DEBUG_GUI, 'boxId').onChange((aValue: string) => {
+            this.logDebug(`boxId: ${BLOCKCHAIN_DEBUG_GUI.boxId}`);
+        }).name(`Box id`);
+
+        f.add(BLOCKCHAIN_DEBUG_GUI, 'openBox');
+        f.add(BLOCKCHAIN_DEBUG_GUI, 'getBoxList');
+
     }
 
     private initSkybox() {
@@ -51,7 +109,7 @@ export class GameEngine extends MyBasicClass {
         this._renderer.scene.background = loader.getCubeTexture('skybox');
     }
 
-    private initGalaxy() {
+    private initGalaxyScene() {
         // SCENES
         this._galaxyScene = new GalaxyScene({
             scene: this._renderer.scene,
@@ -60,37 +118,50 @@ export class GameEngine extends MyBasicClass {
         this._galaxyScene.initGalaxy();
     }
 
-    private initBattle() {
+    private initBattleScene() {
         this._battleScene = new BattleScene({
             scene: this._renderer.scene,
             camera: this._renderer.camera
         });
         this._battleScene.hide();
-        this._battleScene.on(BattleSceneEvent.onGameSearchStart, this.onBattleSearchStart, this);
-        this._battleScene.on(BattleSceneEvent.onEnterGame, this.onBattleEnterGame, this);
-        this._battleScene.on(BattleSceneEvent.onWithdraw, this.onBattleWithdrawGame, this);
+        this._battleScene.on(BattleSceneEvent.onGameStart, this.onBattleGameStart, this);
         this._battleScene.on(BattleSceneEvent.onGameComplete, this.onBattleComplete, this);
+        this._battleScene.on(BattleSceneEvent.onDisconnect, this.onBattleDisconnect, this);
+        this._battleScene.on(BattleSceneEvent.onCloseBattle, () => {
+            this.switchSceneToGalaxy();
+        }, this);
     }
 
-    private onBattleSearchStart() {
-        this.logDebug(`onBattleSearchStart...`);
-        this._galaxyScene.hide();
-    }
-
-    private onBattleEnterGame() {
+    private onBattleGameStart(aData: StartGameData) {
         this.logDebug(`onBattleEnterGame...`);
-        this._galaxyScene.hide();
-        this._battleScene.show();
+
+        GameEventDispatcher.battlePrerollShow({
+            timer: aData.timer,
+            playerWallet: aData.playerWallet,
+            enemyWallet: aData.enemyWallet
+        });
+        
+        setTimeout(() => {
+            this._galaxyScene.hide();
+            this._battleScene.show();
+        }, 1000);
+
     }
 
-    private onBattleWithdrawGame() {
-        this.logDebug(`onBattleWithdrawGame...`);
-        this._galaxyScene.hide();
-        this._galaxyScene.show();
-    }
-
-    private onBattleComplete() {
+    private onBattleComplete(aData: GameCompleteData) {
         this.logDebug(`onBattleComplete...`);
+        GameEventDispatcher.battleComplete(aData);
+    }
+
+    private onBattleDisconnect() {
+        this.logDebug(`onBattleDisconnect...`);
+        alert(`Disconnect...`);
+        GameEventDispatcher.dispatchEvent(GameEvent.GALAXY_MODE);
+        this.switchSceneToGalaxy();
+    }
+
+    private switchSceneToGalaxy() {
+        GameEventDispatcher.dispatchEvent(GameEvent.GALAXY_MODE);
         this._battleScene.hide();
         this._battleScene.clear();
         this._galaxyScene.show();
@@ -124,8 +195,8 @@ export class GameEngine extends MyBasicClass {
             this.initDebugGui();
         }
         this.initSkybox();
-        this.initGalaxy();
-        this.initBattle();
+        this.initGalaxyScene();
+        this.initBattleScene();
         this.animate();
     }
 

@@ -1,40 +1,99 @@
+import { BoxOpenData, ExpData, GameCompleteData } from "../battle/Types";
 
-export const GameEvents = {
-
-    EVENT_LOADING: 'GAME_LOADING',
-    EVENT_LOADED: 'GAME_LOADED',
-    EVENT_GAME_CREATED: 'GAME_CREATED',
-    EVENT_GAME_FULSCREEN: 'GAME_FULLSCREEN',
+export enum GameEvent {
+    GAME_LOADING = 'GAME_LOADING',
+    GAME_LOADED = 'GAME_LOADED',
+    GAME_CREATED = 'GAME_CREATED',
+    GAME_FULLSCREEN = 'GAME_FULLSCREEN',
 
     /**
      * starData: ServerStarData
      * pos2d: { x, y }
      */
-    EVENT_SHOW_STAR_PREVIEW: 'SHOW_STAR_PREVIEW',
-    EVENT_HIDE_STAR_PREVIEW: 'HIDE_STAR_PREVIEW',
+    SHOW_STAR_PREVIEW = 'SHOW_STAR_PREVIEW',
+    HIDE_STAR_PREVIEW = 'HIDE_STAR_PREVIEW',
 
     /**
      * pos3d: {x, y, z}
      * pos2d: { x, y }
      */
-    EVENT_PHANTOM_STAR_PREVIEW: 'PHANTOM_STAR_PREVIEW',
+    PHANTOM_STAR_PREVIEW = 'PHANTOM_STAR_PREVIEW',
 
     /**
      * starData: ServerStarData
      * scale
      */
-    EVENT_SHOW_STAR_GUI: 'SHOW_STAR_GUI',
-    EVENT_HIDE_STAR_GUI: 'HIDE_STAR_GUI',
+    SHOW_STAR_GUI = 'SHOW_STAR_GUI',
+    HIDE_STAR_GUI = 'HIDE_STAR_GUI',
 
-    EVENT_GALAXY_MODE: 'EVENT_GALAXY_MODE',
-    EVENT_STAR_MODE: 'EVENT_STAR_MODE',
+    GALAXY_MODE = 'GALAXY_MODE',
+    STAR_MODE = 'STAR_MODE',
 
-    EVENT_SHOW_REAL_MODE: 'SHOW_REAL_MODE',
-    EVENT_SHOW_PHANTOM_MODE: 'SHOW_PHANTOM_MODE',
+    SHOW_REAL_MODE = 'SHOW_REAL_MODE',
+    SHOW_PHANTOM_MODE = 'SHOW_PHANTOM_MODE',
 
-    dispatchEvent: (aEventName: string, aData: any = {}) => {
+    // BATTLE
+    BATTLE_SEARCHING_START = 'BATTLE_SEARCHING_START',
+    BATTLE_SEARCHING_STOP = 'BATTLE_SEARCHING_STOP',
+    /**
+     * reason: string
+    */
+    BATTLE_SEARCHING_ERROR = 'BATTLE_SEARCHING_ERROR',
+    BATTLE_PREROLL_SHOW = 'BATTLE_PREROLL_SHOW',
+    // battle results
+    BATTLE_COMPLETE_SHOW = 'BATTLE_COMPLETE_SHOW',
+    BATTLE_COMPLETE_HIDE = 'BATTLE_COMPLETE_HIDE',
+    SHOW_BOX_OPEN = 'SHOW_BOX_OPEN',
+    // battle process
+    BATTLE_EXP_DATA = 'BATTLE_EXP_DATA',
+}
+
+export class GameEventDispatcher {
+
+    static dispatchEvent(aEventName: GameEvent, aData: any = {}) {
         aData.eventName = aEventName;
         window.dispatchEvent(new CustomEvent('gameEvent', { detail: aData }));
+    }
+
+    static battlePrerollShow(aData: {
+        timer: number,
+        playerWallet: string,
+        enemyWallet: string
+    }) {
+        aData[`eventName`] = GameEvent.BATTLE_PREROLL_SHOW;
+        window.dispatchEvent(new CustomEvent('gameEvent', {
+            detail: aData
+        }));
+    }
+
+    static battleComplete(aData: GameCompleteData) {
+        aData[`eventName`] = GameEvent.BATTLE_COMPLETE_SHOW;
+        window.dispatchEvent(new CustomEvent('gameEvent', {
+            detail: aData
+        }));
+    }
+
+    static battleCompleteHide() {
+        let data = {
+            eventName: GameEvent.BATTLE_COMPLETE_HIDE
+        };
+        window.dispatchEvent(new CustomEvent('gameEvent', {
+            detail: data
+        }));
+    }
+
+    static battleExpUpdate(aData: ExpData) {
+        aData[`eventName`] = GameEvent.BATTLE_EXP_DATA;
+        window.dispatchEvent(new CustomEvent('gameEvent', {
+            detail: aData
+        }));
+    }
+    
+    static showBoxOpenScreen(aData: BoxOpenData) {
+        aData[`eventName`] = GameEvent.SHOW_BOX_OPEN;
+        window.dispatchEvent(new CustomEvent('gameEvent', {
+            detail: aData
+        }));
     }
 
 }

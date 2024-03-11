@@ -1,7 +1,7 @@
 export function formatNumber(
   number: number,
   options: Intl.NumberFormatOptions = {
-    maximumFractionDigits: 2
+    maximumFractionDigits: 4
   }
 ) {
   if (number === undefined) {

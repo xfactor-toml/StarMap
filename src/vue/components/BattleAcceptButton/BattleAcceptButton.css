@@ -1,0 +1,18 @@
+.BattleAcceptButton {
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  pointer-events: all;
+  transition: ease transform 300ms;
+  will-change: transform;
+  outline: none;
+}
+
+.BattleAcceptButton:hover {
+  transform: scale(1.025);
+}
+
+.BattleAcceptButton:active {
+  transform: scale(0.975);
+}

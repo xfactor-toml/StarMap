@@ -1,0 +1,81 @@
+.BaseSkill {
+  position: relative;
+  z-index: 0;
+  margin-bottom: 20px;
+}
+
+
+.BaseSkill.isDisabled {
+  opacity: 0.5;
+  filter: blur(1px);
+}
+
+.BaseSkill__levelUp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  position: absolute;
+  top: calc(100% - 10px);
+  left: -8px;
+  z-index: -1;
+  background-color: transparent;
+  border: none;
+  color: #050A26;
+  cursor: pointer;
+  transition: ease transform 200ms;
+  will-change: transform;
+}
+
+.BaseSkill__levelUp[disabled] {
+  pointer-events: none;
+  user-select: none;
+}
+
+.BaseSkill__levelUp:hover {
+  transform: scale(1.05);
+}
+
+.BaseSkill__levelUp:active {
+  transform: scale(0.95);
+}
+
+.BaseSkill__levelUp svg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  filter: drop-shadow(0px 0px 30px rgba(0, 255, 246, 0.75));
+}
+
+.BaseSkill__levelUpText {
+  position: relative;
+  top: -2px;
+  font-family: "Exo 2";
+  font-weight: 600;
+  font-size: 27px;
+  line-height: 1;
+}
+
+.BaseSkill__levelBar {
+  display: flex;
+  gap: 2px;
+  position: absolute;
+  right: 0;
+  top: calc(100% - 7px);
+  transform: rotate(-32deg);
+}
+
+.BaseSkill__level {
+  width: 5px;
+  height: 5px;
+  background-color: rgba(0, 255, 255, 0.3);
+}
+
+.BaseSkill__level.active {
+  background-color: #00FFFF;
+}

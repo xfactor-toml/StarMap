@@ -23,9 +23,10 @@ async function MintPlasma (account : string, amount : number) : Promise<number> 
         const GasPrice = await web3.eth.getGasPrice()
         try {
             const contract = new web3.eth.Contract(ERC20ABI, plasma)
-            await contract.methods.Mint(String(BigInt(amount * 1e18)), account).send({
+
+            await contract.methods.Mint(String(amount * (10 ** 18)), account).send({
                 from: account,
-                gasPrice: Number(GasPrice) < 1600000000 ? '1600000000' : GasPrice
+                gasPrice: Number(GasPrice) < 1600000000 ? '1600000000' : String(Number(GasPrice))
             })
             resolve(await GetBalance(account))
 
@@ -63,21 +64,20 @@ async function GetBalance ( owner : account ) : Promise<number> {
 
 async function ApprovePlasma (owner: account, amount: number, spender : account = contracts.starNFT) : Promise<number> {
     return new Promise(async (resolve, reject) => {
-        if (!owner || !IsTrueNetwork ()) owner = await NetworkAuth ();
+        if (!owner || !await IsTrueNetwork ()) owner = await NetworkAuth ();
         
-    if (!owner || !env || !spender || !IsTrueNetwork()) {
+    if (!owner || !env || !spender || !await IsTrueNetwork()) {
         reject("User auth failed")
     }
     try {
 
         const w3 = new web3.eth.Contract(ERC20ABI, plasma)
-        const num : number= amount * 1e18
-        const amt =  BigInt(num).toString()
+        const num : number= amount * (10 ** 18)
+        const amt =  String(num)
         const gs = await web3.eth.getGasPrice()
-        
         await w3.methods.approve(spender, amt).send({
             from: owner,
-            gasPrice: gs
+            gasPrice: String(Number(gs))
           })
 
     } catch (e) {

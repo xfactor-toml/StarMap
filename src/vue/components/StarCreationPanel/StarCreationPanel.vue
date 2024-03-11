@@ -95,7 +95,7 @@ import { mobileUrl } from '~/blockchain/config';
 import { roundNumber } from '@/utils';
 import { PropType } from 'vue';
 import { Star, StarPosition } from '@/models';
-import { useSettingsStore, useStarsStore, useWalletStore } from '@/stores';
+import { useSettingsStore, useStarsStore, useUiStore, useWalletStore } from '@/stores';
 import { mapStores } from 'pinia';
 
 export default {
@@ -117,7 +117,7 @@ export default {
     starName: ''
   }),
   computed: {
-    ...mapStores(useSettingsStore, useStarsStore, useWalletStore),
+    ...mapStores(useSettingsStore, useStarsStore, useUiStore, useWalletStore),
     roundedBalance() {
       return roundNumber(this.balance, this.balance > 1000 ? 2 : 4);
     },
@@ -159,7 +159,7 @@ export default {
     async approve() {
       this.approving = true;
 
-      const approvedPlasma = await this.$wallet.approvePlasma(this.creationCost);
+      const approvedPlasma = await this.$wallet.provider.approvePlasma(this.creationCost);
 
       this.approving = false;
       this.approved = approvedPlasma >= this.creationCost;
@@ -167,7 +167,7 @@ export default {
     async create() {
       this.creating = true;
 
-      const createdStar = await this.$wallet.createStar(
+      const createdStar = await this.$wallet.provider.createStar(
         this.starName,
         this.starPosition.galaxy.toContractFormat()
       );
@@ -180,18 +180,18 @@ export default {
 
       this.createdStar = new Star(createdStar);
       this.starsStore.addStar(this.createdStar);
-      this.settingsStore.hideStarTooltip();
+      this.uiStore.star.hideStarTooltip();
 
       this.$client.onStarCreated(this.createdStar);
     }
   },
   async mounted() {
     this.fetching = true;
-    this.balance = await this.$wallet.getBalance();
-    this.creationCost = await this.$wallet.getCreationCost();
+    this.balance = await this.$wallet.provider.getBalance();
+    this.creationCost = await this.$wallet.provider.getCreationCost();
 
     if (this.walletStore.connected) {
-      this.$refs.input?.focus();
+      (this.$refs.input as HTMLElement)?.focus();
     }
 
     this.fetching = false;

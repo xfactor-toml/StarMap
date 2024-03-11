@@ -3,6 +3,9 @@ node_modules/
 dist/
 build/
 .VSCodeCounter
+yarn.lock
+package-lock.json
+.env.local
 
 # Compiled Java class files
 *.class
@@ -45,3 +48,4 @@ Thumbs.db
 *.mov
 *.wmv
 .vercel
+.env

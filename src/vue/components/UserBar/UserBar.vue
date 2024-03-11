@@ -33,33 +33,48 @@
       @mouseenter="$client.onHover()"
       @click="toggleSettings"
     />
-    <div
-      v-if="walletStore.connected"
-      class="UserBar__account"
-    >{{ walletStore.shortAddress }}</div>
+    <template v-if="walletStore.connected">
+      <template v-if="userBoxes.length > 0">
+        <button
+          class="UserBar__button is-box"
+          :data-count="userBoxes.length"
+          @mouseenter="$client.onHover()"
+          @click="openBox"
+        />
+      </template>
+      <div class="UserBar__account">
+        {{ walletStore.shortAddress }}
+      </div>
+    </template>
     <button
       v-else
       class="UserBar__button is-wallet"
-      :class="{ active: settingsVisible }"
+      :class="{ active: walletConnectVisible }"
       @mouseenter="$client.onHover()"
-      @click="connect"
+      @click="openWalletConnect"
     />
+    <div
+      class="UserBar__popup"
+      v-if="walletConnectVisible"
+    >
+      <WalletConnectPopup
+        @close="hideWalletConnect"
+      />
+    </div>
     <div
       class="UserBar__popup"
       v-if="settingsVisible"
       v-click-outside="hideSettingsPopup"
     >
       <SettingsPopup
-        :fullscreen="settingsStore.fullscreen"
-        :musicVolume="settingsStore.musicVolume"
-        :sfxVolume="settingsStore.sfxVolume"
-        @setMusicVolume="settingsStore.changeMusicVolume"
-        @setSfxVolume="settingsStore.changeSfxVolume"
+        :fullscreen="uiStore.fullscreen.active"
+        :musicVolume="settingsStore.volume.music"
+        :sfxVolume="settingsStore.volume.sfx"
+        @click="$client.onClick()"
+        @hover="$client.onHover()"
+        @setMusicVolume="settingsStore.volume.changeMusicVolume"
+        @setSfxVolume="settingsStore.volume.changeSfxVolume"
         @toggleFullscreen="$client.toggleFullscreen()"
-        @volumeButtonClick="$client.onClick()"
-        @volumeButtonHover="$client.onHover()"
-        @fullscreenToggleClick="$client.onClick()"
-        @fullscreenToggleHover="$client.onHover()"
       />
     </div>
   </div>
@@ -69,15 +84,18 @@
 
 import { SettingsPopup } from '@/components/SettingsPopup';
 import { SearchInput } from '@/components/SearchInput';
-import { useSettingsStore, useWalletStore } from '@/stores';
+import { WalletConnectPopup } from '@/components/WalletConnectPopup';
+import { useBattleStore, useScenesStore, useSettingsStore, useUiStore, useWalletStore } from '@/stores';
 import { default as vClickOutside } from 'click-outside-vue3';
 import { mapStores } from 'pinia';
+import { SceneName } from '@/types';
 
 export default {
   name: 'UserBar',
   components: {
     SearchInput,
     SettingsPopup,
+    WalletConnectPopup,
   },
   directives: {
     clickOutside: vClickOutside.directive
@@ -85,7 +103,8 @@ export default {
   data: () => ({
     settingsVisible: false,
     searchVisible: false,
-    searchKey: ''
+    searchKey: '',
+    walletConnectVisible: false,
   }),
   watch: {
     searchKey() {
@@ -93,18 +112,25 @@ export default {
     }
   },
   computed: {
-    ...mapStores(useSettingsStore, useWalletStore),
+    ...mapStores(useBattleStore, useSettingsStore, useScenesStore, useUiStore, useWalletStore),
+    userBoxes() {
+      return this.battleStore.rewards.boxesIds
+    }
   },
   methods: {
-    connect() {
-      this.$wallet.connect();
-    },
     toggleSettings() {
       this.$client.onClick();
       this.settingsVisible = !this.settingsVisible;
     },
     hideSettingsPopup() {
       this.settingsVisible = false;
+    },
+    openWalletConnect() {
+      this.$client.onClick();
+      this.walletConnectVisible = true
+    },
+    hideWalletConnect() {
+      this.walletConnectVisible = false;
     },
     openSearchField() {
       if (!this.searchKey) {
@@ -121,9 +147,13 @@ export default {
       this.searchVisible = false;
       this.searchKey = ''
     },
+    openBox() {
+      this.scenesStore.setScene(SceneName.Battle, {
+        mode: 'rewards'
+      });
+    }
   },
 };
-
 </script>
 
 <style scoped src="./UserBar.css"></style>

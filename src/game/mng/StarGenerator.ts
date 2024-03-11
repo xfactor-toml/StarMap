@@ -1,11 +1,10 @@
 import * as THREE from "three";
-import { PHANTOM_BIG_STAR_COLOR, PHANTOM_STAR_COLOR, RACES, STAR_COLOR_2 } from "../data/DB";
+import { PHANTOM_BIG_STAR_COLOR, PHANTOM_STAR_COLOR, STAR_COLOR_2 } from "../data/DB";
 import { Settings } from "../data/Settings";
 import { GalaxyCircleParams, GalaxyParams, GalaxySmallParams, GalaxyStarParams, ServerStarData } from "../data/Types";
 import { ILogger } from "../interfaces/ILogger";
 import { LogMng } from "../utils/LogMng";
 import { MyMath } from "../utils/MyMath";
-import { InterpolationUtils } from "../utils/InterpolateUtils";
 import { EaseUtils } from "../utils/EaseUtils";
 
 export class StarGenerator implements ILogger {
@@ -170,7 +169,6 @@ export class StarGenerator implements ILogger {
             }
 
             let life = MyMath.randomIntInRange(0, 100);
-            let race = MyMath.randomIntInRange(0, RACES.length - 1);
             let position = {
                 x: Math.trunc(px * xScale * 1000000) / 1000000,
                 y: Math.trunc(offsetH * 1000000) / 1000000,

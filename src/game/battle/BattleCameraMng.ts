@@ -10,9 +10,9 @@ import gsap from 'gsap';
 type BattleCameraMode = 'static' | 'orbit';
 
 type MoveData = {
-    duration: number,
     aCamPos,
-    aTargetPos?
+    aTargetPos?,
+    duration?: number,
 }
 
 enum States {
@@ -96,32 +96,44 @@ export class BattleCameraMng extends MyEventDispatcher implements IUpdatable {
     }
 
     private onIdleUpdate() {
-        if (this._orbitControl?.enabled) this._orbitControl.update();
+        if (this._orbitControl?.enabled) {
+            this._orbitControl.update();
+        }
+        else {
+            this._camera.lookAt(this._cameraTarget);
+        }
     }
 
     private onMovingEnter(aData: MoveData) {
 
         let cp = aData.aCamPos;
-        gsap.to(this._camera.position, {
-            x: cp.x,
-            y: cp.y,
-            z: cp.z,
-            duration: aData.duration,
-            ease: 'sine.inOut',
-            onComplete: () => {
-                this._fsm.startState(States.Idle);
-            }
-        });
-
         let tp = aData.aTargetPos;
-        if (tp) {
-            gsap.to(this._cameraTarget, {
-                x: tp.x,
-                y: tp.y,
-                z: tp.z,
+
+        if (aData.duration > 0) {
+            gsap.to(this._camera.position, {
+                x: cp.x,
+                y: cp.y,
+                z: cp.z,
                 duration: aData.duration,
-                ease: 'sine.inOut'
+                ease: 'sine.inOut',
+                onComplete: () => {
+                    this._fsm.startState(States.Idle);
+                }
             });
+            if (tp) {
+                gsap.to(this._cameraTarget, {
+                    x: tp.x,
+                    y: tp.y,
+                    z: tp.z,
+                    duration: aData.duration,
+                    ease: 'sine.inOut'
+                });
+            }
+        }
+        else {
+            this._camera.position.set(cp.x, cp.y, cp.z);
+            if (tp) this._cameraTarget.set(tp.x, tp.y, tp.z);
+            this._fsm.startState(States.Idle);
         }
     }
 

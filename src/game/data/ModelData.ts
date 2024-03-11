@@ -1,14 +1,18 @@
 
 export enum ModelAlias {
-    Fighter = 'Fighter',
-    BattleShip = 'BattleShip',
+    FighterWaters = 'FighterWaters',
+    BattleShipWaters = 'BattleShipWaters',
+    FighterInsects = 'FighterInsects',
+    BattleShipInsects = 'BattleShipInsects',
 };
 
 /**
  * Parent dirrectory is ./assets/models/
  */
 export const MODEL_LOAD_LIST = [
-    { alias: ModelAlias.Fighter, file: 'battle/space11/fbx/spch3.fbx' },
-    // { alias: ModelAlias.BattleShip, file: 'battle/space44/fbx/spaceship444.obj' },
+    { alias: ModelAlias.FighterWaters, file: 'battle/FighterAqua.fbx' },
+    { alias: ModelAlias.BattleShipWaters, file: 'battle/BattleShipAqua.fbx' },
+    { alias: ModelAlias.FighterInsects, file: 'battle/FighterInsect.fbx' },
+    { alias: ModelAlias.BattleShipInsects, file: 'battle/BattleShipInsect.fbx' },
 
 ];

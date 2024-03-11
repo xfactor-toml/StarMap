@@ -479,9 +479,8 @@
 <script lang="ts">
 import { StarHudParam } from '@/models';
 import { useStarsStore, useWalletStore } from '@/stores';
-import { formatNumber } from '@/utils';
+import { formatNumber, MyMath } from '@/utils';
 import { mapStores } from 'pinia';
-import { MyMath } from '~/game/utils/MyMath';
 
 export default {
   name: 'StarPanel',
@@ -508,7 +507,7 @@ export default {
       return this.starsStore.getById(this.starId);
     },
     isOwner() {
-      return this.star.owner === this.walletStore.account;
+      return this.walletStore.isOwner(this.star.owner);
     },
     description() {
       return `Federation of ${this.star.description.toLowerCase()}`;
@@ -562,7 +561,7 @@ export default {
       this.$emit('callStarBoost', { type: 'energy', starId: this.star.id });
     },
     async fetchData() {
-      this.creationCost = await this.$wallet.getCreationCost(this.star.params.level + 1);
+      this.creationCost = await this.$wallet.provider.getCreationCost(this.star.params.level + 1);
     }
   },
   async created() {

@@ -1,9 +1,20 @@
 import { connect, env, mobileUrl, networkParams, reserveRpcs, walletChangingEventName } from "../config";
 import { account } from "../types";
 
-export function IsTrueNetwork(): boolean {
+let walletAddress = '';
+
+export function getWalletAddress(): string {
+    return walletAddress;
+}
+
+export function isWalletConnected(): boolean {
+    return walletAddress != '';
+}
+
+export async function IsTrueNetwork(): Promise<boolean> {
     if (!env) return false
-    return env.chainId === networkParams.networkHexID;
+    const network = await env.request({ method: "eth_chainId" });
+    return network === networkParams.networkHexID;
 }
 
 async function NetworkAuth(): Promise<account> {
@@ -12,6 +23,7 @@ async function NetworkAuth(): Promise<account> {
             // Checking mobile device
             if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
                 document.location.href = mobileUrl;
+                walletAddress = '';
                 resolve("");
             } else {
                 reject("Wallet not found");
@@ -20,9 +32,8 @@ async function NetworkAuth(): Promise<account> {
 
         try {
             const accs = await env.request({ method: "eth_requestAccounts" }, connect)
-            const network = env.chainId
     
-            if (network !== networkParams.networkHexID) {
+            if (!await IsTrueNetwork()) {
     
                 await env.request({
                     method: 'wallet_addEthereumChain',
@@ -39,15 +50,18 @@ async function NetworkAuth(): Promise<account> {
                 })
             }
     
-            if (!IsTrueNetwork()) {
+            if (!await IsTrueNetwork()) {
+                walletAddress = '';
                 reject("User had refused to connect with using network");
             }
 
             if (!accs[0]) {
+                walletAddress = '';
                 reject("User wallet address not found");
             }
-    
-            resolve(accs[0]);
+            
+            walletAddress = accs[0];
+            resolve(walletAddress);
     
         } catch (e) {
             reject(e.message);

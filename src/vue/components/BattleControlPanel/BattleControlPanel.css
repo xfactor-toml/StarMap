@@ -1,0 +1,19 @@
+.BattleControlPanel {
+  display: flex;
+  flex-direction: column;
+}
+
+.BattleControlPanel__row {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.BattleControlPanel__row + .BattleControlPanel__row {
+  margin-top: -8px;
+}
+
+.BattleControlPanel__row > * {
+  pointer-events: all;
+}

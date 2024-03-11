@@ -10,7 +10,7 @@ import { SMAAPass } from "three/examples/jsm/postprocessing/SMAAPass";
 import { LogMng } from "../utils/LogMng";
 import { Settings } from "../data/Settings";
 import { FrontEvents } from "../events/FrontEvents";
-import { GameEvents } from "../events/GameEvents";
+import { GameEvent, GameEventDispatcher } from "../events/GameEvents";
 import { GameUtils } from "../math/GameUtils";
 
 
@@ -71,11 +71,11 @@ export class GameRenderer {
         FrontEvents.toggleFullscreen.add(() => {
             if (!document.fullscreenElement) {
                 document.body.requestFullscreen();
-                GameEvents.dispatchEvent(GameEvents.EVENT_GAME_FULSCREEN, { v: true });
+                GameEventDispatcher.dispatchEvent(GameEvent.GAME_FULLSCREEN, { v: true });
             }
             else {
                 document.exitFullscreen();
-                GameEvents.dispatchEvent(GameEvents.EVENT_GAME_FULSCREEN, { v: false });
+                GameEventDispatcher.dispatchEvent(GameEvent.GAME_FULLSCREEN, { v: false });
             }
         }, this);
 
