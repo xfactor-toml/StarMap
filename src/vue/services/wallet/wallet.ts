@@ -13,7 +13,7 @@ export class WalletService {
   connected = false;
   installed = false;
   currency = 'plasma';
-  provider: BaseProvider = new ReaderProvider()
+  provider: BaseProvider = new ReaderProvider();
 
   stateListeners = []
 
