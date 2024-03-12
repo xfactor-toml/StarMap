@@ -1,5 +1,5 @@
 import Web3 from "web3";
-import { contracts, env, maxStarLevel, plasmaDecimals, reserveRpcs } from "../config";
+import { contracts, env, fastDataServerUrl, maxStarLevel, plasmaDecimals, reserveRpcs } from "../config";
 import { Coords, GameStats, Race, StarData, StarList, StarParams, account, fuelTarget } from "../types";
 import { ERC20ABI, StarNFTABI } from "../ABI";
 import { ApprovePlasma, GetAllowance } from "./plasma";
@@ -210,6 +210,32 @@ async function CreateNewStar (owner : account, name : string, uri = `${document.
 
 }
 
+async function GetStarDataFromServer(): Promise<StarList> {
+    return new Promise(async (reslove, reject) => {
+        const url = fastDataServerUrl.concat('api/getstarlist');
+        try {
+            const response = await fetch(url);
+            const data: StarList = await response.json();
+            reslove(data);
+        }  catch (e) {
+            reject(e.message);
+        }
+    })
+}
+
+async function RequestToUpdateStars() {
+    return new Promise(async (resolve, reject) => {
+        const url = fastDataServerUrl.concat('api/updatestars');
+        try {
+            const response = await fetch(url, {method: 'POST'});
+            const data = await response.json();
+            resolve(data);
+        } catch (e) {
+                reject(e.message);
+            }
+    })
+}
+
 async function RefuelStar ( account : account, 
                             starId : number, 
                             amount : number, 
@@ -336,6 +362,8 @@ async function GetStarStats ( starId : number) : Promise<GameStats> {
 
 export {
     RequiredPlasmaToApprove,
+    GetStarDataFromServer,
+    RequestToUpdateStars,
     GetAllStarData,
     GetSingleStarData,
     CreateNewStar,
