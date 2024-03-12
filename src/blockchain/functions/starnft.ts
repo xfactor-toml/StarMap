@@ -236,6 +236,22 @@ async function RequestToUpdateStars() {
     })
 }
 
+async function RequestToUpdateOneStar (starId: number) {
+    return new Promise(async (resolve, reject) => {
+        if (starId < 0 || isNaN(starId)) {
+            reject("Invalid id")
+        }
+        const url = fastDataServerUrl.concat(`api/updateonestar/${Math.ceil(starId)}`);
+        try {
+            const response = await fetch(url, {method: 'POST'});
+            const data = await response.json();
+            resolve(data);
+        } catch (e) {
+                reject(e.message);
+            }
+    })
+}
+
 async function RefuelStar ( account : account, 
                             starId : number, 
                             amount : number, 
@@ -364,6 +380,7 @@ export {
     RequiredPlasmaToApprove,
     GetStarDataFromServer,
     RequestToUpdateStars,
+    RequestToUpdateOneStar,
     GetAllStarData,
     GetSingleStarData,
     CreateNewStar,
