@@ -9,6 +9,7 @@ import {
   RequiredPlasmaToApprove
 } from "~/blockchain";
 import { getBoxData, getLaserLevel, getUserBoxesToOpen } from "~/blockchain/boxes";
+import { GetStarDataFromServer } from "~/blockchain/functions/starnft";
 import { Coords, StarData, StarList, fuelTarget } from "~/blockchain/types";
 
 export abstract class BaseProvider {
@@ -57,7 +58,8 @@ export abstract class BaseProvider {
   }
 
   async getStars(): Promise<StarList> {
-    return GetAllStarData();
+    // return GetAllStarData();
+    return GetStarDataFromServer();
   }
 
   async getStarById(starId: number): Promise<StarData> {
