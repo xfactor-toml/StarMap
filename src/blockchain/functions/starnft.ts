@@ -55,7 +55,6 @@ async function GetCreationCost (level : number = 1) : Promise<number> {
     })
 }
 
-
 async function GetAllStarData () : Promise<StarList> {
     return new Promise(async (reslove, reject) => {
         const stars : StarList = []
