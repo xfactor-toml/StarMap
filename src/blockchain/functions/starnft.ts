@@ -177,18 +177,7 @@ async function CreateNewStar (owner : account, name : string, uri = `${document.
                 reject("Not enough approved plasma")
                 return null
             }
-        /* if (requiredToAllow > 0) {
-            // return null
 
-            try {
-                const allowed = await ApprovePlasma(owner, requiredToAllow)
-                if (allowed < requiredToAllow) {
-                    return null
-                }
-            } catch (e) {
-                return null
-            }
-        } */
             const coordX = String(Math.round(coords.X * 1000000))
             const coordY = String(Math.round(coords.Y * 1000000))
             const coordZ = String(Math.round(coords.Z * 1000000))
@@ -199,6 +188,11 @@ async function CreateNewStar (owner : account, name : string, uri = `${document.
               })
             const count = await GetStarsCount ()
             if (count > 0) {
+                try {
+                    RequestToUpdateOneStar(count - 1);
+                } catch (e) {
+                    console.error(e.message);
+                }
                const data = await GetSingleStarData(count - 1);
                resolve(data);
             }
@@ -269,20 +263,6 @@ async function RefuelStar ( account : account,
             return null;
         }
 
-            /* if (allowedAmount < amount) {
-          
-        // return null
-         const demand = amount - allowedAmount
-        try {
-            const allowed = await ApprovePlasma(account, demand)
-            if (allowed < amount) {
-                return null
-            }
-        } catch (e) {
-            return null
-        }
-      } */
-
       try {
         const fuel = String(amount * (10 ** 18))
 		const gs = await web3.eth.getGasPrice()
@@ -297,7 +277,11 @@ async function RefuelStar ( account : account,
 				gasPrice: String(gs)
               })
         }
-
+        try {
+            RequestToUpdateOneStar(starId);
+        } catch (e) {
+            console.error(e.message);
+        }
         const result =  await GetSingleStarData(starId);
         resolve(result);
       } catch (e) {
@@ -332,25 +316,18 @@ async function IncreaseStarLevel (owner : account, starId : number) : Promise<St
                 reject("Approved plasma not enough");
                 return null;
             }
-            
-    /* if (requireApprove > 0) {
-        // return null
-        try {
-            const allowed = await ApprovePlasma(owner, requireApprove, nft)
-            if (allowed < requireApprove) {
-                return null
-            }
-        } catch (e) {
-            return null
-        }
-    } */
 
     const gs = await web3.eth.getGasPrice()
     await writeable.methods.IncreaseStarLevel(starId).send({
         from: owner,
         gasPrice: String(gs)
     })
-    const result = await GetSingleStarData(starId)
+    const result = await GetSingleStarData(starId);
+    try {
+        RequestToUpdateOneStar(starId);
+    } catch (e) {
+        console.error(e.message);
+    }
      resolve(result);
         } catch (e) {
             reject(e.message);
