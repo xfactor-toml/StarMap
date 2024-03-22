@@ -22,6 +22,7 @@ import { FieldGrid } from '../objects/battle/FieldGrid';
 import { ThreeUtils } from '../utils/threejs/ThreejsUtils';
 import { DamageViewer } from './DamageViewer';
 import { Tower } from '../objects/battle/Tower';
+import { HomingMissile } from '../objects/battle/HomingMissile';
 
 type ServerFieldParams = {
 
@@ -310,6 +311,8 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     private onObjectCreatePack(aData: ObjectCreateData) {
         let obj: BattleObject;
 
+        // this.logDebug(`onObjectCreatePack(): ${aData.type}:`, aData);
+
         switch (aData.type) {
 
             case 'Star':
@@ -331,7 +334,10 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             case 'Planet':
                 obj = new BattlePlanet(aData);
                 if (aData.pos) obj.position.copy(this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z }));
-                if (aData.q) obj.setQuaternion(aData.q);
+                if (aData.q) {
+                    obj.setQuaternion(aData.q);
+                    obj.setTargetQuaternion(aData.q);
+                }
                 this._objects.set(aData.id, obj);
                 break;
             
@@ -355,6 +361,11 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                     obj.position.copy(clientPos);
                 }
 
+                if (aData.q) {
+                    obj.setQuaternion(aData.q);
+                    obj.setTargetQuaternion(aData.q);
+                }
+
                 // add hp bar
                 this._objectHpViewer.addBar(obj);
                 break;
@@ -374,6 +385,11 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                     obj.position.copy(clientPos);
                 }
 
+                if (aData.q) {
+                    obj.setQuaternion(aData.q);
+                    obj.setTargetQuaternion(aData.q);
+                }
+
                 if (aData.lookDir) obj.lookByDir(aData.lookDir);
 
                 // add hp bar
@@ -381,7 +397,6 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             } break;
 
             case 'BattleShip': {
-                this.logDebug(`onObjectCreatePack(): BattleShip:`, aData);
                 obj = new Linkor({
                     ...aData,
                     ...{
@@ -394,6 +409,42 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 if (aData.pos) {
                     const clientPos = this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z });
                     obj.position.copy(clientPos);
+                }
+
+                if (aData.q) {
+                    obj.setQuaternion(aData.q);
+                    obj.setTargetQuaternion(aData.q);
+                }
+
+                if (aData.lookDir) obj.lookByDir(aData.lookDir);
+
+                // add hp bar
+                this._objectHpViewer.addBar(obj);
+            } break;
+
+            case 'HomingMissile': {
+                obj = new HomingMissile({
+                    ...aData,
+                    ...{
+                        race: this.isCurrentOwner(aData.owner) ? 'Waters' : 'Insects',
+                        light: {
+                            parent: this._dummyMain,
+                            ...SETTINGS.towers.light,
+                            color: this.isCurrentOwner(aData.owner) ? SETTINGS.towers.light.ownerColor : SETTINGS.towers.light.enemyColor
+                        },
+                        showRadius: DEBUG_GUI.showObjectRadius,
+                        showAttackRadius: DEBUG_GUI.showObjectAttackRadius
+                    }
+                });
+
+                if (aData.pos) {
+                    const clientPos = this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z });
+                    obj.position.copy(clientPos);
+                }
+
+                if (aData.q) {
+                    obj.setQuaternion(aData.q);
+                    obj.setTargetQuaternion(aData.q);
                 }
 
                 if (aData.lookDir) obj.lookByDir(aData.lookDir);
@@ -424,13 +475,17 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 return;
             }
 
-            if (obj instanceof BattlePlanet) {
+            // if (obj instanceof BattlePlanet) {
                 // this.logDebug(`planet update:`, data);
-            }
+            // }
 
-            if (obj instanceof Linkor) {
+            // if (obj instanceof Linkor) {
                 // this.logDebug(`BattleShip update:`, data);
-            }
+            // }
+
+            // if (obj instanceof HomingMissile) {
+                // this.logDebug(`HomingMissile update:`, data);
+            // }
 
             if (data.pos) {
                 obj.targetPosition = {
@@ -440,7 +495,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             }
 
             if (data.q) {
-                obj.setQuaternion(data.q);
+                obj.setTargetQuaternion(data.q);
             }
 
             if (data.hp != undefined) {

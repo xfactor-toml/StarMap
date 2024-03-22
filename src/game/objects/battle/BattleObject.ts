@@ -185,8 +185,11 @@ export class BattleObject extends MyObject3D {
     }
 
     setQuaternion(q: { x, y, z, w }) {
+        this.quaternion.set(q.x, q.y, q.z, q.w);
+    }
+
+    setTargetQuaternion(q: { x, y, z, w }) {
         this._targetQuaternion.set(q.x, q.y, q.z, q.w);
-        // this.quaternion.set(q.x, q.y, q.z, q.w);
     }
 
     lookByDir(aDir: { x, y, z }) {
