@@ -68,23 +68,13 @@ export class BattleScene extends BasicScene {
     }
 
     protected onInit() {
+        this._connection = BattleConnection.getInstance();
         this._state = BattleSceneState.none;
-        this.initConnection();
+        this.initEvents();
         this.initSkybox();
         this.initView();
-        this.initEvents();
         this.initDebug();
-    }
-
-    private initConnection() {
-        this._connection = BattleConnection.getInstance();
-        this._connection.on(PackTitle.gameStart, this.onGameStartPack, this);
-        this._connection.on(PackTitle.gameComplete, this.onGameCompletePack, this);
-        this._connection.on(ConnectionEvent.disconnect, this.onSocketDisconnect, this);
-        this._connection.socket.on(PackTitle.exp, (aData: ExpData) => {
-            this.onExpUpdatePack(aData);
-        });
-
+        this._state = BattleSceneState.game;
     }
 
     private initSkybox() {
@@ -102,12 +92,33 @@ export class BattleScene extends BasicScene {
     }
 
     private initEvents() {
+        // connection
+        this._connection.on(PackTitle.gameComplete, this.onGameCompletePack, this);
+        this._connection.on(ConnectionEvent.disconnect, this.onSocketDisconnect, this);
+        this._connection.socket.on(PackTitle.exp, (aData: ExpData) => {
+            this.onExpUpdatePack(aData);
+        });
+        // front
         FrontEvents.onBattleExit.add(this.onFrontExitBattle, this);
         FrontEvents.onBattleAbilityClick.add(this.onFrontSkillClick, this);
         FrontEvents.onBattleAbilityLevelUpClick.add(this.onFrontSkillUpClick, this);
         FrontEvents.onBattleFinalClaimRewardClick.add(this.onFrontClaimRewardClick, this);
         FrontEvents.onBattleFinalClaimBoxClick.add(this.onFrontClaimBoxClick, this);
         FrontEvents.onBattleRewardCloseClick.add(this.onBattleRewardCloseClick, this);
+    }
+
+    private removeEvents() {
+        // connection
+        this._connection.remove(PackTitle.gameComplete, this.onGameCompletePack);
+        this._connection.remove(ConnectionEvent.disconnect, this.onSocketDisconnect);
+        this._connection.socket.removeListener(PackTitle.exp);
+        // front
+        FrontEvents.onBattleExit.remove(this.onFrontExitBattle, this);
+        FrontEvents.onBattleAbilityClick.remove(this.onFrontSkillClick, this);
+        FrontEvents.onBattleAbilityLevelUpClick.remove(this.onFrontSkillUpClick, this);
+        FrontEvents.onBattleFinalClaimRewardClick.remove(this.onFrontClaimRewardClick, this);
+        FrontEvents.onBattleFinalClaimBoxClick.remove(this.onFrontClaimBoxClick, this);
+        FrontEvents.onBattleRewardCloseClick.remove(this.onBattleRewardCloseClick, this);
     }
 
     private initDebug() {
@@ -179,18 +190,6 @@ export class BattleScene extends BasicScene {
     private onBattleRewardCloseClick() {
         // this.emit(BattleSceneEvent.onCloseBattle);
         this.closeScene();
-    }
-    
-    private onGameStartPack(aData: StartGameData) {
-        switch (aData.cmd) {
-            case 'start':
-                this._state = BattleSceneState.game;
-                // this.emit(BattleSceneEvent.onGameStart, aData);
-                break;
-            default:
-                this.logDebug(`onGameStartPack(): unknown cmd`, aData);
-                break;
-        }
     }
 
     private onGameCompletePack(aData: GameCompleteData) {
@@ -268,6 +267,7 @@ export class BattleScene extends BasicScene {
     }
 
     protected onFree() {
+        this.removeEvents();
         if (GlobalParams.isDebugMode) DebugGui.getInstance().clear();
         this._view.clear();
         this._view = null;

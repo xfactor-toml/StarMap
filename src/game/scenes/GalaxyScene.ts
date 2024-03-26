@@ -58,6 +58,7 @@ export class GalaxyScene extends BasicScene {
     }
     
     private initEvents() {
+        // front events
         FrontEvents.onLeftPanelGalaxyClick.add(this.onLeftPanelGalaxyClick, this);
         FrontEvents.onBotPanelPhantomClick.add(this.onBotPanelPhantomClick, this);
         FrontEvents.onBotPanelRealClick.add(this.onBotPanelRealClick, this);
@@ -65,11 +66,23 @@ export class GalaxyScene extends BasicScene {
         FrontEvents.onStarUpdated.add(this.onStarUpdated, this);
         FrontEvents.onBattleSearch.add(this.onFrontStarBattleSearch, this);
         FrontEvents.onBattleStopSearch.add(this.onFrontStopBattleSearch, this);
-
+        // battle server events
         let bc = BattleConnection.getInstance();
         bc.on(PackTitle.gameStart, this.onBattleStartPackage, this);
-        // bc.on(PackTitle.fieldInit, this.onBattleFieldInitPackage, this);
+    }
 
+    private freeEvents() {
+        // front events
+        FrontEvents.onLeftPanelGalaxyClick.remove(this.onLeftPanelGalaxyClick, this);
+        FrontEvents.onBotPanelPhantomClick.remove(this.onBotPanelPhantomClick, this);
+        FrontEvents.onBotPanelRealClick.remove(this.onBotPanelRealClick, this);
+        FrontEvents.onStarCreated.remove(this.onStarCreated, this);
+        FrontEvents.onStarUpdated.remove(this.onStarUpdated, this);
+        FrontEvents.onBattleSearch.remove(this.onFrontStarBattleSearch, this);
+        FrontEvents.onBattleStopSearch.remove(this.onFrontStopBattleSearch, this);
+        // battle server events
+        let bc = BattleConnection.getInstance();
+        bc.remove(PackTitle.gameStart, this.onBattleStartPackage);
     }
 
     private onLeftPanelGalaxyClick() {
@@ -234,6 +247,7 @@ export class GalaxyScene extends BasicScene {
     }
 
     protected onFree() {
+        this.freeEvents();
         if (GlobalParams.isDebugMode) DebugGui.getInstance().clear();
         this._galaxy.free();
         this._galaxy = null;
