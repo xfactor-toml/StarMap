@@ -1,20 +1,16 @@
 import { UAParser } from "ua-parser-js";
 
 export class DeviceInfo {
-    private static _instance: DeviceInfo = null;
+    private static _instance: DeviceInfo;
     private _parserResult: UAParser.IResult;
     // desktop or mobile
     private _desktop = false;
 
     private constructor() {
-
         if (DeviceInfo._instance) throw new Error("Don't use DeviceInfo.constructor(), it's SINGLETON, use getInstance() method");
-
         this._parserResult = new UAParser().getResult();
-
         let devTypes = ['console', 'mobile', 'tablet', 'smarttv', 'wearable', 'embedded'];
         this._desktop = devTypes.indexOf(this._parserResult.device.type) < 0;
-
     }
 
     static getInstance(): DeviceInfo {

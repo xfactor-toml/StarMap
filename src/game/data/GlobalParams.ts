@@ -30,7 +30,7 @@ export type GalaxyData = {
 /**
  * Global parameters
  */
-export class Settings {
+export class GlobalParams {
 
     static isDebugMode = false;
     static domCanvasParent: HTMLElement = null;
@@ -38,9 +38,6 @@ export class Settings {
     static domGuiParent: HTMLElement = null;
     static domRenderer: HTMLElement = null;
     static assetsPath = './assets/';
-
-    // utils
-    static datGui: datGui.GUI;
 
     // galaxy default data and varaibled
     static galaxyData: GalaxyData = {

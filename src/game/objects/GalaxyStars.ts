@@ -5,8 +5,8 @@ import star1Frag from "../shaders/galaxy/star_f.glsl";
 import star2Vert from "../shaders/galaxy/star2_v.glsl";
 import star2Frag from "../shaders/galaxy/star2_f.glsl";
 import { Signal } from "~/game/utils/events/Signal";
-import { Settings } from "~/game/data/Settings";
-import { IBaseClass } from "~/game/interfaces/IBaseClass";
+import { GlobalParams } from "~/game/data/GlobalParams";
+import { IBaseClass } from "~/game/core/interfaces/IBaseClass";
 
 const SHADER_1 = {
     vertex: star1Vert,
@@ -259,12 +259,12 @@ export class GalaxyStars extends THREE.Group implements IBaseClass {
     }
 
     updateUniformValues() {
-        this._material.uniforms.radiusMin.value = Settings.skyData.radiusMin;
-        this._material.uniforms.radiusMax.value = Settings.skyData.radiusMax;
-        this._material.uniforms.scaleMin.value = Settings.skyData.scaleMin;
-        this._material.uniforms.scaleMax.value = Settings.skyData.scaleMax;
-        this._material.uniforms.starSize.value = Settings.skyData.starSize;
-        this._material.uniforms.starAlpha.value = Settings.skyData.starAlpha;
+        this._material.uniforms.radiusMin.value = GlobalParams.skyData.radiusMin;
+        this._material.uniforms.radiusMax.value = GlobalParams.skyData.radiusMax;
+        this._material.uniforms.scaleMin.value = GlobalParams.skyData.scaleMin;
+        this._material.uniforms.scaleMax.value = GlobalParams.skyData.scaleMax;
+        this._material.uniforms.starSize.value = GlobalParams.skyData.starSize;
+        this._material.uniforms.starAlpha.value = GlobalParams.skyData.starAlpha;
     }
     
     free() {

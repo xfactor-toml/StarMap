@@ -24,7 +24,7 @@ export enum ThreeLoaderFileType {
 
 type LoaderParams = {
     retryCount?: number;
-    textureMapping?: THREE.Mapping;
+    // textureMapping?: THREE.Mapping;
 };
 
 type LoadItem = {
@@ -411,7 +411,7 @@ export class ThreeLoader {
             (aTexture: THREE.Texture) => {
                 this.logDebug(`loadTexture: Complete (${aAlias}) file(${aFile}):`, aTexture);
                 // pre setups
-                if (this._params.textureMapping) aTexture.mapping = this._params.textureMapping;
+                // if (this._params.textureMapping) aTexture.mapping = this._params.textureMapping;
                 // save to cache
                 this.cache[aAlias] = aTexture;
                 if (aCallbacks && aCallbacks.onComplete) aCallbacks.onComplete.call(aCallbacks.context);
@@ -472,7 +472,7 @@ export class ThreeLoader {
         rgbeLoader.load(aFile,
             (textureData: THREE.DataTexture) => {
                 // pre sets
-                if (this._params.textureMapping) textureData.mapping = this._params.textureMapping;
+                // if (this._params.textureMapping) textureData.mapping = this._params.textureMapping;
                 // to cache
                 this.cache[aAlias] = textureData;
                 this.logDebug(`loadHdr: Complete (${aAlias}) file(${aFile}):`, textureData);

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { ILogger } from "../interfaces/ILogger";
-import { IUpdatable } from "../interfaces/IUpdatable";
+import { ILogger } from "../core/interfaces/ILogger";
+import { IUpdatable } from "../core/interfaces/IUpdatable";
 import { LogMng } from "../utils/LogMng";
 
 export class MyObject3D extends THREE.Group implements ILogger, IUpdatable {

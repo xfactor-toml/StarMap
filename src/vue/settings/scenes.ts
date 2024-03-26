@@ -1,4 +1,4 @@
-import { GuiScenes, SceneName } from '@/types';
+import { GuiScenes, UISceneNames } from '@/types';
 import { BattleScene, GalaxyScene, StartScene } from '@/scenes';
 import {
   BattleAcceptMode,
@@ -17,7 +17,7 @@ import { useBattleStore } from '@/stores';
 
 export const SCENES: GuiScenes = {
   start: {
-    name: SceneName.Start,
+    name: UISceneNames.Start,
     getComponent: () => StartScene,
     modes: [
       {
@@ -32,7 +32,7 @@ export const SCENES: GuiScenes = {
     initialMode: 'preloader'
   },
   galaxy: {
-    name: SceneName.Galaxy,
+    name: UISceneNames.Galaxy,
     getComponent: () => GalaxyScene,
     modes: [
       {
@@ -77,7 +77,7 @@ export const SCENES: GuiScenes = {
     initialMode: 'real'
   },
   battle: {
-    name: SceneName.Battle,
+    name: UISceneNames.Battle,
     getComponent: () => BattleScene,
     modes: [
       {

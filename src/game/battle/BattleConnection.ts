@@ -2,7 +2,7 @@ import { NetworkAuth } from "~/blockchain";
 import { MyEventDispatcher } from "../basics/MyEventDispatcher";
 import { newGameAuth } from "~/blockchain/functions/gameplay";
 import { Socket, io } from "socket.io-client";
-import { Settings } from "../data/Settings";
+import { GlobalParams } from "../data/GlobalParams";
 import { getWalletAddress, isWalletConnected } from "~/blockchain/functions/auth";
 import { ClaimRewardData, DebugTestData, GameCompleteData, PackTitle, SkillRequest, StartGameData } from "./Types";
 import { GameEvent, GameEventDispatcher } from "../events/GameEvents";
@@ -14,17 +14,23 @@ export enum ConnectionEvent {
 }
 
 export class BattleConnection extends MyEventDispatcher {
+    private static _instance: BattleConnection;
     private _socket: Socket;
 
-    constructor() {
+    private constructor() {
         super('BattleConnection');
         // auto connection
-        if (Settings.BATTLE.localConnect) {
+        if (GlobalParams.BATTLE.localConnect) {
             this.connectLocal();
         }
         else {
             this.connectServer();
         }
+    }
+
+    static getInstance(): BattleConnection {
+        if (!BattleConnection._instance) BattleConnection._instance = new BattleConnection();
+        return BattleConnection._instance;
     }
 
     private connectLocal() {
@@ -35,7 +41,7 @@ export class BattleConnection extends MyEventDispatcher {
 
     private connectServer() {
         this.closeConnection();
-        this._socket = io(Settings.BATTLE.serverAddr);
+        this._socket = io(GlobalParams.BATTLE.serverAddr);
         this.initListeners();
     }
 
@@ -140,15 +146,19 @@ export class BattleConnection extends MyEventDispatcher {
 
     sendSearchGame() {
         this._socket.emit(PackTitle.startSearchGame, {
-            isFreeConnect: Settings.BATTLE.freeConnect
+            isFreeConnect: GlobalParams.BATTLE.freeConnect
         });
     }
 
     sendSearchGameBot() {
         this._socket.emit(PackTitle.startSearchGame, {
             withBot: true,
-            isFreeConnect: Settings.BATTLE.freeConnect
+            isFreeConnect: GlobalParams.BATTLE.freeConnect
         });
+    }
+
+    sendBattleSceneLoaded() {
+        this._socket.emit(PackTitle.battleSceneLoaded);
     }
 
     sendSkillActionClick(aSkillId: number) {

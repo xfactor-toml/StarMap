@@ -1,6 +1,6 @@
 import { Sound, sound } from '@pixi/sound';
 import { LogMng } from "../utils/LogMng";
-import { ILogger } from '../interfaces/ILogger';
+import { ILogger } from '../core/interfaces/ILogger';
 
 type InitParams = {
 

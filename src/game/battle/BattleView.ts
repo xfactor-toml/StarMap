@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import gsap, { Linear, Sine } from 'gsap';
 import { GUI } from 'dat.gui';
 import { MyEventDispatcher } from "../basics/MyEventDispatcher";
-import { IUpdatable } from "../interfaces/IUpdatable";
+import { IUpdatable } from "../core/interfaces/IUpdatable";
 import { BattleObject } from '../objects/battle/BattleObject';
 import { BattleStar } from '../objects/battle/BattleStar';
 import { BattlePlanet } from '../objects/battle/BattlePlanet';
@@ -12,7 +12,7 @@ import { MyMath } from '../utils/MyMath';
 import { BattleCameraMng } from './BattleCameraMng';
 import { ObjectHpViewer } from './ObjectHpViewer';
 import { Linkor } from '../objects/battle/Linkor';
-import { Settings } from '../data/Settings';
+import { GlobalParams } from '../data/GlobalParams';
 import { FieldInitData, PlanetLaserData, ObjectCreateData, ObjectType, ObjectUpdateData, PackTitle, AttackData, DamageData, PlanetLaserSkin } from './Types';
 import { BattleConnection } from './BattleConnection';
 import { FieldCell } from '../objects/battle/FieldCell';
@@ -88,7 +88,7 @@ const DEBUG_GUI = {
 export class BattleView extends MyEventDispatcher implements IUpdatable {
     private _walletNumber: string;
     private _scene: THREE.Scene;
-    private _camera: THREE.PerspectiveCamera;
+    private _camera: THREE.Camera;
     private _connection: BattleConnection;
     private _cameraTarget: THREE.Vector3;
     private _cameraMng: BattleCameraMng;
@@ -106,7 +106,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
     constructor(aParams: {
         scene: THREE.Scene,
-        camera: THREE.PerspectiveCamera,
+        camera: THREE.Camera,
         connection: BattleConnection
     }) {
         super('BattleView');
@@ -129,11 +129,12 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         this._damageViewer = new DamageViewer(this._dummyMain, this._camera);
 
         this.initConnectionListeners();
-
+        
     }
 
     private initConnectionListeners() {
         this._connection.socket.on(PackTitle.fieldInit, (aData: FieldInitData) => {
+            this.logDebug(`PackTitle.fieldInit recv...`);
             this.onFieldInitPack(aData);
         });
         this._connection.socket.on(PackTitle.objectCreate, (aData) => {
@@ -190,6 +191,8 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             aTargetPos: { x: 0, y: 0, z: 20 * zFactor },
             duration: .5
         });
+        // this._camera.position.set(0, H, 25 * zFactor);
+        // this._camera.lookAt(0, 0, 20 * zFactor);
     }
 
     private serverValueToClient(aServerValue: number): number {
@@ -300,11 +303,11 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         fieldSize.h = fieldSize.rows * fieldSize.sectorHeight;
         this.initField();
 
-        setTimeout(() => {
+        // setTimeout(() => {
             this._isTopPosition = aData.playerPosition == 'top';
             this._objectHpViewer.isTopViewPosition = this._isTopPosition;
             this.initCameraPosition(this._isTopPosition);
-        }, 1000);
+        // }, 1000);
 
     }
 

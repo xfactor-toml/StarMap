@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { MyOrbitControls } from "../mythree/MyOrbitControls";
 import { MyEventDispatcher } from '../basics/MyEventDispatcher';
-import { IUpdatable } from '../interfaces/IUpdatable';
+import { IUpdatable } from '../core/interfaces/IUpdatable';
 import { FSM } from '../states/FSM';
-import { Settings } from '../data/Settings';
+import { GlobalParams } from '../data/GlobalParams';
 import { MyMath } from '../utils/MyMath';
 import gsap from 'gsap';
 
@@ -21,14 +21,14 @@ enum States {
 }
 
 export class BattleCameraMng extends MyEventDispatcher implements IUpdatable {
-    private _camera: THREE.PerspectiveCamera;
+    private _camera: THREE.Camera;
     private _cameraTarget: THREE.Vector3;
     private _orbitControl: MyOrbitControls;
     private _mode: BattleCameraMode;
     private _fsm: FSM;
 
     constructor(aParams: {
-        camera: THREE.PerspectiveCamera,
+        camera: THREE.Camera,
         cameraTarget: THREE.Vector3,
     }) {
         super('BattleCameraMng');
@@ -60,12 +60,12 @@ export class BattleCameraMng extends MyEventDispatcher implements IUpdatable {
 
         if (this._orbitControl) return;
         if (!aParams) aParams = {};
-        let domElement = Settings.domRenderer;
+        let domElement = GlobalParams.domRenderer;
         this._orbitControl = new MyOrbitControls(this._camera, domElement);
         this._orbitControl.enabled = false;
         this._orbitControl.rotateSpeed = .5;
         this._orbitControl.enableDamping = true;
-        this._orbitControl.dampingFactor = Settings.CAM_DAMPING_FACTOR;
+        this._orbitControl.dampingFactor = GlobalParams.CAM_DAMPING_FACTOR;
         this._orbitControl.zoomSpeed = aParams.zoomSpeed || 1;
         this._orbitControl.enablePan = aParams.enablePan == true;
         this._orbitControl.minDistance = aParams.minDist || 1;

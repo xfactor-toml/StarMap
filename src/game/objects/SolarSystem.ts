@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import { BigStar2, BigStar2Params } from './BigStar2';
 import { GalaxyStarParams } from '~/game/data/Types';
-import { Settings } from '~/game/data/Settings';
+import { GlobalParams } from '~/game/data/GlobalParams';
+import { DebugGui } from '../debug/DebugGui';
 
 
 export type SolarSystemParams = {
@@ -24,8 +25,8 @@ export class SolarSystem extends THREE.Group {
     
     private createStar() {
         this._star = new BigStar2(this.position, this._camera, this._starScale, this._params.starParams);
-        if (Settings.isDebugMode) {
-            this._star.createDebugGui(Settings.datGui);
+        if (GlobalParams.isDebugMode) {
+            this._star.createDebugGui(DebugGui.getInstance().gui);
         }
         this.add(this._star);
     }

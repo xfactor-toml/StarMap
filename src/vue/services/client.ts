@@ -4,7 +4,7 @@ import { FrontEvents } from '~/game/events/FrontEvents';
 import { debounce } from "typescript-debounce-decorator";
 import { logger } from '@/services/logger';
 import { useBattleStore, useScenesStore } from '@/stores';
-import { BattleActionPayload, BattleActionType, SceneName } from '@/types';
+import { BattleActionPayload, BattleActionType, UISceneNames } from '@/types';
 import { LogMng } from '~/game/utils/LogMng';
 import { battleRunMock, levelUpMock, playersConnectMock } from '@/mocks';
 
@@ -119,12 +119,12 @@ export class ClientService {
 
   onBattleAccept() {
     // mock
-    useScenesStore().setScene(SceneName.Galaxy);
+    useScenesStore().setScene(UISceneNames.Galaxy);
   }
 
   onBattleConnectExit() {
     // mock
-    useScenesStore().setScene(SceneName.Galaxy);
+    useScenesStore().setScene(UISceneNames.Galaxy);
   }
 
   onBattleAction(payload: BattleActionPayload) {
@@ -183,7 +183,7 @@ export class ClientService {
     LogMng.debug(`vue: closeBox`);
     FrontEvents.onBattleRewardCloseClick.dispatch();
     // mock
-    useScenesStore().setScene(SceneName.Galaxy);
+    useScenesStore().setScene(UISceneNames.Galaxy);
   }
 
   static VuePlugin = {

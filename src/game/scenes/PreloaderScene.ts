@@ -1,5 +1,5 @@
 import { LogMng } from '../utils/LogMng';
-import { Settings } from '../data/Settings';
+import { GlobalParams } from '../data/GlobalParams';
 import { AudioMng } from '../audio/AudioMng';
 import { GameEvent, GameEventDispatcher } from '../events/GameEvents';
 import { FrontEvents } from '../events/FrontEvents';
@@ -8,36 +8,27 @@ import { AudioAlias, MusicLoadList, SoundLoadList } from '../audio/AudioData';
 import { MODEL_LOAD_LIST } from '../data/ModelData';
 import { ThreeLoader } from '../utils/threejs/ThreeLoader';
 import { TEXTURE_LOAD_LIST } from '../data/TextureData';
+import { BasicScene } from '../core/scene/BasicScene';
+import { SceneNames } from './SceneNames';
+import { ServerStarData } from '../data/Types';
+import { DB } from '../data/DB';
 
-export class GamePreloader {
-
+export class PreloaderScene extends BasicScene {
     private _loader: ThreeLoader;
+    private _assetsPath: string;
     private _currLoadPerc = 0;
-    private _isDefaultLoaded = false;
-    private _isLoadingInProcess = false;
-
-    onLoadProgressSignal = new Signal();
-    onLoadCompleteSignal = new Signal();
-
 
     constructor() {
+        super(SceneNames.PreloaderScene);
+    }   
+
+    protected onInit(aData?: any): void {
+        this._assetsPath = GlobalParams.assetsPath;
+
+        // init ThreeLoader
         this._loader = ThreeLoader.getInstance({
             retryCount: 2
         });
-    }
-    
-    public get isLoadingInProcess(): boolean {
-        return this._isLoadingInProcess;
-    }    
-
-    loadDefault() {
-
-        if (this._isDefaultLoaded || this._isLoadingInProcess) return;
-
-        this._isDefaultLoaded = true;
-        this._isLoadingInProcess = true;
-
-        // load default
 
         let setId = this._loader.createNewSet({
             context: this,
@@ -46,12 +37,11 @@ export class GamePreloader {
         });
         this.addCommonAssetsToLoader(setId);
         this._loader.startSetLoading(setId);
-
     }
 
     private addCommonAssetsToLoader(aSetId: number) {
 
-        let assetsPath = Settings.assetsPath;
+        let assetsPath = GlobalParams.assetsPath;
 
         // star point sprite
         // this._loader.texture('starPoint', `./assets/starPoint.svg`);
@@ -81,7 +71,7 @@ export class GamePreloader {
 
         // small galaxy sprites
         path = assetsPath + 'galaxies/';
-        for (let i = 0; i < Settings.SMALL_GALAXIES_SPRITE_COUNT; i++) {
+        for (let i = 0; i < GlobalParams.SMALL_GALAXIES_SPRITE_COUNT; i++) {
             let gName = `galaxy_${(i + 1).toString().padStart(2, '0')}`;
             // this._loader.texture(gName, path + `${gName}.png`);
             this._loader.addFileToSet(aSetId, {
@@ -153,8 +143,8 @@ export class GamePreloader {
         // sounds
         let am = AudioMng.getInstance({});
         // storage data
-        am.musicVolume = Number(localStorage.getItem(`musicVolume`)) ?? Settings.AUDIO.defaultMusicVolume;
-        am.sfxVolume = Number(localStorage.getItem(`sfxVolume`)) ?? Settings.AUDIO.defaultSfxVolume;
+        am.musicVolume = Number(localStorage.getItem(`musicVolume`)) ?? GlobalParams.AUDIO.defaultMusicVolume;
+        am.sfxVolume = Number(localStorage.getItem(`sfxVolume`)) ?? GlobalParams.AUDIO.defaultSfxVolume;
         am.init({
             musicList: MusicLoadList,
             soundList: SoundLoadList
@@ -170,9 +160,9 @@ export class GamePreloader {
 
         if (aProgressPercent - this._currLoadPerc > 10) {
             this._currLoadPerc = aProgressPercent;
-            this.onLoadProgressSignal.dispatch(this._currLoadPerc);
-            if (Settings.isDebugMode) {
-                console.log('loading: ', this._currLoadPerc);
+            // this.onLoadProgressSignal.dispatch(this._currLoadPerc);
+            if (GlobalParams.isDebugMode) {
+                this.logDebug(`loading: ${this._currLoadPerc.toFixed(2)}`);
             }
         }
 
@@ -181,14 +171,37 @@ export class GamePreloader {
     }
 
     private onLoadComplete() {
-
-        this._isLoadingInProcess = false;
-        this.onLoadCompleteSignal.dispatch();
-
+        this.initEvents();
         GameEventDispatcher.dispatchEvent(GameEvent.GAME_LOADED, {
             frontEvents: FrontEvents
         });
+    }
 
+    private initEvents() {
+        FrontEvents.playInitScreenSfx.addOnce(() => {
+            let am = AudioMng.getInstance();
+            am.playSfx(AudioAlias.SFX_INIT);
+        }, this);
+
+        FrontEvents.onHover.add(() => {
+            // LogMng.debug('onHover...');
+            AudioMng.getInstance().playSfx(AudioAlias.SFX_HOVER);
+        }, this);
+
+        FrontEvents.onClick.add(() => {
+            AudioMng.getInstance().playSfx(AudioAlias.SFX_CLICK);
+        }, this);
+
+        FrontEvents.startGame.add((aFullscreen = false, aRealStars = []) => {
+            GlobalParams.INIT_FULL_SCREEN = aFullscreen;
+            this.startGame(aRealStars);
+        }, this);
+    }
+
+    private startGame(aRealStars: ServerStarData[]) {
+        DB.realStars = aRealStars;
+        this.startScene(SceneNames.GalaxyScene);
+        GameEventDispatcher.dispatchEvent(GameEvent.GAME_CREATED);
     }
 
 }

@@ -1,4 +1,4 @@
-import { MyBasicClass } from "./MyBasicClass";
+import { MyLogger } from "./MyLogger";
 
 type ListenerRecord = {
     func: Function,
@@ -6,7 +6,7 @@ type ListenerRecord = {
     once?: boolean
 }
 
-export class MyEventDispatcher extends MyBasicClass {
+export class MyEventDispatcher extends MyLogger {
     protected _className: string;
     private _listeners: { [index: string]: ListenerRecord[] };
 

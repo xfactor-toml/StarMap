@@ -88,7 +88,7 @@ import { WalletConnectPopup } from '@/components/WalletConnectPopup';
 import { useBattleStore, useScenesStore, useSettingsStore, useUiStore, useWalletStore } from '@/stores';
 import { default as vClickOutside } from 'click-outside-vue3';
 import { mapStores } from 'pinia';
-import { SceneName } from '@/types';
+import { UISceneNames } from '@/types';
 
 export default {
   name: 'UserBar',
@@ -148,7 +148,7 @@ export default {
       this.searchKey = ''
     },
     openBox() {
-      this.scenesStore.setScene(SceneName.Battle, {
+      this.scenesStore.setScene(UISceneNames.Battle, {
         mode: 'rewards'
       });
     }

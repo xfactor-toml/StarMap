@@ -42,59 +42,42 @@ export class InterpolationUtils {
 
 }
 
-
 export class MySpline {
-    private _points: { val, t }[];
-    private _interpolateFunc: Function;
+    private _points: { val: number, t: number }[];
+    /**
+     * (a, b, t)
+     */
+    private _lerp?: Function;
 
-    constructor(aInterpolateFunc?: Function) {
+    constructor(aLerp?: Function) {
         this._points = [];
-        if (aInterpolateFunc) {
-            this._interpolateFunc = aInterpolateFunc;
-        }
-        else {
-            this._interpolateFunc = InterpolationUtils.linear;
-        }
+        this._lerp = aLerp || InterpolationUtils.linear;
     }
 
-    addPoint(val, t: number) {
-        this._points.push({ val: val, t: t });
+    addPoint(val: number, t: number): MySpline {
+        this._points.push({ t: t, val: val });
+        return this;
     }
 
-    get(t: number) {
-
-        let id1 = 0;
+    getValue(t: number): number {
+        let p1 = 0;
 
         for (let i = 0; i < this._points.length; i++) {
-            id1 = i;
-            if (this._points[i].t >= t) break;
-
+            if (this._points[i].t >= t) {
+                break;
+            }
+            p1 = i;
         }
 
-        let id2 = id1;
+        const p2 = Math.min(this._points.length - 1, p1 + 1);
 
-        for (let i = this._points.length - 1; i >= 0; i--) {
-            id2 = i;
-            if (this._points[i].t <= t) break;
+        if (p1 == p2) {
+            return this._points[p1].val;
         }
 
-        if (id1 == id2) {
-            return this._points[id1].val;
-        }
-
-        // example:
-        // [ 0.1, 0.3, 0.5, 0.8 ]
-        // t = 0.05
-        // id1 = 0, id2 = 0
-        // t = 0.5
-        // id1 = 2, id2 = 2
-
-        return this._interpolateFunc(
-            this._points[id1].val,
-            this._points[id2].val,
-            (t - this._points[id1].t) / (this._points[id2].t - this._points[id1].t)
+        return this._lerp(
+            this._points[p1].val, this._points[p2].val,
+            (t - this._points[p1].t) / (this._points[p2].t - this._points[p1].t)
         );
-
     }
-
 }
