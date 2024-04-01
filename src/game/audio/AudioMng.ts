@@ -93,9 +93,15 @@ export class AudioMng implements ILogger {
 
     playMusic(aAlias: string): Sound {
         let snd = this._musics[aAlias];
-        snd.volume = this.musicVolume;
-        snd.loop = true;
-        snd.play();
+        if (!snd) {
+            this.logError(`playMusic: unknown alias: ${aAlias}`);
+            return snd;
+        }
+        if (!snd.isPlaying) {
+            snd.volume = this.musicVolume;
+            snd.loop = true;
+            snd.play();
+        }
         return snd;
     }
 

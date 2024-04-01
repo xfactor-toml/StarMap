@@ -8,12 +8,14 @@ import { SceneNames } from './SceneNames';
 import { ThreeLoader } from '../utils/threejs/ThreeLoader';
 import { SimpleRenderer } from '../core/renderers/SimpleRenderer';
 import { BattleConnection } from '../battle/BattleConnection';
-import { FieldInitData, PackTitle, StartGameData } from '../battle/Types';
+import { PackTitle, StartGameData } from '../battle/Types';
 import { GameEvent, GameEventDispatcher } from '../events/GameEvents';
 import { DebugGui } from '../debug/DebugGui';
 import { getWalletAddress } from '~/blockchain/functions/auth';
 import { useWallet } from '@/services';
 import { getUserBoxesToOpen } from '~/blockchain/boxes';
+import { AudioMng } from '../audio/AudioMng';
+import { AudioAlias } from '../audio/AudioData';
 
 export class GalaxyScene extends BasicScene {
     private _galaxy: GalaxyMng;
@@ -24,6 +26,21 @@ export class GalaxyScene extends BasicScene {
             initScene: true,
             initCamera: true
         });
+        this.initFrontEvents();
+    }
+
+    private initFrontEvents() {
+        FrontEvents.setMusicVolume.add((aData: { v: number }) => {
+            let am = AudioMng.getInstance();
+            am.musicVolume = aData.v;
+            localStorage.setItem(`musicVolume`, String(am.musicVolume));
+        }, this);
+
+        FrontEvents.setSFXVolume.add((aData: { v: number }) => {
+            let am = AudioMng.getInstance();
+            am.sfxVolume = aData.v;
+            localStorage.setItem(`sfxVolume`, String(am.sfxVolume));
+        }, this);
     }
 
     protected initRenderer() {
@@ -48,6 +65,7 @@ export class GalaxyScene extends BasicScene {
     }
 
     protected onInit() {
+        this.initMusic();
         this.initEvents();
         this.initSkybox();
         this.initGalaxy();
@@ -55,6 +73,11 @@ export class GalaxyScene extends BasicScene {
             this.initBlockchainDebugGui();
             this.initBattleDebugGui();
         }
+    }
+
+    private initMusic() {
+        // start music
+        AudioMng.getInstance().playMusic(AudioAlias.MUSIC_MAIN);
     }
     
     private initEvents() {

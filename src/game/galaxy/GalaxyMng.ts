@@ -250,9 +250,6 @@ export class GalaxyMng implements ILogger {
 
         this._raycaster = new THREE.Raycaster();
 
-        // start music
-        AudioMng.getInstance().playMusic(AudioAlias.MUSIC_MAIN);
-
         // helpers
         if (GlobalParams.isDebugMode) {
             this.axiesHelper = new THREE.AxesHelper(150);
@@ -283,18 +280,6 @@ export class GalaxyMng implements ILogger {
 
     private initFrontEvents() {
 
-        FrontEvents.setMusicVolume.add((aData: { v: number }) => {
-            let am = AudioMng.getInstance();
-            am.musicVolume = aData.v;
-            localStorage.setItem(`musicVolume`, String(am.musicVolume));
-        }, this);
-
-        FrontEvents.setSFXVolume.add((aData: { v: number }) => {
-            let am = AudioMng.getInstance();
-            am.sfxVolume = aData.v;
-            localStorage.setItem(`sfxVolume`, String(am.sfxVolume));
-        }, this);
-
         FrontEvents.diveIn.add((aData: { starId: number }) => {
             this._fsm.startState(GalaxyStates.toStar, {
                 starId: aData.starId,
@@ -310,7 +295,6 @@ export class GalaxyMng implements ILogger {
         }, this);
 
         FrontEvents.starPreviewClose.add(() => {
-
             this.isStarPreviewState = false;
             switch (this._fsm.getCurrentState().name) {
                 case GalaxyStates.realStars:
@@ -321,12 +305,19 @@ export class GalaxyMng implements ILogger {
                     if (!this._orbitControl.enabled) this._orbitControl.enabled = true;
                     break;
             }
-
         }, this);
 
         FrontEvents.starLevelFilterChanged.add(this.onLevelFilterChanged, this);
         FrontEvents.starNameFilterChanged.add(this.onNameFilterChanged, this);
 
+    }
+
+    private removeFrontEvents() {
+        FrontEvents.diveIn.removeAll(this);
+        FrontEvents.flyFromStar.removeAll(this);
+        FrontEvents.starPreviewClose.removeAll(this);
+        FrontEvents.starLevelFilterChanged.removeAll(this);
+        FrontEvents.starNameFilterChanged.removeAll(this);
     }
 
     initDebugGui() {
@@ -2472,6 +2463,9 @@ export class GalaxyMng implements ILogger {
     }
 
     free() {
+        this.removeFrontEvents();
+        InputMng.getInstance().onClickSignal.remove(this.onClick, this);
+
         DebugGui.getInstance().removeElement(DEBUG_FOLDER_NAME);
         this._fsm.free();
         this._parent = null;
@@ -2498,42 +2492,40 @@ export class GalaxyMng implements ILogger {
         // private _solarSystemBlinkStarsData: GalaxyStarParams[];
         // private _solarSystemBlinkStarsParticles: GalaxyStars;
 
-        // private _farStars: FarStars;
+        this._farStars.free();
+        this._farStars = null;
 
-        // private _farGalaxiesData: FarGalaxyParams[];
-        // private _smallGalaxies: THREE.Mesh[];
+        this._farGalaxiesData = [];
+        this._smallGalaxies = [];
 
         this._orbitControl.enabled = false;
         this._orbitControl = null;
 
-        // private axiesHelper: THREE.AxesHelper;
+        this.axiesHelper = null;
 
-        // private _raycaster: THREE.Raycaster;
-        // private checkMousePointerTimer = 0;
+        this._raycaster = null;
 
-        // private starPointSpriteHovered: THREE.Sprite;
-        // private starPointHovered: StarPoint;
-        // private starPointParamsHovered: StarPointParams;
-        // private currentStarId = -1;
-        // private starPointsMng: StarPointsMng;
+        this.starPointSpriteHovered = null;
+        this.starPointHovered = null;
+        this.starPointParamsHovered = null;
+        this.starPointsMng.free();
 
-        // private isStarPreviewState = false;
+        this.bigStarSprite = null; 
 
-        // private bigStarSprite: THREE.Sprite;
-        // private solarSystem: SolarSystem;
+        this.solarSystem?.free();
+        this.solarSystem = null;
 
-        // private galaxySaveAnimData: any = {};
+        this.galaxySaveAnimData = {};
 
-        // private smallFlySystem: SmallFlySystem;
+        this.smallFlySystem.free();
+        this.smallFlySystem = null;
 
-        // // rot sound
-        // private _rotSndStartTimer = 0;
-        // private _prevCameraAzimutAngle = 0;
-        // private _prevCamPolarAngle = 0;
-
-        // private _quadTreeReal: QuadTree;
-        // private _quadTreePhantom: QuadTree;
-        // private _qtDebugRender: QTDebugRender;
+        this._quadTreeReal?.destroy();
+        this._quadTreeReal = null;
+        this._quadTreePhantom?.destroy();
+        this._quadTreePhantom = null;
+        this._qtDebugRender?.clear();
+        this._qtDebugRender = null;
 
         this._disabled = false;
     }
