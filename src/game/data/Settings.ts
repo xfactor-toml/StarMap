@@ -1,5 +1,4 @@
 ﻿import * as datGui from "dat.gui";
-import { wsServerUrl } from "~/blockchain/config";
 
 export type GalaxyData = {
     starsCount: number;
