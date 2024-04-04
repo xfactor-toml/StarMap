@@ -141,12 +141,16 @@ export class ParticleSystem {
         this.activated = true;
     }
 
-    public get params(): ParticleSystemParams {
+    get params(): ParticleSystemParams {
         return this._params;
     }
-    
-    public get position(): THREE.Vector3 {
+
+    get position(): THREE.Vector3 {
         return this._params.position;
+    }
+
+    set position(aVal: THREE.Vector3) {
+        this._params.position.copy(aVal);
     }
 
     private addParticles(count: number, dt: number) {
@@ -243,7 +247,7 @@ export class ParticleSystem {
         this._particles = this._particles.filter(p => {
             return p.lifeProgress < p.lifeTime;
         });
-    
+
         // sort
         if (this._params.sorting == true) {
             this._particles.sort((a, b) => {
@@ -255,7 +259,7 @@ export class ParticleSystem {
             });
         }
     }
-    
+
     public get particlesCount(): number {
         return this._particles.length;
     }
@@ -295,8 +299,7 @@ export class ParticleSystem {
 
         this.updateParticles(dt);
         this.updateGeometry();
-        
-    }
 
+    }
 
 }

@@ -429,6 +429,8 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 obj = new HomingMissile({
                     ...aData,
                     ...{
+                        camera: this._camera,
+                        effectsParent: this._dummyMain,
                         race: this.isCurrentOwner(aData.owner) ? 'Waters' : 'Insects',
                         light: {
                             parent: this._dummyMain,
@@ -453,7 +455,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 if (aData.lookDir) obj.lookByDir(aData.lookDir);
 
                 // add hp bar
-                this._objectHpViewer.addBar(obj);
+                // this._objectHpViewer.addBar(obj);
             } break;
 
             default:

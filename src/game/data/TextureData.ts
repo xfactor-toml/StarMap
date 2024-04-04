@@ -6,7 +6,7 @@ export enum TextureAlias {
     fieldCell = `fieldCell`,
     planetDirrectionArea = `planetDirrectionArea`,
     planet0_256 = `planet0_256`,
-
+    particleCircle = 'particleCircle'
 };
 
 /**
@@ -19,4 +19,5 @@ export const TEXTURE_LOAD_LIST = [
     { alias: TextureAlias.fieldCell, file: 'sprites/battle/cell.png' },
     { alias: TextureAlias.planetDirrectionArea, file: 'sprites/battle/area.png' },
     { alias: TextureAlias.planet0_256, file: 'sprites/planets/0_256.jpg' },
+    { alias: TextureAlias.particleCircle, file: 'particles/circle.png' },
 ];

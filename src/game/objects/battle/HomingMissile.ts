@@ -4,6 +4,8 @@ import { ThreeLoader } from '~/game/utils/threejs/ThreeLoader';
 import { ModelAlias } from '~/game/data/ModelData';
 import { MyMath } from '@/utils';
 import { ThreeUtils } from '~/game/utils/threejs/ThreejsUtils';
+import { ParticleSystem } from '~/game/core/effects/ParticleSystem';
+import { TextureAlias } from '~/game/data/TextureData';
 
 type LightParams = {
     parent: THREE.Object3D,
@@ -15,6 +17,8 @@ type LightParams = {
 }
 
 type HomingMissileParams = BattleObjectData & {
+    camera,
+    effectsParent: THREE.Group,
     light: LightParams
 }
 
@@ -22,6 +26,9 @@ export class HomingMissile extends BattleObject {
     protected _mesh: THREE.Mesh;
     protected _model: THREE.Group;
     protected _currGunNumber: number;
+    protected _camera: THREE.Camera;
+    protected _effectsParent: THREE.Group;
+    private _fireEffect: ParticleSystem;
     // light
     protected _lightParent: THREE.Object3D;
     protected _lightHeight = 0;
@@ -30,11 +37,14 @@ export class HomingMissile extends BattleObject {
 
     constructor(aParams: HomingMissileParams) {
         super(aParams, 'HomingMissile');
+        this._camera = aParams.camera;
+        this._effectsParent = aParams.effectsParent;
         this._currGunNumber = MyMath.randomIntInRange(1, 2);
         this._lightParent = aParams.light.parent;
         this._lightHeight = aParams.light.height || 0;
         this.initSimpleModel();
         // this.initPointLight(aParams.light);
+        this.initFireEffect();
     }
 
     private initSimpleModel() {
@@ -45,6 +55,48 @@ export class HomingMissile extends BattleObject {
         });
         this._mesh = new THREE.Mesh(g, m);
         this.add(this._mesh);
+    }
+
+    private initFireEffect() {
+        let loader = ThreeLoader.getInstance();
+
+        this._fireEffect = new ParticleSystem({
+            parent: this._effectsParent,
+            camera: this._camera,
+            texture: loader.getTexture(TextureAlias.particleCircle),
+            frequency: 60,
+            lifeTime: 1,
+            size: { min: .1, max: .5 },
+
+            position: this._mesh.position.clone(),
+
+            velocity: new THREE.Vector3(0, 0, 0),
+            deltaVelocity: {
+                x: { min: -.1, max: .1 },
+                y: { min: 2, max: 3 },
+                z: { min: -.1, max: .1 }
+            },
+
+            color: 0xff0000,
+            // TODO:
+            // color: [
+            //     { t: 0, val: 0xffae00 },
+            //     { t: 1, val: 0xff0000 },
+            // ],
+
+            alphaChange: [
+                { t: 0, val: 0 },
+                // { t: 0.2, val: 1 },
+                { t: 0.5, val: 1 },
+                { t: 1.0, val: 0 }
+            ],
+            scaleFactorChange: [
+                { t: 0, val: .05 },
+                { t: 0.2, val: .2 },
+                { t: 1, val: 0.01 },
+            ]
+        });
+
     }
 
     private initModel() {
@@ -185,13 +237,24 @@ export class HomingMissile extends BattleObject {
         }
     }
 
+    protected updateFireEffect(dt: number) {
+        let dir = new THREE.Vector3(0, 0, 1);
+        dir = dir.applyQuaternion(this.quaternion).multiplyScalar(this.radius / 2);
+        this._fireEffect.position.copy(this.position.clone().sub(dir));
+        this._fireEffect?.update(dt);
+    }
+
     update(dt: number) {
         super.update(dt);
+        this.updateFireEffect(dt);
         if (this._pointLight) this.updateLight();
     }
 
     free() {
         this.clear();
+
+        this._fireEffect.free();
+        this._fireEffect = null;
 
         if (this._mesh) {
             this.remove(this._mesh);
