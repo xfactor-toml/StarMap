@@ -721,12 +721,14 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     }
 
     private destroyObject(aId: number) {
+
         this._objectHpViewer.removeBar(aId);
         let obj = this.getObjectById(aId);
         if (!obj) {
             this.logError(`updateObject(): !obj`, aId);
             return;
         }
+        
         obj.free();
         this._objects.delete(aId);
 
