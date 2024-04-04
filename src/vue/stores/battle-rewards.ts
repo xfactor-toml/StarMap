@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { BattleReward, SceneName } from '@/types';
+import { BattleReward, UISceneNames } from '@/types';
 
 import { ref } from 'vue';
 import { useWallet } from '@/services';

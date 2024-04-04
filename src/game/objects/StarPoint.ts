@@ -124,16 +124,21 @@ export class StarPoint extends THREE.Group {
 
     hide(aDur: number, aDelay?: number, cb?: Callbacks) {
         const starPointSprite = this._starPointSprite;
-        gsap.to([starPointSprite.material], {
-            opacity: 0,
-            duration: aDur,
-            delay: aDelay || 0,
-            ease: 'sine.in',
-            onComplete: () => {
-                starPointSprite.visible = false;
-                cb?.onComplete?.call(cb?.context);
-            }
-        });
+        if (aDur > 0) {
+            gsap.to([starPointSprite.material], {
+                opacity: 0,
+                duration: aDur,
+                delay: aDelay || 0,
+                ease: 'sine.in',
+                onComplete: () => {
+                    starPointSprite.visible = false;
+                    cb?.onComplete?.call(cb?.context);
+                }
+            });
+        }
+        else {
+            starPointSprite.visible = false;
+        }
     }
 
     destroy() {

@@ -1,7 +1,7 @@
 import { useBattleStore, useScenesStore, useStarsStore, useUiStore } from '@/stores';
-import { BattleActionType, ClientEvent, SceneName } from '@/types';
+import { BattleActionType, ClientEvent, UISceneNames } from '@/types';
 import { wait } from '@/utils';
-import { Settings } from '~/game/data/Settings';
+import { GlobalParams } from '~/game/data/GlobalParams';
 import { GameEvent } from '~/game/events/GameEvents';
 import { LogMng } from '~/game/utils/LogMng';
 
@@ -18,7 +18,7 @@ export class ClientEventsService {
 
       case GameEvent.GAME_LOADED:
         await starsStore.fetchStars();
-        scenesStore.setScene(SceneName.Start, {
+        scenesStore.setScene(UISceneNames.Start, {
           mode: 'welcome'
         });
         break;
@@ -62,7 +62,7 @@ export class ClientEventsService {
         break;
 
       case GameEvent.GALAXY_MODE:
-        scenesStore.setScene(SceneName.Galaxy);
+        scenesStore.setScene(UISceneNames.Galaxy);
         scenesStore.setClientScene('galaxy');
         break;
 
@@ -80,7 +80,7 @@ export class ClientEventsService {
 
       case GameEvent.BATTLE_PREROLL_SHOW:
         battleStore.connecting.setPlayerSearchingState(false);
-        scenesStore.setScene(SceneName.Battle);
+        scenesStore.setScene(UISceneNames.Battle);
         battleStore.process.setState({
           players: {
             connected: {
@@ -171,14 +171,14 @@ export class ClientEventsService {
           }
         })
 
-        scenesStore.setScene(SceneName.Battle, {
+        scenesStore.setScene(UISceneNames.Battle, {
           mode: 'results'
         });
 
         break;
       
       case GameEvent.BATTLE_COMPLETE_HIDE:
-        scenesStore.setScene(SceneName.Galaxy);
+        scenesStore.setScene(UISceneNames.Galaxy);
         break;
       
       case GameEvent.SHOW_BOX_OPEN:
@@ -192,7 +192,7 @@ export class ClientEventsService {
 
         battleStore.rewards.setBoxesIds(clientEvent.list);
 
-        scenesStore.setScene(SceneName.Battle, {
+        scenesStore.setScene(UISceneNames.Battle, {
           mode: 'rewards'
         });
         

@@ -7,7 +7,7 @@ import {
   GuiModeName,
   GuiScene,
   GuiScenes,
-  SceneName
+  UISceneNames
 } from '@/types';
 import { reactive, ref } from 'vue';
 import { logger } from '@/services';
@@ -46,7 +46,7 @@ export const useScenesStore = defineStore('scenes', () => {
     logger.log({ modeName });
   }
   
-  const setScene = async <T extends SceneName = SceneName>(sceneName: T, {
+  const setScene = async <T extends UISceneNames = UISceneNames>(sceneName: T, {
     mode,
     clientScene,
   }: {
@@ -71,7 +71,7 @@ export const useScenesStore = defineStore('scenes', () => {
     }
   }
 
-  const setScenes = (value: GuiScenes, initalScene: SceneName) => {
+  const setScenes = (value: GuiScenes, initalScene: UISceneNames) => {
     scenes.value = value
     setScene(initalScene)
   }

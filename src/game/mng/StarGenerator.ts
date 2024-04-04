@@ -1,8 +1,8 @@
 import * as THREE from "three";
 import { PHANTOM_BIG_STAR_COLOR, PHANTOM_STAR_COLOR, STAR_COLOR_2 } from "../data/DB";
-import { Settings } from "../data/Settings";
+import { GlobalParams } from "../data/GlobalParams";
 import { GalaxyCircleParams, GalaxyParams, GalaxySmallParams, GalaxyStarParams, ServerStarData } from "../data/Types";
-import { ILogger } from "../interfaces/ILogger";
+import { ILogger } from "../core/interfaces/ILogger";
 import { LogMng } from "../utils/LogMng";
 import { MyMath } from "../utils/MyMath";
 import { EaseUtils } from "../utils/EaseUtils";
@@ -114,7 +114,7 @@ export class StarGenerator implements ILogger {
             if (lvlRandom <= 1200 / 210) starLevel = 3;
             if (lvlRandom <= 210 / 210) starLevel = 4;
             if (lvlRandom <= 21 / 210) starLevel = 5;
-            if (Settings.isDebugMode || Settings.isFakeStarLevels) {
+            if (GlobalParams.isDebugMode || GlobalParams.isFakeStarLevels) {
                 if (lvlRandom <= 60) starLevel = 2;
                 if (lvlRandom <= 40) starLevel = 3;
                 if (lvlRandom <= 20) {

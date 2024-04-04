@@ -16,7 +16,7 @@ import { debounce } from 'debounce';
 import { useScenesStore, useSettingsStore, useUiStore } from '@/stores';
 import { ClientEventsService } from '@/services';
 import { SCENES } from '@/settings';
-import { SceneName } from '@/types';
+import { UISceneNames } from '@/types';
 import { default as anime } from 'animejs';
 
 export default {
@@ -51,7 +51,7 @@ export default {
     }
   },
   created() {
-    this.scenesStore.setScenes(SCENES, SceneName.Start)
+    this.scenesStore.setScenes(SCENES, UISceneNames.Start)
 
     // Game Events
     window.addEventListener('gameEvent', ClientEventsService.handleEvent);

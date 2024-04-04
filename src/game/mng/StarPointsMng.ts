@@ -4,7 +4,6 @@ import { StarPoint } from "../objects/StarPoint";
 import { GalaxyStarParams } from '~/game/data/Types';
 
 export class StarPointsMng {
-
     private _parent: THREE.Object3D;
     private _camera: THREE.PerspectiveCamera;
     private _cameraTarget: THREE.Vector3;
@@ -137,6 +136,18 @@ export class StarPointsMng {
             const p = this._starPoints[i];
             p.show(aDur, aDelay);
         }
+    }
+
+    free() {
+        for (let i = 0; i < this._starPoints.length; i++) {
+            const p = this._starPoints[i];
+            this._parent.remove(p);
+            p.destroy();
+        }
+        this._starPoints = [];
+        this._camera = null;
+        this._cameraTarget = null;
+        this._parent = null;
     }
 
 }
