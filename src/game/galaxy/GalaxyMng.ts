@@ -2479,20 +2479,26 @@ export class GalaxyMng implements ILogger {
         this._galaxyCenterPlane = null;
         this._gridPlane = null;
 
-        // private _phantomStarsData: GalaxyStarParams[];
-        // private _phantomStarsParticles: GalaxyStars;
-        // private _phantomStarPicked: GalaxyStarParams;
+        this._phantomStarsData = [];
 
-        // private _realStarsData: GalaxyStarParams[];
-        // private _realStarsParticles: GalaxyStars;
+        this._phantomStarsParticles?.free();
+        this._phantomStarsParticles = null;
 
-        // private _blinkStarsData: GalaxyStarParams[];
-        // private _blinkStarsParticles: GalaxyStars;
+        this._phantomStarPicked = null;
 
-        // private _solarSystemBlinkStarsData: GalaxyStarParams[];
-        // private _solarSystemBlinkStarsParticles: GalaxyStars;
+        this._realStarsData = [];
+        this._realStarsParticles?.free();
+        this._realStarsParticles = null;
 
-        this._farStars.free();
+        this._blinkStarsData = [];
+        this._blinkStarsParticles?.free();
+        this._blinkStarsParticles = null;
+
+        this._solarSystemBlinkStarsData = [];
+        this._solarSystemBlinkStarsParticles?.free();
+        this._solarSystemBlinkStarsParticles = null;
+
+        this._farStars?.free();
         this._farStars = null;
 
         this._farGalaxiesData = [];
@@ -2508,7 +2514,7 @@ export class GalaxyMng implements ILogger {
         this.starPointSpriteHovered = null;
         this.starPointHovered = null;
         this.starPointParamsHovered = null;
-        this.starPointsMng.free();
+        this.starPointsMng?.free();
 
         this.bigStarSprite = null; 
 
@@ -2517,7 +2523,7 @@ export class GalaxyMng implements ILogger {
 
         this.galaxySaveAnimData = {};
 
-        this.smallFlySystem.free();
+        this.smallFlySystem?.free();
         this.smallFlySystem = null;
 
         this._quadTreeReal?.destroy();

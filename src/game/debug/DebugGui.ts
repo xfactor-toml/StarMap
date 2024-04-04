@@ -20,6 +20,12 @@ export class DebugGui implements ILogger {
     private constructor() {
         if (DebugGui._instance) throw new Error("Double using DebugGui.constructor()!");
         this._gui = new datGui.GUI();
+        try {
+            let element: any = document.getElementsByClassName('dg ac')[0];
+            element.style.zIndex = '10000';
+        } catch (error) {
+            
+        }
         this._elements = new Map();
     }
 
