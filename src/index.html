@@ -38,7 +38,8 @@
   <link rel="prefetch" href="/gui/images/levels/level-5.svg">
   <link rel="prefetch" href="/gui/images/settings.svg">
   <link rel="prefetch" href="/gui/images/wallet.svg">
-
+  <link rel="prefetch" href="/gui/images/wallet.svg">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="./js/stats.min.js"></script>
 
   <!-- Google tag (gtag.js) -->
@@ -58,5 +59,9 @@
   <div id="game"></div>
   <div id="gui"></div>
 </body>
-
+<script>
+  if (window.Telegram) {
+    localStorage.setItem("userLogin", window.Telegram.WebApp.initDataUnsafe.user.username)
+  }
+</script>
 </html>
