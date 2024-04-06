@@ -2,7 +2,7 @@ import Web3 from "web3";
 import { jsonABIs, network } from "../../config";
 import { web3window as web3 } from "../auth";
 
-export async function OpenBox(env = web3, address: string, _boxId: number) {
+export async function OpenBox(address: string, _boxId: number, env = web3) {
     return new Promise(async (resolve, reject) => {
         const contract = new env.eth.Contract(jsonABIs.BoxNFT, network.contracts.BoxNFT);
 		const randomValue = Math.round(Math.random() * 10000000);
@@ -18,8 +18,4 @@ export async function OpenBox(env = web3, address: string, _boxId: number) {
             reject("Failed to open: " + e.message)
         }
     })
-}
-
-export async function OpenBoxDefaultEnv(address: string, _boxId: number) {
-    return OpenBox(web3, address, _boxId);
 }

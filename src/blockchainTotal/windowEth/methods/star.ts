@@ -3,9 +3,15 @@ import { jsonABIs, network } from "../../config";
 import { Stars, Tokens } from "../../getters";
 import { web3window as web3 } from "../auth";
 
-const writeable = new web3.eth.Contract(jsonABIs.StarNFTABI, network.contracts.starNFT)
-
-export async function CreateNewStar (owner : account, name : string, uri = `${document.location.hostname}`, race: Race, coords: Coords) : Promise<StarData | null> {
+export async function CreateNewStar (
+    owner : account, 
+    name : string, 
+    uri = `${document.location.hostname}`, 
+    race: Race, 
+    coords: Coords, 
+    w3 = web3) : Promise<StarData | null> {
+        
+    const writeable = new w3.eth.Contract(jsonABIs.StarNFTABI, network.contracts.starNFT);
     return new Promise(async (resolve, reject) => {
         if (!owner || !name || !network.env) {
             reject("Invalid arguments");
@@ -52,9 +58,10 @@ export async function CreateNewStar (owner : account, name : string, uri = `${do
 export async function RefuelStar ( account : account, 
     starId : number, 
     amount : number, 
-    target : fuelTarget) : Promise<StarData | null> {
+    target : fuelTarget,
+    w3 = web3) : Promise<StarData | null> {
 
-
+const writeable = new w3.eth.Contract(jsonABIs.StarNFTABI, network.contracts.starNFT);
 return new Promise(async (resolve, reject) => {
 if (amount == 0 || !account) {
 reject("Invalid arguments");
@@ -95,7 +102,11 @@ const allowedAmount = await Tokens.GetAllowance (account, network.contracts.star
   })
 }
 
-export async function IncreaseStarLevel (owner : account, starId : number) : Promise<StarData | null> {
+export async function IncreaseStarLevel (
+    owner : account, 
+    starId : number,
+    w3 = web3) : Promise<StarData | null> {
+    const writeable = new w3.eth.Contract(jsonABIs.StarNFTABI, network.contracts.starNFT);
        return new Promise(async (resolve, reject) => {
          if (!owner) {
             reject("Owner not specified");
