@@ -8,13 +8,19 @@ import { WindowEthAuth, web3window } from "./windowEth";
 import { lsPrivateKey } from "./config/network";
 import { GenerateSignature } from "./walletconnect/methods";
 
-export default class BlockchainConnectService {
+export class BlockchainConnectService {
     public authMethod: AuthMethod;
     public userAccount: account;
     public displayLogin: string;
 
     public GetDefaultAuthMethod() {
-        const tgLogin = window.Telegram.WebApp.initDataUnsafe.user.username;
+        let tgLogin;
+        try {
+            tgLogin = window.Telegram.WebApp.initDataUnsafe.user.username;
+        } catch (e) {
+            tgLogin = "";
+        }
+
         if (tgLogin) {
             this.displayLogin = tgLogin;
             return "Local"

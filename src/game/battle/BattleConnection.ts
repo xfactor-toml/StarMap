@@ -8,6 +8,7 @@ import { ClaimRewardData, DebugTestData, GameCompleteData, PackTitle, SkillReque
 import { GameEvent, GameEventDispatcher } from "../events/GameEvents";
 import { Signal } from "../utils/events/Signal";
 import { useWallet } from "@/services";
+import { BlockchainConnectService } from "~/blockchainTotal";
 
 export enum ConnectionEvent {
     disconnect = 'disconnect'
@@ -16,10 +17,12 @@ export enum ConnectionEvent {
 export class BattleConnection extends MyEventDispatcher {
     private static _instance: BattleConnection;
     private _socket: Socket;
+    private signService: BlockchainConnectService;
 
     private constructor() {
         super('BattleConnection');
         // auto connection
+        this.signService = new BlockchainConnectService();
         if (GlobalParams.BATTLE.localConnect) {
             this.connectLocal();
         }
@@ -91,7 +94,8 @@ export class BattleConnection extends MyEventDispatcher {
         switch (aData.cmd) {
             case 'request':
                 this.logDebug(`onSignRecv: request...`);
-                this.signProcess1();
+                // this.signProcess1();
+                this.signProcess2();
                 break;
             case 'reject':
                 this.logDebug(`onSignRecv: REJECT!`, aData);
@@ -108,6 +112,7 @@ export class BattleConnection extends MyEventDispatcher {
     private signProcess1() {
         let ws = useWallet();
         if (!ws.connected) {
+
             ws.connect('metamask').then((aIsSuccess: boolean) => {
                 if (aIsSuccess) {
                     this.signProcess2();
