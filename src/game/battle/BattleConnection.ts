@@ -136,6 +136,7 @@ export class BattleConnection extends MyEventDispatcher {
                 this.logDebug(`local wallet auth...`);
                 this._socket.emit(PackTitle.sign, aSignature);
             })
+            return;
         }
         newGameAuth(walletAddress).then(aSignature => {
             this.logDebug(`wallet auth...`);
