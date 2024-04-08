@@ -1,18 +1,11 @@
 import {
-  ApprovePlasma,
-  CreateNewStar,
-  IncreaseStarLevel,
-  MintPlasma,
-  NetworkAuth,
-  RefuelStar,
-  SubscribeOnAccountChanging
-} from "~/blockchain";
+  BlockchainConnectService, LocalMethods
+} from "~/blockchainTotal";
 import { Coords, fuelTarget } from "~/blockchain/types";
 import { BaseProvider } from "./base-provider";
 import { Star } from "@/models";
 import { ref } from "vue";
 import { OpenBox } from "~/blockchain/boxes";
-import { BlockchainConnectService } from "~/blockchainTotal";
 
 export class UniversalProvider extends BaseProvider {
   account = ref('');
@@ -26,18 +19,16 @@ export class UniversalProvider extends BaseProvider {
 
   async connect() {
     this.account = ref(await this.connectSubService.Auth())
-
-
     return this.account
   }
 
-  /* async subscribe() {
+  async subscribe() {
     this.subscribed = true;
-    this.account = ref(await SubscribeOnAccountChanging());
-  } */
+    // this.account = ref(await SubscribeOnAccountChanging());
+  }
 
   async approvePlasma(amount: number) {
-    return this.checkConnection(() => ApprovePlasma(this.account.value, amount));
+    return this.checkConnection(() => LocalMethods.Txns.ApprovePlasma(this.account.value, amount));
   }
 
   async createStar(name: string, coords: Coords) {
@@ -45,11 +36,11 @@ export class UniversalProvider extends BaseProvider {
     const uri = `${document.location.hostname}`;
     const race = Star.getRandomRace();
 
-    return this.checkConnection(() => CreateNewStar(owner, name, uri, race, coords), null);
+    return this.checkConnection(() => LocalMethods.Txns.CreateNewStar(owner, name, uri, race, coords), null);
   }
 
   async refuelStar(starId: number, amount: number, target: fuelTarget) {
-    return this.checkConnection(() => RefuelStar(this.account.value, starId, amount, target), null);
+    return this.checkConnection(() => LocalMethods.Txns.RefuelStar(this.account.value, starId, amount, target), null);
   }
 
   async refuelStarLevelUp(starId: number, amount: number) {
@@ -61,11 +52,11 @@ export class UniversalProvider extends BaseProvider {
   }
 
   async increaseStarLevel(starId: number) {
-    return this.checkConnection(() => IncreaseStarLevel(this.account.value, starId), null);
+    return this.checkConnection(() => LocalMethods.Txns.IncreaseStarLevel(this.account.value, starId), null);
   }
 
   async mintPlasma(amount: number): Promise<number> {
-    return MintPlasma(this.account.value, amount);
+    return LocalMethods.Txns.MintPlasma(this.account.value, amount);
   }
 
   async openBox(boxId: number) {

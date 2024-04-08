@@ -5,6 +5,7 @@ import { WalletConnectProvider } from '@/services/wallet/providers/walletconnect
 import { WalletStoreState, useBattleStore } from '@/stores';
 import { markRaw } from 'vue';
 import { InitWalletconnectModal } from '~/blockchainWC';
+import { UniversalProvider } from './providers/universal-provider';
 
 let walletInstance: WalletService | null = null
 
@@ -30,13 +31,17 @@ export class WalletService {
     }
   }
 
-  async connect(provider: 'metamask' | 'walletconnect') {
+  async connect(provider: 'metamask' | 'walletconnect' | 'telegram') {
     if (provider === 'metamask') {
       this.provider = new MetamaskProvider()
     }
 
     if (provider === 'walletconnect') {
       this.provider = new WalletConnectProvider()
+    }
+
+    if (provider === 'telegram') {
+      this.provider = new UniversalProvider()
     }
 
     if (!this.provider) {
