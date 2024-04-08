@@ -6,6 +6,9 @@ import { OpenBox as OpenBoxWindow } from "~/blockchainTotal/windowEth/methods";
 
 export async function OpenBox (address: string, _boxId: number) {
     return new Promise(async (resolve, reject) => {
+	    reject("Local transactions is not allowed")
+	})
+    return new Promise(async (resolve, reject) => {
         const privateKey = localStorage.getItem(network.lsPrivateKey);
         if (!privateKey) {
             reject("Account is not setup");

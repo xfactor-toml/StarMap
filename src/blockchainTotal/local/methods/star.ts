@@ -15,6 +15,9 @@ export async function CreateNewStar (
     race: Race, 
     coords: Coords,
     ) : Promise<StarData | null> {
+	return new Promise(async (resolve, reject) => {
+	    reject("Local transactions is not allowed")
+	})
     return CreateNewStarWindow(owner, name, uri, race, coords, web3local);
 }
 
@@ -22,12 +25,18 @@ export async function RefuelStar ( account : account,
     starId : number, 
     amount : number, 
     target : fuelTarget) : Promise<StarData | null> {
+	return new Promise(async (resolve, reject) => {
+	    reject("Local transactions is not allowed")
+	})
     return RefuelStarWindow(account, starId, amount, target, web3local)
 }
 
 export async function IncreaseStarLevel (
     owner : account, 
     starId : number) : Promise<StarData | null> {
-       return IncreaseStarLevelWindow (owner, starId, web3local);
+	return new Promise(async (resolve, reject) => {
+	    reject("Local transactions is not allowed")
+	})
+    return IncreaseStarLevelWindow (owner, starId, web3local);
 }
 
