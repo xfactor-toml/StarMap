@@ -53,7 +53,7 @@ export class BlockchainConnectService {
         }
     }
 
-    public async GetSignedAuthMessage() {
+    public async GetSignedAuthMessage(): Promise<string> {
         return new Promise (async (resolve, reject) => {
 
             const dt = new Date().getTime();

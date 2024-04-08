@@ -31,7 +31,7 @@ export class WalletService {
     }
   }
 
-  async connect(provider: 'metamask' | 'walletconnect' | 'telegram') {
+  async connect(provider: 'metamask' | 'walletconnect' | 'telegram' | 'local') {
     if (provider === 'metamask') {
       this.provider = new MetamaskProvider()
     }
@@ -40,7 +40,7 @@ export class WalletService {
       this.provider = new WalletConnectProvider()
     }
 
-    if (provider === 'telegram') {
+    if (provider === 'telegram' || provider === 'local') {
       this.provider = new UniversalProvider()
     }
 

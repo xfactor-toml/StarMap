@@ -128,7 +128,16 @@ export class BattleConnection extends MyEventDispatcher {
     }
     
     private signProcess2() {
-        newGameAuth(getWalletAddress()).then(aSignature => {
+        const walletAddress = getWalletAddress();
+        if (!walletAddress) {
+            const auther = new BlockchainConnectService();
+            auther.SetupAuthMethod('Local');
+            auther.GetSignedAuthMessage().then((aSignature) => {
+                this.logDebug(`local wallet auth...`);
+                this._socket.emit(PackTitle.sign, aSignature);
+            })
+        }
+        newGameAuth(walletAddress).then(aSignature => {
             this.logDebug(`wallet auth...`);
             this._socket.emit(PackTitle.sign, aSignature);
         });
