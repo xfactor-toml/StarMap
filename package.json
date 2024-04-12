@@ -13,7 +13,7 @@
     "author": "Monax",
     "license": "ISC",
     "devDependencies": {
-        "@pixi/sound": "^4.2.0",
+        "@pixi/sound": "^6.0.0",
         "@types/animejs": "^3.1.12",
         "@types/dat.gui": "^0.7.7",
         "@types/stats": "^0.16.30",

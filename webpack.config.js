@@ -15,7 +15,7 @@ module.exports = {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'build')
   },
-
+  
   resolve: {
     plugins: [
       new TsconfigPathsPlugin({
@@ -23,7 +23,7 @@ module.exports = {
         configFile: path.join(__dirname, 'tsconfig.json')
       }),
     ],
-    extensions: ['.ts', '.js', 'd.ts', '.vue']
+    extensions: ['.ts', '.js', '.d.ts', '.vue']
   },
 
   module: {
