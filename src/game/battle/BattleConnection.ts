@@ -2,29 +2,38 @@ import { NetworkAuth } from "~/blockchain";
 import { MyEventDispatcher } from "../basics/MyEventDispatcher";
 import { newGameAuth } from "~/blockchain/functions/gameplay";
 import { Socket, io } from "socket.io-client";
-import { Settings } from "../data/Settings";
+import { GlobalParams } from "../data/GlobalParams";
 import { getWalletAddress, isWalletConnected } from "~/blockchain/functions/auth";
 import { ClaimRewardData, DebugTestData, GameCompleteData, PackTitle, SkillRequest, StartGameData } from "./Types";
 import { GameEvent, GameEventDispatcher } from "../events/GameEvents";
 import { Signal } from "../utils/events/Signal";
 import { useWallet } from "@/services";
+import { BlockchainConnectService } from "~/blockchainTotal";
 
 export enum ConnectionEvent {
     disconnect = 'disconnect'
 }
 
 export class BattleConnection extends MyEventDispatcher {
+    private static _instance: BattleConnection;
     private _socket: Socket;
+    private signService: BlockchainConnectService;
 
-    constructor() {
+    private constructor() {
         super('BattleConnection');
         // auto connection
-        if (Settings.BATTLE.localConnect) {
+        this.signService = new BlockchainConnectService();
+        if (GlobalParams.BATTLE.localConnect) {
             this.connectLocal();
         }
         else {
             this.connectServer();
         }
+    }
+
+    static getInstance(): BattleConnection {
+        if (!BattleConnection._instance) BattleConnection._instance = new BattleConnection();
+        return BattleConnection._instance;
     }
 
     private connectLocal() {
@@ -35,7 +44,7 @@ export class BattleConnection extends MyEventDispatcher {
 
     private connectServer() {
         this.closeConnection();
-        this._socket = io(Settings.BATTLE.serverAddr);
+        this._socket = io(GlobalParams.BATTLE.serverAddr);
         this.initListeners();
     }
 
@@ -85,7 +94,8 @@ export class BattleConnection extends MyEventDispatcher {
         switch (aData.cmd) {
             case 'request':
                 this.logDebug(`onSignRecv: request...`);
-                this.signProcess1();
+                // this.signProcess1();
+                this.signProcess2();
                 break;
             case 'reject':
                 this.logDebug(`onSignRecv: REJECT!`, aData);
@@ -102,6 +112,7 @@ export class BattleConnection extends MyEventDispatcher {
     private signProcess1() {
         let ws = useWallet();
         if (!ws.connected) {
+
             ws.connect('metamask').then((aIsSuccess: boolean) => {
                 if (aIsSuccess) {
                     this.signProcess2();
@@ -117,7 +128,17 @@ export class BattleConnection extends MyEventDispatcher {
     }
     
     private signProcess2() {
-        newGameAuth(getWalletAddress()).then(aSignature => {
+        const walletAddress = getWalletAddress();
+        if (!walletAddress) {
+            const auther = new BlockchainConnectService();
+            auther.SetupAuthMethod('Local');
+            auther.GetSignedAuthMessage().then((aSignature) => {
+                this.logDebug(`local wallet auth...`);
+                this._socket.emit(PackTitle.sign, aSignature);
+            })
+            return;
+        }
+        newGameAuth(walletAddress).then(aSignature => {
             this.logDebug(`wallet auth...`);
             this._socket.emit(PackTitle.sign, aSignature);
         });
@@ -140,15 +161,19 @@ export class BattleConnection extends MyEventDispatcher {
 
     sendSearchGame() {
         this._socket.emit(PackTitle.startSearchGame, {
-            isFreeConnect: Settings.BATTLE.freeConnect
+            isFreeConnect: GlobalParams.BATTLE.freeConnect
         });
     }
 
     sendSearchGameBot() {
         this._socket.emit(PackTitle.startSearchGame, {
             withBot: true,
-            isFreeConnect: Settings.BATTLE.freeConnect
+            isFreeConnect: GlobalParams.BATTLE.freeConnect
         });
+    }
+
+    sendBattleSceneLoaded() {
+        this._socket.emit(PackTitle.battleSceneLoaded);
     }
 
     sendSkillActionClick(aSkillId: number) {

@@ -4,7 +4,6 @@ import { SmallFlyLine } from './SmallFlyLine';
 
 
 export class SmallFlySystem {
-
     private _parent: THREE.Object3D;
     private _starPositions: THREE.Vector3[];
     private _lines: SmallFlyLine[];
@@ -49,6 +48,17 @@ export class SmallFlySystem {
             pointsCnt: MyMath.randomIntInRange(14, 16)
         });
         this._lines.push(fly);
+    }
+
+    free() {
+        this._activeSpawn = false;
+        this._parent = null;
+        for (let i = 0; i < this._lines.length; i++) {
+            const line = this._lines[i];
+            line.free();
+        }
+        this._lines = [];
+        this._starPositions = [];
     }
 
     update(dt: number) {

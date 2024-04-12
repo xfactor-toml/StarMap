@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import gsap, { Linear, Sine } from 'gsap';
 import { GUI } from 'dat.gui';
 import { MyEventDispatcher } from "../basics/MyEventDispatcher";
-import { IUpdatable } from "../interfaces/IUpdatable";
+import { IUpdatable } from "../core/interfaces/IUpdatable";
 import { BattleObject } from '../objects/battle/BattleObject';
 import { BattleStar } from '../objects/battle/BattleStar';
 import { BattlePlanet } from '../objects/battle/BattlePlanet';
@@ -12,7 +12,7 @@ import { MyMath } from '../utils/MyMath';
 import { BattleCameraMng } from './BattleCameraMng';
 import { ObjectHpViewer } from './ObjectHpViewer';
 import { Linkor } from '../objects/battle/Linkor';
-import { Settings } from '../data/Settings';
+import { GlobalParams } from '../data/GlobalParams';
 import { FieldInitData, PlanetLaserData, ObjectCreateData, ObjectType, ObjectUpdateData, PackTitle, AttackData, DamageData, PlanetLaserSkin } from './Types';
 import { BattleConnection } from './BattleConnection';
 import { FieldCell } from '../objects/battle/FieldCell';
@@ -22,6 +22,7 @@ import { FieldGrid } from '../objects/battle/FieldGrid';
 import { ThreeUtils } from '../utils/threejs/ThreejsUtils';
 import { DamageViewer } from './DamageViewer';
 import { Tower } from '../objects/battle/Tower';
+import { HomingMissile } from '../objects/battle/HomingMissile';
 
 type ServerFieldParams = {
 
@@ -87,7 +88,7 @@ const DEBUG_GUI = {
 export class BattleView extends MyEventDispatcher implements IUpdatable {
     private _walletNumber: string;
     private _scene: THREE.Scene;
-    private _camera: THREE.PerspectiveCamera;
+    private _camera: THREE.Camera;
     private _connection: BattleConnection;
     private _cameraTarget: THREE.Vector3;
     private _cameraMng: BattleCameraMng;
@@ -105,7 +106,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
     constructor(aParams: {
         scene: THREE.Scene,
-        camera: THREE.PerspectiveCamera,
+        camera: THREE.Camera,
         connection: BattleConnection
     }) {
         super('BattleView');
@@ -128,11 +129,12 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         this._damageViewer = new DamageViewer(this._dummyMain, this._camera);
 
         this.initConnectionListeners();
-
+        
     }
 
     private initConnectionListeners() {
         this._connection.socket.on(PackTitle.fieldInit, (aData: FieldInitData) => {
+            this.logDebug(`PackTitle.fieldInit recv...`);
             this.onFieldInitPack(aData);
         });
         this._connection.socket.on(PackTitle.objectCreate, (aData) => {
@@ -189,6 +191,8 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             aTargetPos: { x: 0, y: 0, z: 20 * zFactor },
             duration: .5
         });
+        // this._camera.position.set(0, H, 25 * zFactor);
+        // this._camera.lookAt(0, 0, 20 * zFactor);
     }
 
     private serverValueToClient(aServerValue: number): number {
@@ -299,16 +303,18 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         fieldSize.h = fieldSize.rows * fieldSize.sectorHeight;
         this.initField();
 
-        setTimeout(() => {
+        // setTimeout(() => {
             this._isTopPosition = aData.playerPosition == 'top';
             this._objectHpViewer.isTopViewPosition = this._isTopPosition;
             this.initCameraPosition(this._isTopPosition);
-        }, 1000);
+        // }, 1000);
 
     }
 
     private onObjectCreatePack(aData: ObjectCreateData) {
         let obj: BattleObject;
+
+        // this.logDebug(`onObjectCreatePack(): ${aData.type}:`, aData);
 
         switch (aData.type) {
 
@@ -331,7 +337,10 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             case 'Planet':
                 obj = new BattlePlanet(aData);
                 if (aData.pos) obj.position.copy(this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z }));
-                if (aData.q) obj.setQuaternion(aData.q);
+                if (aData.q) {
+                    obj.setQuaternion(aData.q);
+                    obj.setTargetQuaternion(aData.q);
+                }
                 this._objects.set(aData.id, obj);
                 break;
             
@@ -355,6 +364,11 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                     obj.position.copy(clientPos);
                 }
 
+                if (aData.q) {
+                    obj.setQuaternion(aData.q);
+                    obj.setTargetQuaternion(aData.q);
+                }
+
                 // add hp bar
                 this._objectHpViewer.addBar(obj);
                 break;
@@ -374,6 +388,11 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                     obj.position.copy(clientPos);
                 }
 
+                if (aData.q) {
+                    obj.setQuaternion(aData.q);
+                    obj.setTargetQuaternion(aData.q);
+                }
+
                 if (aData.lookDir) obj.lookByDir(aData.lookDir);
 
                 // add hp bar
@@ -381,7 +400,6 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             } break;
 
             case 'BattleShip': {
-                this.logDebug(`onObjectCreatePack(): BattleShip:`, aData);
                 obj = new Linkor({
                     ...aData,
                     ...{
@@ -396,10 +414,48 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                     obj.position.copy(clientPos);
                 }
 
+                if (aData.q) {
+                    obj.setQuaternion(aData.q);
+                    obj.setTargetQuaternion(aData.q);
+                }
+
                 if (aData.lookDir) obj.lookByDir(aData.lookDir);
 
                 // add hp bar
                 this._objectHpViewer.addBar(obj);
+            } break;
+
+            case 'HomingMissile': {
+                obj = new HomingMissile({
+                    ...aData,
+                    ...{
+                        camera: this._camera,
+                        effectsParent: this._dummyMain,
+                        race: this.isCurrentOwner(aData.owner) ? 'Waters' : 'Insects',
+                        light: {
+                            parent: this._dummyMain,
+                            ...SETTINGS.towers.light,
+                            color: this.isCurrentOwner(aData.owner) ? SETTINGS.towers.light.ownerColor : SETTINGS.towers.light.enemyColor
+                        },
+                        showRadius: DEBUG_GUI.showObjectRadius,
+                        showAttackRadius: DEBUG_GUI.showObjectAttackRadius
+                    }
+                });
+
+                if (aData.pos) {
+                    const clientPos = this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z });
+                    obj.position.copy(clientPos);
+                }
+
+                if (aData.q) {
+                    obj.setQuaternion(aData.q);
+                    obj.setTargetQuaternion(aData.q);
+                }
+
+                if (aData.lookDir) obj.lookByDir(aData.lookDir);
+
+                // add hp bar
+                // this._objectHpViewer.addBar(obj);
             } break;
 
             default:
@@ -424,13 +480,17 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 return;
             }
 
-            if (obj instanceof BattlePlanet) {
+            // if (obj instanceof BattlePlanet) {
                 // this.logDebug(`planet update:`, data);
-            }
+            // }
 
-            if (obj instanceof Linkor) {
+            // if (obj instanceof Linkor) {
                 // this.logDebug(`BattleShip update:`, data);
-            }
+            // }
+
+            // if (obj instanceof HomingMissile) {
+                // this.logDebug(`HomingMissile update:`, data);
+            // }
 
             if (data.pos) {
                 obj.targetPosition = {
@@ -440,7 +500,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             }
 
             if (data.q) {
-                obj.setQuaternion(data.q);
+                obj.setTargetQuaternion(data.q);
             }
 
             if (data.hp != undefined) {
@@ -661,12 +721,14 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     }
 
     private destroyObject(aId: number) {
+
         this._objectHpViewer.removeBar(aId);
         let obj = this.getObjectById(aId);
         if (!obj) {
             this.logError(`updateObject(): !obj`, aId);
             return;
         }
+        
         obj.free();
         this._objects.delete(aId);
 

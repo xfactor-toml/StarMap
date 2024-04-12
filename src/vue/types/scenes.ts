@@ -31,18 +31,18 @@ type Scene<
   getComponent: () => DefineComponent<{}, {}, any>
 };
 
-export enum SceneName {
+export enum UISceneNames {
   Start = 'start',
   Galaxy = 'galaxy',
   Battle = 'battle',
 }
 
 export type GuiScenes = {
-  [SceneName.Start]: Scene<SceneName.Start, [
+  [UISceneNames.Start]: Scene<UISceneNames.Start, [
     Mode<'preloader'>,
     Mode<'welcome'>
   ]>
-  [SceneName.Galaxy]: Scene<SceneName.Galaxy, [
+  [UISceneNames.Galaxy]: Scene<UISceneNames.Galaxy, [
     Mode<'phantom', [
       ClientScene<'galaxy'>
     ]>,
@@ -53,7 +53,7 @@ export type GuiScenes = {
     ]>,
     Mode<'season'>
   ]>,
-  [SceneName.Battle]: Scene<SceneName.Battle, [
+  [UISceneNames.Battle]: Scene<UISceneNames.Battle, [
     Mode<'init'>,
     Mode<'accept'>,
     Mode<'connect'>,
@@ -66,10 +66,10 @@ export type GuiScenes = {
 
 export type GuiScene = GuiScenes[keyof GuiScenes]
 
-export type GuiMode<T extends SceneName = SceneName> = GuiScenes[T]['modes'][number]
+export type GuiMode<T extends UISceneNames = UISceneNames> = GuiScenes[T]['modes'][number]
 
-export type GuiModeName<T extends SceneName = SceneName> = GuiMode<T>['name']
+export type GuiModeName<T extends UISceneNames = UISceneNames> = GuiMode<T>['name']
 
-export type GuiClientSceneView<T extends SceneName = SceneName> = GuiMode<T>['clientScenes'][number]
+export type GuiClientSceneView<T extends UISceneNames = UISceneNames> = GuiMode<T>['clientScenes'][number]
 
-export type GuiClientSceneName<T extends SceneName = SceneName> = GuiClientSceneView<T>['name']
+export type GuiClientSceneName<T extends UISceneNames = UISceneNames> = GuiClientSceneView<T>['name']

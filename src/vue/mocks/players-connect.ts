@@ -2,7 +2,7 @@
 import { default as anime } from 'animejs';
 import { toMilliseconds, wait } from '@/utils';
 import { useBattleStore, useScenesStore } from '@/stores';
-import { SceneName } from '@/types';
+import { UISceneNames } from '@/types';
 
 export const playersConnectMock = async () => {
   // seconds
@@ -12,7 +12,7 @@ export const playersConnectMock = async () => {
   const scenes = useScenesStore()
   const battle = useBattleStore()
 
-  scenes.setScene(SceneName.Battle)
+  scenes.setScene(UISceneNames.Battle)
 
   // Accept
   scenes.setSceneMode('accept');
@@ -56,7 +56,7 @@ export const playersConnectMock = async () => {
       battle.connecting.setLoadingProgress(progress)
     },
     complete() {
-      scenes.setScene(SceneName.Galaxy);
+      scenes.setScene(UISceneNames.Galaxy);
     }
   })
 }

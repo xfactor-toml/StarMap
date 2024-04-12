@@ -8,7 +8,7 @@ import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass";
 import { SMAAPass } from "three/examples/jsm/postprocessing/SMAAPass";
 
 import { LogMng } from "../utils/LogMng";
-import { Settings } from "../data/Settings";
+import { GlobalParams } from "../data/GlobalParams";
 import { FrontEvents } from "../events/FrontEvents";
 import { GameEvent, GameEventDispatcher } from "../events/GameEvents";
 import { GameUtils } from "../math/GameUtils";
@@ -30,22 +30,22 @@ export class GameRenderer {
         let w = GameUtils.getClientWidth();
         let h = GameUtils.getClientHeight();
 
-        const clearColor = new THREE.Color(Settings.BG_COLOR);
+        const clearColor = new THREE.Color(GlobalParams.BG_COLOR);
 
         this._renderer = new THREE.WebGLRenderer({
             antialias: false
         });
         this._renderer.autoClear = false;
         this._renderer.getContext().getExtension('OES_standard_derivatives');
-        if (Settings.USE_DEVICE_PIXEL_RATIO) {
+        if (GlobalParams.USE_DEVICE_PIXEL_RATIO) {
             this._renderer.setPixelRatio(Math.min(2, window.devicePixelRatio));
         }
         this._renderer.setSize(w, h);
         this._renderer.setClearColor(clearColor);
         this._renderPixelRatio = this._renderer.getPixelRatio();
         LogMng.debug(`Renderer PixelRatio: ${this._renderPixelRatio}`);
-        Settings.domCanvasParent.appendChild(this._renderer.domElement);
-        Settings.domRenderer = this._renderer.domElement;
+        GlobalParams.domCanvasParent.appendChild(this._renderer.domElement);
+        GlobalParams.domRenderer = this._renderer.domElement;
 
         // SCENES
         
@@ -56,15 +56,15 @@ export class GameRenderer {
         this._camera = new THREE.PerspectiveCamera(
             45,
             GameUtils.getClientAspectRatio(),
-            Settings.CAMERA.near,
-            Settings.CAMERA.far);
+            GlobalParams.CAMERA.near,
+            GlobalParams.CAMERA.far);
         this._camera.position.set(10, 0, 10);
         this._camera.lookAt(new THREE.Vector3(0, 0, 0));        
 
         // global events
         FrontEvents.onWindowResizeSignal.add(this.onWindowResize, this);
 
-        if (Settings.INIT_FULL_SCREEN) {
+        if (GlobalParams.INIT_FULL_SCREEN) {
             document.body.requestFullscreen();
         }
 
@@ -97,7 +97,7 @@ export class GameRenderer {
         this._camera.aspect = w / h;
         this._camera.updateProjectionMatrix();
         
-        switch (Settings.AA_TYPE) {
+        switch (GlobalParams.AA_TYPE) {
             case 1:
                 if (this._fxaaPass) {
                     this._fxaaPass.material.uniforms['resolution'].value.x = 1 / (w * this._renderPixelRatio);

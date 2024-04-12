@@ -1,5 +1,5 @@
 import { FarGalaxyParams, GalaxyStarParams } from "~/game/data/Types";
-import { GalaxyData } from "../data/Settings";
+import { GalaxyData } from "../data/GlobalParams";
 
 export class FileMng {
     

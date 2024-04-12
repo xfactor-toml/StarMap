@@ -6,6 +6,7 @@ export enum PackTitle {
     stopSearchGame = 'stopSearchGame', // request
     gameSearching = 'gameSearching', // status, update, info
     exitGame = 'exitGame',
+    battleSceneLoaded = 'battleSceneLoaded',
     gameStart = 'gameStart',
     gameComplete = 'gameComplete',
     // for game
@@ -29,7 +30,7 @@ export enum PackTitle {
 
 }
 
-export type ObjectType = 'Star' | 'Planet' | 'Tower' | 'FighterShip' | 'BattleShip' | 'Homing';
+export type ObjectType = 'Star' | 'Planet' | 'Tower' | 'FighterShip' | 'BattleShip' | 'HomingMissile';
 
 export type AttackType = 'laser' | 'ray';
 // Humans, Insects, Waters, Lizards

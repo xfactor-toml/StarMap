@@ -1,7 +1,7 @@
 
 import { wait } from '@/utils';
 import { useBattleStore, useScenesStore } from '@/stores';
-import { SceneName } from '@/types';
+import { UISceneNames } from '@/types';
 
 export const battleRunMock = async () => {
   const scenes = useScenesStore()
@@ -52,7 +52,7 @@ export const battleRunMock = async () => {
     }
   });
 
-  scenes.setScene(SceneName.Battle, {
+  scenes.setScene(UISceneNames.Battle, {
     mode: 'process'
   })
 
