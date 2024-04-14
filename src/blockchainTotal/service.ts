@@ -66,8 +66,17 @@ export class BlockchainConnectService {
             const signMsg = "auth_" + String(dt - (dt % 600000));
             let signature = ""
             if (this.authMethod === "Local") {
-                const tempPK = localStorage.getItem(lsPrivateKey);
-                if (!tempPK) reject ("Account not exist");
+                let tempPK = localStorage.getItem(lsPrivateKey);
+                if (!tempPK) {
+                    try {
+                        await AuthByLocal();
+                        tempPK = localStorage.getItem(lsPrivateKey);
+                    } catch (e) {
+                        console.log("account not created", e.message);
+                        reject ("Account not exist");
+                    }
+                    // reject ("Account not exist");
+                }
                     const sign = await web3local.eth.accounts.sign(
                         signMsg,
                         tempPK
