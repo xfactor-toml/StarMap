@@ -88,6 +88,7 @@ export class GalaxyScene extends BasicScene {
         FrontEvents.onStarCreated.add(this.onStarCreated, this);
         FrontEvents.onStarUpdated.add(this.onStarUpdated, this);
         FrontEvents.onBattleSearch.add(this.onFrontStarBattleSearch, this);
+        FrontEvents.onBattleSearchBot.add(this.onFrontStarBattleBotSearch, this);
         FrontEvents.onBattleStopSearch.add(this.onFrontStopBattleSearch, this);
         // battle server events
         let bc = BattleConnection.getInstance();
@@ -139,6 +140,16 @@ export class GalaxyScene extends BasicScene {
         }
         GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_START);
         con.sendSearchGame();
+    }
+
+    private onFrontStarBattleBotSearch() {
+        let con = BattleConnection.getInstance();
+        if (!con.connected) {
+            alert(`No connection to server!`);
+            return;
+        }
+        GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_START);
+        con.sendSearchGameBot();
     }
 
     private onFrontStopBattleSearch() {
