@@ -4,6 +4,7 @@ import { ThreeLoader } from '~/game/utils/threejs/ThreeLoader';
 import { TextureAlias } from '~/game/data/TextureData';
 import { MyMath } from '@/utils';
 import { ThreeUtils } from '~/game/utils/threejs/ThreejsUtils';
+import { PlanetAimLine } from './PlanetAimLine';
 
 export class BattlePlanet extends BattleObject {
     protected _mesh: THREE.Mesh;
@@ -11,6 +12,7 @@ export class BattlePlanet extends BattleObject {
     protected _setteliteOrbitRadius: number;
     protected _setteliteRadius: number;
     protected _localRotateSpd = 0;
+    protected _aimLine: PlanetAimLine;
 
     constructor(aParams: BattleObjectData) {
         super(aParams, 'BattlePlanet');
@@ -45,6 +47,9 @@ export class BattlePlanet extends BattleObject {
         this._settelite = new THREE.Mesh(g, m);
         this._settelite.position.z = aOrbitRadius;
         this.add(this._settelite);
+
+        this._aimLine = new PlanetAimLine(this, new THREE.Vector3(), new THREE.Vector3(0, 0, 90));
+
     }
 
     private initSetteliteOrbitLine(aParent: THREE.Group, aOrbitRadius: number, aLineWidth: number, aColor: number): void {
@@ -75,6 +80,14 @@ export class BattlePlanet extends BattleObject {
 
     private updateMeshRotate(dt: number) {
         this._mesh.rotation.y -= dt * this._localRotateSpd;
+    }
+
+    showSniperAim() {
+        this._aimLine.show();
+    }
+
+    hideSniperAim() {
+        this._aimLine.hide();
     }
 
     update(dt: number) {
