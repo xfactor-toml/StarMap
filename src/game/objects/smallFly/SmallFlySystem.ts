@@ -42,7 +42,6 @@ export class SmallFlySystem {
             k--;
         }
         if (k <= 0) return;
-        // debugger;
         let fly = new SmallFlyLine(this._parent, pos1, pos2, {
             spd: MyMath.randomInRange(0.3, 0.4) * 2.5,
             pointsCnt: MyMath.randomIntInRange(14, 16)

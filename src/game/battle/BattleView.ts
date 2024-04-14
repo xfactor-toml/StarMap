@@ -13,7 +13,7 @@ import { BattleCameraMng } from './BattleCameraMng';
 import { ObjectHpViewer } from './ObjectHpViewer';
 import { Linkor } from '../objects/battle/Linkor';
 import { GlobalParams } from '../data/GlobalParams';
-import { FieldInitData, PlanetLaserData, ObjectCreateData, ObjectType, ObjectUpdateData, PackTitle, AttackData, DamageData, PlanetLaserSkin } from './Types';
+import { FieldInitData, PlanetLaserData, ObjectCreateData, ObjectType, ObjectUpdateData, PackTitle, AttackData, DamageData, PlanetLaserSkin, ExplosionData, SniperData } from './Types';
 import { BattleConnection } from './BattleConnection';
 import { FieldCell } from '../objects/battle/FieldCell';
 import { getWalletAddress } from '~/blockchain/functions/auth';
@@ -167,6 +167,13 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         // skills
         this._connection.socket.on(PackTitle.planetLaser, (aData: PlanetLaserData) => {
             this.planetLaser(aData);
+        });
+
+        this._connection.socket.on(PackTitle.explosion, (aData: ExplosionData) => {
+            // this.onExplosionPack(aData);
+        });
+        this._connection.socket.on(PackTitle.sniper, (aData: SniperData) => {
+            this.onSniperPack(aData);
         });
     }
 
@@ -718,6 +725,26 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             },
             ctx: this
         });
+    }
+
+
+    private onSniperPack(aSniperData: SniperData) {
+        let planet = this._objects.get(aSniperData.planetId) as BattlePlanet;
+        if (!planet) {
+            this.logWarn(`onSniperPack: unknown planet id: ${aSniperData.planetId}`, aSniperData);
+            return;
+        }
+        switch (aSniperData.action) {
+            case 'start':
+                planet.showSniperAim();
+                break;
+            case 'end':
+                planet.hideSniperAim();
+                break;
+            default:
+                this.logWarn(`onSniperPack: unknown aSniperData.action: ${aSniperData.action}`, aSniperData);
+                break;
+        }
     }
 
     private destroyObject(aId: number) {

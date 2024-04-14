@@ -24,6 +24,9 @@ export enum PackTitle {
     exp = 'exp',
     skill = 'skill',
 
+    sniper = 'sniper',
+    explosion = 'explosion',
+
     claimReward = 'claimReward',
 
     debugTest = 'debugTest'
@@ -146,4 +149,16 @@ export type ClaimRewardData = {
 
 export type DebugTestData = {
     action: 'win' | 'loss'
+}
+
+export type ExplosionType = 'rocket';
+
+export type ExplosionData = {
+    type: ExplosionType,
+    pos: { x: number, y: number, z: number }
+}
+
+export type SniperData = {
+    action: 'start' | 'end',
+    planetId: number
 }
