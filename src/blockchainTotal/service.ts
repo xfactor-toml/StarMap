@@ -1,4 +1,4 @@
-import { useWeb3ModalProvider } from "@web3modal/ethers5/vue";
+import { useWeb3ModalAccount, useWeb3ModalProvider } from "@web3modal/ethers5/vue";
 import { Socket, io } from "socket.io-client";
 import { network } from "./config";
 import { AuthMethod, account } from "./types";
@@ -25,10 +25,17 @@ export class BlockchainConnectService {
             this.displayLogin = tgLogin;
             return "Local"
         }
-        if (network.env) {
+        if (network.env && network.env.request) {
             return "WindowEth"
         }
-        return "Walletconnect"
+        try { 
+          const { address } = useWeb3ModalAccount()
+          console.log(address, address.value)
+           if (address && address.value) return "Walletconnect"
+        } catch (e) {
+            return "Local"
+        }
+        return "Local"
     }
 
     constructor() {
@@ -55,7 +62,6 @@ export class BlockchainConnectService {
 
     public async GetSignedAuthMessage(): Promise<string> {
         return new Promise (async (resolve, reject) => {
-
             const dt = new Date().getTime();
             const signMsg = "auth_" + String(dt - (dt % 600000));
             let signature = ""
