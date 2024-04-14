@@ -111,7 +111,11 @@ export class ClientService {
     // mock end
     
   }
-  
+
+  onGameStartWithBot() {
+    FrontEvents.onBattleSearchBot.dispatch();
+  }
+
   onSearchingClick() {
     LogMng.debug('Front: stop searching click');
     FrontEvents.onBattleStopSearch.dispatch();
