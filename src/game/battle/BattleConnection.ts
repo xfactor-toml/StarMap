@@ -94,8 +94,13 @@ export class BattleConnection extends MyEventDispatcher {
         switch (aData.cmd) {
             case 'request':
                 this.logDebug(`onSignRecv: request...`);
-                // this.signProcess1();
-                this.signProcess2();
+                const authPriority = this.signService.GetDefaultAuthMethod();
+                console.log("Priority: ", authPriority);
+                if (authPriority === "Local") {
+                    this.signProcess2();
+                } else {
+                    this.signProcess1();
+                }
                 break;
             case 'reject':
                 this.logDebug(`onSignRecv: REJECT!`, aData);
@@ -110,9 +115,18 @@ export class BattleConnection extends MyEventDispatcher {
     }
 
     private signProcess1() {
-        let ws = useWallet();
+        let ws;
+        try {
+            ws = useWallet();
+        } catch (e) {
+            console.log("No wallet");
+            this.signProcess2();
+        }
+        if (!ws) {
+            this.signProcess2();
+            return;
+        }
         if (!ws.connected) {
-
             ws.connect('metamask').then((aIsSuccess: boolean) => {
                 if (aIsSuccess) {
                     this.signProcess2();
@@ -129,10 +143,12 @@ export class BattleConnection extends MyEventDispatcher {
     
     private signProcess2() {
         const walletAddress = getWalletAddress();
+
         if (!walletAddress) {
-            const auther = new BlockchainConnectService();
-            auther.SetupAuthMethod('Local');
-            auther.GetSignedAuthMessage().then((aSignature) => {
+            const authPriority = this.signService.GetDefaultAuthMethod();
+            console.log("Priority", authPriority);
+            this.signService.SetupAuthMethod('Local');
+            this.signService.GetSignedAuthMessage().then((aSignature) => {
                 this.logDebug(`local wallet auth...`);
                 this._socket.emit(PackTitle.sign, aSignature);
             })
