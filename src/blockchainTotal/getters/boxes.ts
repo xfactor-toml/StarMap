@@ -141,7 +141,7 @@ export async function OpenBoxWeb2 (boxId: number) {
               "Content-Type": "application/json"
             },
             body: JSON.stringify({
-              signature: "aaa", boxId: 4
+              signature: "aaa", boxId: boxId
             })
           }).then(res => {
             if (res.status !== 200) {
