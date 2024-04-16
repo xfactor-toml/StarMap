@@ -19,5 +19,5 @@ export async function ConnectWalletWC () {
   const { open } = useWeb3Modal()
   const { address, chainId, isConnected } = useWeb3ModalAccount()
   await open(); 
-  return address;
+  return address.value;
 }

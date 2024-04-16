@@ -3,6 +3,8 @@ import { ethers } from 'ethers';
 import { jsonABIs, network } from "../../config";
 import { web3local  } from "../auth";
 import { OpenBox as OpenBoxWindow } from "~/blockchainTotal/windowEth/methods";
+import { fastDataServerUrl } from "~/blockchainTotal/config/network";
+import { BlockchainConnectService } from "~/blockchainTotal";
 
 export async function OpenBox (address: string, _boxId: number) {
     return new Promise(async (resolve, reject) => {
@@ -26,5 +28,35 @@ export async function OpenBox (address: string, _boxId: number) {
         } catch (e) {
             reject("Transaction error: " + e.message)
         }
+    })
+}
+
+export async function OpenBoxWeb2 (address: string, _boxId: number) {
+    return new Promise(async (resolve, reject) => {
+        const url = fastDataServerUrl.concat('api/boxes/open');
+        const connector = new BlockchainConnectService();
+        const priority = connector.GetDefaultAuthMethod();
+        connector.SetupAuthMethod(priority);
+        const signature = await connector.GetSignedAuthMessage();
+        if (!signature) {
+            reject("Message is not signed")
+        }
+        fetch(url, {
+            method: 'post',
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              signature: signature, boxId: _boxId
+            })
+          }).then(res => {
+            if (res.status !== 200) {
+                reject("Api reqest failed")
+            }
+            return res.json()
+        }).then(res => {
+            console.log(res)
+            resolve(true);
+        })
     })
 }
