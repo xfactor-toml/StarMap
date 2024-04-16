@@ -237,6 +237,7 @@ export class BattleScene extends BasicScene {
         this._connection.socket.once(PackTitle.claimReward, async (aData: ClaimRewardData) => {
             this.logDebug(`Claim Box recieved`);
             switch (aData.action) {
+
                 case 'accept':
                     getUserBoxesToOpen(wallet).then((aList: number[]) => {
                         let list = aList.map(val => Number(val));
@@ -253,11 +254,16 @@ export class BattleScene extends BasicScene {
                         // temp
                         // this.emit(BattleSceneEvent.onCloseBattle);
                     });
+
+                    // TODO: change to getAvailableBoxesWeb2()
+
                     break;
+                
                 case 'reject':
                     alert(`Error: Server RecordWinnerWithChoose reject: ${aData.reasone}`);
                     this.closeScene();
                     break;
+                
             }
         });
 
