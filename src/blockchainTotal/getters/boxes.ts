@@ -1,8 +1,9 @@
 import Web3 from 'web3';
 import { nftContracts, rewardContract, web3 } from './common';
 import * as config from "../config";
-import { contracts, decimals } from '../config/network';
+import { contracts, decimals, fastDataServerUrl } from '../config/network';
 import { WinData, BoxData } from '../types';
+import { BlockchainConnectService } from '../service';
 
 
 export async function getNextWinId() {
@@ -76,4 +77,77 @@ export function GetBoxPrizeType(prizeAddress: string) {
             return key;
         }
     }
+}
+
+export async function GetGameAssetsWeb2 ( ownerAddress: string ) {
+    return new Promise((resolve, reject) => {
+        const url = fastDataServerUrl.concat('api/boxes/assets');
+        fetch(url, {
+            method: 'post',
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              ownerAddress: ownerAddress, 
+            })
+          }).then(res => {
+            if (res.status !== 200) {
+                reject("Api reqest failed")
+            }
+            return res.json()
+        }).then(res => {
+             resolve(res.assets)
+             return res.assets;
+          })
+    })
+}
+
+export async function GetAvailableBoxesWeb2 ( ownerAddress: string ) {
+    return new Promise((resolve, reject) => {
+        const url = fastDataServerUrl.concat('api/boxes/available');
+        fetch(url, {
+            method: 'post',
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              ownerAddress: ownerAddress, 
+            })
+          }).then(res => {
+            if (res.status !== 200) {
+                reject("Api reqest failed")
+            }
+            return res.json()
+        }).then(res => {
+            resolve(res)
+            return res
+          })
+    })
+}
+
+export async function OpenBoxWeb2 (boxId: number) {
+    return new Promise(async (resolve, reject) => {
+        const url = fastDataServerUrl.concat('api/boxes/open');
+        const connector = new BlockchainConnectService();
+        const priority = connector.GetDefaultAuthMethod();
+        connector.SetupAuthMethod(priority);
+        const signature = await connector.GetSignedAuthMessage();
+        if (!signature) {
+            reject("Message is not signed")
+        }
+        fetch(url, {
+            method: 'post',
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              signature: signature, boxId: boxId
+            })
+          }).then(res => {
+            if (res.status !== 200) {
+                reject("Api reqest failed")
+            }
+            return res.json()
+        }).then(res => console.log(res))
+    })
 }
