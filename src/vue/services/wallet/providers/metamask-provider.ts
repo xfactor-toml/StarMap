@@ -68,6 +68,8 @@ export class MetamaskProvider extends BaseProvider {
     try {
       await OpenBox(this.account.value, boxId);
 
+      // TODO: change to OpenBoxWeb2
+
       return true
     } catch (error) {
       console.error(error);

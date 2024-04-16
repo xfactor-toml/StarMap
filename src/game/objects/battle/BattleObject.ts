@@ -206,7 +206,7 @@ export class BattleObject extends MyObject3D {
 
         // move
         if (this._targetPosition) {
-            const moveFactor = dt * 2;
+            const moveFactor = dt * 4;
             this.position.x += (this._targetPosition.x - this.position.x) * moveFactor;
             this.position.z += (this._targetPosition.z - this.position.z) * moveFactor;
         }

@@ -23,6 +23,7 @@ import { ThreeUtils } from '../utils/threejs/ThreejsUtils';
 import { DamageViewer } from './DamageViewer';
 import { Tower } from '../objects/battle/Tower';
 import { HomingMissile } from '../objects/battle/HomingMissile';
+import { Explosion } from '../objects/Explosion';
 
 type ServerFieldParams = {
 
@@ -100,6 +101,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     private _objectHpViewer: ObjectHpViewer;
     private _damageViewer: DamageViewer;
     private _attackRays: { [index: string]: LaserLine } = {};
+    private _explosionSystem: Explosion;
 
     private _isTopPosition = false;
     private _axiesHelper: THREE.AxesHelper;
@@ -127,6 +129,11 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         this._objects = new Map();
         this._objectHpViewer = new ObjectHpViewer(this._dummyMain);
         this._damageViewer = new DamageViewer(this._dummyMain, this._camera);
+
+        this._explosionSystem = new Explosion({
+            parent: this._dummyMain,
+            camera: this._camera
+        });
 
         this.initConnectionListeners();
         
@@ -170,7 +177,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         });
 
         this._connection.socket.on(PackTitle.explosion, (aData: ExplosionData) => {
-            // this.onExplosionPack(aData);
+            this.onExplosionPack(aData);
         });
         this._connection.socket.on(PackTitle.sniper, (aData: SniperData) => {
             this.onSniperPack(aData);
@@ -727,6 +734,10 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         });
     }
 
+    private onExplosionPack(aData: ExplosionData) {
+        let pos = this.getPositionByServerV3(aData.pos);
+        this._explosionSystem.exposion(pos);
+    }
 
     private onSniperPack(aSniperData: SniperData) {
         let planet = this._objects.get(aSniperData.planetId) as BattlePlanet;
@@ -938,6 +949,8 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         });
 
         this._objectHpViewer.update(dt);
+
+        this._explosionSystem?.update(dt);
 
     }
 

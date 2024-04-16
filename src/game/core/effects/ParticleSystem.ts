@@ -32,7 +32,7 @@ type ParticleSystemParams = {
     sorting?: boolean
 };
 
-type ParticleData = {
+export type ParticleData = {
     position: THREE.Vector3;
     startSize: number;
     size: number;
@@ -45,22 +45,22 @@ type ParticleData = {
 };
 
 export class ParticleSystem {
-    private _params: ParticleSystemParams;
-    private _uniforms: any;
-    private _material: THREE.ShaderMaterial;
-    private _geometry: THREE.BufferGeometry;
-    private _points: THREE.Points;
-    private _particles: ParticleData[];
+    protected _params: ParticleSystemParams;
+    protected _uniforms: any;
+    protected _material: THREE.ShaderMaterial;
+    protected _geometry: THREE.BufferGeometry;
+    protected _points: THREE.Points;
+    protected _particles: ParticleData[];
     // spline math
-    private _alphaSpline: MySpline;
-    private _scaleFactorSpline: MySpline;
+    protected _alphaSpline: MySpline;
+    protected _scaleFactorSpline: MySpline;
     // inner params
-    private _addParticleTime = 0;
-    private _startAlpha = 1;
-    private _startScale = 1;
-    private _prevPosition: THREE.Vector3;
+    protected _addParticleTime = 0;
+    protected _startAlpha = 1;
+    protected _startScale = 1;
+    protected _prevPosition: THREE.Vector3;
 
-    private _destroyed = false;
+    protected _destroyed = false;
     activated = false;
 
     constructor(aParams: ParticleSystemParams) {
