@@ -238,9 +238,10 @@ export class HomingMissile extends BattleObject {
     }
 
     protected updateFireEffect(dt: number) {
+        if (!this.position) return;
         let dir = new THREE.Vector3(0, 0, 1);
         dir = dir.applyQuaternion(this.quaternion).multiplyScalar(this.radius / 2);
-        this._fireEffect.position.copy(this.position.clone().sub(dir));
+        this._fireEffect?.position.copy(this.position.clone().sub(dir));
         this._fireEffect?.update(dt);
     }
 
