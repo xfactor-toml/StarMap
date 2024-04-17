@@ -1,8 +1,6 @@
 import Web3 from "web3";
 import { ethers } from 'ethers';
 import { jsonABIs, network } from "../../config";
-import { web3local  } from "../auth";
-import { OpenBox as OpenBoxWindow } from "~/blockchainTotal/windowEth/methods";
 import { fastDataServerUrl } from "~/blockchainTotal/config/network";
 import { BlockchainConnectService } from "~/blockchainTotal";
 
@@ -34,7 +32,7 @@ export async function OpenBox (address: string, _boxId: number) {
 export async function OpenBoxWeb2 (address: string, _boxId: number) {
     return new Promise(async (resolve, reject) => {
         const url = fastDataServerUrl.concat('api/boxes/open');
-        const connector = new BlockchainConnectService();
+        const connector = BlockchainConnectService.getInstance();
         const priority = connector.GetDefaultAuthMethod();
         connector.SetupAuthMethod(priority);
         const signature = await connector.GetSignedAuthMessage();

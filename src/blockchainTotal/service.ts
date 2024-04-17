@@ -13,6 +13,7 @@ export class BlockchainConnectService {
     public userAccount: account;
     public displayLogin: string;
     public walletAddress: string;
+    private static instance: BlockchainConnectService | null = null;
 
     public GetDefaultAuthMethod() {
         let tgLogin;
@@ -39,18 +40,25 @@ export class BlockchainConnectService {
         return "Local"
     }
 
-    constructor() {
+    private constructor() {
         this.authMethod = this.GetDefaultAuthMethod();
         if (this.authMethod !== "Local") {
             InitWalletconnectModal();
         }
     }
 
+    public static getInstance(): BlockchainConnectService {
+        if (!BlockchainConnectService.instance) {
+            BlockchainConnectService.instance = new BlockchainConnectService();
+        }
+        return BlockchainConnectService.instance;
+      }
+
     public SetupAuthMethod (method: AuthMethod) {
         this.authMethod = method;
     }
 
-    public async Auth(method: AuthMethod = this.authMethod): Promise<string> {
+    public async connect(method: AuthMethod = this.authMethod): Promise<string> {
         switch (method) {
             case "Walletconnect" :
                 this.walletAddress = await ConnectWalletWC ();
@@ -134,12 +142,24 @@ export class BlockchainConnectService {
     
     }
 
-    public async GetWalletAddress() {
-        if (!this.walletAddress) return await this.Auth();
+    public async GetWalletAddressWithConnect() {
+        if (!this.walletAddress) return await this.connect();
         return this.walletAddress;
     }
 
-    public async TelegramLogin() {
+    public TelegramLogin() {
         return localStorage.getItem("userLogin");
+    }
+
+    public isTelegram(): Boolean {
+        return localStorage.getItem("userLogin") ? true : false;
+    }
+
+    public isConnected(): Boolean {
+        return this.walletAddress ? true: false;
+    }
+
+    public getWalletAddress() {
+        return this.walletAddress;
     }
 }

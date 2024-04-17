@@ -14,11 +14,11 @@ export class UniversalProvider extends BaseProvider {
 
   constructor () {
     super();
-    this.connectSubService = new BlockchainConnectService();
+    this.connectSubService = BlockchainConnectService.getInstance();
   }
 
   async connect() {
-    this.account = ref(await this.connectSubService.Auth())
+    this.account = ref(await this.connectSubService.connect())
     return this.account
   }
 

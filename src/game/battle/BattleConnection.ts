@@ -22,7 +22,7 @@ export class BattleConnection extends MyEventDispatcher {
     private constructor() {
         super('BattleConnection');
         // auto connection
-        this.signService = new BlockchainConnectService();
+        this.signService = BlockchainConnectService.getInstance();
         if (GlobalParams.BATTLE.localConnect) {
             this.connectLocal();
         }
