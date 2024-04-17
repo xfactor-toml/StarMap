@@ -12,6 +12,7 @@ export class BlockchainConnectService {
     public authMethod: AuthMethod;
     public userAccount: account;
     public displayLogin: string;
+    public walletAddress: string;
 
     public GetDefaultAuthMethod() {
         let tgLogin;
@@ -49,14 +50,17 @@ export class BlockchainConnectService {
         this.authMethod = method;
     }
 
-    public Auth(method: AuthMethod = this.authMethod) {
+    public async Auth(method: AuthMethod = this.authMethod): Promise<string> {
         switch (method) {
             case "Walletconnect" :
-                return ConnectWalletWC ();
+                this.walletAddress = await ConnectWalletWC ();
+                return this.walletAddress;
             case "WindowEth" :
-                return  WindowEthAuth();
+                this.walletAddress = await WindowEthAuth();
+                return this.walletAddress;
             default:
-               return AuthByLocal();
+                this.walletAddress = await AuthByLocal();
+               return this.walletAddress;
         }
     }
 
@@ -128,5 +132,10 @@ export class BlockchainConnectService {
             
         });
     
+    }
+
+    public async GetWalletAddress() {
+        if (!this.walletAddress) return await this.Auth();
+        return this.walletAddress;
     }
 }
