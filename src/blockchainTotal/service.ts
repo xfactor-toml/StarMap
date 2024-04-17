@@ -138,4 +138,8 @@ export class BlockchainConnectService {
         if (!this.walletAddress) return await this.Auth();
         return this.walletAddress;
     }
+
+    public async TelegramLogin() {
+        return localStorage.getItem("userLogin");
+    }
 }
