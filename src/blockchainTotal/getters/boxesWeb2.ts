@@ -75,7 +75,7 @@ export function GetBoxPrizeTypeWeb2(prize: string) {
 export async function getBoxDataWeb2(_boxId: number) {
 
     return new Promise((resolve, reject) => {
-        const url = fastDataServerUrl.concat('api/boxes/opemresult');
+        const url = fastDataServerUrl.concat('api/boxes/openresult');
         fetch(url, {
             method: 'post',
             headers: {
