@@ -1,11 +1,11 @@
 import {
   BlockchainConnectService, LocalMethods
 } from "~/blockchainTotal";
-import { Coords, fuelTarget } from "~/blockchain/types";
+import { Coords, fuelTarget } from "~/blockchainTotal/types";
 import { BaseProvider } from "./base-provider";
 import { Star } from "@/models";
 import { ref } from "vue";
-import { OpenBox } from "~/blockchain/boxes";
+import { OpenBoxWeb2 } from "~/blockchainTotal/local/methods/box";
 
 export class UniversalProvider extends BaseProvider {
   account = ref('');
@@ -61,7 +61,7 @@ export class UniversalProvider extends BaseProvider {
 
   async openBox(boxId: number) {
     try {
-      await OpenBox(this.account.value, boxId);
+      await OpenBoxWeb2(this.account.value, boxId);
 
       return true
     } catch (error) {
