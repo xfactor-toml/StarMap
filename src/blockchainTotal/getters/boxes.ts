@@ -3,8 +3,6 @@ import { nftContracts, rewardContract, web3 } from './common';
 import * as config from "../config";
 import { contracts, decimals, fastDataServerUrl } from '../config/network';
 import { WinData, BoxData } from '../types';
-import { BlockchainConnectService } from '../service';
-
 
 export async function getNextWinId() {
     return await rewardContract.methods.getGameCount().call()
