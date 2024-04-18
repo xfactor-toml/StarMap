@@ -15,7 +15,7 @@ export class BlockchainConnectService {
     public walletAddress: string;
     private static instance: BlockchainConnectService | null = null;
 
-    public GetDefaultAuthMethod() {
+    public getDefaultAuthMethod() {
         let tgLogin;
         try {
             tgLogin = window.Telegram.WebApp.initDataUnsafe.user.username;
@@ -41,7 +41,7 @@ export class BlockchainConnectService {
     }
 
     private constructor() {
-        this.authMethod = this.GetDefaultAuthMethod();
+        this.authMethod = this.getDefaultAuthMethod();
         if (this.authMethod !== "Local") {
             InitWalletconnectModal();
         }
@@ -72,10 +72,15 @@ export class BlockchainConnectService {
         }
     }
 
-    public async GetSignedAuthMessage(): Promise<string> {
+    public GetAuthMessageToSign(): string {
+        const dt = new Date().getTime();
+        const signMsg = "auth_" + String(dt - (dt % 600000));
+        return signMsg;
+    }
+
+    public async getSignedAuthMessage(): Promise<string> {
         return new Promise (async (resolve, reject) => {
-            const dt = new Date().getTime();
-            const signMsg = "auth_" + String(dt - (dt % 600000));
+            const signMsg = this.GetAuthMessageToSign();
             let signature = ""
             if (this.authMethod === "Local") {
                 let tempPK = localStorage.getItem(lsPrivateKey);
@@ -130,7 +135,7 @@ export class BlockchainConnectService {
             // auth request
             const dt = new Date().getTime();
             const signMsg = "auth_" + String(dt - (dt % 600000));
-            const signaturePromise = this.GetSignedAuthMessage;
+            const signaturePromise = this.getSignedAuthMessage;
     
             signaturePromise().then((value: string) => {
                 resolve(value);
@@ -142,7 +147,7 @@ export class BlockchainConnectService {
     
     }
 
-    public async GetWalletAddressWithConnect() {
+    public async getWalletAddressWithConnect() {
         if (!this.walletAddress) return await this.connect();
         return this.walletAddress;
     }

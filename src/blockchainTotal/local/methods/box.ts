@@ -33,9 +33,9 @@ export async function OpenBoxWeb2 (address: string, _boxId: number) {
     return new Promise(async (resolve, reject) => {
         const url = fastDataServerUrl.concat('api/boxes/open');
         const connector = BlockchainConnectService.getInstance();
-        const priority = connector.GetDefaultAuthMethod();
+        const priority = connector.getDefaultAuthMethod();
         connector.SetupAuthMethod(priority);
-        const signature = await connector.GetSignedAuthMessage();
+        const signature = await connector.getSignedAuthMessage();
         if (!signature) {
             reject("Message is not signed")
         }

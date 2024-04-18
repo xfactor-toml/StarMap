@@ -94,7 +94,7 @@ export class BattleConnection extends MyEventDispatcher {
         switch (aData.cmd) {
             case 'request':
                 this.logDebug(`onSignRecv: request...`);
-                const authPriority = this.signService.GetDefaultAuthMethod();
+                const authPriority = this.signService.getDefaultAuthMethod();
                 console.log("Priority: ", authPriority);
                 if (authPriority === "Local") {
                     this.signProcess2();
@@ -145,10 +145,10 @@ export class BattleConnection extends MyEventDispatcher {
         const walletAddress = getWalletAddress();
 
         if (!walletAddress) {
-            const authPriority = this.signService.GetDefaultAuthMethod();
+            const authPriority = this.signService.getDefaultAuthMethod();
             console.log("Priority", authPriority);
             this.signService.SetupAuthMethod('Local');
-            this.signService.GetSignedAuthMessage().then((aSignature) => {
+            this.signService.getSignedAuthMessage().then((aSignature) => {
                 this.logDebug(`local wallet auth...`);
                 this._socket.emit(PackTitle.sign, aSignature);
             })
