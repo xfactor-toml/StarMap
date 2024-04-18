@@ -217,18 +217,44 @@ export class BattleScene extends BasicScene {
         const wallet = bcs.getWalletAddress();
         // let oldBalance = Math.trunc(await getUserWinContractBalance(wallet));
         let oldAssets = await GetGameAssetsWeb2(wallet);
+
+        if (!oldAssets) {
+            alert(`Error: oldAssets ( get from GetGameAssetsWeb2(wallet) ) == null!`);
+            this.logWarn(`oldAssets ( get from GetGameAssetsWeb2(wallet) ) == null!`, {
+                wallet: wallet,
+                oldAssets: oldAssets
+            });
+            this.closeScene();
+            return;
+        }
+
         this._connection.socket.once(PackTitle.claimReward, async (aData: ClaimRewardData) => {
             this.logDebug(`Claim Reward recieved`);
             switch (aData.action) {
+
                 case 'accept':
                     // let newBalance = Math.trunc(await getUserWinContractBalance(wallet));
                     let newAssets = await GetGameAssetsWeb2(wallet);
+
+                    if (!newAssets) {
+                        alert(`Error: newAssets ( get from GetGameAssetsWeb2(wallet) ) == null!`);
+                        this.logWarn(`newAssets ( get from GetGameAssetsWeb2(wallet) ) == null!`, {
+                            wallet: wallet,
+                            oldAssets: oldAssets,
+                            newAssets: newAssets
+                        });
+                        this.closeScene();
+                        return;
+                    }
+
                     const rewardValue = Math.trunc(newAssets.token - oldAssets.token);
                     alert(`Reward: ${rewardValue}; Balance: ${newAssets}`);
                     break;
+                
                 case 'reject':
                     alert(`Error: Server RecordWinnerWithChoose reject: ${aData.reasone}`);
                     break;
+                
             }
             this.closeScene();
         });
