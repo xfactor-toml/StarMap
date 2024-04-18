@@ -105,7 +105,7 @@ export class BlockchainConnectService {
               try {
                 signature = await web3window.eth.personal.sign(
                     signMsg,
-                    this.userAccount,
+                    this.walletAddress,
                     ""
                 );
                 resolve(signature);
@@ -116,7 +116,7 @@ export class BlockchainConnectService {
             if (this.authMethod === "Walletconnect") {
                 const { walletProvider } = useWeb3ModalProvider();
                 try {
-                  const signature = await GenerateSignature(walletProvider.value, this.userAccount);
+                  const signature = await GenerateSignature(walletProvider.value, this.walletAddress);
                   resolve(signature);
                 } catch (e) {
                     reject("Sign failed : " + e.message)
