@@ -248,7 +248,8 @@ export class BattleScene extends BasicScene {
                     }
 
                     const rewardValue = Math.trunc(newAssets.token - oldAssets.token);
-                    alert(`Reward: ${rewardValue}; Balance: ${newAssets}`);
+                    const balance = newAssets.token;
+                    alert(`Reward: ${rewardValue}; Balance: ${balance}`);
                     break;
                 
                 case 'reject':
