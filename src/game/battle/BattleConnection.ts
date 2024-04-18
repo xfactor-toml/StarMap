@@ -158,16 +158,9 @@ export class BattleConnection extends MyEventDispatcher {
             return;
         }
 
-        // newGameAuth(walletAddress).then(aSignature => {
-        //     this.logDebug(`wallet auth...`);
-        //     this._socket.emit(PackTitle.sign, aSignature);
-        // });
-
         const signature = bcs.getSignedAuthMessage().then(aSignature => {
             this.logDebug(`getSignedAuthMessage signature = ${signature}`);
             this._socket.emit(PackTitle.sign, aSignature);
-            // this.logDebug(`signProcess2: signature = ${signature}`);
-            // this._socket.emit(PackTitle.sign, signature);
         });
 
     }

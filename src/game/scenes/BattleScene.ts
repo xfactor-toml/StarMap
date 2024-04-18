@@ -15,6 +15,7 @@ import { SceneNames } from './SceneNames';
 import { SimpleRenderer } from '../core/renderers/SimpleRenderer';
 import { ThreeLoader } from '../utils/threejs/ThreeLoader';
 import { BlockchainConnectService } from '~/blockchainTotal';
+import { GetGameAssetsWeb2, getUserBoxesToOpenWeb2 } from '~/blockchainTotal/getters/boxesWeb2';
 
 export enum BattleSceneEvent {
     onGameStart = 'onEnterGame',
@@ -212,15 +213,18 @@ export class BattleScene extends BasicScene {
     }
 
     private async claimReward() {
-        const wallet = BlockchainConnectService.getInstance().getWalletAddress();
-        let oldBalance = Math.trunc(await getUserWinContractBalance(wallet));
+        const bcs = BlockchainConnectService.getInstance();
+        const wallet = bcs.getWalletAddress();
+        // let oldBalance = Math.trunc(await getUserWinContractBalance(wallet));
+        let oldAssets = await GetGameAssetsWeb2(wallet);
         this._connection.socket.once(PackTitle.claimReward, async (aData: ClaimRewardData) => {
             this.logDebug(`Claim Reward recieved`);
             switch (aData.action) {
                 case 'accept':
-                    let newBalance = Math.trunc(await getUserWinContractBalance(wallet));
-                    const rewardValue = Math.trunc(newBalance - oldBalance);
-                    alert(`Reward: ${rewardValue}; Balance: ${newBalance}`);
+                    // let newBalance = Math.trunc(await getUserWinContractBalance(wallet));
+                    let newAssets = await GetGameAssetsWeb2(wallet);
+                    const rewardValue = Math.trunc(newAssets.token - oldAssets.token);
+                    alert(`Reward: ${rewardValue}; Balance: ${newAssets}`);
                     break;
                 case 'reject':
                     alert(`Error: Server RecordWinnerWithChoose reject: ${aData.reasone}`);
@@ -232,21 +236,38 @@ export class BattleScene extends BasicScene {
     }
 
     private async claimBox() {
-        const wallet = BlockchainConnectService.getInstance().getWalletAddress();
+        const bcs = BlockchainConnectService.getInstance();
+        const wallet = bcs.getWalletAddress();
 
         this._connection.socket.once(PackTitle.claimReward, async (aData: ClaimRewardData) => {
             this.logDebug(`Claim Box recieved`);
             switch (aData.action) {
 
                 case 'accept':
-                    getUserBoxesToOpen(wallet).then((aList: number[]) => {
+                    // getUserBoxesToOpen(wallet).then((aList: number[]) => {
+                    //     let list = aList.map(val => Number(val));
+                    //     this.logDebug(`Box ids to open:`);
+                    //     if (GlobalParams.isDebugMode) console.log(list);
+                    //     if (list.length > 0) {
+                    //         this._boxIdList = list;
+                    //         alert(`You have ${list.length} boxes for open`);
+                    //         GameEventDispatcher.showBoxOpenScreen({list});
+                    //     }
+                    //     else {
+                    //         alert(`No box found for this user...`);
+                    //     }
+                    //     // temp
+                    //     // this.emit(BattleSceneEvent.onCloseBattle);
+                    // });
+
+                    getUserBoxesToOpenWeb2(wallet).then((aList: number[]) => {
                         let list = aList.map(val => Number(val));
                         this.logDebug(`Box ids to open:`);
                         if (GlobalParams.isDebugMode) console.log(list);
                         if (list.length > 0) {
                             this._boxIdList = list;
                             alert(`You have ${list.length} boxes for open`);
-                            GameEventDispatcher.showBoxOpenScreen({list});
+                            GameEventDispatcher.showBoxOpenScreen({ list });
                         }
                         else {
                             alert(`No box found for this user...`);
