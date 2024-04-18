@@ -1,9 +1,7 @@
 import { NetworkAuth } from "~/blockchain";
 import { MyEventDispatcher } from "../basics/MyEventDispatcher";
-import { newGameAuth } from "~/blockchain/functions/gameplay";
 import { Socket, io } from "socket.io-client";
 import { GlobalParams } from "../data/GlobalParams";
-import { getWalletAddress, isWalletConnected } from "~/blockchain/functions/auth";
 import { ClaimRewardData, DebugTestData, GameCompleteData, PackTitle, SkillRequest, StartGameData } from "./Types";
 import { GameEvent, GameEventDispatcher } from "../events/GameEvents";
 import { Signal } from "../utils/events/Signal";
@@ -141,8 +139,13 @@ export class BattleConnection extends MyEventDispatcher {
         }
     }
     
-    private signProcess2() {
-        const walletAddress = getWalletAddress();
+    private async signProcess2() {
+        this.logDebug(`signProcess2()...`);
+
+        const bcs = BlockchainConnectService.getInstance();
+        const walletAddress = await bcs.getWalletAddressWithConnect();
+
+        this.logDebug(`signProcess2(): walletAddress = ${walletAddress}`);
 
         if (!walletAddress) {
             const authPriority = this.signService.getDefaultAuthMethod();
@@ -154,10 +157,19 @@ export class BattleConnection extends MyEventDispatcher {
             })
             return;
         }
-        newGameAuth(walletAddress).then(aSignature => {
-            this.logDebug(`wallet auth...`);
+
+        // newGameAuth(walletAddress).then(aSignature => {
+        //     this.logDebug(`wallet auth...`);
+        //     this._socket.emit(PackTitle.sign, aSignature);
+        // });
+
+        const signature = bcs.getSignedAuthMessage().then(aSignature => {
+            this.logDebug(`getSignedAuthMessage signature = ${signature}`);
             this._socket.emit(PackTitle.sign, aSignature);
+            // this.logDebug(`signProcess2: signature = ${signature}`);
+            // this._socket.emit(PackTitle.sign, signature);
         });
+
     }
 
     public get connected(): boolean {

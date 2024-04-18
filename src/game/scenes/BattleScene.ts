@@ -9,12 +9,12 @@ import { BattleConnection, ConnectionEvent } from '../battle/BattleConnection';
 import { ClaimRewardData, ExpData, ExplosionData, GameCompleteData, PackTitle, SniperData, StartGameData } from '../battle/Types';
 import { GameEvent, GameEventDispatcher } from '../events/GameEvents';
 import { getUserBoxesToOpen, getUserWinContractBalance } from '~/blockchain/boxes';
-import { getWalletAddress } from '~/blockchain/functions/auth';
 import { DebugGui } from '../debug/DebugGui';
 import { BasicScene } from '../core/scene/BasicScene';
 import { SceneNames } from './SceneNames';
 import { SimpleRenderer } from '../core/renderers/SimpleRenderer';
 import { ThreeLoader } from '../utils/threejs/ThreeLoader';
+import { BlockchainConnectService } from '~/blockchainTotal';
 
 export enum BattleSceneEvent {
     onGameStart = 'onEnterGame',
@@ -212,7 +212,7 @@ export class BattleScene extends BasicScene {
     }
 
     private async claimReward() {
-        const wallet = getWalletAddress();
+        const wallet = BlockchainConnectService.getInstance().getWalletAddress();
         let oldBalance = Math.trunc(await getUserWinContractBalance(wallet));
         this._connection.socket.once(PackTitle.claimReward, async (aData: ClaimRewardData) => {
             this.logDebug(`Claim Reward recieved`);
@@ -232,7 +232,7 @@ export class BattleScene extends BasicScene {
     }
 
     private async claimBox() {
-        const wallet = getWalletAddress();
+        const wallet = BlockchainConnectService.getInstance().getWalletAddress();
 
         this._connection.socket.once(PackTitle.claimReward, async (aData: ClaimRewardData) => {
             this.logDebug(`Claim Box recieved`);

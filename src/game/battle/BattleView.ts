@@ -16,7 +16,7 @@ import { GlobalParams } from '../data/GlobalParams';
 import { FieldInitData, PlanetLaserData, ObjectCreateData, ObjectType, ObjectUpdateData, PackTitle, AttackData, DamageData, PlanetLaserSkin, ExplosionData, SniperData } from './Types';
 import { BattleConnection } from './BattleConnection';
 import { FieldCell } from '../objects/battle/FieldCell';
-import { getWalletAddress } from '~/blockchain/functions/auth';
+// import { getWalletAddress } from '~/blockchain/functions/auth';
 import { LogMng } from '../utils/LogMng';
 import { FieldGrid } from '../objects/battle/FieldGrid';
 import { ThreeUtils } from '../utils/threejs/ThreejsUtils';
@@ -24,6 +24,8 @@ import { DamageViewer } from './DamageViewer';
 import { Tower } from '../objects/battle/Tower';
 import { HomingMissile } from '../objects/battle/HomingMissile';
 import { Explosion } from '../objects/Explosion';
+import { useWallet } from '@/services';
+import { BlockchainConnectService } from '~/blockchainTotal';
 
 type ServerFieldParams = {
 
@@ -87,7 +89,7 @@ const DEBUG_GUI = {
 }
 
 export class BattleView extends MyEventDispatcher implements IUpdatable {
-    private _walletNumber: string;
+    private _walletAddr: string;
     private _scene: THREE.Scene;
     private _camera: THREE.Camera;
     private _connection: BattleConnection;
@@ -270,7 +272,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     }
 
     private isCurrentOwner(aWalletAddr: string): boolean {
-        return this._walletNumber == aWalletAddr;
+        return this._walletAddr == aWalletAddr;
     }
 
     private getPlanetLaserColor(aSkin: PlanetLaserSkin): string {
@@ -309,7 +311,8 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     private onFieldInitPack(aData: FieldInitData) {
 
         // update wallet number
-        this._walletNumber = getWalletAddress();
+        this._walletAddr = BlockchainConnectService.getInstance().getWalletAddress();
+        this.logDebug(`onFieldInitPack: _walletAddr = ${this._walletAddr}`);
 
         SETTINGS.server.field = aData.fieldParams;
         let fieldSize = SETTINGS.server.field.size;
@@ -785,11 +788,11 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     }
 
     public get walletNumber(): string {
-        return this._walletNumber;
+        return this._walletAddr;
     }
 
     public set walletNumber(value: string) {
-        this._walletNumber = value;
+        this._walletAddr = value;
     }
 
     initDebugGui(aFolder: GUI) {

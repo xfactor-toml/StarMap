@@ -11,7 +11,6 @@ import { BattleConnection } from '../battle/BattleConnection';
 import { PackTitle, StartGameData } from '../battle/Types';
 import { GameEvent, GameEventDispatcher } from '../events/GameEvents';
 import { DebugGui } from '../debug/DebugGui';
-import { getWalletAddress } from '~/blockchain/functions/auth';
 import { useWallet } from '@/services';
 import { getUserBoxesToOpen } from '~/blockchain/boxes';
 import { AudioMng } from '../audio/AudioMng';
@@ -216,24 +215,25 @@ export class GalaxyScene extends BasicScene {
                 console.log(`openResult:`, openResult);
             },
             getBoxList: async () => {
-                const wallet = getWalletAddress();
-                getUserBoxesToOpen(wallet).then((aList: number[]) => {
-                    let list = aList.map(val => Number(val));
-                    this.logDebug(`Box ids to open:`);
-                    if (GlobalParams.isDebugMode) console.log(list);
-                    if (list.length > 0) {
-                        let ids: string = '';
-                        for (let i = 0; i < list.length; i++) {
-                            ids += String(`${list[i]}, `);
-                        }
-                        alert(`You have ${list.length} boxes for open.
-                        ids: ${ids}`);
-                        // GameEventDispatcher.showBoxOpenScreen({ list });
-                    }
-                    else {
-                        alert(`No box found for this user...`);
-                    }
-                });
+                const wallet = '';// getWalletAddress();
+                // TODO: normal new get wallet
+                // getUserBoxesToOpen(wallet).then((aList: number[]) => {
+                //     let list = aList.map(val => Number(val));
+                //     this.logDebug(`Box ids to open:`);
+                //     if (GlobalParams.isDebugMode) console.log(list);
+                //     if (list.length > 0) {
+                //         let ids: string = '';
+                //         for (let i = 0; i < list.length; i++) {
+                //             ids += String(`${list[i]}, `);
+                //         }
+                //         alert(`You have ${list.length} boxes for open.
+                //         ids: ${ids}`);
+                //         // GameEventDispatcher.showBoxOpenScreen({ list });
+                //     }
+                //     else {
+                //         alert(`No box found for this user...`);
+                //     }
+                // });
             }
         }
 
