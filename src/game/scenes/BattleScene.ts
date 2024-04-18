@@ -1,14 +1,11 @@
 import * as THREE from 'three';
 import { GUI } from 'dat.gui';
-import { MyEventDispatcher } from "../basics/MyEventDispatcher";
 import { GlobalParams } from '../data/GlobalParams';
-import { IUpdatable } from '../core/interfaces/IUpdatable';
 import { BattleView } from '../battle/BattleView';
 import { FrontEvents } from '../events/FrontEvents';
 import { BattleConnection, ConnectionEvent } from '../battle/BattleConnection';
 import { ClaimRewardData, ExpData, ExplosionData, GameCompleteData, PackTitle, SniperData, StartGameData } from '../battle/Types';
 import { GameEvent, GameEventDispatcher } from '../events/GameEvents';
-import { getUserBoxesToOpen, getUserWinContractBalance } from '~/blockchain/boxes';
 import { DebugGui } from '../debug/DebugGui';
 import { BasicScene } from '../core/scene/BasicScene';
 import { SceneNames } from './SceneNames';

@@ -19,6 +19,7 @@ export const useBattleRewardsStore = defineStore('battleRewards', () => {
     }
 
     const setBoxesIds = (ids: number[]) => {
+        LogMng.debug(`vue: setBoxesIds(): ids:`, ids)
         boxesIds.value = ids
     }
 

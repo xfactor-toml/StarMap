@@ -12,7 +12,6 @@ import { PackTitle, StartGameData } from '../battle/Types';
 import { GameEvent, GameEventDispatcher } from '../events/GameEvents';
 import { DebugGui } from '../debug/DebugGui';
 import { useWallet } from '@/services';
-import { getUserBoxesToOpen } from '~/blockchain/boxes';
 import { AudioMng } from '../audio/AudioMng';
 import { AudioAlias } from '../audio/AudioData';
 

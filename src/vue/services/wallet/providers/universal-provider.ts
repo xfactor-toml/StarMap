@@ -6,6 +6,7 @@ import { BaseProvider } from "./base-provider";
 import { Star } from "@/models";
 import { ref } from "vue";
 import { OpenBoxWeb2 } from "~/blockchainTotal/local/methods/box";
+import { getUserBoxesToOpenWeb2 } from "~/blockchainTotal/getters/boxesWeb2";
 
 export class UniversalProvider extends BaseProvider {
   account = ref('');
@@ -69,4 +70,9 @@ export class UniversalProvider extends BaseProvider {
       return false
     }
   }
+
+  async getUserBoxesToOpen() {
+    return this.checkConnection(() => getUserBoxesToOpenWeb2(this.account.value) as any, []);
+  }
+
 }
