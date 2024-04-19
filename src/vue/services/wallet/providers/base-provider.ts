@@ -11,6 +11,7 @@ import {
 import { getBoxData, getLaserLevel, getUserBoxesToOpen } from "~/blockchain/boxes";
 import { GetStarDataFromServer } from "~/blockchain/functions/starnft";
 import { Coords, StarData, StarList, fuelTarget } from "~/blockchain/types";
+import { getUserBoxesToOpenWeb2 } from "~/blockchainTotal/getters/boxesWeb2";
 
 export abstract class BaseProvider {
   abstract account: Ref<string>
@@ -34,7 +35,7 @@ export abstract class BaseProvider {
   abstract openBox(boxId: number): Promise<any>
   
   async getUserBoxesToOpen() {
-    return this.checkConnection(() => getUserBoxesToOpen(this.account.value), []);
+    return this.checkConnection(() => getUserBoxesToOpenWeb2(this.account.value), []);
   }
 
   async getBoxData(boxId: number) {

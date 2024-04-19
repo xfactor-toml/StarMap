@@ -12,7 +12,7 @@ export type web2assets = {
     carbon: number;
 }
 
-export async function getUserBoxesToOpenWeb2 ( ownerAddress: string ) {
+export async function getUserBoxesToOpenWeb2 ( ownerAddress: string ): Promise<number[]> {
     return new Promise((resolve, reject) => {
         const url = fastDataServerUrl.concat('api/boxes/available');
         fetch(url, {
@@ -29,8 +29,12 @@ export async function getUserBoxesToOpenWeb2 ( ownerAddress: string ) {
             }
             return res.json()
         }).then(res => {
-            resolve(res)
-            return res
+            const ids: number[] = [];
+            res.forEach((item) => {
+                ids.push(item.id);
+            })
+            resolve(ids)
+            return ids
           })
     })
 }
@@ -93,7 +97,7 @@ export async function getBoxDataWeb2(_boxId: number) {
              if (!res.data) {
                 resolve(
                     {
-                        type: "0x0000000000000000000000",
+                        type: "token",
                         value: null,
                         laserLevel: null,
                         isPaid: false
