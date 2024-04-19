@@ -61,6 +61,7 @@ export class UniversalProvider extends BaseProvider {
   }
 
   async openBox(boxId: number) {
+    console.log("Opening: ", boxId)
     try {
       await OpenBoxWeb2(this.account.value, boxId);
 
