@@ -2,7 +2,7 @@ import { NetworkAuth } from "~/blockchain";
 import { MyEventDispatcher } from "../basics/MyEventDispatcher";
 import { Socket, io } from "socket.io-client";
 import { GlobalParams } from "../data/GlobalParams";
-import { ClaimRewardData, DebugTestData, GameCompleteData, PackTitle, SkillRequest, StartGameData } from "./Types";
+import { ClaimRewardData, DebugTestData, GameCompleteData, AcceptScreenData, PackTitle, SkillRequest, StartGameData } from "./Types";
 import { GameEvent, GameEventDispatcher } from "../events/GameEvents";
 import { Signal } from "../utils/events/Signal";
 import { useWallet } from "@/services";
@@ -72,6 +72,11 @@ export class BattleConnection extends MyEventDispatcher {
         this._socket.on(PackTitle.gameSearching, (aData) => {
             this.logDebug(`gameSearching:`, aData);
             this.emit(PackTitle.gameSearching, aData);
+        });
+
+        this._socket.on(PackTitle.acceptScreen, (aData: AcceptScreenData) => {
+            this.logDebug(`initScreen:`, aData);
+            this.emit(PackTitle.acceptScreen, aData);
         });
 
         this._socket.on(PackTitle.gameStart, (aData: StartGameData) => {
@@ -215,6 +220,20 @@ export class BattleConnection extends MyEventDispatcher {
 
     sendStopSearchingGame() {
         this._socket.emit(PackTitle.stopSearchGame);
+    }
+
+    sendAcceptConfirmation() {
+        let data: AcceptScreenData = {
+            action: 'accept'
+        }
+        this._socket.emit(PackTitle.acceptScreen, data);
+    }
+
+    sendAcceptCloseClick() {
+        let data: AcceptScreenData = {
+            action: 'closeClick'
+        }
+        this._socket.emit(PackTitle.acceptScreen, data);
     }
 
     sendExitGame() {
