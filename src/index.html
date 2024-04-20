@@ -64,6 +64,8 @@
     if (window.Telegram) {
       localStorage.setItem("userLogin", window.Telegram.WebApp.initDataUnsafe.user.username);
       if (localStorage.getItem("userLogin")) {
+        document.body.style.paddingTop = '50px';
+        document.body.style.paddingBottom = '50px';
         window.Telegram.WebApp.expand();
       }
     }

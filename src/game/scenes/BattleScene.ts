@@ -225,6 +225,8 @@ export class BattleScene extends BasicScene {
             return;
         }
 
+        console.log("Old assets: ", oldAssets);
+
         this._connection.socket.once(PackTitle.claimReward, async (aData: ClaimRewardData) => {
             this.logDebug(`Claim Reward recieved`);
             switch (aData.action) {
@@ -232,7 +234,7 @@ export class BattleScene extends BasicScene {
                 case 'accept':
                     // let newBalance = Math.trunc(await getUserWinContractBalance(wallet));
                     let newAssets = await GetGameAssetsWeb2(wallet);
-
+                    console.log("New assets: ", newAssets);
                     if (!newAssets) {
                         alert(`Error: newAssets ( get from GetGameAssetsWeb2(wallet) ) == null!`);
                         this.logWarn(`newAssets ( get from GetGameAssetsWeb2(wallet) ) == null!`, {
@@ -246,7 +248,9 @@ export class BattleScene extends BasicScene {
 
                     const rewardValue = Math.trunc(newAssets.token - oldAssets.token);
                     const balance = newAssets.token;
-                    alert(`Reward: ${rewardValue}; Balance: ${balance}`);
+                    const rewardAmount = newAssets.token - oldAssets.token;
+                    alert(`VRP token: +${rewardAmount}`);
+                    // alert(`Reward: ${rewardValue}; Balance: ${balance}`);
                     break;
                 
                 case 'reject':
