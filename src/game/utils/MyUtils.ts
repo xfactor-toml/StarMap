@@ -40,6 +40,25 @@ export class MyUtils {
         return aFilePath.split('\\').pop().split('/').pop();
     }
 
+    public static getFileExt(aFileName: string, ignore?: string[]): string {
+        let fileType = '';
+        for (let i = aFileName.length - 1; i >= 0; i--) {
+            if (aFileName[i] == '.') {
+                if (ignore && ignore.indexOf(fileType) >= 0) {
+                    // ignore types
+                    fileType = '';
+                    continue;
+                }
+                break;
+            }
+            else {
+                fileType = aFileName[i] + fileType;
+            }
+        }
+        fileType.toLowerCase();
+        return fileType;
+    }
+
     public static getRandomRBG(aMinimum = 0): number {
         // let alphaStepCnt = 15;
         // let alphaStepValue = 255 / alphaStepCnt;

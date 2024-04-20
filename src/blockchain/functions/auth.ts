@@ -1,15 +1,15 @@
 import { connect, env, mobileUrl, networkParams, reserveRpcs, walletChangingEventName } from "../config";
 import { account } from "../types";
 
-let walletAddress = '';
+// let walletAddress = '';
 
-export function getWalletAddress(): string {
-    return walletAddress;
-}
+// export function getWalletAddress(): string {
+//     return walletAddress;
+// }
 
-export function isWalletConnected(): boolean {
-    return walletAddress != '';
-}
+// export function isWalletConnected(): boolean {
+//     return walletAddress != '';
+// }
 
 export async function IsTrueNetwork(): Promise<boolean> {
     if (!env) return false
@@ -23,7 +23,7 @@ async function NetworkAuth(): Promise<account> {
             // Checking mobile device
             if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
                 document.location.href = mobileUrl;
-                walletAddress = '';
+                // walletAddress = '';
                 resolve("");
             } else {
                 reject("Wallet not found");
@@ -51,16 +51,16 @@ async function NetworkAuth(): Promise<account> {
             }
     
             if (!await IsTrueNetwork()) {
-                walletAddress = '';
+                // walletAddress = '';
                 reject("User had refused to connect with using network");
             }
 
             if (!accs[0]) {
-                walletAddress = '';
+                // walletAddress = '';
                 reject("User wallet address not found");
             }
             
-            walletAddress = accs[0];
+            let walletAddress = accs[0];
             resolve(walletAddress);
     
         } catch (e) {

@@ -1,9 +1,7 @@
 import { NetworkAuth } from "~/blockchain";
 import { MyEventDispatcher } from "../basics/MyEventDispatcher";
-import { newGameAuth } from "~/blockchain/functions/gameplay";
 import { Socket, io } from "socket.io-client";
 import { GlobalParams } from "../data/GlobalParams";
-import { getWalletAddress, isWalletConnected } from "~/blockchain/functions/auth";
 import { ClaimRewardData, DebugTestData, GameCompleteData, PackTitle, SkillRequest, StartGameData } from "./Types";
 import { GameEvent, GameEventDispatcher } from "../events/GameEvents";
 import { Signal } from "../utils/events/Signal";
@@ -22,7 +20,7 @@ export class BattleConnection extends MyEventDispatcher {
     private constructor() {
         super('BattleConnection');
         // auto connection
-        this.signService = new BlockchainConnectService();
+        this.signService = BlockchainConnectService.getInstance();
         if (GlobalParams.BATTLE.localConnect) {
             this.connectLocal();
         }
@@ -94,7 +92,7 @@ export class BattleConnection extends MyEventDispatcher {
         switch (aData.cmd) {
             case 'request':
                 this.logDebug(`onSignRecv: request...`);
-                const authPriority = this.signService.GetDefaultAuthMethod();
+                const authPriority = this.signService.getDefaultAuthMethod();
                 console.log("Priority: ", authPriority);
                 if (authPriority === "Local") {
                     this.signProcess2();
@@ -141,23 +139,30 @@ export class BattleConnection extends MyEventDispatcher {
         }
     }
     
-    private signProcess2() {
-        const walletAddress = getWalletAddress();
+    private async signProcess2() {
+        this.logDebug(`signProcess2()...`);
+
+        const bcs = BlockchainConnectService.getInstance();
+        const walletAddress = await bcs.getWalletAddressWithConnect();
+
+        this.logDebug(`signProcess2(): walletAddress = ${walletAddress}`);
 
         if (!walletAddress) {
-            const authPriority = this.signService.GetDefaultAuthMethod();
+            const authPriority = this.signService.getDefaultAuthMethod();
             console.log("Priority", authPriority);
             this.signService.SetupAuthMethod('Local');
-            this.signService.GetSignedAuthMessage().then((aSignature) => {
+            this.signService.getSignedAuthMessage().then((aSignature) => {
                 this.logDebug(`local wallet auth...`);
                 this._socket.emit(PackTitle.sign, aSignature);
             })
             return;
         }
-        newGameAuth(walletAddress).then(aSignature => {
-            this.logDebug(`wallet auth...`);
+
+        const signature = bcs.getSignedAuthMessage().then(aSignature => {
+            this.logDebug(`getSignedAuthMessage signature = ${signature}`);
             this._socket.emit(PackTitle.sign, aSignature);
         });
+
     }
 
     public get connected(): boolean {

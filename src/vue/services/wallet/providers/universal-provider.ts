@@ -1,11 +1,12 @@
 import {
   BlockchainConnectService, LocalMethods
 } from "~/blockchainTotal";
-import { Coords, fuelTarget } from "~/blockchain/types";
+import { Coords, fuelTarget } from "~/blockchainTotal/types";
 import { BaseProvider } from "./base-provider";
 import { Star } from "@/models";
 import { ref } from "vue";
-import { OpenBox } from "~/blockchain/boxes";
+import { OpenBoxWeb2 } from "~/blockchainTotal/local/methods/box";
+import { getUserBoxesToOpenWeb2 } from "~/blockchainTotal/getters/boxesWeb2";
 
 export class UniversalProvider extends BaseProvider {
   account = ref('');
@@ -14,11 +15,11 @@ export class UniversalProvider extends BaseProvider {
 
   constructor () {
     super();
-    this.connectSubService = new BlockchainConnectService();
+    this.connectSubService = BlockchainConnectService.getInstance();
   }
 
   async connect() {
-    this.account = ref(await this.connectSubService.Auth())
+    this.account = ref(await this.connectSubService.connect())
     return this.account
   }
 
@@ -60,8 +61,9 @@ export class UniversalProvider extends BaseProvider {
   }
 
   async openBox(boxId: number) {
+    console.log("Opening: ", boxId)
     try {
-      await OpenBox(this.account.value, boxId);
+      await OpenBoxWeb2(this.account.value, boxId);
 
       return true
     } catch (error) {
@@ -69,4 +71,9 @@ export class UniversalProvider extends BaseProvider {
       return false
     }
   }
+
+  async getUserBoxesToOpen() {
+    return this.checkConnection(() => getUserBoxesToOpenWeb2(this.account.value) as any, []);
+  }
+
 }

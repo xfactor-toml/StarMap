@@ -1,20 +1,18 @@
 import * as THREE from 'three';
 import { GUI } from 'dat.gui';
-import { MyEventDispatcher } from "../basics/MyEventDispatcher";
 import { GlobalParams } from '../data/GlobalParams';
-import { IUpdatable } from '../core/interfaces/IUpdatable';
 import { BattleView } from '../battle/BattleView';
 import { FrontEvents } from '../events/FrontEvents';
 import { BattleConnection, ConnectionEvent } from '../battle/BattleConnection';
 import { ClaimRewardData, ExpData, ExplosionData, GameCompleteData, PackTitle, SniperData, StartGameData } from '../battle/Types';
 import { GameEvent, GameEventDispatcher } from '../events/GameEvents';
-import { getUserBoxesToOpen, getUserWinContractBalance } from '~/blockchain/boxes';
-import { getWalletAddress } from '~/blockchain/functions/auth';
 import { DebugGui } from '../debug/DebugGui';
 import { BasicScene } from '../core/scene/BasicScene';
 import { SceneNames } from './SceneNames';
 import { SimpleRenderer } from '../core/renderers/SimpleRenderer';
 import { ThreeLoader } from '../utils/threejs/ThreeLoader';
+import { BlockchainConnectService } from '~/blockchainTotal';
+import { GetGameAssetsWeb2, getUserBoxesToOpenWeb2 } from '~/blockchainTotal/getters/boxesWeb2';
 
 export enum BattleSceneEvent {
     onGameStart = 'onEnterGame',
@@ -212,19 +210,53 @@ export class BattleScene extends BasicScene {
     }
 
     private async claimReward() {
-        const wallet = getWalletAddress();
-        let oldBalance = Math.trunc(await getUserWinContractBalance(wallet));
+        const bcs = BlockchainConnectService.getInstance();
+        const wallet = bcs.getWalletAddress();
+        // let oldBalance = Math.trunc(await getUserWinContractBalance(wallet));
+        let oldAssets = await GetGameAssetsWeb2(wallet);
+
+        if (!oldAssets) {
+            alert(`Error: oldAssets ( get from GetGameAssetsWeb2(wallet) ) == null!`);
+            this.logWarn(`oldAssets ( get from GetGameAssetsWeb2(wallet) ) == null!`, {
+                wallet: wallet,
+                oldAssets: oldAssets
+            });
+            this.closeScene();
+            return;
+        }
+
+        console.log("Old assets: ", oldAssets);
+
         this._connection.socket.once(PackTitle.claimReward, async (aData: ClaimRewardData) => {
             this.logDebug(`Claim Reward recieved`);
             switch (aData.action) {
+
                 case 'accept':
-                    let newBalance = Math.trunc(await getUserWinContractBalance(wallet));
-                    const rewardValue = Math.trunc(newBalance - oldBalance);
-                    alert(`Reward: ${rewardValue}; Balance: ${newBalance}`);
+                    // let newBalance = Math.trunc(await getUserWinContractBalance(wallet));
+                    let newAssets = await GetGameAssetsWeb2(wallet);
+                    console.log("New assets: ", newAssets);
+                    if (!newAssets) {
+                        alert(`Error: newAssets ( get from GetGameAssetsWeb2(wallet) ) == null!`);
+                        this.logWarn(`newAssets ( get from GetGameAssetsWeb2(wallet) ) == null!`, {
+                            wallet: wallet,
+                            oldAssets: oldAssets,
+                            newAssets: newAssets
+                        });
+                        this.closeScene();
+                        return;
+                    }
+
+                    const rewardValue = Math.trunc(newAssets.token - oldAssets.token);
+                    const balance = newAssets.token;
+                    const rewardAmount = newAssets.token - oldAssets.token;
+                    alert(`VRP token: +${rewardAmount}`);
+                    // alert(`Reward: ${rewardValue}; Balance: ${balance}`);
                     break;
+                
                 case 'reject':
                     alert(`Error: Server RecordWinnerWithChoose reject: ${aData.reasone}`);
                     break;
+                
             }
             this.closeScene();
         });
@@ -232,21 +264,38 @@ export class BattleScene extends BasicScene {
     }
 
     private async claimBox() {
-        const wallet = getWalletAddress();
+        const bcs = BlockchainConnectService.getInstance();
+        const wallet = bcs.getWalletAddress();
 
         this._connection.socket.once(PackTitle.claimReward, async (aData: ClaimRewardData) => {
             this.logDebug(`Claim Box recieved`);
             switch (aData.action) {
 
                 case 'accept':
-                    getUserBoxesToOpen(wallet).then((aList: number[]) => {
+                    // getUserBoxesToOpen(wallet).then((aList: number[]) => {
+                    //     let list = aList.map(val => Number(val));
+                    //     this.logDebug(`Box ids to open:`);
+                    //     if (GlobalParams.isDebugMode) console.log(list);
+                    //     if (list.length > 0) {
+                    //         this._boxIdList = list;
+                    //         alert(`You have ${list.length} boxes for open`);
+                    //         GameEventDispatcher.showBoxOpenScreen({list});
+                    //     }
+                    //     else {
+                    //         alert(`No box found for this user...`);
+                    //     }
+                    //     // temp
+                    //     // this.emit(BattleSceneEvent.onCloseBattle);
+                    // });
+
+                    getUserBoxesToOpenWeb2(wallet).then((aList: number[]) => {
                         let list = aList.map(val => Number(val));
                         this.logDebug(`Box ids to open:`);
                         if (GlobalParams.isDebugMode) console.log(list);
                         if (list.length > 0) {
                             this._boxIdList = list;
                             alert(`You have ${list.length} boxes for open`);
-                            GameEventDispatcher.showBoxOpenScreen({list});
+                            GameEventDispatcher.showBoxOpenScreen({ list });
                         }
                         else {
                             alert(`No box found for this user...`);

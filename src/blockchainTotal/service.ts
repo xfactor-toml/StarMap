@@ -12,8 +12,10 @@ export class BlockchainConnectService {
     public authMethod: AuthMethod;
     public userAccount: account;
     public displayLogin: string;
+    public walletAddress: string;
+    private static instance: BlockchainConnectService | null = null;
 
-    public GetDefaultAuthMethod() {
+    public getDefaultAuthMethod() {
         let tgLogin;
         try {
             tgLogin = window.Telegram.WebApp.initDataUnsafe.user.username;
@@ -38,32 +40,47 @@ export class BlockchainConnectService {
         return "Local"
     }
 
-    constructor() {
-        this.authMethod = this.GetDefaultAuthMethod();
+    private constructor() {
+        this.authMethod = this.getDefaultAuthMethod();
         if (this.authMethod !== "Local") {
             InitWalletconnectModal();
         }
     }
 
+    public static getInstance(): BlockchainConnectService {
+        if (!BlockchainConnectService.instance) {
+            BlockchainConnectService.instance = new BlockchainConnectService();
+        }
+        return BlockchainConnectService.instance;
+      }
+
     public SetupAuthMethod (method: AuthMethod) {
         this.authMethod = method;
     }
 
-    public Auth(method: AuthMethod = this.authMethod) {
+    public async connect(method: AuthMethod = this.authMethod): Promise<string> {
         switch (method) {
             case "Walletconnect" :
-                return ConnectWalletWC ();
+                this.walletAddress = await ConnectWalletWC ();
+                return this.walletAddress;
             case "WindowEth" :
-                return  WindowEthAuth();
+                this.walletAddress = await WindowEthAuth();
+                return this.walletAddress;
             default:
-               return AuthByLocal();
+                this.walletAddress = await AuthByLocal();
+               return this.walletAddress;
         }
     }
 
-    public async GetSignedAuthMessage(): Promise<string> {
+    public GetAuthMessageToSign(): string {
+        const dt = new Date().getTime();
+        const signMsg = "auth_" + String(dt - (dt % 600000));
+        return signMsg;
+    }
+
+    public async getSignedAuthMessage(): Promise<string> {
         return new Promise (async (resolve, reject) => {
-            const dt = new Date().getTime();
-            const signMsg = "auth_" + String(dt - (dt % 600000));
+            const signMsg = this.GetAuthMessageToSign();
             let signature = ""
             if (this.authMethod === "Local") {
                 let tempPK = localStorage.getItem(lsPrivateKey);
@@ -88,7 +105,7 @@ export class BlockchainConnectService {
               try {
                 signature = await web3window.eth.personal.sign(
                     signMsg,
-                    this.userAccount,
+                    this.walletAddress,
                     ""
                 );
                 resolve(signature);
@@ -99,7 +116,7 @@ export class BlockchainConnectService {
             if (this.authMethod === "Walletconnect") {
                 const { walletProvider } = useWeb3ModalProvider();
                 try {
-                  const signature = await GenerateSignature(walletProvider.value, this.userAccount);
+                  const signature = await GenerateSignature(walletProvider.value, this.walletAddress);
                   resolve(signature);
                 } catch (e) {
                     reject("Sign failed : " + e.message)
@@ -118,7 +135,7 @@ export class BlockchainConnectService {
             // auth request
             const dt = new Date().getTime();
             const signMsg = "auth_" + String(dt - (dt % 600000));
-            const signaturePromise = this.GetSignedAuthMessage;
+            const signaturePromise = this.getSignedAuthMessage;
     
             signaturePromise().then((value: string) => {
                 resolve(value);
@@ -128,5 +145,26 @@ export class BlockchainConnectService {
             
         });
     
+    }
+
+    public async getWalletAddressWithConnect() {
+        if (!this.walletAddress) return await this.connect();
+        return this.walletAddress;
+    }
+
+    public TelegramLogin() {
+        return localStorage.getItem("userLogin");
+    }
+
+    public isTelegram(): Boolean {
+        return localStorage.getItem("userLogin") ? true : false;
+    }
+
+    public isConnected(): Boolean {
+        return this.walletAddress ? true: false;
+    }
+
+    public getWalletAddress() {
+        return this.walletAddress;
     }
 }

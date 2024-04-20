@@ -33,11 +33,13 @@ export class WalletService {
 
   async connect(provider: 'metamask' | 'walletconnect' | 'telegram' | 'local') {
     if (provider === 'metamask') {
-      this.provider = new MetamaskProvider()
+      // this.provider = new MetamaskProvider()
+      this.provider = new UniversalProvider()
     }
 
     if (provider === 'walletconnect') {
-      this.provider = new WalletConnectProvider()
+      // this.provider = new WalletConnectProvider()
+      this.provider = new UniversalProvider()
     }
 
     if (provider === 'telegram' || provider === 'local') {

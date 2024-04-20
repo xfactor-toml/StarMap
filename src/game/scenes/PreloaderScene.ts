@@ -153,6 +153,7 @@ export class PreloaderScene extends BasicScene {
         // fonts
         // this._loader.addFontToSet(aSetId, 'Ubuntu', `${assetsPath}/fonts/Ubuntu/Ubuntu-Medium.json`);
         this._loader.addFontToSet(aSetId, 'Arial', `${assetsPath}/fonts/Arial_Regular.json`);
+        this._loader.addFontToSet(aSetId, 'Exo2-Medium', `${assetsPath}/fonts/Exo_2/Exo2-Medium.ttf`);
 
     }
 

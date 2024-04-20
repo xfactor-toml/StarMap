@@ -3,6 +3,7 @@ import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
 import { FontLoader, Font } from "three/examples/jsm/loaders/FontLoader";
+import { TTFLoader } from "three/examples/jsm/loaders/TTFLoader";
 import { GLTFLoader, GLTF } from "three/examples/jsm/loaders/GLTFLoader";
 import * as SkeletonUtils from 'three/examples/jsm/utils/SkeletonUtils';
 import { LogMng } from "../LogMng";
@@ -17,7 +18,8 @@ export enum ThreeLoaderFileType {
     glb = 'glb',
     gltf = 'gltf',
     json = 'json',
-    font = 'font',
+    fontJson = 'fontJson',
+    fontTTF = 'fontTTF',
     gz = 'gz',
     gzip = 'gzip'
 };
@@ -79,16 +81,9 @@ export class ThreeLoader {
         LogMng.error(`ThreeLoader: ${aMessage}`, aData);
     }
 
-    private getFileType(aFileName: string): ThreeLoaderFileType {
-
-        let fn = aFileName;
-
-        // remove file GET postfix
-        if (fn.indexOf('?') > 0) {
-            fn = fn.substring(0, fn.indexOf('?'));
-        }
-
+    private getFileExt(aFileName: string): string {
         let fileType = '';
+        let fn = aFileName;
         for (let i = fn.length - 1; i >= 0; i--) {
             if (fn[i] == '.') {
                 if (fileType == ThreeLoaderFileType.gz || fileType == ThreeLoaderFileType.gzip) {
@@ -102,8 +97,20 @@ export class ThreeLoader {
                 fileType = fn[i] + fileType;
             }
         }
-
         fileType.toLowerCase();
+        return fileType;
+    }
+
+    private getFileType(aFileName: string): ThreeLoaderFileType {
+
+        let fn = aFileName;
+
+        // remove file GET postfix
+        if (fn.indexOf('?') > 0) {
+            fn = fn.substring(0, fn.indexOf('?'));
+        }
+
+        let fileType = this.getFileExt(fn);
 
         switch (fileType) {
             case 'png':
@@ -205,9 +212,19 @@ export class ThreeLoader {
             this.logError(`addFontToSet() -> File with same alias (${aAlias}) already exists in loader!`);
             return;
         }
+        let fileType = this.getFileExt(aFile);
+        let loadType: ThreeLoaderFileType;
+        switch (fileType) {
+            case 'json':
+                loadType = ThreeLoaderFileType.fontJson;
+                break;
+            default:
+                loadType = ThreeLoaderFileType.fontTTF;
+                break;
+        }
         // this.loadQueue.push({ type: ResType.font, key: aAlias, file: aFile });
         this.sets[aSetId].loadItem.push({
-            type: ThreeLoaderFileType.font,
+            type: loadType,
             alias: aAlias,
             file: aFile
         });
@@ -230,7 +247,8 @@ export class ThreeLoader {
                     this.addCubeTextureToSet(setId, item.alias, item.files);
                     break;
 
-                case ThreeLoaderFileType.font:
+                case ThreeLoaderFileType.fontJson:
+                case ThreeLoaderFileType.fontTTF:
                     this.addFontToSet(setId, item.alias, item.file);
 
                 default:
@@ -383,8 +401,19 @@ export class ThreeLoader {
                 });
                 break;
 
-            case ThreeLoaderFileType.font:
-                this.loadFont(aItem.alias, aItem.file, {
+            case ThreeLoaderFileType.fontJson:
+                this.loadFontJson(aItem.alias, aItem.file, {
+                    onComplete: () => {
+                        this.onSetFileFinished(aSetId, aItem);
+                    },
+                    onError: () => {
+                        this.onSetFileFinished(aSetId, aItem);
+                    }
+                });
+                break;
+            
+            case ThreeLoaderFileType.fontTTF:
+                this.loadFontTTF(aItem.alias, aItem.file, {
                     onComplete: () => {
                         this.onSetFileFinished(aSetId, aItem);
                     },
@@ -636,12 +665,12 @@ export class ThreeLoader {
         );
     }
 
-    private loadFont(aAlias: string, aFile: string, aCallbacks?: Callbacks, aRetryCount = 0) {
+    private loadFontJson(aAlias: string, aFile: string, aCallbacks?: Callbacks, aRetryCount = 0) {
         let fontLoader = new FontLoader();
         fontLoader.load(aFile,
             (aFont: Font) => {
                 this.cache[aAlias] = aFont;
-                this.logDebug(`loadFont: load complete (${aAlias}):`, aFont);
+                this.logDebug(`loadFontJson: load complete (${aAlias}):`, aFont);
                 if (aCallbacks && aCallbacks.onComplete) aCallbacks.onComplete.call(aCallbacks.context);
             },
             (progressEvent) => {
@@ -651,14 +680,44 @@ export class ThreeLoader {
             (errorEvent) => {
                 const retryMaxCount = this._params.retryCount;
                 if (aRetryCount >= retryMaxCount) {
-                    this.logError(`loadFont: ERROR (${aRetryCount} retries):`, errorEvent);
+                    this.logError(`loadFontJson: ERROR (${aRetryCount} retries):`, errorEvent);
                     if (aCallbacks && aCallbacks.onError) aCallbacks.onError.call(aCallbacks.context, errorEvent);
                 }
                 else {
                     aRetryCount++;
-                    this.logWarn(`loadFont: Retry ${aRetryCount} (${aAlias})`);
+                    this.logWarn(`loadFontJson: Retry ${aRetryCount} (${aAlias})`);
                     setTimeout(() => {
-                        this.loadFont(aAlias, aFile, aCallbacks, aRetryCount);
+                        this.loadFontJson(aAlias, aFile, aCallbacks, aRetryCount);
+                    }, 200);
+                }
+            }
+        );
+    }
+
+    private loadFontTTF(aAlias: string, aFile: string, aCallbacks?: Callbacks, aRetryCount = 0) {
+        let fontLoader = new TTFLoader();
+        fontLoader.load(aFile,
+            (aJson) => {
+                let font = new Font(aJson);
+                this.cache[aAlias] = font;
+                this.logDebug(`loadFontTTF: load complete (${aAlias}):`, font);
+                if (aCallbacks && aCallbacks.onComplete) aCallbacks.onComplete.call(aCallbacks.context);
+            },
+            (progressEvent) => {
+                let p = progressEvent.loaded / progressEvent.total;
+                if (aCallbacks && aCallbacks.onProgress) aCallbacks.onProgress.call(aCallbacks.context, p);
+            },
+            (errorEvent) => {
+                const retryMaxCount = this._params.retryCount;
+                if (aRetryCount >= retryMaxCount) {
+                    this.logError(`loadFontTTF: ERROR (${aRetryCount} retries):`, errorEvent);
+                    if (aCallbacks && aCallbacks.onError) aCallbacks.onError.call(aCallbacks.context, errorEvent);
+                }
+                else {
+                    aRetryCount++;
+                    this.logWarn(`loadFontTTF: Retry ${aRetryCount} (${aAlias})`);
+                    setTimeout(() => {
+                        this.loadFontTTF(aAlias, aFile, aCallbacks, aRetryCount);
                     }, 200);
                 }
             }

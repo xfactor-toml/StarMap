@@ -76,30 +76,30 @@ export async function GenerateSignature(account: string): Promise<string> {
     })
 }
 
-export async function newGameAuth(account: string): Promise<string> {
-    const funcName = 'newGameAuth()';
+// export async function newGameAuth(account: string): Promise<string> {
+//     const funcName = 'newGameAuth()';
 
-    return new Promise((resolve, reject) => {
-        if (!env) reject(`${funcName}: env not found`);
-        if (!account) reject(`${funcName}: account not found`);
+//     return new Promise((resolve, reject) => {
+//         if (!env) reject(`${funcName}: env not found`);
+//         if (!account) reject(`${funcName}: account not found`);
 
-        const web3 = new Web3(env);
+//         const web3 = new Web3(env);
 
-        // auth request
-        const dt = new Date().getTime();
-        const signMsg = "auth_" + String(dt - (dt % 600000));
-        const signaturePromise = web3.eth.personal.sign(
-            signMsg,
-            account,
-            ""
-        );
+//         // auth request
+//         const dt = new Date().getTime();
+//         const signMsg = "auth_" + String(dt - (dt % 600000));
+//         const signaturePromise = web3.eth.personal.sign(
+//             signMsg,
+//             account,
+//             ""
+//         );
 
-        signaturePromise.then((value: string) => {
-            resolve(value);
-        }, (reason: any) => {
-            reject(reason);
-        });
+//         signaturePromise.then((value: string) => {
+//             resolve(value);
+//         }, (reason: any) => {
+//             reject(reason);
+//         });
         
-    });
+//     });
 
-}
+// }
