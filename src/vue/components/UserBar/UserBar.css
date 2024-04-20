@@ -120,6 +120,14 @@
   pointer-events: all;
 }
 
+@media (max-width: 960px) {
+  .UserBar__button.is-mint {
+    position: fixed;
+    right: 20px;
+    top: 74px;
+  }
+}
+
 @media (max-width: 800px) {
   .UserBar__search-field {
     width: calc(100% - 36px);
@@ -128,17 +136,22 @@
     position: fixed;
   }
 
-  .UserBar__button.is-mint {
-    position: fixed;
-    right: 20px;
-    top: 80px;
-  }
-
   .UserBar.connected .UserBar__search-field {
     top: 100px;
   }
 
   .UserBar.connected .UserBar__popup {
     top: calc(100% + 50px);
+  }
+}
+
+@media (max-width: 640px) {
+  .UserBar {
+    gap: 12px;
+  }
+
+  .UserBar__button.is-mint {
+    top: 52px;
+    right: 12px;
   }
 }
