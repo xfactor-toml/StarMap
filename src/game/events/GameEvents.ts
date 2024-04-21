@@ -1,5 +1,17 @@
 import { AcceptScreenData, BoxOpenData, ExpData, GameCompleteData } from "../battle/Types";
 
+export type AcceptData = {
+    eventName: GameEvent.BATTLE_ACCEPT_SCREEN,
+    action: 'show' | 'update' | 'close',
+    time?: {
+        acceptTimeSec: number
+    },
+    state?: {
+        current: number,
+        max: number
+    }
+}
+
 export enum GameEvent {
     GAME_LOADING = 'GAME_LOADING',
     GAME_LOADED = 'GAME_LOADED',
@@ -97,10 +109,13 @@ export class GameEventDispatcher {
         }));
     }
 
-    static battleAcceptScreenShow() {
-        let data = {
+    static battleAcceptScreenShow(aAcceptTime: number) {
+        let data: AcceptData = {
             eventName: GameEvent.BATTLE_ACCEPT_SCREEN,
-            action: 'show'
+            action: 'show',
+            time: {
+                acceptTimeSec: aAcceptTime
+            }
         };
         window.dispatchEvent(new CustomEvent('gameEvent', {
             detail: data
@@ -108,7 +123,7 @@ export class GameEventDispatcher {
     }
 
     static battleAcceptScreenUpdate(aData: AcceptScreenData) {
-        let data = {
+        let data: AcceptData = {
             eventName: GameEvent.BATTLE_ACCEPT_SCREEN,
             action: 'update',
             state: aData.state
@@ -119,7 +134,7 @@ export class GameEventDispatcher {
     }
 
     static battleAcceptScreenClose() {
-        let data = {
+        let data: AcceptData = {
             eventName: GameEvent.BATTLE_ACCEPT_SCREEN,
             action: 'close'
         };

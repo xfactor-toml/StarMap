@@ -6,6 +6,8 @@ import { MyUtils } from "../utils/MyUtils";
 import { BattleConnection } from "../battle/BattleConnection";
 import { GameEvent, GameEventDispatcher } from "../events/GameEvents";
 import { PackTitle } from "../battle/Types";
+import { FrontEvents } from "../events/FrontEvents";
+import { AudioMng } from "../audio/AudioMng";
 
 export class BootScene extends BasicScene {
 
@@ -20,6 +22,8 @@ export class BootScene extends BasicScene {
         GlobalParams.domGuiParent = document.getElementById('gui');
         // GET Params
         this.readGETParams();
+        // instance front events
+        this.initFrontEvents();
         // battle connection
         this.initBattleConnection();
         // Preloader
@@ -50,7 +54,7 @@ export class BootScene extends BasicScene {
                 keys: ['bfc'],
                 onReadHandler: (aValue: string) => {
                     GlobalParams.BATTLE.freeConnect = aValue == '1';
-                    LogMng.debug(`Settings.BATTLE.localConnect = ${GlobalParams.BATTLE.localConnect}`);
+                    LogMng.debug(`Settings.BATTLE.freeConnect = ${GlobalParams.BATTLE.freeConnect}`);
                 }
             }
         ];
@@ -67,6 +71,20 @@ export class BootScene extends BasicScene {
             }
         }
 
+    }
+
+    private initFrontEvents() {
+        FrontEvents.setMusicVolume.add((aData: { v: number }) => {
+            let am = AudioMng.getInstance();
+            am.musicVolume = aData.v;
+            localStorage.setItem(`musicVolume`, String(am.musicVolume));
+        }, this);
+
+        FrontEvents.setSFXVolume.add((aData: { v: number }) => {
+            let am = AudioMng.getInstance();
+            am.sfxVolume = aData.v;
+            localStorage.setItem(`sfxVolume`, String(am.sfxVolume));
+        }, this);
     }
 
     private initBattleConnection() {

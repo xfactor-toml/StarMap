@@ -14,9 +14,11 @@ import { DebugGui } from '../debug/DebugGui';
 import { useWallet } from '@/services';
 import { AudioMng } from '../audio/AudioMng';
 import { AudioAlias } from '../audio/AudioData';
+import { BattleAcceptScreenMng } from '../controllers/BattleAcceptScreenMng';
 
 export class GalaxyScene extends BasicScene {
     private _galaxy: GalaxyMng;
+    private _battleAcceptScreenMng: BattleAcceptScreenMng;
 
     constructor() {
         super(SceneNames.GalaxyScene, {
@@ -24,21 +26,6 @@ export class GalaxyScene extends BasicScene {
             initScene: true,
             initCamera: true
         });
-        this.initFrontEvents();
-    }
-
-    private initFrontEvents() {
-        FrontEvents.setMusicVolume.add((aData: { v: number }) => {
-            let am = AudioMng.getInstance();
-            am.musicVolume = aData.v;
-            localStorage.setItem(`musicVolume`, String(am.musicVolume));
-        }, this);
-
-        FrontEvents.setSFXVolume.add((aData: { v: number }) => {
-            let am = AudioMng.getInstance();
-            am.sfxVolume = aData.v;
-            localStorage.setItem(`sfxVolume`, String(am.sfxVolume));
-        }, this);
     }
 
     protected initRenderer() {
@@ -67,6 +54,7 @@ export class GalaxyScene extends BasicScene {
         this.initEvents();
         this.initSkybox();
         this.initGalaxy();
+        this.initBattleAcceptController();
         if (GlobalParams.isDebugMode) {
             this.initBlockchainDebugGui();
             this.initBattleDebugGui();
@@ -88,11 +76,8 @@ export class GalaxyScene extends BasicScene {
         FrontEvents.onBattleSearch.add(this.onFrontStarBattleSearch, this);
         FrontEvents.onBattleSearchBot.add(this.onFrontStarBattleBotSearch, this);
         FrontEvents.onBattleStopSearch.add(this.onFrontStopBattleSearch, this);
-        FrontEvents.onBattleAcceptClick.add(this.onFrontBattleAcceptClick, this);
-        FrontEvents.onBattleAcceptCloseClick.add(this.onFrontBattleAcceptCloseClick, this);
         // battle server events
         let bc = BattleConnection.getInstance();
-        bc.on(PackTitle.acceptScreen, this.onBattleAcceptScreenPack, this);
         bc.on(PackTitle.gameStart, this.onBattleStartPackage, this);
     }
 
@@ -105,12 +90,14 @@ export class GalaxyScene extends BasicScene {
         FrontEvents.onStarUpdated.remove(this.onStarUpdated, this);
         FrontEvents.onBattleSearch.remove(this.onFrontStarBattleSearch, this);
         FrontEvents.onBattleStopSearch.remove(this.onFrontStopBattleSearch, this);
-        FrontEvents.onBattleAcceptClick.remove(this.onFrontBattleAcceptClick, this);
-        FrontEvents.onBattleAcceptCloseClick.remove(this.onFrontBattleAcceptCloseClick, this);
         // battle server events
         let bc = BattleConnection.getInstance();
-        bc.remove(PackTitle.acceptScreen, this.onBattleAcceptScreenPack);
         bc.remove(PackTitle.gameStart, this.onBattleStartPackage);
+    }
+
+    private initBattleAcceptController() {
+        this._battleAcceptScreenMng = new BattleAcceptScreenMng();
+
     }
 
     private onLeftPanelGalaxyClick() {
@@ -158,33 +145,6 @@ export class GalaxyScene extends BasicScene {
 
     private onFrontStopBattleSearch() {
         BattleConnection.getInstance().sendStopSearchingGame();
-    }
-
-    private onFrontBattleAcceptClick() {
-        BattleConnection.getInstance().sendAcceptConfirmation();
-    }
-
-    private onFrontBattleAcceptCloseClick() {
-        BattleConnection.getInstance().sendAcceptCloseClick();
-    }
-
-    onBattleAcceptScreenPack(aData: AcceptScreenData) {
-        switch (aData.action) {
-            case 'start':
-                GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_STOP);
-                GameEventDispatcher.battleAcceptScreenShow();
-                break;
-            case 'update':
-                GameEventDispatcher.battleAcceptScreenUpdate(aData);
-                break;
-            case 'cancel':
-                GameEventDispatcher.battleAcceptScreenClose();
-                GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_STOP);
-                break;
-            default:
-                this.logWarn(`onBattleAcceptScreenPack: `);
-                break;
-        }
     }
 
     private onBattleStartPackage(aData: StartGameData) {
@@ -313,6 +273,7 @@ export class GalaxyScene extends BasicScene {
     }
 
     protected onFree() {
+        this._battleAcceptScreenMng.free();
         this.freeEvents();
         if (GlobalParams.isDebugMode) DebugGui.getInstance().clear();
         this._galaxy.free();

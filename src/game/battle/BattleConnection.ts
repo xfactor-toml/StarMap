@@ -29,18 +29,20 @@ export class BattleConnection extends MyEventDispatcher {
         }
     }
 
-    static getInstance(): BattleConnection {
+    static getInstance(aIsLocalConnect?: boolean): BattleConnection {
         if (!BattleConnection._instance) BattleConnection._instance = new BattleConnection();
         return BattleConnection._instance;
     }
 
     private connectLocal() {
+        this.logDebug(`connectLocal...`);
         this.closeConnection();
         this._socket = io('localhost:3089');
         this.initListeners();
     }
 
     private connectServer() {
+        this.logDebug(`connectServer...`);
         this.closeConnection();
         this._socket = io(GlobalParams.BATTLE.serverAddr);
         this.initListeners();

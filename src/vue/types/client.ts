@@ -1,7 +1,7 @@
 import { BoxOpenData, ExpData, GameCompleteData } from '~/game/battle/Types';
 import { ServerStarData } from '~/game/data/Types';
 import { FrontEvents } from '~/game/events/FrontEvents';
-import { GameEvent } from '~/game/events/GameEvents';
+import { AcceptData, GameEvent } from '~/game/events/GameEvents';
 
 interface BaseEvent {
   eventName: GameEvent;
@@ -71,6 +71,9 @@ export interface StarModeEvent extends BaseEvent {
 export interface BattleAcceptScreen extends BaseEvent {
   eventName: GameEvent.BATTLE_ACCEPT_SCREEN;
   action: 'show' | 'update' | 'close';
+  time?: {
+    acceptTimeSec: number
+  },
   state?: {
     current: number,
     max: number

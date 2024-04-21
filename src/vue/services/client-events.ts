@@ -72,18 +72,19 @@ export class ClientEventsService {
           case 'show':
             // playersConnectMock();
             // seconds
-            const ACCEPT_TIME = 6
-            const LOADING_TIME = 4
-
+            const ACCEPT_TIME = clientEvent.time?.acceptTimeSec || 6
+            // const LOADING_TIME = 4
+            
             scenesStore.setScene(UISceneNames.Battle)
 
             // Accept
             scenesStore.setSceneMode('accept');
-            battleStore.connecting.setAcceptTime(ACCEPT_TIME)
+            battleStore.connecting.setAcceptTime(ACCEPT_TIME);
 
-            await wait(toMilliseconds({
-              seconds: ACCEPT_TIME / 3
-            }))
+            // await wait(toMilliseconds({
+            //   seconds: ACCEPT_TIME / 3
+            // }))
+
             break;
           
           case 'update':
