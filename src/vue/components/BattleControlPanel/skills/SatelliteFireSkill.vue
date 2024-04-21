@@ -1,10 +1,14 @@
 <template>
   <BaseSkill
+    :shortcut="'Digit1'"
     :params="params"
+    :active="active"
+    :disabled="disabled"
+    @apply="$emit('fire')"
     @levelUp="$emit('levelUp')"
   >
     <SatelliteFireControl
-      :active="params?.level > 0"
+      :active="active"
       :disabled="disabled"
       :cooldown="cooldown === null ? null : toSeconds(cooldown.duration)"
       :progress="cooldown ? cooldown.progress : 0"
@@ -38,6 +42,11 @@ export default {
     }
   },
   emits: ['fire', 'levelUp'],
+  computed: {
+    active() {
+      return this.params?.level > 0
+    }
+  },
   methods: {
     toSeconds
   }

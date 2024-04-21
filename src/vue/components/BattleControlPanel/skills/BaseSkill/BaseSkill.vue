@@ -47,8 +47,16 @@ export default {
       type: Boolean,
       default: false
     },
+    active: {
+      type: Boolean,
+      default: false
+    },
+    shortcut: {
+      type: String,
+      required: true
+    },
   },
-  emits: ['levelUp'],
+  emits: ['levelUp', 'apply'],
   computed: {
     level() {
       return this.params?.level ?? 0
@@ -56,7 +64,26 @@ export default {
     canLevelUp() {
       return this.params?.levelUpAvailable || false
     }
-  }
+  },
+  methods: {
+    handleKeypress({ code, shiftKey }: KeyboardEvent) {
+      if (this.disabled || code !== this.shortcut) {
+        return
+      }
+
+      if (shiftKey) {
+        this.canLevelUp && this.$emit('levelUp')
+      } else {
+        this.active && this.$emit('apply')
+      }
+    }
+  },
+  mounted() {
+    window.addEventListener('keypress', this.handleKeypress)
+  },
+  unmounted() {
+    window.removeEventListener('keypress', this.handleKeypress)
+  },
 };
 </script>
 
