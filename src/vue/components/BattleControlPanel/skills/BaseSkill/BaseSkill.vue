@@ -51,6 +51,10 @@ export default {
       type: Boolean,
       default: false
     },
+    hasCooldown: {
+      type: Boolean,
+      default: false
+    },
     shortcut: {
       type: String,
       required: true
@@ -67,7 +71,7 @@ export default {
   },
   methods: {
     handleKeypress({ code, shiftKey }: KeyboardEvent) {
-      if (this.disabled || code !== this.shortcut) {
+      if (this.disabled || this.hasCooldown || code !== this.shortcut) {
         return
       }
 
