@@ -56,6 +56,10 @@ export const FrontEvents = {
     onBattleSearch: new Signal(),
     onBattleSearchBot: new Signal(),
     onBattleStopSearch: new Signal(),
+    // battle accept screen
+    onBattleAcceptClick: new Signal(),
+    onBattleAcceptCloseClick: new Signal(),
+
     onBattleExit: new Signal(),
     onBattleAbilityClick: new Signal(),
     onBattleAbilityLevelUpClick: new Signal(),

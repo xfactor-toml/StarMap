@@ -5,10 +5,11 @@ export enum PackTitle {
     startSearchGame = 'startSearchGame', // request
     stopSearchGame = 'stopSearchGame', // request
     gameSearching = 'gameSearching', // status, update, info
-    exitGame = 'exitGame',
+    battleConfirmation = 'battleConfirmation',
     battleSceneLoaded = 'battleSceneLoaded',
     gameStart = 'gameStart',
     gameComplete = 'gameComplete',
+    exitGame = 'exitGame',
     // for game
     fieldInit = 'fieldInit',
     objectCreate = 'objectCreate',
@@ -38,6 +39,15 @@ export type ObjectType = 'Star' | 'Planet' | 'Tower' | 'FighterShip' | 'BattleSh
 export type AttackType = 'laser' | 'ray';
 // Humans, Insects, Waters, Lizards
 export type ObjectRace = 'Humans' | 'Waters' | 'Insects' | 'Lizards';
+
+export type AcceptScreenAction = 'start' | 'accept' | 'update' | 'cancel' | 'closeClick';
+export type AcceptScreenData = {
+    action: AcceptScreenAction,
+    state?: {
+        current: number,
+        max: number
+    }
+}
 
 export type StartGameData = {
     cmd?: 'start',

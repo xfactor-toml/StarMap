@@ -123,12 +123,14 @@ export class ClientService {
 
   onBattleAccept() {
     // mock
-    useScenesStore().setScene(UISceneNames.Galaxy);
+    // useScenesStore().setScene(UISceneNames.Galaxy);
+    FrontEvents.onBattleAcceptClick.dispatch();
   }
 
   onBattleConnectExit() {
     // mock
-    useScenesStore().setScene(UISceneNames.Galaxy);
+    FrontEvents.onBattleAcceptCloseClick.dispatch();
+    // useScenesStore().setScene(UISceneNames.Galaxy);
   }
 
   onBattleAction(payload: BattleActionPayload) {

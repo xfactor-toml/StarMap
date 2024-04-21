@@ -1,7 +1,7 @@
+import { playersConnectMock } from '@/mocks';
 import { useBattleStore, useScenesStore, useStarsStore, useUiStore } from '@/stores';
 import { BattleActionType, ClientEvent, UISceneNames } from '@/types';
-import { wait } from '@/utils';
-import { GlobalParams } from '~/game/data/GlobalParams';
+import { toMilliseconds, wait } from '@/utils';
 import { GameEvent } from '~/game/events/GameEvents';
 import { LogMng } from '~/game/utils/LogMng';
 
@@ -64,6 +64,47 @@ export class ClientEventsService {
       case GameEvent.GALAXY_MODE:
         scenesStore.setScene(UISceneNames.Galaxy);
         scenesStore.setClientScene('galaxy');
+        break;
+      
+      case GameEvent.BATTLE_ACCEPT_SCREEN:
+        switch (clientEvent.action) {
+
+          case 'show':
+            // playersConnectMock();
+            // seconds
+            const ACCEPT_TIME = clientEvent.time?.acceptTimeSec || 6
+            // const LOADING_TIME = 4
+            
+            scenesStore.setScene(UISceneNames.Battle)
+
+            // Accept
+            scenesStore.setSceneMode('accept');
+            battleStore.connecting.setAcceptTime(ACCEPT_TIME);
+
+            // await wait(toMilliseconds({
+            //   seconds: ACCEPT_TIME / 3
+            // }))
+
+            break;
+          
+          case 'update':
+            scenesStore.setSceneMode('connect');
+            battleStore.connecting.setConnectedUsers({
+              current: clientEvent.state.current,
+              max: clientEvent.state.max
+            });
+            break;
+          
+          case 'close':
+            scenesStore.setScene(UISceneNames.Galaxy);
+            break;
+          
+          default:
+            LogMng.warn(`vue(ClientEventsService): BATTLE_ACCEPT_SCREEN: unknown clientEvent.action=${clientEvent.action}`);
+            break;
+          
+        }
+        battleStore.connecting.setPlayerSearchingState(true);
         break;
 
       case GameEvent.BATTLE_SEARCHING_START:

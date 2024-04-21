@@ -8,15 +8,17 @@ import { SceneNames } from './SceneNames';
 import { ThreeLoader } from '../utils/threejs/ThreeLoader';
 import { SimpleRenderer } from '../core/renderers/SimpleRenderer';
 import { BattleConnection } from '../battle/BattleConnection';
-import { PackTitle, StartGameData } from '../battle/Types';
+import { AcceptScreenData, PackTitle, StartGameData } from '../battle/Types';
 import { GameEvent, GameEventDispatcher } from '../events/GameEvents';
 import { DebugGui } from '../debug/DebugGui';
 import { useWallet } from '@/services';
 import { AudioMng } from '../audio/AudioMng';
 import { AudioAlias } from '../audio/AudioData';
+import { BattleAcceptScreenMng } from '../controllers/BattleAcceptScreenMng';
 
 export class GalaxyScene extends BasicScene {
     private _galaxy: GalaxyMng;
+    private _battleAcceptScreenMng: BattleAcceptScreenMng;
 
     constructor() {
         super(SceneNames.GalaxyScene, {
@@ -24,21 +26,6 @@ export class GalaxyScene extends BasicScene {
             initScene: true,
             initCamera: true
         });
-        this.initFrontEvents();
-    }
-
-    private initFrontEvents() {
-        FrontEvents.setMusicVolume.add((aData: { v: number }) => {
-            let am = AudioMng.getInstance();
-            am.musicVolume = aData.v;
-            localStorage.setItem(`musicVolume`, String(am.musicVolume));
-        }, this);
-
-        FrontEvents.setSFXVolume.add((aData: { v: number }) => {
-            let am = AudioMng.getInstance();
-            am.sfxVolume = aData.v;
-            localStorage.setItem(`sfxVolume`, String(am.sfxVolume));
-        }, this);
     }
 
     protected initRenderer() {
@@ -67,6 +54,7 @@ export class GalaxyScene extends BasicScene {
         this.initEvents();
         this.initSkybox();
         this.initGalaxy();
+        this.initBattleAcceptController();
         if (GlobalParams.isDebugMode) {
             this.initBlockchainDebugGui();
             this.initBattleDebugGui();
@@ -105,6 +93,11 @@ export class GalaxyScene extends BasicScene {
         // battle server events
         let bc = BattleConnection.getInstance();
         bc.remove(PackTitle.gameStart, this.onBattleStartPackage);
+    }
+
+    private initBattleAcceptController() {
+        this._battleAcceptScreenMng = new BattleAcceptScreenMng();
+
     }
 
     private onLeftPanelGalaxyClick() {
@@ -280,6 +273,7 @@ export class GalaxyScene extends BasicScene {
     }
 
     protected onFree() {
+        this._battleAcceptScreenMng.free();
         this.freeEvents();
         if (GlobalParams.isDebugMode) DebugGui.getInstance().clear();
         this._galaxy.free();
