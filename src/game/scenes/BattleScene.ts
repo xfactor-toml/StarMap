@@ -249,7 +249,7 @@ export class BattleScene extends BasicScene {
                     const rewardValue = Math.trunc(newAssets.token - oldAssets.token);
                     const balance = newAssets.token;
                     const rewardAmount = newAssets.token - oldAssets.token;
-                    // alert(`VRP token: +${rewardAmount}`);
+                    alert(`VRP token: +${rewardAmount}`);
                     // alert(`Reward: ${rewardValue}; Balance: ${balance}`);
                     break;
                 
