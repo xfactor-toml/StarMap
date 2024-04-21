@@ -9,6 +9,8 @@
   position: relative;
   color: #00FFFF;
   cursor: pointer;
+  outline: none;
+  user-select: none;
 }
 
 

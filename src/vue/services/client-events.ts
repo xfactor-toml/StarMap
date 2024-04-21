@@ -259,7 +259,6 @@ export class ClientEventsService {
               duration: sd.cooldown.duration
             }
           });
-          
         }
         
         break;
