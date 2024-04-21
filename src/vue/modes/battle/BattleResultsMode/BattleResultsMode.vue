@@ -39,17 +39,21 @@
         </div>
       </div>
       <div class="BattleResultsMode__footer">
-        <button
-          v-if="results.box.show"
-          class="BattleResultsMode__button"
-          @click="$client.onOpenBox"
-        >Open Box lv.{{ results.box.level }}
-        </button>
-        <button
-          class="BattleResultsMode__button"
-          @click="$client.onClaim"
-        >Claim rewards
-      </button>
+        
+        <Loader v-if="loading"/>
+        <template v-else>
+          <button
+            v-if="results.box.show"
+            class="BattleResultsMode__button"
+            @click="openBox"
+          >Open Box lv.{{ results.box.level }}
+          </button>
+          <button
+            class="BattleResultsMode__button"
+            @click="claim"
+          >Claim rewards
+          </button>
+        </template>
     </div>
     </template>
     <template v-else>Not found</template>
@@ -60,9 +64,16 @@
 import { useBattleStore, useUiStore, useScenesStore } from '@/stores';
 import { getShortAddress, formatNumber } from '@/utils';
 import { mapStores } from 'pinia'; 
+import { Loader } from '@/components';
 
 export default {
   name: 'BattleResultsMode',
+  components: {
+    Loader
+  },
+  data: () => ({
+    loading: false
+  }),
   computed: {
     ...mapStores(useBattleStore, useUiStore, useScenesStore),
     results() {
@@ -97,6 +108,14 @@ export default {
   methods: {
     getShortAddress,
     formatNumber,
+    openBox() {
+      this.loading = true
+      this.$client.onOpenBox()
+    },
+    claim() {
+      this.loading = true
+      this.$client.onClaim()
+    }
   },
   mounted() {
     this.uiStore.blur.enable()

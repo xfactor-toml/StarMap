@@ -117,13 +117,11 @@
     left: 12px;
     right: 12px;
     top: 12px;
+    align-items: flex-start;
   }
 
   .GalaxyScene__headerColumn.is-center {
-    flex-direction: row;
-    position: absolute;
-    top: 80px;
-    left: 50%;
-    transform: translateX(-50%);
+    flex-direction: column;
+    gap: 6px;
   }
 }
