@@ -4,13 +4,14 @@
     :params="params"
     :active="active"
     :disabled="disabled"
+    :hasCooldown="hasCooldown"
     @apply="$emit('fire')"
     @levelUp="$emit('levelUp')"
   >
     <RocketFireControl
       :active="active"
       :disabled="disabled"
-      :cooldown="cooldown === null ? null : toSeconds(cooldown.duration)"
+      :cooldown="hasCooldown ? toSeconds(cooldown.duration) : null"
       :progress="cooldown ? cooldown.progress : 0"
       @click="$emit('fire')"
     />
@@ -45,6 +46,9 @@ export default {
   computed: {
     active() {
       return this.params?.level > 0
+    },
+    hasCooldown() {
+      return this.cooldown !== null
     }
   },
   methods: {

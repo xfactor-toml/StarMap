@@ -147,28 +147,28 @@ export class ClientEventsService {
               level: 1,
               levelUpAvailable: false,
               cooldown: {
-                duration: clientEvent.timer || 3000,
+                duration: 3000,
               }
             },
             rocketFire: {
               level: 0,
               levelUpAvailable: false,
               cooldown: {
-                duration: clientEvent.timer || 3000,
+                duration: 3000,
               }
             },
             slowdown: {
               level: 0,
               levelUpAvailable: false,
               cooldown: {
-                duration: clientEvent.timer || 3000,
+                duration: 3000,
               }
             },
             invisibility: {
               level: 0,
               levelUpAvailable: false,
               cooldown: {
-                duration: clientEvent.timer || 3000,
+                duration: 3000,
               }
             }
           }
@@ -259,7 +259,6 @@ export class ClientEventsService {
               duration: sd.cooldown.duration
             }
           });
-          
         }
         
         break;
