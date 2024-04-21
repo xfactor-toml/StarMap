@@ -6,6 +6,12 @@
   z-index: 2;
 }
 
+.UserBar__buttons {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
 .UserBar__search {
   position: relative;
   width: 24px;
@@ -137,21 +143,46 @@
   }
 
   .UserBar.connected .UserBar__search-field {
-    top: 100px;
+    top: 20px;
   }
 
   .UserBar.connected .UserBar__popup {
-    top: calc(100% + 50px);
+    top: calc(100% + 20px);
   }
 }
 
 @media (max-width: 640px) {
   .UserBar {
-    gap: 12px;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+  }
+
+  .UserBar__buttons {
+    gap: 8px;
+  }
+
+  .UserBar__button {
+    width: 20px;
+    height: 20px;
+  }
+
+  .UserBar__button::before {
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
   }
 
   .UserBar__button.is-mint {
+    position: static;
     top: 52px;
     right: 12px;
+    font-size: 12px;
+    order: 3;
+  }
+
+  .UserBar__account {
+    font-size: 12px;
   }
 }

@@ -9,43 +9,44 @@
       @mouseenter="$client.onHover()"
       @click="$emit('openPlasmaMintPopup')"
     >Get plasma</button>
-    <div class="UserBar__search">
-      <div
-        class="UserBar__search-field"
-        v-if="searchVisible"
-        v-click-outside="hideSearchField"
-      >
-        <SearchInput
-          v-model="searchKey"
-          @close="closeSearchField"
+    <div class="UserBar__buttons">
+      <div class="UserBar__search">
+        <div
+          class="UserBar__search-field"
+          v-if="searchVisible"
+          v-click-outside="hideSearchField"
+        >
+          <SearchInput
+            v-model="searchKey"
+            @close="closeSearchField"
+          />
+        </div>
+        <button
+          class="UserBar__button is-search"
+          :disabled="searchKey.length > 0"
+          @mouseenter="$client.onHover()"
+          @click="openSearchField"
         />
       </div>
       <button
-        class="UserBar__button is-search"
-        :disabled="searchKey.length > 0"
+        class="UserBar__button is-settings"
+        :class="{ active: settingsVisible }"
         @mouseenter="$client.onHover()"
-        @click="openSearchField"
+        @click="toggleSettings"
+      />
+      <button
+        v-if="walletStore.connected && userBoxes.length > 0"
+        class="UserBar__button is-box"
+        :data-count="userBoxes.length"
+        @mouseenter="$client.onHover()"
+        @click="openBox"
       />
     </div>
-    <button
-      class="UserBar__button is-settings"
-      :class="{ active: settingsVisible }"
-      @mouseenter="$client.onHover()"
-      @click="toggleSettings"
-    />
-    <template v-if="walletStore.connected">
-      <template v-if="userBoxes.length > 0">
-        <button
-          class="UserBar__button is-box"
-          :data-count="userBoxes.length"
-          @mouseenter="$client.onHover()"
-          @click="openBox"
-        />
-      </template>
-      <div class="UserBar__account">
-        {{ walletStore.shortAddress }}
-      </div>
-    </template>
+    <div
+      v-if="walletStore.connected"
+      class="UserBar__account"
+    >{{ walletStore.shortAddress }}
+    </div>
     <button
       v-else
       class="UserBar__button is-wallet"
