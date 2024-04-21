@@ -236,7 +236,7 @@ export class BattleScene extends BasicScene {
                     let newAssets = await GetGameAssetsWeb2(wallet);
                     console.log("New assets: ", newAssets);
                     if (!newAssets) {
-                        alert(`Error: newAssets ( get from GetGameAssetsWeb2(wallet) ) == null!`);
+                        // alert(`Error: newAssets ( get from GetGameAssetsWeb2(wallet) ) == null!`);
                         this.logWarn(`newAssets ( get from GetGameAssetsWeb2(wallet) ) == null!`, {
                             wallet: wallet,
                             oldAssets: oldAssets,
@@ -249,7 +249,7 @@ export class BattleScene extends BasicScene {
                     const rewardValue = Math.trunc(newAssets.token - oldAssets.token);
                     const balance = newAssets.token;
                     const rewardAmount = newAssets.token - oldAssets.token;
-                    alert(`VRP token: +${rewardAmount}`);
+                    // alert(`VRP token: +${rewardAmount}`);
                     // alert(`Reward: ${rewardValue}; Balance: ${balance}`);
                     break;
                 
@@ -294,7 +294,7 @@ export class BattleScene extends BasicScene {
                         if (GlobalParams.isDebugMode) console.log(list);
                         if (list.length > 0) {
                             this._boxIdList = list;
-                            alert(`You have ${list.length} boxes for open`);
+                            // alert(`You have ${list.length} boxes for open`);
                             GameEventDispatcher.showBoxOpenScreen({ list });
                         }
                         else {
@@ -318,7 +318,7 @@ export class BattleScene extends BasicScene {
 
         this._connection.sendClaimReward({ type: 'box', action: 'request' });
 
-        alert(`Box generation in process, wait please...`);
+        // alert(`Box generation in process, wait please...`);
     }
 
     protected onFree() {

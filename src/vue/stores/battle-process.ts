@@ -79,8 +79,11 @@ export const useBattleProcessStore = defineStore('battleProcess', () => {
       update: ({ progress }) => {
         const timePassed = duration * (progress / 100)
         const timeleft = Math.trunc(duration - timePassed)
-
-        cooldown.value[skillType].duration = timeleft
+        try {
+          cooldown.value[skillType].duration = timeleft
+        } catch (error) {
+          
+        }
       },
       complete: () => {
         cooldown.value[skillType] = null
