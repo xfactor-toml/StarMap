@@ -249,8 +249,11 @@ export class BattleScene extends BasicScene {
                     const rewardValue = Math.trunc(newAssets.token - oldAssets.token);
                     const balance = newAssets.token;
                     const rewardAmount = newAssets.token - oldAssets.token;
-                    alert(`VRP token: +${rewardAmount}`);
+                    // alert(`VRP token: +${rewardAmount}`);
                     // alert(`Reward: ${rewardValue}; Balance: ${balance}`);
+                    GameEventDispatcher.showTokenReward({
+                        tokens: rewardAmount
+                    });
                     break;
                 
                 case 'reject':
@@ -260,7 +263,9 @@ export class BattleScene extends BasicScene {
             }
             this.closeScene();
         });
+
         this._connection.sendClaimReward({ type: 'reward', action: 'request' });
+        
     }
 
     private async claimBox() {

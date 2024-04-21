@@ -101,6 +101,10 @@ export interface BattleCompleteShow extends BaseEvent, GameCompleteData {
 export interface BattleCompleteHide extends BaseEvent, GameCompleteData {
   eventName: GameEvent.BATTLE_COMPLETE_HIDE;
 }
+export interface BattleShowTokenReward extends BaseEvent {
+  eventName: GameEvent.SHOW_TOKEN_REWARD;
+  tokens: number;
+}
 export interface BattleShowBoxOpen extends BaseEvent, BoxOpenData {
   eventName: GameEvent.SHOW_BOX_OPEN;
 }
@@ -129,6 +133,7 @@ export type ClientEvent =
   | BattlePrerollShow
   | BattleCompleteShow
   | BattleCompleteHide
+  | BattleShowTokenReward
   | BattleShowBoxOpen
   | BattleExpData;
 

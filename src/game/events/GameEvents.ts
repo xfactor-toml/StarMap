@@ -56,6 +56,7 @@ export enum GameEvent {
     // battle results
     BATTLE_COMPLETE_SHOW = 'BATTLE_COMPLETE_SHOW',
     BATTLE_COMPLETE_HIDE = 'BATTLE_COMPLETE_HIDE',
+    SHOW_TOKEN_REWARD = 'SHOW_TOKEN_REWARD',
     SHOW_BOX_OPEN = 'SHOW_BOX_OPEN',
     // battle process
     BATTLE_EXP_DATA = 'BATTLE_EXP_DATA',
@@ -97,6 +98,13 @@ export class GameEventDispatcher {
 
     static battleExpUpdate(aData: ExpData) {
         aData[`eventName`] = GameEvent.BATTLE_EXP_DATA;
+        window.dispatchEvent(new CustomEvent('gameEvent', {
+            detail: aData
+        }));
+    }
+
+    static showTokenReward(aData: { tokens: number }) {
+        aData[`eventName`] = GameEvent.SHOW_TOKEN_REWARD;
         window.dispatchEvent(new CustomEvent('gameEvent', {
             detail: aData
         }));
