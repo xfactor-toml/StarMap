@@ -76,9 +76,9 @@ export class BattleConnection extends MyEventDispatcher {
             this.emit(PackTitle.gameSearching, aData);
         });
 
-        this._socket.on(PackTitle.acceptScreen, (aData: AcceptScreenData) => {
+        this._socket.on(PackTitle.battleConfirmation, (aData: AcceptScreenData) => {
             this.logDebug(`initScreen:`, aData);
-            this.emit(PackTitle.acceptScreen, aData);
+            this.emit(PackTitle.battleConfirmation, aData);
         });
 
         this._socket.on(PackTitle.gameStart, (aData: StartGameData) => {
@@ -228,14 +228,14 @@ export class BattleConnection extends MyEventDispatcher {
         let data: AcceptScreenData = {
             action: 'accept'
         }
-        this._socket.emit(PackTitle.acceptScreen, data);
+        this._socket.emit(PackTitle.battleConfirmation, data);
     }
 
     sendAcceptCloseClick() {
         let data: AcceptScreenData = {
             action: 'closeClick'
         }
-        this._socket.emit(PackTitle.acceptScreen, data);
+        this._socket.emit(PackTitle.battleConfirmation, data);
     }
 
     sendExitGame() {

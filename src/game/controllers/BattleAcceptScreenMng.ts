@@ -28,14 +28,14 @@ export class BattleAcceptScreenMng implements ILogger {
         FrontEvents.onBattleAcceptCloseClick.add(this.onFrontBattleAcceptCloseClick, this);
         // battle server events
         let bc = BattleConnection.getInstance();
-        bc.on(PackTitle.acceptScreen, this.onBattleAcceptScreenPack, this);
+        bc.on(PackTitle.battleConfirmation, this.onBattleAcceptScreenPack, this);
     }
 
     private removeListeners() {
         FrontEvents.onBattleAcceptClick.remove(this.onFrontBattleAcceptClick, this);
         FrontEvents.onBattleAcceptCloseClick.remove(this.onFrontBattleAcceptCloseClick, this);
         let bc = BattleConnection.getInstance();
-        bc.remove(PackTitle.acceptScreen, this.onBattleAcceptScreenPack);
+        bc.remove(PackTitle.battleConfirmation, this.onBattleAcceptScreenPack);
     }
 
     private initDeadlineTimer(aTimeSec: number) {

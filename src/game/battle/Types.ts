@@ -5,7 +5,7 @@ export enum PackTitle {
     startSearchGame = 'startSearchGame', // request
     stopSearchGame = 'stopSearchGame', // request
     gameSearching = 'gameSearching', // status, update, info
-    acceptScreen = 'acceptScreen',
+    battleConfirmation = 'battleConfirmation',
     battleSceneLoaded = 'battleSceneLoaded',
     gameStart = 'gameStart',
     gameComplete = 'gameComplete',
