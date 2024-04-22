@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
 import { BattleReward, UISceneNames } from '@/types';
-
 import { ref } from 'vue';
 import { useWallet } from '@/services';
 import { useScenesStore } from '@/stores/scenes';
@@ -40,6 +39,10 @@ export const useBattleRewardsStore = defineStore('battleRewards', () => {
 
             const wallet = useWallet()
             const scenes = useScenesStore()
+            
+            if (!wallet.connected) {
+                const connection = await wallet.connect("local");
+            }
             const openResult: any = await wallet.provider.openBox(firstBoxId);
             LogMng.debug(`openResult:`, openResult);
 
