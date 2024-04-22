@@ -222,6 +222,12 @@ export class ClientEventsService {
         scenesStore.setScene(UISceneNames.Galaxy);
         break;
       
+      case GameEvent.SHOW_TOKEN_REWARD:
+        // TODO: remove alert and show clientEvent.tokens
+        alert(`VRP token: +${clientEvent.tokens}`);
+
+        break;
+      
       case GameEvent.SHOW_BOX_OPEN:
         // battleStore.rewards.setRewards([
         //   { name: 'test1', image: '/gui/images/box.png' },
