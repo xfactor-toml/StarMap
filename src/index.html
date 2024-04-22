@@ -60,7 +60,8 @@
   <div id="gui"></div>
 </body>
 <script>
-  try {
+  localStorage.setItem("userLogin", "TelegramDebug");
+  /* try {
     if (window.Telegram) {
       localStorage.setItem("userLogin", window.Telegram.WebApp.initDataUnsafe.user.username);
       if (localStorage.getItem("userLogin")) {
@@ -71,7 +72,7 @@
     }
   } catch (e) {
     console.log("Not a Telegram")
-  }
+  } */
 
 </script>
 </html>

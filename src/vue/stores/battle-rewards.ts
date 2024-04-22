@@ -5,6 +5,7 @@ import { ref } from 'vue';
 import { useWallet } from '@/services';
 import { useScenesStore } from '@/stores/scenes';
 import { LogMng } from '~/game/utils/LogMng';
+import { BlockchainConnectService } from '~/blockchainTotal';
 
 type BoxItemType = 'vrp' | 'biomass' | 'carbon' | 'metal' | 'spice' | 'spore' | 'laser';
 
@@ -40,6 +41,10 @@ export const useBattleRewardsStore = defineStore('battleRewards', () => {
 
             const wallet = useWallet()
             const scenes = useScenesStore()
+            
+            if (!wallet.connected) {
+                const connection = await wallet.connect("local");
+            }
             const openResult: any = await wallet.provider.openBox(firstBoxId);
             LogMng.debug(`openResult:`, openResult);
 
