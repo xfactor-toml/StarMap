@@ -1,11 +1,9 @@
 import { defineStore } from 'pinia';
 import { BattleReward, UISceneNames } from '@/types';
-
 import { ref } from 'vue';
 import { useWallet } from '@/services';
 import { useScenesStore } from '@/stores/scenes';
 import { LogMng } from '~/game/utils/LogMng';
-import { BlockchainConnectService } from '~/blockchainTotal';
 
 type BoxItemType = 'vrp' | 'biomass' | 'carbon' | 'metal' | 'spice' | 'spore' | 'laser';
 
