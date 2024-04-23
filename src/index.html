@@ -63,15 +63,27 @@
   // localStorage.setItem("userLogin", "TelegramDebug");
   try {
     if (window.Telegram) {
-      localStorage.setItem("userLogin", window.Telegram.WebApp.initDataUnsafe.user.username);
-      if (localStorage.getItem("userLogin")) {
+      const app = window.Telegram.WebApp;
+      const login = app.initDataUnsafe.user.username
+      localStorage.setItem("userLogin", login);
+      // alert(`Login: ${login}`);
+      if (login) {
+        // alert(`Login success`);
+        // app.showAlert(`Welcome.`);
         // document.body.style.paddingTop = '50px';
         // document.body.style.paddingBottom = '50px';
-        window.Telegram.WebApp.expand();
+        app.setHeaderColor("#141414");
+        app.setBackgroundColor("#141414");
+        // app.setBackgroundColor("#00FFFF");
+        app.MainButton.hide();
+        app.expand();
+        // alert("App is" + app.isExpanded())
+        // alert(JSON.stringify(app))
       }
     }
   } catch (e) {
-    console.log("Not a Telegram")
+    alert(e.message);
+    console.log("Not a Telegram");
   }
 
 </script>
