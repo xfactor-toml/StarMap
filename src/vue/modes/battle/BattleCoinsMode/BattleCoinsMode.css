@@ -1,0 +1,134 @@
+.BattleCoinsMode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #00FFFF;
+  font-family: "Exo 2";
+}
+
+.BattleCoinsMode > * {
+  pointer-events: all;
+}
+
+.BattleCoinsMode__image {
+  flex-grow: 1;
+  width: 460px;
+  height: 360px;
+  background-image: url(../gui/images/box.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: 50% 0%;
+}
+
+.BattleCoinsMode__loader {
+  flex-grow: 1;
+}
+
+.BattleCoinsMode__button {
+  width: 280px;
+  height: 160px;
+  margin: -30px 0;
+  padding: 0;
+  background-image: url(../gui/images/battle-results/open-box.svg);
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: 50%;
+  background-color: transparent;
+  border: none;
+  will-change: transform;
+  transition: ease transform 200ms;
+}
+
+.BattleCoinsMode__button:hover {
+  transform: scale(1.05);
+}
+
+.BattleCoinsMode__button:active {
+  transform: scale(0.95);
+}
+
+.BattleCoinsMode__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 380px;
+  min-height: 28%;
+  margin-top: 20px;
+}
+
+.BattleCoinsMode__label {
+  padding: 4px 12px;
+  color: #000;
+  background-color: #00FFFF;
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.BattleCoinsMode__rewards {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 12px;
+  justify-content: center;
+  max-width: 380px;
+  width: 100%;
+  padding-top: 12px;
+  border-top: 1px solid rgba(0, 255, 255, 0.3);
+  font-size: 12px;
+  text-align: center;
+}
+
+.BattleCoinsMode__reward {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.BattleCoinsMode__rewardTile {
+  width: 80px;
+  height: 80px;
+  padding: 16px;
+  border-radius: 8px;
+  background-color: rgba(0, 255, 255, 0.15);
+}
+
+.BattleCoinsMode__rewardImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0.5;
+}
+
+.BattleCoinsMode__caption {
+  color: #00FFFF;
+}
+
+.BattleCoinsMode__footer {
+  margin-top: 36px;
+  padding-bottom: 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.BattleCoinsMode__close {
+  min-width: 174px;
+  padding: 12px 24px;
+  border: none;
+  background-color: #00FFFF;
+  color: #000;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+}

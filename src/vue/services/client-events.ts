@@ -223,8 +223,10 @@ export class ClientEventsService {
         break;
       
       case GameEvent.SHOW_TOKEN_REWARD:
-        // TODO: remove alert and show clientEvent.tokens
-        alert(`VRP token: +${clientEvent.tokens}`);
+        battleStore.rewards.setCoins(clientEvent.tokens);
+        scenesStore.setScene(UISceneNames.Battle, {
+          mode: 'coins'
+        });
 
         break;
       
