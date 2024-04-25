@@ -1,3 +1,4 @@
+export * from './BattleCoinsMode';
 export * from './BattleConnect';
 export * from './BattleInitMode';
 export * from './BattleProcessMode';

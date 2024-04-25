@@ -60,7 +60,8 @@ export type GuiScenes = {
     Mode<'loading'>,
     Mode<'process'>,
     Mode<'results'>,
-    Mode<'rewards'>
+    Mode<'rewards'>,
+    Mode<'coins'>
   ]>
 }
 

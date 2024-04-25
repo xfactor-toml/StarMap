@@ -2,6 +2,7 @@ import { GuiScenes, UISceneNames } from '@/types';
 import { BattleScene, GalaxyScene, StartScene } from '@/scenes';
 import {
   BattleAcceptMode,
+  BattleCoinsMode,
   BattleConnectMode,
   BattleLoadingMode,
   BattleResultsMode,
@@ -176,6 +177,18 @@ export const SCENES: GuiScenes = {
       {
         name: 'rewards',
         getComponent: () => BattleRewardsMode,
+        onEnter: async (el) => {
+          await anime({
+            targets: el,
+            easing: 'easeInOutQuart',
+            duration: 400,
+            opacity: [0, 1],
+          }).finished
+        },
+      },
+      {
+        name: 'coins',
+        getComponent: () => BattleCoinsMode,
         onEnter: async (el) => {
           await anime({
             targets: el,
