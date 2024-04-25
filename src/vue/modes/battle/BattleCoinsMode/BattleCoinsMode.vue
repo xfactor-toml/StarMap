@@ -1,6 +1,5 @@
 <template>
   <div class="BattleCoinsMode">
-    <div class="BattleCoinsMode__image"/>
     <template v-if="rewards.waitingBox">
       <div class="BattleCoinsMode__loader">
         <Loader/>
