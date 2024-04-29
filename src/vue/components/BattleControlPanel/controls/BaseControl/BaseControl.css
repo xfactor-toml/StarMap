@@ -14,6 +14,11 @@
 }
 
 
+.BaseControl__outline {
+  width: 100%;
+  height: 100%;
+}
+
 .BaseControl[disabled],
 .BaseControl.cooldown {
   cursor: default;
