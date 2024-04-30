@@ -15,6 +15,8 @@ import { useWallet } from '@/services';
 import { AudioMng } from '../audio/AudioMng';
 import { AudioAlias } from '../audio/AudioData';
 import { BattleAcceptScreenMng } from '../controllers/BattleAcceptScreenMng';
+import { MyMath } from '../utils/MyMath';
+import { MyUtils } from '../utils/MyUtils';
 
 export class GalaxyScene extends BasicScene {
     private _galaxy: GalaxyMng;
@@ -73,8 +75,8 @@ export class GalaxyScene extends BasicScene {
         FrontEvents.onBotPanelRealClick.add(this.onBotPanelRealClick, this);
         FrontEvents.onStarCreated.add(this.onStarCreated, this);
         FrontEvents.onStarUpdated.add(this.onStarUpdated, this);
-        FrontEvents.onBattleSearch.add(this.onFrontStarBattleSearch, this);
-        FrontEvents.onBattleSearchBot.add(this.onFrontStarBattleBotSearch, this);
+        FrontEvents.onBattleSearch.add(this.onFrontStartBattleSearch, this);
+        FrontEvents.onBattleSearchBot.add(this.onFrontStartBattleBotSearch, this);
         FrontEvents.onBattleStopSearch.add(this.onFrontStopBattleSearch, this);
         // battle server events
         let bc = BattleConnection.getInstance();
@@ -88,7 +90,7 @@ export class GalaxyScene extends BasicScene {
         FrontEvents.onBotPanelRealClick.remove(this.onBotPanelRealClick, this);
         FrontEvents.onStarCreated.remove(this.onStarCreated, this);
         FrontEvents.onStarUpdated.remove(this.onStarUpdated, this);
-        FrontEvents.onBattleSearch.remove(this.onFrontStarBattleSearch, this);
+        FrontEvents.onBattleSearch.remove(this.onFrontStartBattleSearch, this);
         FrontEvents.onBattleStopSearch.remove(this.onFrontStopBattleSearch, this);
         // battle server events
         let bc = BattleConnection.getInstance();
@@ -123,7 +125,7 @@ export class GalaxyScene extends BasicScene {
         this._galaxy?.onStarUpdated(aStarData);
     }
 
-    private onFrontStarBattleSearch() {
+    private onFrontStartBattleSearch() {
         let con = BattleConnection.getInstance();
         if (!con.connected) {
             alert(`No connection to server!`);
@@ -133,7 +135,7 @@ export class GalaxyScene extends BasicScene {
         con.sendSearchGame();
     }
 
-    private onFrontStarBattleBotSearch() {
+    private onFrontStartBattleBotSearch() {
         let con = BattleConnection.getInstance();
         if (!con.connected) {
             alert(`No connection to server!`);
@@ -141,6 +143,16 @@ export class GalaxyScene extends BasicScene {
         }
         GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_START);
         con.sendSearchGameBot();
+    }
+
+    private onFrontChallengeClick() {
+        let con = BattleConnection.getInstance();
+        if (!con.connected) {
+            alert(`No connection to server!`);
+            return;
+        }
+        GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_START);
+        con.sendChallengeCreate();
     }
 
     private onFrontStopBattleSearch() {
@@ -265,11 +277,18 @@ export class GalaxyScene extends BasicScene {
             withdrawgame: () => {
                 // bc.sendStopSearchingGame();
             },
+            createChallenge: () => {
+                if (!bc.connected) {
+                    GameEventDispatcher.showMessage(`No connection to server!`);
+                    return;
+                }
+                bc.sendChallengeCreate();
+            }
         }
 
         const f = DebugGui.getInstance().createFolder('Battle');
         f.add(DATA, 'searchGameBot').name('Play with Bot');
-        // f.add(DATA, 'withdrawgame').name('Withdraw');
+        f.add(DATA, 'createChallenge').name('Create Challenge');
     }
 
     protected onFree() {

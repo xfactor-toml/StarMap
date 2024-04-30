@@ -13,6 +13,12 @@ export class ClientEventsService {
     const uiStore = useUiStore();
 
     switch (clientEvent.eventName) {
+
+      case GameEvent.MESSAGE:
+        // TODO: redo
+        alert(clientEvent.msg);
+        break;
+      
       case GameEvent.GAME_LOADING:
         break;
 
