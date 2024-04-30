@@ -11,10 +11,15 @@ export const useBattleRewardsStore = defineStore('battleRewards', () => {
     const list = ref<BattleReward[]>([])
     const boxesIds = ref<number[]>([])
     const waitingBox = ref(false)
+    const coins = ref(0)
 
     const setRewards = (rewards: BattleReward[]) => {
         list.value = rewards
         waitingBox.value = false
+    }
+
+    const setCoins = (value: number) => {
+        coins.value = value
     }
 
     const setBoxesIds = (ids: number[]) => {
@@ -25,6 +30,7 @@ export const useBattleRewardsStore = defineStore('battleRewards', () => {
     const reset = () => {
         waitingBox.value = false
         list.value = []
+        coins.value = 0
     }
 
     const waitBox = () => {
@@ -141,10 +147,12 @@ export const useBattleRewardsStore = defineStore('battleRewards', () => {
     }
 
     return {
+        coins,
         list,
         boxesIds,
         waitingBox,
         waitBox,
+        setCoins,
         setBoxesIds,
         setRewards,
         reset,

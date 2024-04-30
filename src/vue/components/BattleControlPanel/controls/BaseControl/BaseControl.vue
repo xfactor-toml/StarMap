@@ -11,6 +11,7 @@
     @click="$emit('click')"
   >
     <svg
+      class="BaseControl__outline"
       viewBox="0 0 193 213"
       fill="none"
     >
