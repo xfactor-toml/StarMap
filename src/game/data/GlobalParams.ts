@@ -127,7 +127,8 @@ export class GlobalParams {
         // serverAddr: wsServerUrl,
         serverAddr: 'https://staging-api.vorpal.finance',
         localConnect: false,
-        freeConnect: false
+        freeConnect: false,
+        duelNumber: -1
     };
 
     // audio

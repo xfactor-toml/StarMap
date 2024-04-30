@@ -56,6 +56,13 @@ export class BootScene extends BasicScene {
                     GlobalParams.BATTLE.freeConnect = aValue == '1';
                     LogMng.debug(`Settings.BATTLE.freeConnect = ${GlobalParams.BATTLE.freeConnect}`);
                 }
+            },
+            {
+                keys: ['duel'],
+                onReadHandler: (aValue: string) => {
+                    GlobalParams.BATTLE.duelNumber = Number(aValue);
+                    LogMng.debug(`Settings.BATTLE.duelNumber = ${GlobalParams.BATTLE.duelNumber}`);
+                }
             }
         ];
 

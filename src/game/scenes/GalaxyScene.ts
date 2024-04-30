@@ -57,9 +57,17 @@ export class GalaxyScene extends BasicScene {
         this.initSkybox();
         this.initGalaxy();
         this.initBattleAcceptController();
+        this.initDuel();
         if (GlobalParams.isDebugMode) {
             this.initBlockchainDebugGui();
             this.initBattleDebugGui();
+        }
+    }
+
+    initDuel() {
+        if (GlobalParams.BATTLE.duelNumber >= 0) {
+            let bc = BattleConnection.getInstance();
+            bc.sendChallengeConnect(GlobalParams.BATTLE.duelNumber);
         }
     }
 

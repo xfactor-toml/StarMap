@@ -216,6 +216,16 @@ export class BattleConnection extends MyEventDispatcher {
         this._socket.emit(PackTitle.startSearchGame, data);
     }
 
+    sendChallengeConnect(aChNumber: number) {
+        let data: SearchGameData = {
+            isChallenge: true,
+            challengeCmd: 'connect',
+            challengeNumber: aChNumber,
+            isFreeConnect: GlobalParams.BATTLE.freeConnect
+        }
+        this._socket.emit(PackTitle.startSearchGame, data);
+    }
+
     sendBattleSceneLoaded() {
         this._socket.emit(PackTitle.battleSceneLoaded);
     }
