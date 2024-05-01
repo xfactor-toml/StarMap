@@ -7,6 +7,7 @@ import { GameEvent, GameEventDispatcher } from "../events/GameEvents";
 import { Signal } from "../utils/events/Signal";
 import { useWallet } from "@/services";
 import { BlockchainConnectService } from "~/blockchainTotal";
+import { AuthMethod } from "~/blockchainTotal/types";
 
 export enum ConnectionEvent {
     disconnect = 'disconnect'
@@ -104,8 +105,9 @@ export class BattleConnection extends MyEventDispatcher {
         switch (aData.cmd) {
             case 'request':
                 this.logDebug(`onSignRecv: request...`);
-                const authPriority = this.signService.getDefaultAuthMethod();
-                console.log("Priority: ", authPriority);
+                // const authPriority = this.signService.getDefaultAuthMethod();
+                const authPriority: AuthMethod = 'Local';
+                this.logDebug(`onSignRecv: authPriority: ${authPriority}`);
                 if (authPriority === "Local") {
                     this.signProcess2();
                 } else {

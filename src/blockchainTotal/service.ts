@@ -15,7 +15,7 @@ export class BlockchainConnectService {
     public walletAddress: string;
     private static instance: BlockchainConnectService | null = null;
 
-    public getDefaultAuthMethod() {
+    public getDefaultAuthMethod(): AuthMethod {
         let tgLogin;
         try {
             tgLogin = window.Telegram.WebApp.initDataUnsafe.user.username;
@@ -61,7 +61,7 @@ export class BlockchainConnectService {
     public async connect(method: AuthMethod = this.authMethod): Promise<string> {
         switch (method) {
             case "Walletconnect" :
-                this.walletAddress = await ConnectWalletWC ();
+                this.walletAddress = await ConnectWalletWC();
                 return this.walletAddress;
             case "WindowEth" :
                 this.walletAddress = await WindowEthAuth();
