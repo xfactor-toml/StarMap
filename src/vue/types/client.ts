@@ -7,6 +7,11 @@ interface BaseEvent {
   eventName: GameEvent;
 }
 
+export interface MessageEvent extends BaseEvent {
+  eventName: GameEvent.MESSAGE;
+  msg: string;
+}
+
 export interface GameLoadingEvent extends BaseEvent {
   eventName: GameEvent.GAME_LOADING;
   percent: number;
@@ -113,6 +118,7 @@ export interface BattleExpData extends BaseEvent, ExpData {
 }
 
 export type ClientEvent =
+    MessageEvent
   | GameLoadingEvent
   | GameLoadedEvent
   | GameCreatedEvent

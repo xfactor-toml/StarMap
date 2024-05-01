@@ -5,7 +5,7 @@ import { SceneNames } from "./SceneNames";
 import { MyUtils } from "../utils/MyUtils";
 import { BattleConnection } from "../battle/BattleConnection";
 import { GameEvent, GameEventDispatcher } from "../events/GameEvents";
-import { PackTitle } from "../battle/Types";
+import { ChallengeInfo, PackTitle } from "../battle/Types";
 import { FrontEvents } from "../events/FrontEvents";
 import { AudioMng } from "../audio/AudioMng";
 
@@ -56,6 +56,13 @@ export class BootScene extends BasicScene {
                     GlobalParams.BATTLE.freeConnect = aValue == '1';
                     LogMng.debug(`Settings.BATTLE.freeConnect = ${GlobalParams.BATTLE.freeConnect}`);
                 }
+            },
+            {
+                keys: ['duel'],
+                onReadHandler: (aValue: string) => {
+                    GlobalParams.BATTLE.duelNumber = Number(aValue);
+                    LogMng.debug(`Settings.BATTLE.duelNumber = ${GlobalParams.BATTLE.duelNumber}`);
+                }
             }
         ];
 
@@ -90,6 +97,7 @@ export class BootScene extends BasicScene {
     private initBattleConnection() {
         let con = BattleConnection.getInstance();
         con.on(PackTitle.gameSearching, this.onGameSearchPack, this);
+        con.on(PackTitle.challengeInfo, this.onChallengePack, this);
     }
 
     private onGameSearchPack(aData: {
@@ -104,6 +112,26 @@ export class BootScene extends BasicScene {
                 break;
             default:
                 this.logDebug(`onGameSearchPack(): unknown cmd`, aData);
+                break;
+        }
+    }
+
+    private onChallengePack(aData: ChallengeInfo) {
+        // generate link for challenge
+        this.logDebug(`onChallengePack`, aData);
+        switch (aData.cmd) {
+            case 'number':
+                // gen link and copy
+                let link = `http://localhost:9184/?duel=${aData.challengeNumber}#debug`;
+                this.logDebug(`link: ${link}`);
+                MyUtils.copyToClipboard(link);
+                // msg
+                GameEventDispatcher.showMessage(`Link copied to clipboard`);
+                break;
+        
+            case 'notFound':
+                // msg
+                GameEventDispatcher.showMessage(`Challenge game not found`);
                 break;
         }
     }

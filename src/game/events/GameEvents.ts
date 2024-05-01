@@ -13,6 +13,9 @@ export type AcceptData = {
 }
 
 export enum GameEvent {
+
+    MESSAGE = 'MESSAGE',
+
     GAME_LOADING = 'GAME_LOADING',
     GAME_LOADED = 'GAME_LOADED',
     GAME_CREATED = 'GAME_CREATED',
@@ -67,6 +70,16 @@ export class GameEventDispatcher {
     static dispatchEvent(aEventName: GameEvent, aData: any = {}) {
         aData.eventName = aEventName;
         window.dispatchEvent(new CustomEvent('gameEvent', { detail: aData }));
+    }
+
+    static showMessage(aMsg: string) {
+        let data = {
+            eventName: GameEvent.MESSAGE,
+            msg: aMsg
+        }
+        window.dispatchEvent(new CustomEvent('gameEvent', {
+            detail: data
+        }));
     }
 
     static battlePrerollShow(aData: {

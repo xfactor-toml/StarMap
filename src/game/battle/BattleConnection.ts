@@ -2,7 +2,7 @@ import { NetworkAuth } from "~/blockchain";
 import { MyEventDispatcher } from "../basics/MyEventDispatcher";
 import { Socket, io } from "socket.io-client";
 import { GlobalParams } from "../data/GlobalParams";
-import { ClaimRewardData, DebugTestData, GameCompleteData, AcceptScreenData, PackTitle, SkillRequest, StartGameData } from "./Types";
+import { ClaimRewardData, DebugTestData, GameCompleteData, AcceptScreenData, PackTitle, SkillRequest, StartGameData, SearchGameData } from "./Types";
 import { GameEvent, GameEventDispatcher } from "../events/GameEvents";
 import { Signal } from "../utils/events/Signal";
 import { useWallet } from "@/services";
@@ -69,6 +69,11 @@ export class BattleConnection extends MyEventDispatcher {
             cmd: 'request'
         }) => {
             this.onSignRecv(aData);
+        });
+
+        this._socket.on(PackTitle.challengeInfo, (aData) => {
+            this.logDebug(`challengeInfo:`, aData);
+            this.emit(PackTitle.challengeInfo, aData);
         });
 
         this._socket.on(PackTitle.gameSearching, (aData) => {
@@ -188,16 +193,37 @@ export class BattleConnection extends MyEventDispatcher {
     }
 
     sendSearchGame() {
-        this._socket.emit(PackTitle.startSearchGame, {
+        let data: SearchGameData = {
             isFreeConnect: GlobalParams.BATTLE.freeConnect
-        });
+        }
+        this._socket.emit(PackTitle.startSearchGame, data);
     }
 
     sendSearchGameBot() {
-        this._socket.emit(PackTitle.startSearchGame, {
+        let data: SearchGameData = {
             withBot: true,
             isFreeConnect: GlobalParams.BATTLE.freeConnect
-        });
+        }
+        this._socket.emit(PackTitle.startSearchGame, data);
+    }
+
+    sendChallengeCreate() {
+        let data: SearchGameData = {
+            isChallenge: true,
+            challengeCmd: 'create',
+            isFreeConnect: GlobalParams.BATTLE.freeConnect
+        }
+        this._socket.emit(PackTitle.startSearchGame, data);
+    }
+
+    sendChallengeConnect(aChNumber: number) {
+        let data: SearchGameData = {
+            isChallenge: true,
+            challengeCmd: 'connect',
+            challengeNumber: aChNumber,
+            isFreeConnect: GlobalParams.BATTLE.freeConnect
+        }
+        this._socket.emit(PackTitle.startSearchGame, data);
     }
 
     sendBattleSceneLoaded() {

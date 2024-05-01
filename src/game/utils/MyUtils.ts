@@ -70,4 +70,14 @@ export class MyUtils {
         return (r << 16) + (g << 8) + b;
     }
 
+    public static copyToClipboard(aText: string) {
+        navigator.clipboard.writeText(aText)
+            .then(() => {
+                console.log("Text copied to clipboard");
+            })
+            .catch((error) => {
+                console.error("Error copying text to clipboard:", error);
+            });
+    }
+
 }
