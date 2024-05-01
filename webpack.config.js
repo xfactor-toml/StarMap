@@ -12,7 +12,7 @@ module.exports = {
   entry: './src/index.ts',
 
   output: {
-    filename: 'bundle.js',
+    filename: 'bundle.[contenthash].js',
     path: path.resolve(__dirname, 'build')
   },
   
@@ -86,7 +86,7 @@ module.exports = {
       }
     }),
     new MiniCssExtractPlugin({
-      filename: 'css/style.css'
+      filename: 'css/style.[contenthash].css'
     }),
     new VueLoaderPlugin()
   ],
