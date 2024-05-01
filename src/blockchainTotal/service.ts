@@ -16,6 +16,7 @@ export class BlockchainConnectService {
     private static instance: BlockchainConnectService | null = null;
 
     public getDefaultAuthMethod(): AuthMethod {
+        return "Local";
         let tgLogin;
         try {
             tgLogin = window.Telegram.WebApp.initDataUnsafe.user.username;
