@@ -28,6 +28,10 @@ export class BootScene extends BasicScene {
         this.initBattleConnection();
         // Preloader
         this.startPreloader();
+
+        // TEST
+        // console.log(window.location);
+
     }
 
     private readGETParams() {
@@ -122,7 +126,7 @@ export class BootScene extends BasicScene {
         switch (aData.cmd) {
             case 'number':
                 // gen link and copy
-                let link = `http://localhost:9184/?duel=${aData.challengeNumber}#debug`;
+                let link = `${window.location.origin}?duel=${aData.challengeNumber}#debug`;
                 this.logDebug(`link: ${link}`);
                 MyUtils.copyToClipboard(link);
                 // msg
