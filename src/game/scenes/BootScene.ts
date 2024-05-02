@@ -101,7 +101,6 @@ export class BootScene extends BasicScene {
     private initBattleConnection() {
         let con = BattleConnection.getInstance();
         con.on(PackTitle.gameSearching, this.onGameSearchPack, this);
-        con.on(PackTitle.challengeInfo, this.onChallengePack, this);
     }
 
     private onGameSearchPack(aData: {
@@ -116,26 +115,6 @@ export class BootScene extends BasicScene {
                 break;
             default:
                 this.logDebug(`onGameSearchPack(): unknown cmd`, aData);
-                break;
-        }
-    }
-
-    private onChallengePack(aData: ChallengeInfo) {
-        // generate link for challenge
-        this.logDebug(`onChallengePack`, aData);
-        switch (aData.cmd) {
-            case 'number':
-                // gen link and copy
-                let link = `${window.location.origin}?duel=${aData.challengeNumber}#debug`;
-                this.logDebug(`link: ${link}`);
-                MyUtils.copyToClipboard(link);
-                // msg
-                GameEventDispatcher.showMessage(`Link copied to clipboard`);
-                break;
-        
-            case 'notFound':
-                // msg
-                GameEventDispatcher.showMessage(`Challenge game not found`);
                 break;
         }
     }

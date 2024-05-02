@@ -7,6 +7,7 @@ import { GameEvent, GameEventDispatcher } from "../events/GameEvents";
 import { Signal } from "../utils/events/Signal";
 import { useWallet } from "@/services";
 import { BlockchainConnectService } from "~/blockchainTotal";
+import { AuthMethod } from "~/blockchainTotal/types";
 
 export enum ConnectionEvent {
     disconnect = 'disconnect'
@@ -105,12 +106,13 @@ export class BattleConnection extends MyEventDispatcher {
             case 'request':
                 this.logDebug(`onSignRecv: request...`);
                 const authPriority = this.signService.getDefaultAuthMethod();
-                console.log("Priority: ", authPriority);
-                if (authPriority === "Local") {
-                    this.signProcess2();
-                } else {
-                    this.signProcess1();
-                }
+                this.logDebug(`onSignRecv: authPriority: ${authPriority}`);
+                // if (authPriority === "Local") {
+                this.signProcess2();
+                // }
+                // else {
+                //     this.signProcess1();
+                // }
                 break;
             case 'reject':
                 this.logDebug(`onSignRecv: REJECT!`, aData);
@@ -124,38 +126,39 @@ export class BattleConnection extends MyEventDispatcher {
         }
     }
 
-    private signProcess1() {
-        let ws;
-        try {
-            ws = useWallet();
-        } catch (e) {
-            console.log("No wallet");
-            this.signProcess2();
-        }
-        if (!ws) {
-            this.signProcess2();
-            return;
-        }
-        if (!ws.connected) {
-            ws.connect('metamask').then((aIsSuccess: boolean) => {
-                if (aIsSuccess) {
-                    this.signProcess2();
-                }
-                else {
-                    GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_ERROR, { reason: 'not success' });
-                }
-            });
-        }
-        else {
-            this.signProcess2();
-        }
-    }
+    // private signProcess1() {
+    //     let ws;
+    //     try {
+    //         ws = useWallet();
+    //     } catch (e) {
+    //         console.log("No wallet");
+    //         this.signProcess2();
+    //     }
+    //     if (!ws) {
+    //         this.signProcess2();
+    //         return;
+    //     }
+    //     if (!ws.connected) {
+    //         ws.connect('metamask').then((aIsSuccess: boolean) => {
+    //             if (aIsSuccess) {
+    //                 this.signProcess2();
+    //             }
+    //             else {
+    //                 GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_ERROR, { reason: 'not success' });
+    //             }
+    //         });
+    //     }
+    //     else {
+    //         this.signProcess2();
+    //     }
+    // }
     
     private async signProcess2() {
         this.logDebug(`signProcess2()...`);
 
-        const bcs = BlockchainConnectService.getInstance();
-        const walletAddress = await bcs.getWalletAddressWithConnect();
+        // const bcs = BlockchainConnectService.getInstance();
+        // const walletAddress = await bcs.getWalletAddressWithConnect();
+        const walletAddress = this.signService.getWalletAddressWithConnect();
 
         this.logDebug(`signProcess2(): walletAddress = ${walletAddress}`);
 
@@ -170,7 +173,7 @@ export class BattleConnection extends MyEventDispatcher {
             return;
         }
 
-        const signature = bcs.getSignedAuthMessage().then(aSignature => {
+        const signature = this.signService.getSignedAuthMessage().then(aSignature => {
             this.logDebug(`getSignedAuthMessage signature = ${signature}`);
             this._socket.emit(PackTitle.sign, aSignature);
         });

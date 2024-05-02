@@ -2468,7 +2468,9 @@ export class GalaxyMng implements ILogger {
         this.removeFrontEvents();
         InputMng.getInstance().onClickSignal.remove(this.onClick, this);
 
-        DebugGui.getInstance().removeElement(DEBUG_FOLDER_NAME);
+        if (GlobalParams.isDebugMode) {
+            DebugGui.getInstance().removeElement(DEBUG_FOLDER_NAME);
+        }
         this._fsm.free();
         this._parent = null;
         this._camera = null;

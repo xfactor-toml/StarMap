@@ -8,7 +8,7 @@ import { SceneNames } from './SceneNames';
 import { ThreeLoader } from '../utils/threejs/ThreeLoader';
 import { SimpleRenderer } from '../core/renderers/SimpleRenderer';
 import { BattleConnection } from '../battle/BattleConnection';
-import { AcceptScreenData, PackTitle, StartGameData } from '../battle/Types';
+import { AcceptScreenData, ChallengeInfo, PackTitle, StartGameData } from '../battle/Types';
 import { GameEvent, GameEventDispatcher } from '../events/GameEvents';
 import { DebugGui } from '../debug/DebugGui';
 import { useWallet } from '@/services';
@@ -68,6 +68,7 @@ export class GalaxyScene extends BasicScene {
         if (GlobalParams.BATTLE.duelNumber >= 0) {
             let bc = BattleConnection.getInstance();
             bc.sendChallengeConnect(GlobalParams.BATTLE.duelNumber);
+            GlobalParams.BATTLE.duelNumber = -1;
         }
     }
 
@@ -89,6 +90,8 @@ export class GalaxyScene extends BasicScene {
         // battle server events
         let bc = BattleConnection.getInstance();
         bc.on(PackTitle.gameStart, this.onBattleStartPackage, this);
+        bc.on(PackTitle.challengeInfo, this.onChallengePack, this);
+
     }
 
     private freeEvents() {
@@ -103,6 +106,7 @@ export class GalaxyScene extends BasicScene {
         // battle server events
         let bc = BattleConnection.getInstance();
         bc.remove(PackTitle.gameStart, this.onBattleStartPackage);
+        bc.remove(PackTitle.challengeInfo, this.onChallengePack);
     }
 
     private initBattleAcceptController() {
@@ -184,6 +188,27 @@ export class GalaxyScene extends BasicScene {
                 break;
             default:
                 this.logDebug(`onBattleStartPackage(): unknown cmd:`, aData);
+                break;
+        }
+    }
+    
+    private onChallengePack(aData: ChallengeInfo) {
+        // generate link for challenge
+        this.logDebug(`onChallengePack`, aData);
+        switch (aData.cmd) {
+            case 'number':
+                // gen link and copy
+                let link = `${window.location.origin}?duel=${aData.challengeNumber}#debug`;
+                this.logDebug(`link: ${link}`);
+                MyUtils.copyToClipboard(link);
+                // msg
+                GameEventDispatcher.showMessage(`Link copied to clipboard`);
+                break;
+
+            case 'notFound':
+                // msg
+                GameEventDispatcher.showMessage(`Challenge game not found`);
+                GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_STOP);
                 break;
         }
     }
