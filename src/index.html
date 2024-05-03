@@ -56,22 +56,33 @@
 </head>
 
 <body>
+  <div id="tgAuthContainer">
+
+  </div>
   <div id="game"></div>
   <div id="gui"></div>
 </body>
 <script>
   // localStorage.setItem("userLogin", "TelegramDebug");
+  const tgAuthInner = `
+  
+  `;
+
   try {
     if (window.Telegram) {
-      localStorage.setItem("userLogin", window.Telegram.WebApp.initDataUnsafe.user.username);
-      if (localStorage.getItem("userLogin")) {
-        // document.body.style.paddingTop = '50px';
-        // document.body.style.paddingBottom = '50px';
-        window.Telegram.WebApp.expand();
+      const app = window.Telegram.WebApp;
+      const login = app.initDataUnsafe.user.username;
+      localStorage.setItem("userLogin", login);
+      // alert(`Login: ${login}`);
+      if (login) {
+        app.setHeaderColor("#141414");
+        app.setBackgroundColor("#141414");
+        app.MainButton.hide();
+        app.expand();
       }
     }
   } catch (e) {
-    console.log("Not a Telegram")
+    console.log("Not a Telegram");
   }
 
 </script>
