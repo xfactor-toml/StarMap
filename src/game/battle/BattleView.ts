@@ -617,7 +617,6 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 if (aData.isMiss) {
                     targetPoint.add(dir.multiplyScalar(objTo.radius * 4));
                 }
-                // let laser = new LaserLine(objFrom.position.clone(), objTo.position.clone(), laserColor);
                 let laser = new LaserLine({
                     posStart: new THREE.Vector3(0, 0, 0),
                     posEnd: new THREE.Vector3(0, 0, laserLen),
@@ -677,8 +676,10 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
         // create ray
 
+        const startPoint = objFrom.position.clone();
+        startPoint.y -= objFrom.radius / 6;
         let laser = new LaserLine({
-            posStart: objFrom.position.clone(),
+            posStart: startPoint,
             posEnd: objTo.position.clone(),
             color: laserColor,
             minRadius: 0.1,
