@@ -116,3 +116,23 @@ select {
   50% { opacity: 0.5; }
   100% { opacity: 1; }
 }
+
+.Toastify__toast-container {
+  --toastify-toast-width: 280px;
+  --toastify-toast-min-height: 44px;
+}
+
+.Toastify__toast-container .Toastify__toast {
+  margin-bottom: 10px;
+  padding: 6px;
+  border-radius: 0;
+  box-shadow: none;
+  background-color: #080018;
+  color: #00eaf9;
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.Toastify__toast-container .Toastify__toast-body {
+  margin: 0;
+}

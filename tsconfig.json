@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "target": "ES6",
-    "module": "commonjs",
     "lib": ["es2015", "ES6", "dom"],
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,

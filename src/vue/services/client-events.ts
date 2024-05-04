@@ -4,6 +4,7 @@ import { BattleActionType, ClientEvent, UISceneNames } from '@/types';
 import { toMilliseconds, wait } from '@/utils';
 import { GameEvent } from '~/game/events/GameEvents';
 import { LogMng } from '~/game/utils/LogMng';
+import { toast } from 'vue3-toastify';
 
 export class ClientEventsService {
   static async handleEvent({ detail: clientEvent }: Event & { detail: ClientEvent }) {
@@ -15,8 +16,7 @@ export class ClientEventsService {
     switch (clientEvent.eventName) {
 
       case GameEvent.MESSAGE:
-        // TODO: redo
-        alert(clientEvent.msg);
+        toast(clientEvent.msg)
         break;
       
       case GameEvent.GAME_LOADING:
