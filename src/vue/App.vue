@@ -8,12 +8,10 @@
     <component :is="scenesStore.current.scene.getComponent()" />
   </transition>
   <div class="version">{{ version }}</div>
-    <div
-      class="UserBar__popup"
-      v-if="walletStore.popup"
-    >
-      <WalletConnectPopup @close="walletStore.hidePopup"/>
-    </div>
+  <WalletConnectPopup
+    v-if="walletStore.popup"
+    @close="walletStore.hidePopup"
+  />
 </template>
 
 <script lang="ts">

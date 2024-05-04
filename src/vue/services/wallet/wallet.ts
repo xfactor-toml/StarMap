@@ -1,9 +1,10 @@
+import { Handler, default as mitt } from 'mitt';
 import { BaseProvider } from '@/services/wallet/providers/base-provider';
 import { MetamaskProvider } from '@/services/wallet/providers/metamask-provider';
 import { ReaderProvider } from '@/services/wallet/providers/reader-provider';
 import { WalletConnectProvider } from '@/services/wallet/providers/walletconnect-provider';
 import { WalletStoreState, useBattleStore, useWalletStore } from '@/stores';
-import { markRaw } from 'vue';
+import { markRaw, watch } from 'vue';
 import { InitWalletconnectModal } from '~/blockchainWC';
 import { UniversalProvider } from './providers/universal-provider';
 
@@ -15,8 +16,7 @@ export class WalletService {
   installed = false;
   currency = 'plasma';
   provider: BaseProvider = new ReaderProvider();
-
-  stateListeners = []
+  emmiter = mitt()
 
   constructor() {
     walletInstance = this
@@ -61,32 +61,35 @@ export class WalletService {
     this.installed = account !== null;
 
     if (!account) {
-      this.callListeners()
+      this.emmiter.emit('state', this.state)
 
       return false;
     }
 
     this.connected = true;
     this.account = account;
-    this.callListeners()
+    this.emmiter.emit('state', this.state)
 
     return true;
   }
 
-  onStateUpdate(listener: (state: WalletStoreState) => void) {
-    this.stateListeners.push(listener)
-  }
-
-  callListeners() {
-    if (this.stateListeners.length) {
-      this.stateListeners.forEach(listener => {
-        listener(this.state)
-      })
-    }
+  on(type: string, handler: Handler<unknown>) {
+    this.emmiter.on(type, handler)
   }
 
   openPopup() {
-    useWalletStore().openPopup()
+    return new Promise(resolve => {
+      const store = useWalletStore()
+
+      const unwatch = watch(() => store.popup, () => {
+        if (!store.popup) {
+          resolve(this.state)
+          unwatch()
+        }
+      })
+
+      store.openPopup()
+    })
   }
 
   static getWalletInstance() {

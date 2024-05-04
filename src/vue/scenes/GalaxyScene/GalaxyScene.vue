@@ -91,7 +91,7 @@ export default {
     },
   },
   created() {
-    this.$wallet.onStateUpdate((state) => {
+    this.$wallet.on('state', (state) => {
       this.walletStore.setState(state)
     })
   }
