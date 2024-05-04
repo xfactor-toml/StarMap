@@ -1,8 +1,5 @@
-import Web3 from 'web3';
 import { reader, tokenContracts, web3 } from './common';
-import { ERC20ABI } from '../config/jsonABI';
 import { account } from '../types';
-import { IsTrueNetwork, NetworkAuth } from '~/blockchain/functions/auth';
 import { env, contracts, decimals } from '../config/network';
 
 async function GetAllowance ( owner : account, spender : account = contracts.starNFT) : Promise<number> {
