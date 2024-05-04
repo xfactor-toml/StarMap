@@ -78,7 +78,10 @@ export type GameCompleteData = {
 
 export type FieldInitData = {
     fieldParams: any,
-    playerPosition: 'top' | 'bot'
+    playerWalletAddr: string,
+    playerPosition: 'top' | 'bot',
+    playerRace: ObjectRace,
+    enemyRace: ObjectRace,
 }
 
 export type ObjectUpdateData = {

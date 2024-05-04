@@ -12,7 +12,7 @@ import { MyMath } from '../utils/MyMath';
 import { BattleCameraMng } from './BattleCameraMng';
 import { ObjectHpViewer } from './ObjectHpViewer';
 import { Linkor } from '../objects/battle/Linkor';
-import { FieldInitData, PlanetLaserData, ObjectCreateData, ObjectType, ObjectUpdateData, PackTitle, AttackData, DamageData, PlanetLaserSkin, ExplosionData, SniperData } from './Types';
+import { FieldInitData, PlanetLaserData, ObjectCreateData, ObjectType, ObjectUpdateData, PackTitle, AttackData, DamageData, PlanetLaserSkin, ExplosionData, SniperData, ObjectRace } from './Types';
 import { BattleConnection } from './BattleConnection';
 import { FieldCell } from '../objects/battle/FieldCell';
 import { LogMng } from '../utils/LogMng';
@@ -92,8 +92,10 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     private _cameraTarget: THREE.Vector3;
     private _cameraMng: BattleCameraMng;
 
-    private _dummyMain: THREE.Group;
+    private _playerRace: ObjectRace;
+    private _enemyRace: ObjectRace;
 
+    private _dummyMain: THREE.Group;
     private _objects: Map<number, BattleObject>;
 
     private _objectHpViewer: ObjectHpViewer;
@@ -271,6 +273,10 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         return this._walletAddr == aWalletAddr;
     }
 
+    private getRaceForWalletAddr(aWalletAddr: string): ObjectRace {
+        return this.isCurrentOwner(aWalletAddr) ? this._playerRace : this._enemyRace;
+    }
+
     private getPlanetLaserColor(aSkin: PlanetLaserSkin): string {
         let color = '#0072ff';
         switch (aSkin) {
@@ -303,11 +309,12 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         let id = MyMath.randomIntInRange(0, ships.length - 1);
         return ships[id];
     }
-
+    
     private onFieldInitPack(aData: FieldInitData) {
 
         // update wallet number
-        this._walletAddr = BlockchainConnectService.getInstance().getWalletAddress();
+        // this._walletAddr = BlockchainConnectService.getInstance().getWalletAddress();
+        this._walletAddr = aData.playerWalletAddr;
         this.logDebug(`onFieldInitPack: _walletAddr = ${this._walletAddr}`);
 
         SETTINGS.server.field = aData.fieldParams;
@@ -315,6 +322,9 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         fieldSize.w = fieldSize.cols * fieldSize.sectorWidth;
         fieldSize.h = fieldSize.rows * fieldSize.sectorHeight;
         this.initField();
+
+        this._playerRace = aData.playerRace;
+        this._enemyRace = aData.enemyRace;
 
         // setTimeout(() => {
             this._isTopPosition = aData.playerPosition == 'top';
@@ -361,7 +371,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 obj = new Tower({
                     ...aData,
                     ...{
-                        race: this.isCurrentOwner(aData.owner) ? 'Waters' : 'Insects',
+                        race: this.getRaceForWalletAddr(aData.owner),
                         light: {
                             parent: this._dummyMain,
                             ...SETTINGS.towers.light,
@@ -390,7 +400,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 obj = new Fighter({
                     ...aData,
                     ...{
-                        race: this.isCurrentOwner(aData.owner) ? 'Waters' : 'Insects',
+                        race: this.getRaceForWalletAddr(aData.owner),
                         showRadius: DEBUG_GUI.showObjectRadius,
                         showAttackRadius: DEBUG_GUI.showObjectAttackRadius
                     }
@@ -416,7 +426,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 obj = new Linkor({
                     ...aData,
                     ...{
-                        race: this.isCurrentOwner(aData.owner) ? 'Waters' : 'Insects',
+                        race: this.getRaceForWalletAddr(aData.owner),
                         showRadius: DEBUG_GUI.showObjectRadius,
                         showAttackRadius: DEBUG_GUI.showObjectAttackRadius
                     }
@@ -444,7 +454,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                     ...{
                         camera: this._camera,
                         effectsParent: this._dummyMain,
-                        race: this.isCurrentOwner(aData.owner) ? 'Waters' : 'Insects',
+                        race: this.getRaceForWalletAddr(aData.owner),
                         light: {
                             parent: this._dummyMain,
                             ...SETTINGS.towers.light,
