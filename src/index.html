@@ -76,6 +76,17 @@ function onTelegramAuth(user) {
 }
 </script>
 <script>
+document.addEventListener("load", function() {
+    let queryString = window.location.href;
+    if (queryString.includes("#debug")) {
+      let iframes = document.querySelectorAll('iframe[id*="telegram"]');
+        iframes.forEach(function(iframe) {
+            iframe.style.position = "fixed";
+        });
+    }
+});
+</script>
+<script>
   // localStorage.setItem("userLogin", "TelegramDebug");
   const tgAuthInner = `
   
