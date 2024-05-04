@@ -37,12 +37,14 @@ export default {
   name: 'WalletConnectPopup',
   methods: {
     metamaskConnect() {
-      this.$wallet.connect('metamask');
-      this.$emit('close')
+      this.$wallet.connect('metamask').then(() => {
+        this.$emit('close')
+      });
     },
     walletConnect() {
-      this.$wallet.connect('walletconnect');
-      this.$emit('close')
+      this.$wallet.connect('walletconnect').then(() => {
+        this.$emit('close')
+      });
     },
   }
 };

@@ -50,18 +50,10 @@
     <button
       v-else
       class="UserBar__button is-wallet"
-      :class="{ active: walletConnectVisible }"
+      :class="{ active: walletStore.popup }"
       @mouseenter="$client.onHover()"
-      @click="openWalletConnect"
+      @click="walletStore.openPopup"
     />
-    <div
-      class="UserBar__popup"
-      v-if="walletConnectVisible"
-    >
-      <WalletConnectPopup
-        @close="hideWalletConnect"
-      />
-    </div>
     <div
       class="UserBar__popup"
       v-if="settingsVisible"
@@ -85,7 +77,6 @@
 
 import { SettingsPopup } from '@/components/SettingsPopup';
 import { SearchInput } from '@/components/SearchInput';
-import { WalletConnectPopup } from '@/components/WalletConnectPopup';
 import { useBattleStore, useScenesStore, useSettingsStore, useUiStore, useWalletStore } from '@/stores';
 import { default as vClickOutside } from 'click-outside-vue3';
 import { mapStores } from 'pinia';
@@ -96,7 +87,6 @@ export default {
   components: {
     SearchInput,
     SettingsPopup,
-    WalletConnectPopup,
   },
   directives: {
     clickOutside: vClickOutside.directive
@@ -105,7 +95,6 @@ export default {
     settingsVisible: false,
     searchVisible: false,
     searchKey: '',
-    walletConnectVisible: false,
   }),
   watch: {
     searchKey() {
@@ -113,7 +102,13 @@ export default {
     }
   },
   computed: {
-    ...mapStores(useBattleStore, useSettingsStore, useScenesStore, useUiStore, useWalletStore),
+    ...mapStores(
+      useBattleStore,
+      useSettingsStore,
+      useScenesStore,
+      useUiStore,
+      useWalletStore
+    ),
     userBoxes() {
       return this.battleStore.rewards.boxesIds
     }
@@ -125,13 +120,6 @@ export default {
     },
     hideSettingsPopup() {
       this.settingsVisible = false;
-    },
-    openWalletConnect() {
-      this.$client.onClick();
-      this.walletConnectVisible = true
-    },
-    hideWalletConnect() {
-      this.walletConnectVisible = false;
     },
     openSearchField() {
       if (!this.searchKey) {
