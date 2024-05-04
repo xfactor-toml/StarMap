@@ -1,5 +1,5 @@
 import { RACES } from '@/constants';
-import { Race, StarData } from '~/blockchain/types';
+import { Race, StarData } from '~/blockchainTotal/types';
 import { ServerStarParams } from '~/game/data/Types';
 import { StarMath } from '~/game/math/StarMath';
 
