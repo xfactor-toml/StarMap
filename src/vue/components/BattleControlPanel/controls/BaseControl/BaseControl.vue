@@ -3,6 +3,7 @@
     class="BaseControl"
     :class="{
       active,
+      disabled,
       cooldown: hasCooldown,
       hasContent: Boolean($slots.default),
       [name]: Boolean(name),
