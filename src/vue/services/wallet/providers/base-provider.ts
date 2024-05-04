@@ -1,17 +1,9 @@
 import { Ref } from "vue";
-import {
-  GetAllStarData,
-  GetAllowance,
-  GetBalance,
-  GetCreationCost,
-  GetSingleStarData,
-  GetStarsCount,
-  RequiredPlasmaToApprove
-} from "~/blockchain";
-import { getBoxData, getLaserLevel, getUserBoxesToOpen } from "~/blockchain/boxes";
-import { GetStarDataFromServer } from "~/blockchain/functions/starnft";
-import { Coords, StarData, StarList, fuelTarget } from "~/blockchain/types";
-import { getUserBoxesToOpenWeb2 } from "~/blockchainTotal/getters/boxesWeb2";
+import { getLaserLevel } from "~/blockchainTotal/getters/boxes";
+import { getBoxDataWeb2, getUserBoxesToOpenWeb2 } from "~/blockchainTotal/getters/boxesWeb2";
+import { GetCreationCost, GetSingleStarData, GetStarDataFromServer, GetStarsCount, RequiredPlasmaToApprove } from "~/blockchainTotal/getters/stars";
+import { GetAllowance, GetBalance } from "~/blockchainTotal/getters/tokens";
+import { Coords, StarData, StarList, fuelTarget } from "~/blockchainTotal/types";
 
 export abstract class BaseProvider {
   abstract account: Ref<string>
@@ -39,7 +31,7 @@ export abstract class BaseProvider {
   }
 
   async getBoxData(boxId: number) {
-    return this.checkConnection(() => getBoxData(boxId));
+    return this.checkConnection(() => getBoxDataWeb2(boxId));
   }
 
   async getLaserLevel(laserId: number) {

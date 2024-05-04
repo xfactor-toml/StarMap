@@ -76,7 +76,16 @@ export function GetBoxPrizeTypeWeb2(prize: string) {
     return prize;
 }
 
-export async function getBoxDataWeb2(_boxId: number) {
+export type BoxItemType = 'vrp' | 'biomass' | 'carbon' | 'metal' | 'spice' | 'spore' | 'laser';
+
+export type BoxDataWeb2 = {
+    type: BoxItemType,
+    value?: number,
+    laserLevel?: number,
+    isPaid?: boolean
+}
+
+export async function getBoxDataWeb2(_boxId: number): Promise<BoxDataWeb2> {
 
     return new Promise((resolve, reject) => {
         const url = fastDataServerUrl.concat('api/boxes/openresult');
@@ -97,9 +106,7 @@ export async function getBoxDataWeb2(_boxId: number) {
              if (!res.data) {
                 resolve(
                     {
-                        type: "token",
-                        value: null,
-                        laserLevel: null,
+                        type: 'vrp',
                         isPaid: false
                     }
                 )

@@ -4,8 +4,7 @@ import { ref } from 'vue';
 import { useWallet } from '@/services';
 import { useScenesStore } from '@/stores/scenes';
 import { LogMng } from '~/game/utils/LogMng';
-
-type BoxItemType = 'vrp' | 'biomass' | 'carbon' | 'metal' | 'spice' | 'spore' | 'laser';
+import { BoxDataWeb2, BoxItemType } from '~/blockchainTotal/getters/boxesWeb2';
 
 export const useBattleRewardsStore = defineStore('battleRewards', () => {
     const list = ref<BattleReward[]>([])
@@ -56,12 +55,7 @@ export const useBattleRewardsStore = defineStore('battleRewards', () => {
                 boxesIds.value = boxesIds.value.slice(1)
                 LogMng.debug(`boxes left: ${boxesIds.value}`);
 
-                const boxData: {
-                    type: BoxItemType,
-                    value?: number,
-                    laserLevel?: number,
-                    isPaid: boolean,
-                } = await wallet.provider.getBoxData(firstBoxId);
+                const boxData: BoxDataWeb2 = await wallet.provider.getBoxData(firstBoxId);
                 LogMng.debug(`boxData:`, boxData);
 
                 if (boxData.type != undefined) {

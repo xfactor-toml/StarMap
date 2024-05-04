@@ -91,7 +91,6 @@
 </template>
 
 <script lang="ts">
-import { mobileUrl } from '~/blockchain/config';
 import { roundNumber } from '@/utils';
 import { PropType } from 'vue';
 import { Star, StarPosition } from '@/models';
@@ -133,7 +132,7 @@ export default {
       }
 
       if (!this.walletStore.installed) {
-        return `Wallet not installed<br><a href="${mobileUrl}" target="_blank">install</a>`;
+        return `Wallet not installed`;
       }
 
       if (!this.walletStore.connected) {

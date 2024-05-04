@@ -1,8 +1,6 @@
 import { Handler, default as mitt } from 'mitt';
 import { BaseProvider } from '@/services/wallet/providers/base-provider';
-import { MetamaskProvider } from '@/services/wallet/providers/metamask-provider';
 import { ReaderProvider } from '@/services/wallet/providers/reader-provider';
-import { WalletConnectProvider } from '@/services/wallet/providers/walletconnect-provider';
 import { WalletStoreState, useBattleStore, useWalletStore } from '@/stores';
 import { markRaw, watch } from 'vue';
 import { UniversalProvider } from './providers/universal-provider';
