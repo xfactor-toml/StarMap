@@ -1,9 +1,9 @@
-import './css/style.css';
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import { default as App } from '@/App.vue';
 import { ClientService, WalletService } from '@/services';
 
+import { default as toastify, type ToastContainerOptions } from 'vue3-toastify';
 import { default as anime } from 'animejs';
 import { GlobalParams } from './game/data/GlobalParams';
 import { LogMng } from './game/utils/LogMng';
@@ -12,6 +12,9 @@ import { BootScene } from './game/scenes/BootScene';
 import { PreloaderScene } from './game/scenes/PreloaderScene';
 import { GalaxyScene } from './game/scenes/GalaxyScene';
 import { BattleScene } from './game/scenes/BattleScene';
+
+import './css/style.css';
+import 'vue3-toastify/dist/index.css';
 
 // @ts-ignore
 anime.suspendWhenDocumentHidden = false;
@@ -50,6 +53,10 @@ window.addEventListener('DOMContentLoaded', () => {
     app.use(ClientService.VuePlugin)
     app.use(WalletService.VuePlugin)
     app.use(store);
+    app.use(toastify, {
+        theme: 'dark',
+        hideProgressBar: true,
+    } as ToastContainerOptions);
 
     app.mount('#gui')
 
