@@ -3,17 +3,17 @@ import { BaseProvider } from "@/services/wallet/providers/base-provider";
 import { useWeb3ModalAccount, useWeb3ModalProvider } from "@web3modal/ethers5/vue";
 import { ethers } from "ethers";
 import { Ref, ref } from "vue";
-import { Coords, fuelTarget } from "~/blockchain/types";
+import { contracts } from "~/blockchainTotal/config/network";
+import { Coords, fuelTarget } from "~/blockchainTotal/types";
+import { ConnectWalletWC } from "~/blockchainTotal/walletconnect/auth";
 import {
   ApproveFor,
-  ConnectWalletWC,
   CreateNewStarWC,
   IncreaseStarLevel,
   MintToken,
   OpenBox,
   RefuelStar,
-  contracts
-} from "~/blockchainWC";
+} from "~/blockchainTotal/walletconnect/methods";
 
 export class WalletConnectProvider extends BaseProvider {
   account = ref('');
@@ -42,7 +42,7 @@ export class WalletConnectProvider extends BaseProvider {
       user: this.account.value,
       amount,
       token: contracts.plasma,
-      spender: contracts.StarNFT,
+      spender: contracts.starNFT,
     }));
   }
 

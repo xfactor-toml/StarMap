@@ -67,7 +67,7 @@ export class BlockchainConnectService {
     public async connect(method: AuthMethod = this.authMethod): Promise<string> {
         switch (method) {
             case "Walletconnect" :
-                this.walletAddress = await ConnectWalletWC();
+                this.walletAddress = (await ConnectWalletWC()).value;
                 return this.walletAddress;
             case "WindowEth" :
                 this.walletAddress = await WindowEthAuth();

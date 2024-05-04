@@ -1,24 +1,26 @@
 import {
+  SubscribeOnAccountChanging,
+  WindowEthAuth
+} from "~/blockchainTotal/windowEth";
+import {
   ApprovePlasma,
   CreateNewStar,
   IncreaseStarLevel,
   MintPlasma,
-  NetworkAuth,
-  RefuelStar,
-  SubscribeOnAccountChanging
-} from "~/blockchain";
-import { Coords, fuelTarget } from "~/blockchain/types";
+  RefuelStar
+} from "~/blockchainTotal/windowEth/methods";
+import { Coords, fuelTarget } from "~/blockchainTotal/types";
 import { BaseProvider } from "./base-provider";
 import { Star } from "@/models";
 import { ref } from "vue";
-import { OpenBox } from "~/blockchain/boxes";
+import { OpenBox } from "~/blockchainTotal/windowEth/methods";
 
 export class MetamaskProvider extends BaseProvider {
   account = ref('');
   subscribed = false;
 
   async connect() {
-    this.account = ref(await NetworkAuth())
+    this.account = ref(await WindowEthAuth())
 
     if (!this.subscribed) {
       this.subscribe();
