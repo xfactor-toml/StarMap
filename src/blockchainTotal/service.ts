@@ -1,7 +1,7 @@
 import { useWeb3ModalAccount, useWeb3ModalProvider } from "@web3modal/ethers5/vue";
 import { Socket, io } from "socket.io-client";
 import { network } from "./config";
-import { AuthMethod, account } from "./types";
+import { AuthMethod, TelegramAuthData, account } from "./types";
 import { ConnectWalletWC, InitWalletconnectModal } from "./walletconnect/auth";
 import { AuthByLocal, web3local } from "./local/auth";
 import { WindowEthAuth, web3window } from "./windowEth";
@@ -13,6 +13,7 @@ export class BlockchainConnectService {
     public userAccount: account;
     public displayLogin: string;
     public walletAddress: string;
+    public telegramAuthData: TelegramAuthData;
     private static instance: BlockchainConnectService | null = null;
 
     public getDefaultAuthMethod(): AuthMethod {
@@ -43,6 +44,10 @@ export class BlockchainConnectService {
 
     private constructor() {
         this.authMethod = this.getDefaultAuthMethod();
+        window.addEventListener('authEvent', (event: CustomEvent) => {
+            console.log("Auth passed, login: ", event.detail?.username)
+            this.telegramAuthData = event.detail;
+        })
         if (this.authMethod !== "Local") {
             InitWalletconnectModal();
         }
@@ -167,5 +172,9 @@ export class BlockchainConnectService {
 
     public getWalletAddress() {
         return this.walletAddress;
+    }
+
+    public getTelegramAuthData() : TelegramAuthData | undefined {
+        return this.telegramAuthData;
     }
 }
