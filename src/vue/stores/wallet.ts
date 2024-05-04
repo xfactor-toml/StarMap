@@ -12,6 +12,7 @@ export const useWalletStore = defineStore('wallet', () => {
   const account = ref('')
   const connected = ref(false)
   const installed = ref(false)
+  const popup = ref(false)
 
   const shortAddress = computed(() => {
     return getShortAddress(account.value)
@@ -27,12 +28,23 @@ export const useWalletStore = defineStore('wallet', () => {
     return account.value && account.value.toLowerCase() === address.toLowerCase(); 
   }
 
+  const openPopup = () => {
+    popup.value = true
+  }
+
+  const hidePopup = () => {
+    popup.value = false
+  }
+
   return {
     account,
     connected,
     installed,
     shortAddress,
+    popup,
     isOwner,
-    setState
+    setState,
+    openPopup,
+    hidePopup,
   }
 });

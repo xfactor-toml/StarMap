@@ -36,7 +36,11 @@
         <ModesPanel />
       </div>
     </div>
-    <PlasmaMintPopup v-if="showPlasmaMintPopup" v-click-outside="closePlasmaMintPopup" @close="closePlasmaMintPopup" />
+    <PlasmaMintPopup
+      v-if="showPlasmaMintPopup"
+      v-click-outside="closePlasmaMintPopup"
+      @close="closePlasmaMintPopup"
+    />
   </div>
 </template>
 

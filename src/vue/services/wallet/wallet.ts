@@ -2,7 +2,7 @@ import { BaseProvider } from '@/services/wallet/providers/base-provider';
 import { MetamaskProvider } from '@/services/wallet/providers/metamask-provider';
 import { ReaderProvider } from '@/services/wallet/providers/reader-provider';
 import { WalletConnectProvider } from '@/services/wallet/providers/walletconnect-provider';
-import { WalletStoreState, useBattleStore } from '@/stores';
+import { WalletStoreState, useBattleStore, useWalletStore } from '@/stores';
 import { markRaw } from 'vue';
 import { InitWalletconnectModal } from '~/blockchainWC';
 import { UniversalProvider } from './providers/universal-provider';
@@ -83,6 +83,10 @@ export class WalletService {
         listener(this.state)
       })
     }
+  }
+
+  openPopup() {
+    useWalletStore().openPopup()
   }
 
   static getWalletInstance() {

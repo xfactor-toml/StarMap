@@ -8,23 +8,38 @@
     <component :is="scenesStore.current.scene.getComponent()" />
   </transition>
   <div class="version">{{ version }}</div>
+    <div
+      class="UserBar__popup"
+      v-if="walletStore.popup"
+    >
+      <WalletConnectPopup @close="walletStore.hidePopup"/>
+    </div>
 </template>
 
 <script lang="ts">
 import { mapStores } from 'pinia';
 import { debounce } from 'debounce';
-import { useScenesStore, useSettingsStore, useUiStore } from '@/stores';
+import { useScenesStore, useSettingsStore, useUiStore, useWalletStore } from '@/stores';
 import { ClientEventsService } from '@/services';
 import { SCENES } from '@/settings';
 import { UISceneNames } from '@/types';
 import { default as anime } from 'animejs';
+import { WalletConnectPopup } from '@/components/WalletConnectPopup';
 
 export default {
   name: 'App',
+  components: {
+    WalletConnectPopup
+  },
   data: () => ({
     version: 'v0.3.4'
   }),
-  computed: mapStores(useScenesStore, useSettingsStore, useUiStore),
+  computed: mapStores(
+    useScenesStore,
+    useSettingsStore,
+    useUiStore,
+    useWalletStore
+  ),
   methods: {
     async onEnter(el, done) {
       await anime({
