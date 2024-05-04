@@ -5,8 +5,8 @@ import { ReaderProvider } from '@/services/wallet/providers/reader-provider';
 import { WalletConnectProvider } from '@/services/wallet/providers/walletconnect-provider';
 import { WalletStoreState, useBattleStore, useWalletStore } from '@/stores';
 import { markRaw, watch } from 'vue';
-import { InitWalletconnectModal } from '~/blockchainWC';
 import { UniversalProvider } from './providers/universal-provider';
+import { InitWalletconnectModal } from '~/blockchainTotal/walletconnect/auth';
 
 let walletInstance: WalletService | null = null
 
