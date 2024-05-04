@@ -52,3 +52,7 @@
 .BattleConnectIndicator__strokes {
   opacity: var(--strokes-opacity);
 }
+
+.BattleConnectIndicator__strokes path {
+  transform-origin: 50% 50%;
+}

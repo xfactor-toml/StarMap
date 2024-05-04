@@ -22,7 +22,7 @@
   position: absolute;
   top: calc(100% - 10px);
   left: -8px;
-  z-index: -1;
+  z-index: 1;
   background-color: transparent;
   border: none;
   color: #050A26;
