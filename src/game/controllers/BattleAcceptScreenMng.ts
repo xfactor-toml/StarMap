@@ -67,10 +67,10 @@ export class BattleAcceptScreenMng implements ILogger {
         this.logDebug(`onBattleAcceptScreenPack: action=${aData.action}`, aData);
         switch (aData.action) {
             case 'start':
-                const startTimer = 6;
+                // const startTimer = 6;
                 // GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_STOP);
-                GameEventDispatcher.battleAcceptScreenShow(startTimer);
-                this.initDeadlineTimer(startTimer);
+                GameEventDispatcher.battleAcceptScreenShow(aData.timer);
+                this.initDeadlineTimer(aData.timer);
                 break;
             case 'update':
                 GameEventDispatcher.battleAcceptScreenUpdate(aData);
