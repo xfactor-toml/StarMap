@@ -1,4 +1,5 @@
 import { playersConnectMock } from '@/mocks';
+import { useClient } from '@/services/client';
 import { useBattleStore, useScenesStore, useStarsStore, useUiStore } from '@/stores';
 import { BattleActionType, ClientEvent, UISceneNames } from '@/types';
 import { toMilliseconds, wait } from '@/utils';
@@ -24,9 +25,9 @@ export class ClientEventsService {
 
       case GameEvent.GAME_LOADED:
         await starsStore.fetchStars();
-        scenesStore.setScene(UISceneNames.Start, {
-          mode: 'welcome'
-        });
+        const client = useClient()
+        client.run(false, starsStore.stars);
+        scenesStore.setScene(UISceneNames.Galaxy);
         break;
 
       case GameEvent.GAME_CREATED:
