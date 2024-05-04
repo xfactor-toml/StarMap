@@ -3,10 +3,16 @@ import gsap from 'gsap';
 import * as THREE from 'three';
 import { MyObject3D } from "~/game/basics/MyObject3D";
 import { ObjectCreateData, ObjectType } from '~/game/battle/Types';
+import { TextureAlias } from '~/game/data/TextureData';
+import { ThreeLoader } from '~/game/utils/threejs/ThreeLoader';
 
 export type BattleObjectData = ObjectCreateData & {
     showRadius?: boolean,
     showAttackRadius?: boolean,
+    highlighting?: {
+        active: boolean,
+        isEnemy: boolean
+    }
 }
 
 export class BattleObject extends MyObject3D {
@@ -20,6 +26,7 @@ export class BattleObject extends MyObject3D {
     private _targetPosition: { x: number; z: number; };
     private _dirrection: THREE.Vector3;
     private _targetQuaternion: THREE.Quaternion;
+    private _meshColorLayer: THREE.Mesh;
 
     constructor(aParams: BattleObjectData, aClassName?: string) {
         super(aClassName || 'BattleObject');
@@ -35,6 +42,27 @@ export class BattleObject extends MyObject3D {
         if (aParams.showAttackRadius) {
             this.createDebugAttackSphere();
         }
+
+        if (this._params.highlighting) {
+            this.initHighlightning();
+        }
+
+    }
+
+    protected initHighlightning() {
+        const t = ThreeLoader.getInstance().getTexture(TextureAlias.particleWhiteCircle);
+        const clr = this._params.highlighting.isEnemy ? 0xff0000 : 0x0000ff;
+        let g = new THREE.PlaneGeometry(this.radius * 2.5, this.radius * 2.5);
+        let m = new THREE.MeshBasicMaterial({
+            map: t,
+            color: clr,
+            transparent: true,
+            opacity: .4
+        });
+        this._meshColorLayer = new THREE.Mesh(g, m);
+        this._meshColorLayer.rotation.x = -Math.PI / 2;
+        this._meshColorLayer.position.y = -this.radius / 2;
+        this.add(this._meshColorLayer);
     }
 
     public get objId(): number {

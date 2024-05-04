@@ -400,6 +400,10 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 obj = new Fighter({
                     ...aData,
                     ...{
+                        highlighting: {
+                            active: true,
+                            isEnemy: !this.isCurrentOwner(aData.owner),
+                        },
                         race: this.getRaceForWalletAddr(aData.owner),
                         showRadius: DEBUG_GUI.showObjectRadius,
                         showAttackRadius: DEBUG_GUI.showObjectAttackRadius
@@ -426,6 +430,10 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 obj = new Linkor({
                     ...aData,
                     ...{
+                        highlighting: {
+                            active: true,
+                            isEnemy: !this.isCurrentOwner(aData.owner),
+                        },
                         race: this.getRaceForWalletAddr(aData.owner),
                         showRadius: DEBUG_GUI.showObjectRadius,
                         showAttackRadius: DEBUG_GUI.showObjectAttackRadius

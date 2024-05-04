@@ -3,6 +3,7 @@ import { BattleObject, BattleObjectData } from './BattleObject';
 import { ThreeLoader } from '~/game/utils/threejs/ThreeLoader';
 import { ModelAlias } from '~/game/data/ModelData';
 import { MyMath } from '@/utils';
+import { TextureAlias } from '~/game/data/TextureData';
 
 type FighterParams = BattleObjectData & {
     
@@ -16,9 +17,10 @@ export class Fighter extends BattleObject {
     constructor(aParams: FighterParams) {
         super(aParams, 'Fighter');
         this._currGunNumber = MyMath.randomIntInRange(1, 2);
+        // this.initSimpleModel();
         this.initShipModel();
     }
-
+    
     private initSimpleModel() {
         let g = new THREE.OctahedronGeometry(this.radius);
         let m = new THREE.MeshBasicMaterial({
