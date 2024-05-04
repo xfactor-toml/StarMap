@@ -1,13 +1,8 @@
-import { NetworkAuth } from "~/blockchain";
 import { MyEventDispatcher } from "../basics/MyEventDispatcher";
 import { Socket, io } from "socket.io-client";
 import { GlobalParams } from "../data/GlobalParams";
 import { ClaimRewardData, DebugTestData, GameCompleteData, AcceptScreenData, PackTitle, SkillRequest, StartGameData, SearchGameData } from "./Types";
-import { GameEvent, GameEventDispatcher } from "../events/GameEvents";
-import { Signal } from "../utils/events/Signal";
-import { useWallet } from "@/services";
 import { BlockchainConnectService } from "~/blockchainTotal";
-import { AuthMethod } from "~/blockchainTotal/types";
 
 export enum ConnectionEvent {
     disconnect = 'disconnect'

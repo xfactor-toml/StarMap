@@ -24,8 +24,6 @@ export class BootScene extends BasicScene {
         this.readGETParams();
         // instance front events
         this.initFrontEvents();
-        // battle connection
-        this.initBattleConnection();
         // Preloader
         this.startPreloader();
 
@@ -96,27 +94,6 @@ export class BootScene extends BasicScene {
             am.sfxVolume = aData.v;
             localStorage.setItem(`sfxVolume`, String(am.sfxVolume));
         }, this);
-    }
-
-    private initBattleConnection() {
-        let con = BattleConnection.getInstance();
-        con.on(PackTitle.gameSearching, this.onGameSearchPack, this);
-    }
-
-    private onGameSearchPack(aData: {
-        cmd: 'start' | 'stop'
-    }) {
-        switch (aData.cmd) {
-            case 'start':
-                GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_START);
-                break;
-            case 'stop':
-                GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_STOP);
-                break;
-            default:
-                this.logDebug(`onGameSearchPack(): unknown cmd`, aData);
-                break;
-        }
     }
 
     private startPreloader() {

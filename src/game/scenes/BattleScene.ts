@@ -199,7 +199,7 @@ export class BattleScene extends BasicScene {
     private onSocketDisconnect() {
         switch (this._state) {
             case BattleSceneState.game:
-                alert(`Disconnect...`);
+                GameEventDispatcher.showMessage(`Game Server disconnected...`);
                 this.closeScene();
                 break;
         }
@@ -217,6 +217,7 @@ export class BattleScene extends BasicScene {
 
         if (!oldAssets) {
             alert(`Error: oldAssets ( get from GetGameAssetsWeb2(wallet) ) == null!`);
+            // GameEventDispatcher.showMessage(`Error: oldAssets ( get from GetGameAssetsWeb2(wallet) ) == null!`);
             this.logWarn(`oldAssets ( get from GetGameAssetsWeb2(wallet) ) == null!`, {
                 wallet: wallet,
                 oldAssets: oldAssets
@@ -303,7 +304,8 @@ export class BattleScene extends BasicScene {
                             GameEventDispatcher.showBoxOpenScreen({ list });
                         }
                         else {
-                            alert(`No box found for this user...`);
+                            // alert(`No box found for this user...`);
+                            GameEventDispatcher.showMessage(`No box found for this user...`);
                         }
                         // temp
                         // this.emit(BattleSceneEvent.onCloseBattle);

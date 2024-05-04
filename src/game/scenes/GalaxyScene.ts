@@ -7,7 +7,7 @@ import { BasicScene } from '../core/scene/BasicScene';
 import { SceneNames } from './SceneNames';
 import { ThreeLoader } from '../utils/threejs/ThreeLoader';
 import { SimpleRenderer } from '../core/renderers/SimpleRenderer';
-import { BattleConnection } from '../battle/BattleConnection';
+import { BattleConnection, ConnectionEvent } from '../battle/BattleConnection';
 import { AcceptScreenData, ChallengeInfo, PackTitle, StartGameData } from '../battle/Types';
 import { GameEvent, GameEventDispatcher } from '../events/GameEvents';
 import { DebugGui } from '../debug/DebugGui';
@@ -21,6 +21,7 @@ import { MyUtils } from '../utils/MyUtils';
 export class GalaxyScene extends BasicScene {
     private _galaxy: GalaxyMng;
     private _battleAcceptScreenMng: BattleAcceptScreenMng;
+    private _isBattleSearching = false;
 
     constructor() {
         super(SceneNames.GalaxyScene, {
@@ -28,6 +29,7 @@ export class GalaxyScene extends BasicScene {
             initScene: true,
             initCamera: true
         });
+        this._isBattleSearching = false;
     }
 
     protected initRenderer() {
@@ -89,8 +91,10 @@ export class GalaxyScene extends BasicScene {
         FrontEvents.onBattleStopSearch.add(this.onFrontStopBattleSearch, this);
         // battle server events
         let bc = BattleConnection.getInstance();
+        bc.on(PackTitle.gameSearching, this.onGameSearchPack, this);
         bc.on(PackTitle.gameStart, this.onBattleStartPackage, this);
         bc.on(PackTitle.challengeInfo, this.onChallengePack, this);
+        bc.on(ConnectionEvent.disconnect, this.onServerDisconnected, this);
 
     }
 
@@ -105,8 +109,10 @@ export class GalaxyScene extends BasicScene {
         FrontEvents.onBattleStopSearch.remove(this.onFrontStopBattleSearch, this);
         // battle server events
         let bc = BattleConnection.getInstance();
+        bc.remove(PackTitle.gameSearching, this.onGameSearchPack);
         bc.remove(PackTitle.gameStart, this.onBattleStartPackage);
         bc.remove(PackTitle.challengeInfo, this.onChallengePack);
+        bc.remove(ConnectionEvent.disconnect, this.onServerDisconnected);
     }
 
     private initBattleAcceptController() {
@@ -140,27 +146,29 @@ export class GalaxyScene extends BasicScene {
     private onFrontStartBattleSearch() {
         let con = BattleConnection.getInstance();
         if (!con.connected) {
-            alert(`No connection to server!`);
+            GameEventDispatcher.showMessage(`No connection to server!`);
             return;
         }
         GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_START);
         con.sendSearchGame();
+        this._isBattleSearching = true;
     }
 
     private onFrontStartBattleBotSearch() {
         let con = BattleConnection.getInstance();
         if (!con.connected) {
-            alert(`No connection to server!`);
+            GameEventDispatcher.showMessage(`No connection to server!`);
             return;
         }
         GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_START);
         con.sendSearchGameBot();
+        this._isBattleSearching = true;
     }
 
     private onFrontChallengeClick() {
         let con = BattleConnection.getInstance();
         if (!con.connected) {
-            alert(`No connection to server!`);
+            GameEventDispatcher.showMessage(`No connection to server!`);
             return;
         }
         GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_START);
@@ -169,6 +177,24 @@ export class GalaxyScene extends BasicScene {
 
     private onFrontStopBattleSearch() {
         BattleConnection.getInstance().sendStopSearchingGame();
+    }
+
+    private onGameSearchPack(aData: {
+        cmd: 'start' | 'stop'
+    }) {
+        switch (aData.cmd) {
+            case 'start':
+                this._isBattleSearching = true;
+                GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_START);
+                break;
+            case 'stop':
+                this._isBattleSearching = false;
+                GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_STOP);
+                break;
+            default:
+                this.logDebug(`onGameSearchPack(): unknown cmd:`, aData);
+                break;
+        }
     }
 
     private onBattleStartPackage(aData: StartGameData) {
@@ -181,6 +207,7 @@ export class GalaxyScene extends BasicScene {
                     playerWallet: aData.playerWallet,
                     enemyWallet: aData.enemyWallet
                 });
+
                 setTimeout(() => {
                     //this._battleScene.show();
                     this.startScene(SceneNames.BattleScene);
@@ -210,6 +237,13 @@ export class GalaxyScene extends BasicScene {
                 GameEventDispatcher.showMessage(`Challenge game not found`);
                 GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_STOP);
                 break;
+        }
+    }
+
+    private onServerDisconnected() {
+        if (this._isBattleSearching) {
+            GameEventDispatcher.showMessage(`Game Server disconnected...`);
+            GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_ERROR);
         }
     }
 
@@ -243,13 +277,13 @@ export class GalaxyScene extends BasicScene {
             openBox: async () => {
                 let ws = useWallet();
                 if (!ws.connected) {
-                    alert('Wallet Not Connected!');
+                    GameEventDispatcher.showMessage('Wallet not connected!');
                     return;
                 }
                 const boxId = Number(BLOCKCHAIN_DEBUG_GUI.boxId);
-                alert(`Trying to open Box ${boxId}`);
+                // GameEventDispatcher.showMessage(`Trying to open Box ${boxId}`);
                 let openResult = ws.provider.openBox(boxId);
-                console.log(`openResult:`, openResult);
+                this.logDebug(`openResult:`, openResult);
             },
             getBoxList: async () => {
                 const wallet = '';// getWalletAddress();
@@ -295,14 +329,14 @@ export class GalaxyScene extends BasicScene {
             },
             searchGame: () => {
                 if (!bc.connected) {
-                    alert(`No connection to server!`);
+                    GameEventDispatcher.showMessage(`No connection to server!`);
                     return;
                 }
                 FrontEvents.onBattleSearch.dispatch();
             },
             searchGameBot: () => {
                 if (!bc.connected) {
-                    alert(`No connection to server!`);
+                    GameEventDispatcher.showMessage(`No connection to server!`);
                     return;
                 }
                 bc.sendSearchGameBot();

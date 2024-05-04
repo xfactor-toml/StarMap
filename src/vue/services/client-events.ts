@@ -233,7 +233,6 @@ export class ClientEventsService {
         scenesStore.setScene(UISceneNames.Battle, {
           mode: 'coins'
         });
-
         break;
       
       case GameEvent.SHOW_BOX_OPEN:
