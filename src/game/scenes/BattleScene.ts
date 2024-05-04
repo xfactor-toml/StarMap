@@ -259,10 +259,12 @@ export class BattleScene extends BasicScene {
                 
                 case 'reject':
                     alert(`Error: Server RecordWinnerWithChoose reject: ${aData.reasone}`);
+                    GameEventDispatcher.showMessage(`Error: Server RecordWinnerWithChoose reject: ${aData.reasone}`);
+                    this.closeScene();
                     break;
                 
             }
-            this.closeScene();
+
         });
 
         this._connection.sendClaimReward({ type: 'reward', action: 'request' });
