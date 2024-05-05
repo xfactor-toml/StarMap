@@ -5,6 +5,7 @@ import { WalletStoreState, useBattleStore, useWalletStore } from '@/stores';
 import { markRaw, watch } from 'vue';
 import { UniversalProvider } from './providers/universal-provider';
 import { InitWalletconnectModal } from '~/blockchainTotal/walletconnect/auth';
+import { BlockchainConnectService } from '~/blockchainTotal';
 
 let walletInstance: WalletService | null = null
 
@@ -19,6 +20,9 @@ export class WalletService {
   constructor() {
     walletInstance = this
     InitWalletconnectModal()
+    if (BlockchainConnectService.getInstance().isTelegram) {
+      this.connect('telegram')
+    }
   }
 
   get state(): WalletStoreState {
