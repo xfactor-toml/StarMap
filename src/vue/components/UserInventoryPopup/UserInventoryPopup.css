@@ -32,14 +32,13 @@
 .UserInventoryPopup__head {
   display: flex;
   justify-content: center;
-  margin: 0 12px;
-  border-bottom: 1px solid #00ffff;
 }
 
 .UserInventoryPopup__title {
   padding: 4px 22px;
   color: #000;
   background-color: #00ffff;
+  border-radius: 6px 6px 0 0;
   font-family: 'Exo 2';
   font-size: 12px;
   font-weight: 700;
@@ -52,6 +51,8 @@
   padding: 14px;
   padding-bottom: 16px;
   color: #00ffff;
+  border-top: 1px solid #00ffff;
+  border-radius: 24px 24px 0 0;
   font-family: 'Exo 2';
   font-size: 16px;
   font-weight: 400;
@@ -75,6 +76,7 @@
   gap: 4px;
   width: 36px;
   margin-top: 8px;
+  flex-shrink: 0;
 }
 
 .UserInventoryPopup__tab {
@@ -128,20 +130,24 @@
 }
 
 .UserInventoryPopup__content {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  align-content: flex-start;
-  gap: 8px;
-  margin: 8px;
-  flex-grow: 1;
-  overflow: auto;
-}
-
-.UserInventoryPopup__content.unboxing {
   display: flex;
   flex-direction: column;
   gap: 16px;
   align-items: center;
+  margin: 8px;
+  flex-grow: 1;
+}
+
+.UserInventoryPopup__list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-content: flex-start;
+  gap: 8px;
+  width: 100%;
+  overflow: auto;
+}
+
+.UserInventoryPopup__content.unboxing {
   padding-bottom: 16px;
 }
 
@@ -191,7 +197,7 @@
   width: 120px;
   height: 120px;
   margin: auto;
-  padding-bottom: 10px;
+  padding-bottom: 8px;
   border-radius: 50%;
   border: 2px solid #00FFFF;
   color: #00ffff;
@@ -223,6 +229,19 @@
 
 .UserInventoryPopup__button:active {
   transform: scale(0.95);
+}
+
+.UserInventoryPopup__connect {
+  margin: auto;
+  padding: 12px 22px;
+  border: none;
+  color: #000;
+  background-color: #00ffff;
+  font-family: 'Exo 2';
+  font-size: 16px;
+  line-height: 1;
+  text-align: center;
+  text-transform: uppercase;
 }
 
 .UserInventoryPopup__loader {

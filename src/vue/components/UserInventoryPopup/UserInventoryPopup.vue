@@ -20,30 +20,42 @@
         </div>
         <div :class="`UserInventoryPopup__content ${currentTab}`">
           <template v-if="currentTab === 'inventory'">
-            <template v-for="item in inventory" :key="item.id">
-              <div
-                class="UserInventoryPopup__card"
-                @click="selectCard(item)"
-              >
-                <div class="UserInventoryPopup__cardFigure">
-                  <img class="UserInventoryPopup__cardImage" :src="item.icon"/>
-                </div>
-                <div class="UserInventoryPopup__cardCaption">{{ item.count }}</div>
+            <template v-if="walletStore.connected">
+              <div class="UserInventoryPopup__list">
+                <template v-for="item in inventory" :key="item.id">
+                  <div
+                  class="UserInventoryPopup__card"
+                    @click="selectCard(item)"
+                  >
+                    <div class="UserInventoryPopup__cardFigure">
+                      <img class="UserInventoryPopup__cardImage" :src="item.icon"/>
+                    </div>
+                    <div class="UserInventoryPopup__cardCaption">{{ item.count }}</div>
+                  </div>
+                </template>
               </div>
+            </template>
+            <template v-else>
+              <button
+                class="UserInventoryPopup__connect"
+                @click="walletStore.openPopup"
+              >Connect</button>
             </template>
           </template>
           <template v-if="currentTab === 'events'">
-            <template v-for="item in events" :key="item.id">
-              <div
-                class="UserInventoryPopup__card"
-                @click="selectCard(item)"
-              >
-                <div class="UserInventoryPopup__cardFigure">
-                  <img class="UserInventoryPopup__cardImage" :src="item.icon"/>
+            <div class="UserInventoryPopup__list">
+              <template v-for="item in events" :key="item.id">
+                <div
+                  class="UserInventoryPopup__card"
+                  @click="selectCard(item)"
+                >
+                  <div class="UserInventoryPopup__cardFigure">
+                    <img class="UserInventoryPopup__cardImage" :src="item.icon"/>
+                  </div>
+                  <div class="UserInventoryPopup__cardCaption">{{ item.price }} vrp</div>
                 </div>
-                <div class="UserInventoryPopup__cardCaption">{{ item.price }} vrp</div>
-              </div>
-            </template>
+              </template>
+            </div>
           </template>
           <template v-if="currentTab === 'unboxing'">
             <template v-if="rewards.waitingBox">
@@ -81,7 +93,7 @@
 <script lang="ts">
 import { inventory, events } from './data'
 import { BoxContentPopup, InventoryCardPopup, Loader } from '@/components'
-import { useBattleStore } from '@/stores';
+import { useBattleStore, useWalletStore } from '@/stores';
 import { mapStores } from 'pinia';
 
 const baseTabs = ['inventory','events']
@@ -106,6 +118,7 @@ export default {
   computed: {
     ...mapStores(
       useBattleStore,
+      useWalletStore,
     ),
     userBoxes() {
       return this.battleStore.rewards.boxesIds
