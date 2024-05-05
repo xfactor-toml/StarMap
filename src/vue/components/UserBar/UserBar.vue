@@ -11,7 +11,6 @@
     >Get plasma</button>
     <div class="UserBar__buttons">
       <button
-        v-if="walletStore.connected"
         :class="`UserBar__button is-box ${userInventoryVisible && 'active'}`"
         @mouseenter="$client.onHover()"
         @click="openUserInventory"
