@@ -138,6 +138,8 @@ export const useBattleRewardsStore = defineStore('battleRewards', () => {
 
             waitingBox.value = false
         }
+
+        return list.value
     }
 
     return {

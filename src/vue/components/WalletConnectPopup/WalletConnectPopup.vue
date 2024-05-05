@@ -1,40 +1,34 @@
 <template>
-  <div class="WalletConnectPopup">
-    <div
-      class="WalletConnectPopup__overlay"
-      @click="$emit('close')"
-    />
-    <div class="WalletConnectPopup__box">
+  <BasePopup
+    class="WalletConnectPopup"
+    :title="'Connect wallet'"
+    @close="$emit('close')"
+  >
+    <div class="WalletConnectPopup__wallets">
       <button
-        class="WalletConnectPopup__close"
-        @click="$emit('close')"
-      />
-      <div class="WalletConnectPopup__head">
-        <div class="WalletConnectPopup__title">Connect wallet</div>
-      </div>
-      <div class="WalletConnectPopup__body">
-        <div class="WalletConnectPopup__wallets">
-          <button
-            class="WalletConnectPopup__wallet is-metamask"
-            type="button"
-            @click="metamaskConnect"
-          >Metamask
-          </button>
-          <button
-            class="WalletConnectPopup__wallet is-walletconnect"
-            type="button"
-            @click="walletConnect"
-          >WalletСonnect
-          </button>
-        </div>
-      </div>
+        class="WalletConnectPopup__wallet is-metamask"
+        type="button"
+        @click="metamaskConnect"
+      >Metamask
+      </button>
+      <button
+        class="WalletConnectPopup__wallet is-walletconnect"
+        type="button"
+        @click="walletConnect"
+      >WalletСonnect
+      </button>
     </div>
-  </div>
+  </BasePopup>
 </template>
 
 <script lang="ts">
+import { BasePopup } from '@/components'
+
 export default {
   name: 'WalletConnectPopup',
+  components: {
+    BasePopup
+  },
   methods: {
     metamaskConnect() {
       this.$wallet.connect('metamask').then(() => {
