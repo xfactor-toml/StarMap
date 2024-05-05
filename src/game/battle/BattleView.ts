@@ -930,6 +930,19 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
     }
 
+    getPlayerSun(): BattleStar {
+        let sun: BattleStar;
+        this._objects.forEach(obj => {
+            if (sun) return;
+            if (obj instanceof BattleStar) {
+                if (this.isCurrentOwner(obj.owner)) {
+                    sun = obj;
+                }
+            }
+        });
+        return sun;
+    }
+
     destroyAllObjects() {
         this._objects.forEach(obj => {
             obj.free();

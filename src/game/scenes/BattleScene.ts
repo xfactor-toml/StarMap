@@ -14,6 +14,8 @@ import { ThreeLoader } from '../utils/threejs/ThreeLoader';
 import { BlockchainConnectService } from '~/blockchainTotal';
 import { GetGameAssetsWeb2, getUserBoxesToOpenWeb2 } from '~/blockchainTotal/getters/boxesWeb2';
 import { useWallet } from '@/services';
+import { ThreeUtils } from '../utils/threejs/ThreejsUtils';
+import { DeviceInfo } from '../utils/DeviceInfo';
 
 export enum BattleSceneEvent {
     onGameStart = 'onEnterGame',
@@ -125,6 +127,7 @@ export class BattleScene extends BasicScene {
             let f = DebugGui.getInstance().createFolder('Battle');
             this.initSocketDebugGui(f);
             this._view.initDebugGui(f);
+            this.initEmotionsDebugGui(f);
         }
     }
 
@@ -146,6 +149,36 @@ export class BattleScene extends BasicScene {
         f.add(DATA, 'exitgame').name('Exit Game');
         f.add(DATA, 'testBattleWin').name('Test Battle Win');
         f.add(DATA, 'testBattleLoss').name('Test Battle Loss');
+
+    }
+
+    private initEmotionsDebugGui(aFolder: GUI) {
+        const DATA = {
+            showEmotionSelection: () => {
+                let sun = this._view.getPlayerSun();
+                if (!sun) {
+                    GameEventDispatcher.showMessage(`Warning: player's sun not found!`);
+                    this.logWarn(`showEmotionSelection: player's sun not found!`);
+                    return;
+                }
+                let pos2d = ThreeUtils.toScreenPosition(this._render.renderer, sun, this._camera, DeviceInfo.getInstance().devicePixelRatio);
+                GameEventDispatcher.showEmotionSelection(pos2d);
+            },
+            showRandomEmotion: () => {
+                let sun = this._view.getPlayerSun();
+                if (!sun) {
+                    GameEventDispatcher.showMessage(`Warning: player's sun not found!`);
+                    this.logWarn(`showEmotionSelection: player's sun not found!`);
+                    return;
+                }
+                let pos2d = ThreeUtils.toScreenPosition(this._render.renderer, sun, this._camera, DeviceInfo.getInstance().devicePixelRatio);
+                GameEventDispatcher.showRandomEmotion(pos2d);
+            },
+        }
+
+        const f = aFolder.addFolder('Emotions');
+        f.add(DATA, 'showEmotionSelection').name('Show Emotion Select');
+        f.add(DATA, 'showRandomEmotion').name('Show Random Emotion');
 
     }
 

@@ -12,9 +12,12 @@ export type AcceptData = {
     }
 }
 
+export type Emotion = 'smile' | 'evil' | 'dead' | 'thinking' | 'angry' | 'sad';
+
 export type EmotionData = {
+    eventName: GameEvent.BATTLE_EMOTION,
     type: 'showSelection' | 'show' | 'selected',
-    emotion?: 'smile' | 'evil' | 'dead' | 'thinking' | 'angry' | 'sad',
+    emotion?: Emotion,
     position2d?: { x: number, y: number }
 }
 
@@ -165,6 +168,48 @@ export class GameEventDispatcher {
         let data: AcceptData = {
             eventName: GameEvent.BATTLE_ACCEPT_SCREEN,
             action: 'close'
+        };
+        window.dispatchEvent(new CustomEvent('gameEvent', {
+            detail: data
+        }));
+    }
+
+    static showEmotionSelection(aPos2d: {x, y}) {
+        let data: EmotionData = {
+            eventName: GameEvent.BATTLE_EMOTION,
+            type: 'showSelection',
+            position2d: aPos2d
+        };
+        window.dispatchEvent(new CustomEvent('gameEvent', {
+            detail: data
+        }));
+    }
+
+    static showEmotion(aEmotion: Emotion, aPos2d: { x, y }) {
+        let data: EmotionData = {
+            eventName: GameEvent.BATTLE_EMOTION,
+            type: 'show',
+            emotion: aEmotion,
+            position2d: aPos2d
+        };
+        window.dispatchEvent(new CustomEvent('gameEvent', {
+            detail: data
+        }));
+    }
+
+    private static getRandomEmotion(): Emotion {
+        const emotions: Emotion[] = ['smile', 'evil', 'dead', 'thinking', 'angry', 'sad'];
+        const randomIndex = Math.floor(Math.random() * emotions.length);
+        return emotions[randomIndex];
+    }
+
+    static showRandomEmotion(aPos2d: { x, y }) {
+        let emotion: Emotion = this.getRandomEmotion();
+        let data: EmotionData = {
+            eventName: GameEvent.BATTLE_EMOTION,
+            type: 'show',
+            emotion: emotion,
+            position2d: aPos2d
         };
         window.dispatchEvent(new CustomEvent('gameEvent', {
             detail: data
