@@ -1,7 +1,7 @@
 import { BoxOpenData, ExpData, GameCompleteData } from '~/game/battle/Types';
 import { ServerStarData } from '~/game/data/Types';
 import { FrontEvents } from '~/game/events/FrontEvents';
-import { AcceptData, GameEvent } from '~/game/events/GameEvents';
+import { AcceptData, EmotionData, GameEvent } from '~/game/events/GameEvents';
 
 interface BaseEvent {
   eventName: GameEvent;
@@ -115,6 +115,9 @@ export interface BattleShowBoxOpen extends BaseEvent, BoxOpenData {
 }
 export interface BattleExpData extends BaseEvent, ExpData {
   eventName: GameEvent.BATTLE_EXP_DATA;
+}
+export interface BattleEmotion extends BaseEvent, EmotionData {
+  eventName: GameEvent.BATTLE_EMOTION;
 }
 
 export type ClientEvent =

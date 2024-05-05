@@ -68,6 +68,6 @@ export const FrontEvents = {
     onBattleFinalClaimBoxClick: new Signal(),
     onBattleRewardCloseClick: new Signal(),
 
-
+    onBattleEmotion: new Signal(),
 
 }

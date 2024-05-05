@@ -12,6 +12,11 @@ export type AcceptData = {
     }
 }
 
+export type EmotionData = {
+    type: 'showSelection' | 'show' | 'selected',
+    emotion?: 'smile' | 'evil' | 'dead' | 'thinking' | 'angry' | 'sad'
+}
+
 export enum GameEvent {
 
     MESSAGE = 'MESSAGE',
@@ -63,6 +68,7 @@ export enum GameEvent {
     SHOW_BOX_OPEN = 'SHOW_BOX_OPEN',
     // battle process
     BATTLE_EXP_DATA = 'BATTLE_EXP_DATA',
+    BATTLE_EMOTION = 'BATTLE_EMOTION',
 }
 
 export class GameEventDispatcher {
