@@ -14,7 +14,8 @@ export type AcceptData = {
 
 export type EmotionData = {
     type: 'showSelection' | 'show' | 'selected',
-    emotion?: 'smile' | 'evil' | 'dead' | 'thinking' | 'angry' | 'sad'
+    emotion?: 'smile' | 'evil' | 'dead' | 'thinking' | 'angry' | 'sad',
+    position2d?: { x: number, y: number }
 }
 
 export enum GameEvent {
