@@ -45,3 +45,18 @@
 .WalletConnectPopup__wallet.is-walletconnect::before {
   background-image: url(../gui/images/wallets/wallet-connect-logo.png);
 }
+
+.WalletConnectPopup__wallet.is-telegram::before {
+  background-image: url(../gui/images/wallets/telegram-logo.png);
+}
+
+.WalletConnectPopup__wallet.is-ton::before {
+  background-image: url(../gui/images/wallets/ton-logo.png);
+}
+
+.WalletConnectPopup__wallet[disabled] {
+  opacity: 0.5;
+  user-select: none;
+  pointer-events: none;
+  filter: brightness(0.5) saturate(0.5);
+}

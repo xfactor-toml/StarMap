@@ -6,16 +6,16 @@
   >
     <div class="WalletConnectPopup__wallets">
       <button
-        class="WalletConnectPopup__wallet is-metamask"
+        class="WalletConnectPopup__wallet is-telegram"
         type="button"
-        @click="metamaskConnect"
-      >Metamask
+        @click="telegramConnect"
+      >Telegram
       </button>
       <button
-        class="WalletConnectPopup__wallet is-walletconnect"
+        class="WalletConnectPopup__wallet is-ton"
         type="button"
-        @click="walletConnect"
-      >WalletСonnect
+        disabled
+      >TON
       </button>
     </div>
   </BasePopup>
@@ -30,13 +30,8 @@ export default {
     BasePopup
   },
   methods: {
-    metamaskConnect() {
-      this.$wallet.connect('metamask').then(() => {
-        this.$emit('close')
-      });
-    },
-    walletConnect() {
-      this.$wallet.connect('walletconnect').then(() => {
+    telegramConnect() {
+      this.$wallet.connect('telegram').then(() => {
         this.$emit('close')
       });
     },
