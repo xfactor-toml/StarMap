@@ -1,0 +1,243 @@
+.UserInventoryPopup {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  pointer-events: all;
+  z-index: 1;
+}
+
+.UserInventoryPopup__overlay {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.UserInventoryPopup__box {
+  width: 320px;
+  max-width: calc(100vw - 20px);
+  margin: auto;
+  margin-right: 20px;
+  margin-top: 80px;
+  position: relative;
+  z-index: 1;
+}
+
+.UserInventoryPopup__head {
+  display: flex;
+  justify-content: center;
+  margin: 0 12px;
+  border-bottom: 1px solid #00ffff;
+}
+
+.UserInventoryPopup__title {
+  padding: 4px 22px;
+  color: #000;
+  background-color: #00ffff;
+  font-family: 'Exo 2';
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.UserInventoryPopup__balance {
+  padding: 14px;
+  padding-bottom: 16px;
+  color: #00ffff;
+  font-family: 'Exo 2';
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.UserInventoryPopup__body {
+  display: flex;
+  height: calc(100vh - 170px);
+  min-height: 280px;
+  border: 3px solid #00FFFF;
+  border-radius: 8px;
+  background-color: #000;
+}
+
+.UserInventoryPopup__tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 36px;
+  margin-top: 8px;
+}
+
+.UserInventoryPopup__tab {
+  display: flex;
+  width: 100%;
+  height: 64px;
+  background-color: #000;
+  border: 1px solid #00FFFF;
+  border-radius: 0 6px 6px 0;
+  color: #00FFFF;
+  cursor: pointer;
+  transition: ease background-color 200ms;
+  will-change: background-color;
+}
+
+.UserInventoryPopup__tab:hover {
+  background-color: #001616;
+}
+
+.UserInventoryPopup__tab::after {
+  content: '';
+  display: block;
+  width: 26px;
+  height: 26px;
+  margin: auto;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+}
+
+.UserInventoryPopup__tab.inventory::after {
+  background-image: url(../gui/images/user-inventory/box.svg);
+}
+
+.UserInventoryPopup__tab.events::after {
+  background-image: url(../gui/images/user-inventory/star.svg);
+}
+
+.UserInventoryPopup__tab.unboxing::after {
+  height: 34px;
+  background-image: url(../gui/images/user-inventory/unbox.svg);
+}
+
+.UserInventoryPopup__tab.active {
+  background-color: #00FFFF;
+  color: #000;
+}
+
+.UserInventoryPopup__tab.active::after {
+  filter: brightness(0);
+}
+
+.UserInventoryPopup__content {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-content: flex-start;
+  gap: 8px;
+  margin: 8px;
+  flex-grow: 1;
+  overflow: auto;
+}
+
+.UserInventoryPopup__content.unboxing {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  padding-bottom: 16px;
+}
+
+.UserInventoryPopup__card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border: 3px solid #00FFFF;
+  border-radius: 6px;
+  background-color: #000;
+  cursor: pointer;
+}
+
+.UserInventoryPopup__cardFigure {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  width: 100%;
+  height: 80px;
+  margin: auto;
+}
+
+.UserInventoryPopup__cardImage {
+  display: block;
+  width: 70%;
+  height: 70%;
+  object-fit: contain;
+}
+
+.UserInventoryPopup__cardCaption {
+  padding: 6px;
+  padding-bottom: 4px;
+  color: #000;
+  background-color: #00ffff;
+  font-family: 'Exo 2';
+  font-size: 12px;
+  line-height: 1;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.UserInventoryPopup__count {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 120px;
+  margin: auto;
+  padding-bottom: 10px;
+  border-radius: 50%;
+  border: 2px solid #00FFFF;
+  color: #00ffff;
+  font-family: 'Exo 2';
+  font-size: 44px;
+  line-height: 1;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.UserInventoryPopup__button {
+  width: 200px;
+  height: 110px;
+  margin: 0;
+  padding: 0;
+  background-image: url(../gui/images/battle-results/open-box.svg);
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: 50%;
+  background-color: transparent;
+  border: none;
+  will-change: transform;
+  transition: ease transform 200ms;
+}
+
+.UserInventoryPopup__button:hover {
+  transform: scale(1.05);
+}
+
+.UserInventoryPopup__button:active {
+  transform: scale(0.95);
+}
+
+.UserInventoryPopup__loader {
+  flex-grow: 1;
+  display: flex;
+}
+
+
+@media (max-width: 640px) {
+  .UserInventoryPopup__box {
+    margin-right: 10px;
+    margin-top: 60px;
+  }
+
+  .UserInventoryPopup__body {
+    height: calc(100vh - 140px);
+  }
+}

@@ -1,0 +1,69 @@
+.BoxContentPopup {
+  --base-popup-padding: 0;
+}
+
+.BoxContentPopup__content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 24px;
+  padding-bottom: 12px;
+  color: #fff;
+}
+
+.BoxContentPopup__title {
+  color: #F9EB21;
+  font-size: 22px;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.BoxContentPopup__cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-content: flex-start;
+  gap: 8px;
+  margin: 8px;
+  margin-top: 16px;
+  flex-grow: 1;
+  overflow: auto;
+}
+
+.BoxContentPopup__card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border: 3px solid #00FFFF;
+  border-radius: 6px;
+  background-color: #000;
+  cursor: pointer;
+}
+
+.BoxContentPopup__cardFigure {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  width: 100%;
+  height: 100px;
+  margin: auto;
+}
+
+.BoxContentPopup__cardImage {
+  display: block;
+  width: 70%;
+  height: 70%;
+  object-fit: contain;
+}
+
+.BoxContentPopup__cardCaption {
+  padding: 6px;
+  padding-bottom: 4px;
+  color: #000;
+  background-color: #00ffff;
+  font-family: 'Exo 2';
+  font-size: 12px;
+  line-height: 1;
+  text-align: center;
+  text-transform: uppercase;
+}
