@@ -1,0 +1,62 @@
+.EmotionsSelect {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 40px;
+  width: 210px;
+  height: 180px;
+  margin-left: 4px;
+  margin-top: 6px;
+  padding: 0 30px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  transform: translate(-50%, -50%);
+}
+
+.EmotionsSelect__button {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  position: relative;
+  border: none;
+  background-color: transparent;
+  pointer-events: all;
+}
+
+.EmotionsSelect__button.is-angry { --emotion-icon: url(../gui/images/emotions/angry.svg); }
+.EmotionsSelect__button.is-dead { --emotion-icon: url(../gui/images/emotions/dead.svg); }
+.EmotionsSelect__button.is-evil { --emotion-icon: url(../gui/images/emotions/evil.svg); }
+.EmotionsSelect__button.is-sad { --emotion-icon: url(../gui/images/emotions/sad.svg); }
+.EmotionsSelect__button.is-smile { --emotion-icon: url(../gui/images/emotions/smile.svg); }
+.EmotionsSelect__button.is-thinking { --emotion-icon: url(../gui/images/emotions/thinking.svg); }
+
+.EmotionsSelect__button::before {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: #000000;
+  background-repeat: no-repeat;
+  background-size: 124%;
+  background-position: 50% 50%;
+  background-image: var(--emotion-icon);
+  transition: ease transform 200ms;
+}
+
+.EmotionsSelect__button:hover::before {
+  transform: scale(1.15);
+}
+
+.EmotionsSelect__button:active::before {
+  transform: scale(0.8);
+}
+
+.EmotionsSelect__button:nth-child(3) {
+  left: -30px;
+}
+
+.EmotionsSelect__button:nth-child(4) {
+  left: 30px;
+}

@@ -4,12 +4,14 @@ import { useBattleConnectingStore } from '@/stores/battle-connecting';
 import { useBattleProcessStore } from '@/stores/battle-process';
 import { useBattleResultsStore } from '@/stores/battle-results';
 import { useBattleRewardsStore } from '@/stores/battle-rewards';
+import { useBattleEmotionsStore } from '@/stores/battle-emotions';
 
 export const useBattleStore = defineStore('battle', () => {
   const connecting = useBattleConnectingStore()
   const process = useBattleProcessStore()
   const results = useBattleResultsStore()
   const rewards = useBattleRewardsStore()
+  const emotions = useBattleEmotionsStore()
 
   const reset = () => {
     process.reset()
@@ -22,6 +24,7 @@ export const useBattleStore = defineStore('battle', () => {
     process,
     results,
     rewards,
+    emotions,
     reset,
   }
 });
