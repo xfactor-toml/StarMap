@@ -144,7 +144,8 @@ export type ClientEvent =
   | BattleCompleteHide
   | BattleShowTokenReward
   | BattleShowBoxOpen
-  | BattleExpData;
+  | BattleExpData
+  | BattleEmotion;
 
 export type GuiLevel = {
   value: number;
