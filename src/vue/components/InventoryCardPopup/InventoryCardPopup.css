@@ -1,0 +1,60 @@
+.InventoryCardPopup {
+  --base-popup-padding: 0;
+}
+
+.InventoryCardPopup__content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 24px;
+  padding-bottom: 12px;
+  color: #fff;
+}
+
+.InventoryCardPopup__preview {
+  width: 100%;
+}
+
+.InventoryCardPopup__image {
+  display: block;
+  max-width: 100%;
+  object-fit: contain;
+  border: 1px solid #00FFFF;
+}
+
+.InventoryCardPopup__title {
+  color: #F9EB21;
+  margin-top: 16px;
+  font-size: 22px;
+  text-transform: uppercase;
+}
+
+.InventoryCardPopup__text {
+  font-size: 12px;
+  font-weight: 300;
+  text-transform: uppercase;
+}
+
+.InventoryCardPopup__button {
+  max-width: 120px;
+  margin-top: 12px;
+  padding: 8px;
+  border: none;
+  background-color: #00FFFF;
+  color: #000;
+  font-size: 16px;
+  font-family: inherit;
+  font-weight: 400;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: ease 200ms transform;
+  will-change: transform;
+}
+
+.InventoryCardPopup__button:hover {
+  transform: scale(1.04);
+}
+
+.InventoryCardPopup__button:active {
+  transform: scale(1);
+}

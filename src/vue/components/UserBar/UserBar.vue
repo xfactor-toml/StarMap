@@ -10,6 +10,12 @@
       @click="$emit('openPlasmaMintPopup')"
     >Get plasma</button>
     <div class="UserBar__buttons">
+      <button
+        v-if="walletStore.connected"
+        :class="`UserBar__button is-box ${userInventoryVisible && 'active'}`"
+        @mouseenter="$client.onHover()"
+        @click="openUserInventory"
+      />
       <div class="UserBar__search">
         <div
           class="UserBar__search-field"
@@ -33,13 +39,6 @@
         :class="{ active: settingsVisible }"
         @mouseenter="$client.onHover()"
         @click="toggleSettings"
-      />
-      <button
-        v-if="walletStore.connected && userBoxes.length > 0"
-        class="UserBar__button is-box"
-        :data-count="userBoxes.length"
-        @mouseenter="$client.onHover()"
-        @click="openBox"
       />
     </div>
     <div
@@ -70,23 +69,27 @@
         @toggleFullscreen="$client.toggleFullscreen()"
       />
     </div>
+    <UserInventoryPopup
+      v-if="userInventoryVisible"
+      @close="hideUserInventory"
+    />
   </div>
 </template>
 
 <script lang="ts">
-
 import { SettingsPopup } from '@/components/SettingsPopup';
 import { SearchInput } from '@/components/SearchInput';
-import { useBattleStore, useScenesStore, useSettingsStore, useUiStore, useWalletStore } from '@/stores';
+import { UserInventoryPopup } from '@/components/UserInventoryPopup';
+import { useSettingsStore, useUiStore, useWalletStore } from '@/stores';
 import { default as vClickOutside } from 'click-outside-vue3';
 import { mapStores } from 'pinia';
-import { UISceneNames } from '@/types';
 
 export default {
   name: 'UserBar',
   components: {
     SearchInput,
     SettingsPopup,
+    UserInventoryPopup,
   },
   directives: {
     clickOutside: vClickOutside.directive
@@ -94,6 +97,7 @@ export default {
   data: () => ({
     settingsVisible: false,
     searchVisible: false,
+    userInventoryVisible: false,
     searchKey: '',
   }),
   watch: {
@@ -103,15 +107,10 @@ export default {
   },
   computed: {
     ...mapStores(
-      useBattleStore,
       useSettingsStore,
-      useScenesStore,
       useUiStore,
       useWalletStore
     ),
-    userBoxes() {
-      return this.battleStore.rewards.boxesIds
-    }
   },
   methods: {
     toggleSettings() {
@@ -136,11 +135,12 @@ export default {
       this.searchVisible = false;
       this.searchKey = ''
     },
-    openBox() {
-      this.scenesStore.setScene(UISceneNames.Battle, {
-        mode: 'rewards'
-      });
-    }
+    openUserInventory() {
+      this.userInventoryVisible = true
+    },
+    hideUserInventory() {
+      this.userInventoryVisible = false
+    },
   },
 };
 </script>
