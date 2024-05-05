@@ -13,6 +13,7 @@ import { SimpleRenderer } from '../core/renderers/SimpleRenderer';
 import { ThreeLoader } from '../utils/threejs/ThreeLoader';
 import { BlockchainConnectService } from '~/blockchainTotal';
 import { GetGameAssetsWeb2, getUserBoxesToOpenWeb2 } from '~/blockchainTotal/getters/boxesWeb2';
+import { useWallet } from '@/services';
 
 export enum BattleSceneEvent {
     onGameStart = 'onEnterGame',

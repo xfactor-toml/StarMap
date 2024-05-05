@@ -151,7 +151,9 @@ export class GalaxyMng implements ILogger {
         this._galaxyCenterSprite2.visible = v;
     }
 
-    init() {
+    init(aParams: {
+        initDebugGui: boolean
+    }) {
 
         AudioMng.getInstance().playSfx(AudioAlias.SFX_INIT_FLY);
 
@@ -210,10 +212,7 @@ export class GalaxyMng implements ILogger {
 
         // GRID
         if (GlobalParams.isGridPlane) {
-            this._gridPlane = new THREE.GridHelper(1000, 80, 0xaaaaaa, 0xffffff);
-            (this._gridPlane.material as any).transparent = true;
-            (this._gridPlane.material as any).opacity = .3;
-            this._parent.add(this._gridPlane);
+            this.initGrid();
         }
 
         this.createGalaxyStars(GlobalParams.loadFromFile);
@@ -262,6 +261,26 @@ export class GalaxyMng implements ILogger {
         // inputMng.onInputUpSignal.add(this.onInputUp, this);
         inputMng.onClickSignal.add(this.onClick, this);
 
+        this.initStateMachine();
+
+        // front events
+        this.initFrontEvents();
+
+        // DEBUG GUI
+        if (aParams.initDebugGui) {
+            this.initDebugGui();
+        }
+
+    }
+
+    private initGrid() {
+        this._gridPlane = new THREE.GridHelper(1000, 80, 0xaaaaaa, 0xffffff);
+        (this._gridPlane.material as any).transparent = true;
+        (this._gridPlane.material as any).opacity = .3;
+        this._parent.add(this._gridPlane);
+    }
+
+    private initStateMachine() {
         this._fsm = new FSM();
         this._fsm.addState(GalaxyStates.init, this, this.onStateInitEnter, this.onStateInitUpdate);
         this._fsm.addState(GalaxyStates.realStars, this, this.onStateRealEnter, this.onStateRealUpdate);
@@ -272,10 +291,6 @@ export class GalaxyMng implements ILogger {
         this._fsm.addState(GalaxyStates.createStar, this, this.onStateCreateStarEnter, this.onStateCreateStarUpdate);
         this._fsm.addState(GalaxyStates.disabled, this, this.onStateDisabledEnter, this.onStateDisabledUpdate);
         this._fsm.startState(GalaxyStates.init);
-
-        // front events
-        this.initFrontEvents();
-
     }
 
     private initFrontEvents() {
@@ -312,15 +327,7 @@ export class GalaxyMng implements ILogger {
 
     }
 
-    private removeFrontEvents() {
-        FrontEvents.diveIn.removeAll(this);
-        FrontEvents.flyFromStar.removeAll(this);
-        FrontEvents.starPreviewClose.removeAll(this);
-        FrontEvents.starLevelFilterChanged.removeAll(this);
-        FrontEvents.starNameFilterChanged.removeAll(this);
-    }
-
-    initDebugGui() {
+    private initDebugGui() {
 
         const DEBUG_PARAMS = {
             'testGetRace': () => {
@@ -496,6 +503,14 @@ export class GalaxyMng implements ILogger {
     private onNameFilterChanged(aName: string) {
         this._nameFilter = aName;
         this._realStarsParticles.setNameFilter(this._nameFilter);
+    }
+
+    private removeFrontEvents() {
+        FrontEvents.diveIn.removeAll(this);
+        FrontEvents.flyFromStar.removeAll(this);
+        FrontEvents.starPreviewClose.removeAll(this);
+        FrontEvents.starLevelFilterChanged.removeAll(this);
+        FrontEvents.starNameFilterChanged.removeAll(this);
     }
 
     gotoGalaxy() {
@@ -1601,17 +1616,21 @@ export class GalaxyMng implements ILogger {
 
     private onStateInitEnter() {
 
+        const posStart = new THREE.Vector3(-90 * 4, 0, 180 * 4);
+        const posFinal = new THREE.Vector3(-90, 60, 180);
+        
         this.isStarPreviewState = false;
 
         this._orbitControl.enabled = false;
-        this._camera.position.set(-90 * 4, 0, 180 * 4);
+        this._orbitControl.maxDistance = posStart.length();
+
+        this._camera.position.copy(posStart);
         this._camera.lookAt(this._cameraTarget);
         gsap.to(this._camera.position, {
-            x: -90,
-            y: 60,
-            z: 180,
+            x: posFinal.x,
+            y: posFinal.y,
+            z: posFinal.z,
             duration: 3,
-            // delay: 0.1,
             ease: 'sine.inOut',
             onComplete: () => {
                 this._fsm.startState(GalaxyStates.realStars);

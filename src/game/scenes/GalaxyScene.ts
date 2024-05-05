@@ -258,12 +258,14 @@ export class GalaxyScene extends BasicScene {
             parent: this._scene,
             camera: this._camera as THREE.PerspectiveCamera
         });
-        this._galaxy.init();
+        this._galaxy.init({
+            initDebugGui: GlobalParams.isDebugMode
+        });
 
         // DEBUG GUI
-        if (GlobalParams.isDebugMode) {
-            this._galaxy.initDebugGui();
-        }
+        // if (GlobalParams.isDebugMode) {
+        //     this._galaxy.initDebugGui();
+        // }
 
     }
 
