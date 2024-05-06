@@ -21,8 +21,10 @@
 import { default as anime } from "animejs"
 import { PropType } from 'vue'
 import { default as vClickOutside } from 'click-outside-vue3';
+import { Emotion } from '~/game/events/GameEvents';
+import { Coords } from '@/stores/battle-emotions';
 
-const emotions = ['smile', 'thinking', 'evil', 'angry', 'dead', 'sad']
+const emotions: Emotion[] = ['smile', 'thinking', 'evil', 'angry', 'dead', 'sad']
 const radius = 80
 const offset = 30
 
@@ -44,10 +46,7 @@ const getYOffset = (index: number) => {
 export default {
   name: 'EmotionsSelect',
   props: {
-    coords: Object as PropType<{
-      x: number,
-      y: number
-    }>,
+    coords: Object as PropType<Coords>,
   },
   directives: {
     clickOutside: vClickOutside.directive

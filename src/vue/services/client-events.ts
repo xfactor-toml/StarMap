@@ -281,6 +281,13 @@ export class ClientEventsService {
         if (clientEvent.type === 'showSelection') {
           battleStore.emotions.showSelector(clientEvent.position2d)
         }
+
+        if (clientEvent.type === 'show') {
+          battleStore.emotions.showPlayerEmotion(
+            clientEvent.emotion,
+            clientEvent.position2d
+          )
+        }
         
         break;
 
