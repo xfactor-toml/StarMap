@@ -24,12 +24,14 @@ import { default as vClickOutside } from 'click-outside-vue3';
 import { Coords } from '@/stores/battle-emotions';
 import { Emotion } from "~/game/battle/Types";
 
+const SHOW_DURATION = 3000
+
 const emotions: Emotion[] = ['smile', 'thinking', 'evil', 'angry', 'dead', 'sad']
-const radius = 80
+const radius = 60
 const offset = 30
 
 const getRadians = (index: number) => {
-  const degree = 360 / emotions.length * index - offset
+  const degree = 360 / emotions.length * index + offset
   const radians = degree / 180 * Math.PI
 
   return radians
@@ -55,6 +57,7 @@ export default {
     return {
       emotions,
       order: [1, 3, 5, 4, 2, 0],
+      timer: null,
     }
   },
   computed: {
@@ -69,23 +72,35 @@ export default {
         translateX: (el, i) => [getXOffset(i), 0],
         translateY: (el, i) => [getYOffset(i), 0],
         scale: [0, 1],
-        duration: 1400,
+        opacity: [0, 1],
+        duration: 1000,
         delay: anime.stagger(40),
-        easing: 'easeOutElastic'
+        easing: 'easeOutElastic',
+        complete: () => {
+          this.timer = setTimeout(() => {
+            this.close()
+          }, SHOW_DURATION);
+        }
       })
     },
     hide() {
       return anime({
-        targets: [...this.elementsRefs].reverse(),
-        translateX: (el, i) => [0, getYOffset(i)],
-        translateY: (el, i) => [0, getXOffset(i)],
+        targets: this.elementsRefs,
         scale: [1, 0],
+        opacity: [1, 0],
+        translateX: (el, i) => getXOffset(i),
+        translateY: (el, i) => getYOffset(i),
         duration: 600,
-        delay: anime.stagger(30),
+        delay: anime.stagger(40),
         easing: 'easeInBack'
       }).finished
     },
     close() {
+      if (this.timer) {
+        clearTimeout(this.timer)
+        this.timer = null
+      }
+
       this.hide().then(() => {
         this.$emit('close')
       })
