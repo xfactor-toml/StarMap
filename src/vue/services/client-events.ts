@@ -278,6 +278,20 @@ export class ClientEventsService {
         
         break;
 
+      case GameEvent.BATTLE_EMOTION:
+        if (clientEvent.type === 'showSelection') {
+          battleStore.emotions.showSelector(clientEvent.position2d)
+        }
+
+        if (clientEvent.type === 'show') {
+          battleStore.emotions.showPlayerEmotion(
+            clientEvent.emotion,
+            clientEvent.position2d
+          )
+        }
+        
+        break;
+
       default:
         LogMng.error(`Unknown game event:`, clientEvent);
         break;

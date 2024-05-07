@@ -192,6 +192,11 @@ export class ClientService {
     useScenesStore().setScene(UISceneNames.Galaxy);
   }
 
+  onEmotionSelect(type: string) {
+    LogMng.debug(`emotion select: ${type}`);
+    FrontEvents.onBattleEmotion.dispatch(type);
+  }
+
   static VuePlugin = {
     install: app => {
       app.config.globalProperties.$client = markRaw(new ClientService(FrontEvents));

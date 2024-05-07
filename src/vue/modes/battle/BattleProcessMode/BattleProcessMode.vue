@@ -54,12 +54,24 @@
       :gold="battleStore.process.state.gold"
       @action="$client.onBattleAction"
     />
+    <EmotionsSelect
+      v-if="battleStore.emotions.selectorCoords"
+      :coords="battleStore.emotions.selectorCoords"
+      @select="$client.onEmotionSelect"
+      @close="battleStore.emotions.closeSelector"
+    />
+    <PlayerEmotion
+      v-if="battleStore.emotions.playerEmotion"
+      :type="battleStore.emotions.playerEmotion.type"
+      :coords="battleStore.emotions.playerEmotion.coords"
+      @close="battleStore.emotions.removePlayerEmotion"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import { useBattleStore, useSettingsStore, useUiStore } from '@/stores';
-import { BattleControlPanel, SettingsPopup } from '@/components';
+import { BattleControlPanel, EmotionsSelect, PlayerEmotion, SettingsPopup } from '@/components';
 import { getShortAddress } from '@/utils';
 import { mapStores } from 'pinia'; 
 import { default as vClickOutside } from 'click-outside-vue3';
@@ -68,6 +80,8 @@ export default {
   name: 'BattleProcessMode',
   components: {
     BattleControlPanel,
+    EmotionsSelect,
+    PlayerEmotion,
     SettingsPopup,
   },
   directives: {
