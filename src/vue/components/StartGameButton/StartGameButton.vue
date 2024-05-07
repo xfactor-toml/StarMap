@@ -2,7 +2,8 @@
   <button
     class="StartGameButton"
     @click="$emit('click')"
-  >Start<br>game
+  >
+    <slot/>
   </button>
 </template>
 

@@ -113,6 +113,10 @@ export class ClientService {
     
   }
 
+  onGameStartDuel() {
+    // START DUEL
+  }
+
   onGameStartWithBot() {
     FrontEvents.onBattleSearchBot.dispatch();
   }
