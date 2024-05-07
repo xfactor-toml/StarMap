@@ -135,13 +135,13 @@ export class ClientEventsService {
             connected: {
               address: clientEvent.enemyData.name || '0xADDR-ENEMY',
               name: clientEvent.enemyData.starName,
-              race: 'Humans',
+              race: clientEvent.enemyData.race,
               star: clientEvent.enemyData.starName,
             },
             current: {
               address: clientEvent.playerData.name || '0xADDR-PLAYER',
               name: clientEvent.playerData.starName,
-              race: 'Insects',
+              race: clientEvent.playerData.race,
               star: clientEvent.playerData.starName,
             },
           },

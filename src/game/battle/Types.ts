@@ -80,16 +80,17 @@ export type AcceptScreenData = {
     loadingData?: PlayerLoadingData
 }
 
-export type StartPlayerData = {
+export type PlayerData = {
     name: string,
     isNick: boolean,
-    starName: string
+    starName: string,
+    race: ObjectRace
 }
 export type StartGameData = {
     cmd?: 'start',
     prerollTimerSec: number,
-    playerData: StartPlayerData,
-    enemyData: StartPlayerData
+    playerData: PlayerData,
+    enemyData: PlayerData
 }
 
 export type GameCompleteData = {
