@@ -9,9 +9,21 @@
       </div>
       <div class="GalaxyScene__headerColumn is-center">
         <SearchingIndicator v-if="battleStore.connecting.playerSearching" @click="$client.onSearchingClick" />
-        <!-- <StartGameButton v-else @click="$client.onGameStart" /> -->
-        <StartGameButton v-if="!battleStore.connecting.playerSearching" @click="$client.onGameStart" />
-        <StartGameBotButton v-if="!battleStore.connecting.playerSearching" @click="$client.onGameStartWithBot" />
+        <template v-else>
+          <StartGameButton
+            @click="$client.onGameStart"
+          >Start<br>game
+          </StartGameButton>
+          <StartGameButton
+            @click="$client.onGameStartDuel"
+          >DUEL
+          </StartGameButton>
+          <StartGameButton
+            class="GalaxyScene__playButton"
+            @click="$client.onGameStartWithBot"
+          >Play<br>With Bot
+          </StartGameButton>
+        </template>
       </div>
       <div class="GalaxyScene__headerColumn is-right">
         <div class="GalaxyScene__userbar">
@@ -52,7 +64,6 @@ import {
   PlasmaMintPopup,
   SearchingIndicator,
   StartGameButton,
-  StartGameBotButton,
   UserBar,
   ViewsPanel,
 } from '@/components';
@@ -69,7 +80,6 @@ export default {
     PlasmaMintPopup,
     SearchingIndicator,
     StartGameButton,
-    StartGameBotButton,
     UserBar,
     ViewsPanel,
   },

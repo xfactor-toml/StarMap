@@ -87,6 +87,10 @@
   bottom: 28px;
 }
 
+.GalaxyScene__playButton {
+  font-size: 14px;
+}
+
 @media (max-width: 980px) {
   .GalaxyScene__panels {
     display: flex;
