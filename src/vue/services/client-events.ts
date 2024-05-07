@@ -76,10 +76,10 @@ export class ClientEventsService {
       case GameEvent.BATTLE_ACCEPT_SCREEN:
         switch (clientEvent.action) {
 
-          case 'show':
+          case 'start':
             // playersConnectMock();
             // seconds
-            const ACCEPT_TIME = clientEvent.time?.acceptTimeSec || 6
+            const ACCEPT_TIME = clientEvent.time?.acceptTimeSec || 15
             // const LOADING_TIME = 4
             
             scenesStore.setScene(UISceneNames.Battle)
@@ -96,13 +96,14 @@ export class ClientEventsService {
           
           case 'update':
             scenesStore.setSceneMode('connect');
-            battleStore.connecting.setConnectedUsers({
-              current: clientEvent.state.current,
-              max: clientEvent.state.max
-            });
+            battleStore.connecting.setConnectedUsers(clientEvent.state);
             break;
           
-          case 'close':
+          case 'loading':
+            scenesStore.setSceneMode('loading');
+            break;
+          
+          case 'cancel':
             scenesStore.setScene(UISceneNames.Galaxy);
             break;
           
@@ -132,16 +133,16 @@ export class ClientEventsService {
         battleStore.process.setState({
           players: {
             connected: {
-              address: clientEvent.enemyWallet || '0xADDR-ENEMY',
-              name: 'Kepler',
+              address: clientEvent.enemyData.name || '0xADDR-ENEMY',
+              name: clientEvent.enemyData.starName,
               race: 'Humans',
-              star: '2048RX',
+              star: clientEvent.enemyData.starName,
             },
             current: {
-              address: clientEvent.playerWallet || '0xADDR-PLAYER',
-              name: 'Anthares',
+              address: clientEvent.playerData.name || '0xADDR-PLAYER',
+              name: clientEvent.playerData.starName,
               race: 'Insects',
-              star: '2048RX',
+              star: clientEvent.playerData.starName,
             },
           },
           gold: 0,

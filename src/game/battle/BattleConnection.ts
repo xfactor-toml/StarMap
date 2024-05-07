@@ -1,7 +1,7 @@
 import { MyEventDispatcher } from "../basics/MyEventDispatcher";
 import { Socket, io } from "socket.io-client";
 import { GlobalParams } from "../data/GlobalParams";
-import { ClaimRewardData, DebugTestData, GameCompleteData, AcceptScreenData, PackTitle, SkillRequest, StartGameData, SearchGameData } from "./Types";
+import { ClaimRewardData, DebugTestData, GameCompleteData, AcceptScreenData, PackTitle, SkillRequest, StartGameData, SearchGameData, SignData, PlayerLoadingData } from "./Types";
 import { BlockchainConnectService } from "~/blockchainTotal";
 
 export enum ConnectionEvent {
@@ -61,9 +61,7 @@ export class BattleConnection extends MyEventDispatcher {
             this.emit(ConnectionEvent.disconnect);
         });
 
-        this._socket.on(PackTitle.sign, (aData: {
-            cmd: 'request'
-        }) => {
+        this._socket.on(PackTitle.sign, (aData: SignData) => {
             this.onSignRecv(aData);
         });
 
@@ -94,20 +92,14 @@ export class BattleConnection extends MyEventDispatcher {
 
     }
 
-    private onSignRecv(aData: {
-        cmd: 'request' | 'reject' | 'success'
-    }) {
-        switch (aData.cmd) {
+    private onSignRecv(aData: SignData) {
+        switch (aData.fromServer) {
             case 'request':
                 this.logDebug(`onSignRecv: request...`);
                 const authPriority = this.signService.getDefaultAuthMethod();
                 this.logDebug(`onSignRecv: authPriority: ${authPriority}`);
-                // if (authPriority === "Local") {
-                this.signProcess2();
-                // }
-                // else {
-                //     this.signProcess1();
-                // }
+                // always local
+                this.signProcessLocal();
                 break;
             case 'reject':
                 this.logDebug(`onSignRecv: REJECT!`, aData);
@@ -120,58 +112,44 @@ export class BattleConnection extends MyEventDispatcher {
                 break;
         }
     }
-
-    // private signProcess1() {
-    //     let ws;
-    //     try {
-    //         ws = useWallet();
-    //     } catch (e) {
-    //         console.log("No wallet");
-    //         this.signProcess2();
-    //     }
-    //     if (!ws) {
-    //         this.signProcess2();
-    //         return;
-    //     }
-    //     if (!ws.connected) {
-    //         ws.connect('metamask').then((aIsSuccess: boolean) => {
-    //             if (aIsSuccess) {
-    //                 this.signProcess2();
-    //             }
-    //             else {
-    //                 GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_ERROR, { reason: 'not success' });
-    //             }
-    //         });
-    //     }
-    //     else {
-    //         this.signProcess2();
-    //     }
-    // }
     
-    private async signProcess2() {
-        this.logDebug(`signProcess2()...`);
+    private async signProcessLocal() {
+        this.logDebug(`signProcessLocal()...`);
 
         // const bcs = BlockchainConnectService.getInstance();
         // const walletAddress = await bcs.getWalletAddressWithConnect();
         const walletAddress = this.signService.getWalletAddressWithConnect();
+        this.logDebug(`signProcessLocal: walletAddress = ${walletAddress}`);
 
-        this.logDebug(`signProcess2(): walletAddress = ${walletAddress}`);
+        let signData: SignData = {
+            fromCli: 'web2'
+        }
+
+        if (this.signService.isTelegram()) {
+            signData.displayName = this.signService.TelegramLogin();
+        }
+        else if (GlobalParams.isDebugMode) {
+            signData.displayName = 'TestNick';
+        }
 
         if (!walletAddress) {
             const authPriority = this.signService.getDefaultAuthMethod();
-            console.log("Priority", authPriority);
+            this.logDebug(`signProcessLocal: Priority`, authPriority);
             this.signService.SetupAuthMethod('Local');
             this.signService.getSignedAuthMessage().then((aSignature) => {
-                this.logDebug(`local wallet auth...`);
-                this._socket.emit(PackTitle.sign, aSignature);
+                this.logDebug(`signProcessLocal: local wallet auth...`);
+                signData.signature = aSignature;
+                this.sendPacket(PackTitle.sign, signData);
             })
             return;
         }
-
-        const signature = this.signService.getSignedAuthMessage().then(aSignature => {
-            this.logDebug(`getSignedAuthMessage signature = ${signature}`);
-            this._socket.emit(PackTitle.sign, aSignature);
-        });
+        else {
+            this.signService.getSignedAuthMessage().then(aSignature => {
+                this.logDebug(`signProcessLocal: getSignedAuthMessage signature = ${aSignature}`);
+                signData.signature = aSignature;
+                this.sendPacket(PackTitle.sign, signData);
+            });
+        }
 
     }
 
@@ -258,6 +236,14 @@ export class BattleConnection extends MyEventDispatcher {
     sendAcceptCloseClick() {
         let data: AcceptScreenData = {
             action: 'closeClick'
+        }
+        this._socket.emit(PackTitle.battleConfirmation, data);
+    }
+
+    sendAcceptLoading(aData: PlayerLoadingData) {
+        let data: AcceptScreenData = {
+            action: 'loading',
+            loadingData: aData
         }
         this._socket.emit(PackTitle.battleConfirmation, data);
     }

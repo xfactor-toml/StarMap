@@ -1,8 +1,8 @@
-import { AcceptScreenData, BoxOpenData, ExpData, GameCompleteData } from "../battle/Types";
+import { AcceptScreenAction, AcceptScreenData, BoxOpenData, ExpData, GameCompleteData, StartGameData } from "../battle/Types";
 
 export type AcceptData = {
     eventName: GameEvent.BATTLE_ACCEPT_SCREEN,
-    action: 'show' | 'update' | 'close',
+    action: AcceptScreenAction,
     time?: {
         acceptTimeSec: number
     },
@@ -92,11 +92,7 @@ export class GameEventDispatcher {
         }));
     }
 
-    static battlePrerollShow(aData: {
-        timer: number,
-        playerWallet: string,
-        enemyWallet: string
-    }) {
+    static battlePrerollShow(aData: StartGameData) {
         aData[`eventName`] = GameEvent.BATTLE_PREROLL_SHOW;
         window.dispatchEvent(new CustomEvent('gameEvent', {
             detail: aData
@@ -143,7 +139,7 @@ export class GameEventDispatcher {
     static battleAcceptScreenShow(aAcceptTime: number) {
         let data: AcceptData = {
             eventName: GameEvent.BATTLE_ACCEPT_SCREEN,
-            action: 'show',
+            action: 'start',
             time: {
                 acceptTimeSec: aAcceptTime
             }
@@ -156,8 +152,18 @@ export class GameEventDispatcher {
     static battleAcceptScreenUpdate(aData: AcceptScreenData) {
         let data: AcceptData = {
             eventName: GameEvent.BATTLE_ACCEPT_SCREEN,
-            action: 'update',
+            action: aData.action,
             state: aData.state
+        };
+        window.dispatchEvent(new CustomEvent('gameEvent', {
+            detail: data
+        }));
+    }
+
+    static battleAcceptScreenLoading(aData: AcceptScreenData) {
+        let data: AcceptData = {
+            eventName: GameEvent.BATTLE_ACCEPT_SCREEN,
+            action: aData.action
         };
         window.dispatchEvent(new CustomEvent('gameEvent', {
             detail: data
@@ -167,7 +173,7 @@ export class GameEventDispatcher {
     static battleAcceptScreenClose() {
         let data: AcceptData = {
             eventName: GameEvent.BATTLE_ACCEPT_SCREEN,
-            action: 'close'
+            action: 'cancel'
         };
         window.dispatchEvent(new CustomEvent('gameEvent', {
             detail: data

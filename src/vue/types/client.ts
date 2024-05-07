@@ -1,4 +1,4 @@
-import { BoxOpenData, ExpData, GameCompleteData } from '~/game/battle/Types';
+import { AcceptScreenAction, BoxOpenData, ExpData, GameCompleteData, StartGameData } from '~/game/battle/Types';
 import { ServerStarData } from '~/game/data/Types';
 import { FrontEvents } from '~/game/events/FrontEvents';
 import { AcceptData, EmotionData, GameEvent } from '~/game/events/GameEvents';
@@ -75,7 +75,7 @@ export interface StarModeEvent extends BaseEvent {
 
 export interface BattleAcceptScreen extends BaseEvent {
   eventName: GameEvent.BATTLE_ACCEPT_SCREEN;
-  action: 'show' | 'update' | 'close';
+  action: AcceptScreenAction;
   time?: {
     acceptTimeSec: number
   },
@@ -94,11 +94,8 @@ export interface BattleSearchingError extends BaseEvent {
   eventName: GameEvent.BATTLE_SEARCHING_ERROR;
   reason: string;
 }
-export interface BattlePrerollShow extends BaseEvent {
+export interface BattlePrerollShow extends BaseEvent, StartGameData {
   eventName: GameEvent.BATTLE_PREROLL_SHOW;
-  timer: number;
-  playerWallet: string;
-  enemyWallet: string;
 }
 export interface BattleCompleteShow extends BaseEvent, GameCompleteData {
   eventName: GameEvent.BATTLE_COMPLETE_SHOW;

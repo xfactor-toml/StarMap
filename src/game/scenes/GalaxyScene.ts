@@ -8,14 +8,13 @@ import { SceneNames } from './SceneNames';
 import { ThreeLoader } from '../utils/threejs/ThreeLoader';
 import { SimpleRenderer } from '../core/renderers/SimpleRenderer';
 import { BattleConnection, ConnectionEvent } from '../battle/BattleConnection';
-import { AcceptScreenData, ChallengeInfo, PackTitle, StartGameData } from '../battle/Types';
+import { ChallengeInfo, PackTitle, StartGameData } from '../battle/Types';
 import { GameEvent, GameEventDispatcher } from '../events/GameEvents';
 import { DebugGui } from '../debug/DebugGui';
 import { useWallet } from '@/services';
 import { AudioMng } from '../audio/AudioMng';
 import { AudioAlias } from '../audio/AudioData';
-import { BattleAcceptScreenMng } from '../controllers/BattleAcceptScreenMng';
-import { MyMath } from '../utils/MyMath';
+import { BattleAcceptScreenMng, BattleAcceptScreenMngEvent } from '../controllers/BattleAcceptScreenMng';
 import { MyUtils } from '../utils/MyUtils';
 
 export class GalaxyScene extends BasicScene {
@@ -55,22 +54,14 @@ export class GalaxyScene extends BasicScene {
 
     protected onInit() {
         this.initMusic();
-        this.initEvents();
+        this.initBattleAcceptController();
         this.initSkybox();
         this.initGalaxy();
-        this.initBattleAcceptController();
         this.initDuel();
+        this.initEvents();
         if (GlobalParams.isDebugMode) {
             this.initBlockchainDebugGui();
             this.initBattleDebugGui();
-        }
-    }
-
-    initDuel() {
-        if (GlobalParams.BATTLE.duelNumber >= 0) {
-            let bc = BattleConnection.getInstance();
-            bc.sendChallengeConnect(GlobalParams.BATTLE.duelNumber);
-            GlobalParams.BATTLE.duelNumber = -1;
         }
     }
 
@@ -78,7 +69,20 @@ export class GalaxyScene extends BasicScene {
         // start music
         AudioMng.getInstance().playMusic(AudioAlias.MUSIC_MAIN);
     }
-    
+
+    private initBattleAcceptController() {
+        this._battleAcceptScreenMng = new BattleAcceptScreenMng();
+        this._battleAcceptScreenMng.on(BattleAcceptScreenMngEvent.Loading, this.onAcceptScreenLoading, this);
+    }
+
+    private initDuel() {
+        if (GlobalParams.BATTLE.duelNumber >= 0) {
+            let bc = BattleConnection.getInstance();
+            bc.sendChallengeConnect(GlobalParams.BATTLE.duelNumber);
+            GlobalParams.BATTLE.duelNumber = -1;
+        }
+    }
+
     private initEvents() {
         // front events
         FrontEvents.onLeftPanelGalaxyClick.add(this.onLeftPanelGalaxyClick, this);
@@ -95,7 +99,6 @@ export class GalaxyScene extends BasicScene {
         bc.on(PackTitle.gameStart, this.onBattleStartPackage, this);
         bc.on(PackTitle.challengeInfo, this.onChallengePack, this);
         bc.on(ConnectionEvent.disconnect, this.onServerDisconnected, this);
-
     }
 
     private freeEvents() {
@@ -113,11 +116,6 @@ export class GalaxyScene extends BasicScene {
         bc.remove(PackTitle.gameStart, this.onBattleStartPackage);
         bc.remove(PackTitle.challengeInfo, this.onChallengePack);
         bc.remove(ConnectionEvent.disconnect, this.onServerDisconnected);
-    }
-
-    private initBattleAcceptController() {
-        this._battleAcceptScreenMng = new BattleAcceptScreenMng();
-
     }
 
     private onLeftPanelGalaxyClick() {
@@ -202,11 +200,7 @@ export class GalaxyScene extends BasicScene {
             case 'start':
                 this.logDebug(`onBattleStartPackage...`);
                 
-                GameEventDispatcher.battlePrerollShow({
-                    timer: aData.timer,
-                    playerWallet: aData.playerWallet,
-                    enemyWallet: aData.enemyWallet
-                });
+                GameEventDispatcher.battlePrerollShow(aData);
 
                 setTimeout(() => {
                     //this._battleScene.show();
@@ -245,6 +239,17 @@ export class GalaxyScene extends BasicScene {
             GameEventDispatcher.showMessage(`Game Server disconnected...`);
             GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_ERROR);
         }
+    }
+
+    private onAcceptScreenLoading() {
+        // start loading game
+        // search random star name
+        // send loading complete
+        setTimeout(() => {
+            this._battleAcceptScreenMng.sendLoadingComplete({
+                starName: 'None'
+            });
+        }, 2000);
     }
 
     private initSkybox() {
@@ -361,8 +366,8 @@ export class GalaxyScene extends BasicScene {
     }
 
     protected onFree() {
-        this._battleAcceptScreenMng.free();
         this.freeEvents();
+        this._battleAcceptScreenMng.free();
         if (GlobalParams.isDebugMode) DebugGui.getInstance().clear();
         this._galaxy.free();
         this._galaxy = null;

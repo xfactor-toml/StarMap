@@ -1,26 +1,19 @@
+import { MyEventDispatcher } from "../basics/MyEventDispatcher";
 import { BattleConnection } from "../battle/BattleConnection";
-import { AcceptScreenData, PackTitle } from "../battle/Types";
-import { ILogger } from "../core/interfaces/ILogger";
+import { AcceptScreenData, PackTitle, PlayerLoadingData } from "../battle/Types";
 import { FrontEvents } from "../events/FrontEvents";
 import { GameEventDispatcher } from "../events/GameEvents";
-import { LogMng } from "../utils/LogMng";
 
-export class BattleAcceptScreenMng implements ILogger {
-    private _className = 'BattleAcceptScreenMng';
+export enum BattleAcceptScreenMngEvent {
+    Loading = 'Loading'
+}
+
+export class BattleAcceptScreenMng extends MyEventDispatcher {
     private _startDeadlineTimer: NodeJS.Timeout;
 
     constructor() {
+        super('BattleAcceptScreenMng');
         this.initListeners();
-    }
-
-    logDebug(aMsg: string, aData?: any): void {
-        LogMng.debug(`${this._className}: ${aMsg}`, aData);
-    }
-    logWarn(aMsg: string, aData?: any): void {
-        LogMng.warn(`${this._className}: ${aMsg}`, aData);
-    }
-    logError(aMsg: string, aData?: any): void {
-        LogMng.error(`${this._className}: ${aMsg}`, aData);
     }
 
     private initListeners() {
@@ -28,14 +21,14 @@ export class BattleAcceptScreenMng implements ILogger {
         FrontEvents.onBattleAcceptCloseClick.add(this.onFrontBattleAcceptCloseClick, this);
         // battle server events
         let bc = BattleConnection.getInstance();
-        bc.on(PackTitle.battleConfirmation, this.onBattleAcceptScreenPack, this);
+        bc.on(PackTitle.battleConfirmation, this.onServerBattleAcceptScreenPack, this);
     }
 
     private removeListeners() {
         FrontEvents.onBattleAcceptClick.remove(this.onFrontBattleAcceptClick, this);
         FrontEvents.onBattleAcceptCloseClick.remove(this.onFrontBattleAcceptCloseClick, this);
         let bc = BattleConnection.getInstance();
-        bc.remove(PackTitle.battleConfirmation, this.onBattleAcceptScreenPack);
+        bc.remove(PackTitle.battleConfirmation, this.onServerBattleAcceptScreenPack);
     }
 
     private initDeadlineTimer(aTimeSec: number) {
@@ -63,30 +56,36 @@ export class BattleAcceptScreenMng implements ILogger {
         this.clearDeadlineTimeout();
     }
 
-    private onBattleAcceptScreenPack(aData: AcceptScreenData) {
+    private onServerBattleAcceptScreenPack(aData: AcceptScreenData) {
         this.logDebug(`onBattleAcceptScreenPack: action=${aData.action}`, aData);
         switch (aData.action) {
-            case 'start':
-                // const startTimer = 6;
-                // GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_STOP);
+            case 'start': // show screen
                 GameEventDispatcher.battleAcceptScreenShow(aData.timer);
                 this.initDeadlineTimer(aData.timer);
                 break;
-            case 'update':
+            case 'update': // update screen
                 GameEventDispatcher.battleAcceptScreenUpdate(aData);
+                break;
+            case 'loading': // update to loading screen
+                GameEventDispatcher.battleAcceptScreenLoading(aData);
+                this.emit(BattleAcceptScreenMngEvent.Loading);
                 break;
             case 'cancel':
                 GameEventDispatcher.battleAcceptScreenClose();
-                // GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_STOP);
                 break;
             default:
                 this.logWarn(`onBattleAcceptScreenPack: `);
                 break;
         }
     }
+
+    sendLoadingComplete(aData: PlayerLoadingData) {
+        BattleConnection.getInstance().sendAcceptLoading(aData);
+    }
     
     free() {
         this.logDebug(`free...`);
+        this.removeAll(BattleAcceptScreenMngEvent.Loading);
         this.removeListeners();
     }
 
