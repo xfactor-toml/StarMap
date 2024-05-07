@@ -1,4 +1,4 @@
-import { AcceptScreenAction, AcceptScreenData, BoxOpenData, ExpData, GameCompleteData, StartGameData } from "../battle/Types";
+import { AcceptScreenAction, AcceptScreenData, BoxOpenData, Emotion, ExpData, GameCompleteData, StartGameData } from "../battle/Types";
 
 export type AcceptData = {
     eventName: GameEvent.BATTLE_ACCEPT_SCREEN,
@@ -11,8 +11,6 @@ export type AcceptData = {
         max: number
     }
 }
-
-export type Emotion = 'smile' | 'evil' | 'dead' | 'thinking' | 'angry' | 'sad';
 
 export type EmotionData = {
     eventName: GameEvent.BATTLE_EMOTION,

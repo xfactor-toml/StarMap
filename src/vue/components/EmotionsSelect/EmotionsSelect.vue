@@ -21,8 +21,8 @@
 import { default as anime } from "animejs"
 import { PropType } from 'vue'
 import { default as vClickOutside } from 'click-outside-vue3';
-import { Emotion } from '~/game/events/GameEvents';
 import { Coords } from '@/stores/battle-emotions';
+import { Emotion } from "~/game/battle/Types";
 
 const emotions: Emotion[] = ['smile', 'thinking', 'evil', 'angry', 'dead', 'sad']
 const radius = 80

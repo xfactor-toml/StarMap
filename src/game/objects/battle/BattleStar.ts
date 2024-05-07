@@ -4,6 +4,8 @@ import { BigStar2 } from '../BigStar2';
 import { ThreeUtils } from '~/game/utils/threejs/ThreejsUtils';
 import { MyMath } from '@/utils';
 import { BattleStarHpBar } from './BattleStarHpBar';
+import { ClickableGroup } from '../basic/ClickableGroup';
+import { Signal } from '~/game/utils/events/Signal';
 
 type BattleStarParams = BattleObjectData & {
     camera: THREE.Camera,
@@ -20,6 +22,7 @@ type BattleStarParams = BattleObjectData & {
 export class BattleStar extends BattleObject {
     private _starParams: BattleStarParams;
     protected _mesh: THREE.Mesh;
+    protected _clickObject: ClickableGroup;
     protected _star: BigStar2;
     protected _starHpBar: BattleStarHpBar;
     protected _prevHp: number;
@@ -29,6 +32,8 @@ export class BattleStar extends BattleObject {
     private _lightHeight = 0;
     protected _lightHelper: THREE.Line;
     
+    onClick = new Signal();
+
     constructor(aParams: BattleStarParams) {
         super(aParams, 'BattleStar');
         this._starParams = aParams;
@@ -37,13 +42,14 @@ export class BattleStar extends BattleObject {
         this._lightHeight = aParams.light.height || 0;
 
         this.initStar();
+        this.initClickZone();
         this.initHpBgLine();
         this.initHpBar();
         this.initPlanetOrbit();
         this.initPointLight(aParams.light);
 
     }
-
+    
     private initPrimitiveStar() {
         let g = new THREE.SphereGeometry(this.radius);
         let m = new THREE.MeshBasicMaterial({
@@ -60,6 +66,26 @@ export class BattleStar extends BattleObject {
         });
         this._star.position.y = this.radius / 2;
         this.add(this._star);
+    }
+
+    private initClickZone() {
+        this._clickObject = new ClickableGroup();
+        this._clickObject.initPlane({
+            w: this.radius * 2.2,
+            h: this.radius * 2.2
+        });
+        this._clickObject.rotation.x = MyMath.toRadian(-90);
+        this._clickObject.position.copy(this._star.position);
+        this._clickObject.position.y += 1;
+        this.add(this._clickObject);
+
+        this._clickObject.onClick.add(() => {
+            this.onClick.dispatch(this);
+        }, this);
+    }
+
+    private freeClickZone() {
+        this._clickObject.free();
     }
 
     private initHpBgLine() {
@@ -185,6 +211,8 @@ export class BattleStar extends BattleObject {
 
     free() {
         this.clear();
+
+        this.freeClickZone();
 
         if (this._mesh) {
             this.remove(this._mesh);

@@ -4,7 +4,7 @@ import { GlobalParams } from '../data/GlobalParams';
 import { BattleView } from '../battle/BattleView';
 import { FrontEvents } from '../events/FrontEvents';
 import { BattleConnection, ConnectionEvent } from '../battle/BattleConnection';
-import { ClaimRewardData, ExpData, ExplosionData, GameCompleteData, PackTitle, SniperData, StartGameData } from '../battle/Types';
+import { ClaimRewardData, Emotion, EmotionData, ExpData, GameCompleteData, PackTitle } from '../battle/Types';
 import { GameEvent, GameEventDispatcher } from '../events/GameEvents';
 import { DebugGui } from '../debug/DebugGui';
 import { BasicScene } from '../core/scene/BasicScene';
@@ -13,7 +13,6 @@ import { SimpleRenderer } from '../core/renderers/SimpleRenderer';
 import { ThreeLoader } from '../utils/threejs/ThreeLoader';
 import { BlockchainConnectService } from '~/blockchainTotal';
 import { GetGameAssetsWeb2, getUserBoxesToOpenWeb2 } from '~/blockchainTotal/getters/boxesWeb2';
-import { useWallet } from '@/services';
 import { ThreeUtils } from '../utils/threejs/ThreejsUtils';
 import { DeviceInfo } from '../utils/DeviceInfo';
 
@@ -85,6 +84,7 @@ export class BattleScene extends BasicScene {
 
     private initView() {
         this._view = new BattleView({
+            render: this._render,
             scene: this._scene,
             camera: this._camera,
             connection: this._connection
@@ -99,13 +99,17 @@ export class BattleScene extends BasicScene {
         this._connection.socket.on(PackTitle.exp, (aData: ExpData) => {
             this.onExpUpdatePack(aData);
         });
+        this._connection.socket.on(PackTitle.emotion, (aData: EmotionData) => {
+            this.onServerEmotion(aData);
+        });
         // front
         FrontEvents.onBattleExit.add(this.onFrontExitBattle, this);
         FrontEvents.onBattleAbilityClick.add(this.onFrontSkillClick, this);
         FrontEvents.onBattleAbilityLevelUpClick.add(this.onFrontSkillUpClick, this);
         FrontEvents.onBattleFinalClaimRewardClick.add(this.onFrontClaimRewardClick, this);
         FrontEvents.onBattleFinalClaimBoxClick.add(this.onFrontClaimBoxClick, this);
-        FrontEvents.onBattleRewardCloseClick.add(this.onBattleRewardCloseClick, this);
+        FrontEvents.onBattleRewardCloseClick.add(this.onFrontBattleRewardCloseClick, this);
+        FrontEvents.onBattleEmotion.add(this.onFrontBattleEmotion, this);
     }
 
     private removeEvents() {
@@ -113,13 +117,15 @@ export class BattleScene extends BasicScene {
         this._connection.remove(PackTitle.gameComplete, this.onGameCompletePack);
         this._connection.remove(ConnectionEvent.disconnect, this.onSocketDisconnect);
         this._connection.socket.removeListener(PackTitle.exp);
+        this._connection.socket.removeListener(PackTitle.emotion);
         // front
         FrontEvents.onBattleExit.remove(this.onFrontExitBattle, this);
         FrontEvents.onBattleAbilityClick.remove(this.onFrontSkillClick, this);
         FrontEvents.onBattleAbilityLevelUpClick.remove(this.onFrontSkillUpClick, this);
         FrontEvents.onBattleFinalClaimRewardClick.remove(this.onFrontClaimRewardClick, this);
         FrontEvents.onBattleFinalClaimBoxClick.remove(this.onFrontClaimBoxClick, this);
-        FrontEvents.onBattleRewardCloseClick.remove(this.onBattleRewardCloseClick, this);
+        FrontEvents.onBattleRewardCloseClick.remove(this.onFrontBattleRewardCloseClick, this);
+        FrontEvents.onBattleEmotion.remove(this.onFrontBattleEmotion, this);
     }
 
     private initDebug() {
@@ -155,7 +161,7 @@ export class BattleScene extends BasicScene {
     private initEmotionsDebugGui(aFolder: GUI) {
         const DATA = {
             showEmotionSelection: () => {
-                let sun = this._view.getPlayerSun();
+                let sun = this._view.getCurrentPlayerSun();
                 if (!sun) {
                     GameEventDispatcher.showMessage(`Warning: player's sun not found!`);
                     this.logWarn(`showEmotionSelection: player's sun not found!`);
@@ -165,7 +171,7 @@ export class BattleScene extends BasicScene {
                 GameEventDispatcher.showEmotionSelection(pos2d);
             },
             showRandomEmotion: () => {
-                let sun = this._view.getPlayerSun();
+                let sun = this._view.getCurrentPlayerSun();
                 if (!sun) {
                     GameEventDispatcher.showMessage(`Warning: player's sun not found!`);
                     this.logWarn(`showEmotionSelection: player's sun not found!`);
@@ -209,7 +215,7 @@ export class BattleScene extends BasicScene {
             default:
                 this.logDebug('onFrontClaimClick: default handling...');
                 GameEventDispatcher.battleCompleteHide();
-                this.onBattleRewardCloseClick();
+                this.onFrontBattleRewardCloseClick();
                 break;
         }
     }
@@ -219,9 +225,14 @@ export class BattleScene extends BasicScene {
         this.claimBox();
     }
 
-    private onBattleRewardCloseClick() {
+    private onFrontBattleRewardCloseClick() {
         // this.emit(BattleSceneEvent.onCloseBattle);
         this.closeScene();
+    }
+
+    private onFrontBattleEmotion(aEmotion: Emotion) {
+        this.logDebug(`onFrontBattleEmotion: ${aEmotion}`);
+        this._connection.sendEmotion(aEmotion);
     }
 
     private onGameCompletePack(aData: GameCompleteData) {
@@ -241,6 +252,16 @@ export class BattleScene extends BasicScene {
 
     private onExpUpdatePack(aExpData: ExpData) {
         GameEventDispatcher.battleExpUpdate(aExpData);
+    }
+
+    private onServerEmotion(aData: EmotionData) {
+        let sun = this._view.getPlayerSun(aData.owner);
+        if (!sun) {
+            this.logWarn(`onServerEmotion: player's sun not found!`);
+            return;
+        }
+        let pos2d = ThreeUtils.toScreenPosition(this._render.renderer, sun, this._camera, DeviceInfo.getInstance().devicePixelRatio);
+        GameEventDispatcher.showEmotion(aData.emotion, pos2d);
     }
 
     private async claimReward() {

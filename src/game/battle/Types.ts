@@ -29,6 +29,8 @@ export enum PackTitle {
     sniper = 'sniper',
     explosion = 'explosion',
 
+    emotion = 'emotion',
+
     claimReward = 'claimReward',
 
     debugTest = 'debugTest'
@@ -211,4 +213,10 @@ export type ExplosionData = {
 export type SniperData = {
     action: 'start' | 'end',
     planetId: number
+}
+
+export type Emotion = 'smile' | 'evil' | 'dead' | 'thinking' | 'angry' | 'sad';
+export type EmotionData = {
+    owner?: string,
+    emotion: Emotion
 }

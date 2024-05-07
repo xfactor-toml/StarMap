@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import gsap, { Linear, Sine } from 'gsap';
+import gsap from 'gsap';
 import { GUI } from 'dat.gui';
 import { MyEventDispatcher } from "../basics/MyEventDispatcher";
 import { IUpdatable } from "../core/interfaces/IUpdatable";
@@ -21,7 +21,11 @@ import { DamageViewer } from './DamageViewer';
 import { Tower } from '../objects/battle/Tower';
 import { HomingMissile } from '../objects/battle/HomingMissile';
 import { Explosion } from '../objects/Explosion';
-import { BlockchainConnectService } from '~/blockchainTotal';
+import { InputMng } from '../utils/inputs/InputMng';
+import { ClickableMesh } from '../objects/basic/ClickableMesh';
+import { GameEventDispatcher } from '../events/GameEvents';
+import { DeviceInfo } from '../utils/DeviceInfo';
+import { Renderer } from '../core/renderers/Renderer';
 
 type ServerFieldParams = {
 
@@ -86,8 +90,10 @@ const DEBUG_GUI = {
 
 export class BattleView extends MyEventDispatcher implements IUpdatable {
     private _walletAddr: string;
+    private _render: Renderer;
     private _scene: THREE.Scene;
     private _camera: THREE.Camera;
+    private _raycaster: THREE.Raycaster;
     private _connection: BattleConnection;
     private _cameraTarget: THREE.Vector3;
     private _cameraMng: BattleCameraMng;
@@ -107,12 +113,14 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     private _axiesHelper: THREE.AxesHelper;
 
     constructor(aParams: {
+        render: Renderer,
         scene: THREE.Scene,
         camera: THREE.Camera,
         connection: BattleConnection
     }) {
         super('BattleView');
 
+        this._render = aParams.render;
         this._scene = aParams.scene;
         this._camera = aParams.camera;
         this._connection = aParams.connection;
@@ -136,7 +144,13 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         });
 
         this.initConnectionListeners();
+        this.initRaycaster();
+        this.initInput();
         
+    }
+
+    private initRaycaster() {
+        this._raycaster = new THREE.Raycaster();
     }
 
     private initConnectionListeners() {
@@ -182,6 +196,52 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         this._connection.socket.on(PackTitle.sniper, (aData: SniperData) => {
             this.onSniperPack(aData);
         });
+    }
+
+    private initInput() {
+        let inputMng = InputMng.getInstance();
+        inputMng.onClickSignal.add(this.onClick, this);
+    }
+
+    private onClick(aClientX: number, aClientY: number) {
+
+        let inMng = InputMng.getInstance();
+        let pos = {
+            x: aClientX,
+            y: aClientY
+        }
+
+        let star = this.getStarUnderPoint(inMng.normalDown);
+        if (star) {
+
+        }
+
+    }
+
+    private getStarUnderPoint(normalCoords: any): BattleStar {
+
+        let res: BattleStar;
+
+        // get all stars
+        let stars = this.getObjectsByType('Star');
+
+        for (let i = 0; i < stars.length; i++) {
+            const star = stars[i];
+            // star.mesh
+        }
+
+        this._raycaster.setFromCamera(normalCoords, this._camera);
+        const intersects = this._raycaster.intersectObjects(this._scene.children, true);
+
+        for (let i = 0; i < intersects.length; i++) {
+            const obj = intersects[i].object;
+            if (obj instanceof ClickableMesh) {
+                obj.generateClickEvent();
+            }
+        }
+
+        return res;
+
     }
 
     private initField() {
@@ -355,6 +415,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 });
                 if (aData.pos) obj.position.copy(this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z }));
                 this._objects.set(aData.id, obj);
+                (obj as BattleStar).onClick.add(this.onStarClick, this);
                 break;
 
             case 'Planet':
@@ -498,6 +559,13 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         if (obj) {
             this._dummyMain.add(obj);
             this._objects.set(aData.id, obj);
+        }
+    }
+
+    private onStarClick(aStar: BattleStar) {
+        if (this.isCurrentOwner(aStar.owner)) {
+            let pos2d = ThreeUtils.toScreenPosition(this._render.renderer, aStar, this._camera, DeviceInfo.getInstance().devicePixelRatio);
+            GameEventDispatcher.showEmotionSelection(pos2d);
         }
     }
 
@@ -930,17 +998,21 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
     }
 
-    getPlayerSun(): BattleStar {
+    getPlayerSun(aOwner: string): BattleStar {
         let sun: BattleStar;
         this._objects.forEach(obj => {
             if (sun) return;
             if (obj instanceof BattleStar) {
-                if (this.isCurrentOwner(obj.owner)) {
+                if (obj.owner == aOwner) {
                     sun = obj;
                 }
             }
         });
         return sun;
+    }
+
+    getCurrentPlayerSun(): BattleStar {
+        return this.getPlayerSun(this._walletAddr);
     }
 
     destroyAllObjects() {

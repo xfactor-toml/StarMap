@@ -7,6 +7,7 @@ import { useBattleStore, useScenesStore } from '@/stores';
 import { BattleActionPayload, BattleActionType, UISceneNames } from '@/types';
 import { LogMng } from '~/game/utils/LogMng';
 import { battleRunMock, levelUpMock, playersConnectMock } from '@/mocks';
+import { Emotion } from '~/game/battle/Types';
 
 export class ClientService {
   constructor(private dispatcher: typeof FrontEvents) {}
@@ -192,9 +193,9 @@ export class ClientService {
     useScenesStore().setScene(UISceneNames.Galaxy);
   }
 
-  onEmotionSelect(type: string) {
-    LogMng.debug(`emotion select: ${type}`);
-    FrontEvents.onBattleEmotion.dispatch(type);
+  onEmotionSelect(aEmotion: Emotion) {
+    // LogMng.debug(`emotion select: ${type}`);
+    FrontEvents.onBattleEmotion.dispatch(aEmotion);
   }
 
   static VuePlugin = {

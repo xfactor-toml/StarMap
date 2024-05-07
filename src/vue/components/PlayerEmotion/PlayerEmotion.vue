@@ -16,8 +16,8 @@
 <script lang="ts">
 import { default as anime } from "animejs"
 import { PropType } from 'vue'
-import { Emotion } from '~/game/events/GameEvents';
 import { Coords } from '@/stores/battle-emotions';
+import { Emotion } from "~/game/battle/Types";
 
 const SHOW_DURATION = 3000
 

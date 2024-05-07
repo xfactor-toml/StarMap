@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { Emotion } from '~/game/events/GameEvents';
+import { Emotion } from '~/game/battle/Types';
 
 export type Coords = {
     x: number,

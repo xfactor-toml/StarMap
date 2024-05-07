@@ -1,7 +1,7 @@
 import { MyEventDispatcher } from "../basics/MyEventDispatcher";
 import { Socket, io } from "socket.io-client";
 import { GlobalParams } from "../data/GlobalParams";
-import { ClaimRewardData, DebugTestData, GameCompleteData, AcceptScreenData, PackTitle, SkillRequest, StartGameData, SearchGameData, SignData, PlayerLoadingData } from "./Types";
+import { ClaimRewardData, DebugTestData, GameCompleteData, AcceptScreenData, PackTitle, SkillRequest, StartGameData, SearchGameData, SignData, PlayerLoadingData, Emotion, EmotionData } from "./Types";
 import { BlockchainConnectService } from "~/blockchainTotal";
 
 export enum ConnectionEvent {
@@ -268,6 +268,13 @@ export class BattleConnection extends MyEventDispatcher {
             action: 'loss'
         }
         this._socket.emit(PackTitle.debugTest, data);
+    }
+    
+    sendEmotion(aEmotion: Emotion) {
+        let data: EmotionData = {
+            emotion: aEmotion
+        }
+        this._socket.emit(PackTitle.emotion, data);
     }
 
 }
