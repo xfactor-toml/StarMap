@@ -133,7 +133,7 @@ export class BattleScene extends BasicScene {
             let f = DebugGui.getInstance().createFolder('Battle');
             this.initSocketDebugGui(f);
             this._view.initDebugGui(f);
-            this.initEmotionsDebugGui(f);
+            // this.initEmotionsDebugGui(f);
         }
     }
 
@@ -159,6 +159,7 @@ export class BattleScene extends BasicScene {
     }
 
     private initEmotionsDebugGui(aFolder: GUI) {
+
         const DATA = {
             showEmotionSelection: () => {
                 let sun = this._view.getCurrentPlayerSun();
