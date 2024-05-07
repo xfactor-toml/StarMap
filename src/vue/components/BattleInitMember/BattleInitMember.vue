@@ -6,7 +6,7 @@
     }"
   >
     <div class="BattleInitMember__header">
-      <div class="BattleInitMember__wallet">{{ getShortAddress(address) }}</div>
+      <div class="BattleInitMember__wallet">{{ isNick ? address : getShortAddress(address) }}</div>
       <div class="BattleInitMember__name">{{ name }}</div>
     </div>
     <div class="BattleInitMember__body">
@@ -35,6 +35,14 @@ export default {
     },
     race: {
       type: String,
+      required: true
+    },
+    star: {
+      type: String,
+      required: true
+    },
+    isNick: {
+      type: Boolean,
       required: true
     },
     reflected: {

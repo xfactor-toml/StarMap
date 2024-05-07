@@ -7,6 +7,7 @@ export type BattlePlayer = {
   star: string
   name: string
   race: Race
+  isNick: boolean
 }
 
 export type BattleConnectedUsers = {
