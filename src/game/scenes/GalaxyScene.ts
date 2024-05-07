@@ -244,10 +244,15 @@ export class GalaxyScene extends BasicScene {
     private onAcceptScreenLoading() {
         // start loading game
         // search random star name
+        let starName = this._galaxy.getRandomStarName([1]);
+        if (starName == '') {
+            const NAMES = ['Sun', 'Sirius', 'Kanopus', 'Rigel', 'Vega', 'Procion', 'Betelgeise', 'Altair', 'Antares'];
+            starName = MyUtils.getRandomValueFromArray(NAMES);
+        }
         // send loading complete
         setTimeout(() => {
             this._battleAcceptScreenMng.sendLoadingComplete({
-                starName: 'None'
+                starName: starName
             });
         }, 2000);
     }

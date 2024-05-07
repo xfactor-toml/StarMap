@@ -1,6 +1,7 @@
-﻿
-export class MyUtils {
+﻿import { MyMath } from "./MyMath";
 
+export class MyUtils {
+    
     private static queryValues: { [index: string]: string }[] = null;
 
     private static readQueryValues() {
@@ -78,6 +79,11 @@ export class MyUtils {
             .catch((error) => {
                 console.error("Error copying text to clipboard:", error);
             });
+    }
+
+    static getRandomValueFromArray<T>(aMas: T[]): T {
+        let id = MyMath.randomIntInRange(0, aMas.length - 1);
+        return aMas[id];
     }
 
 }

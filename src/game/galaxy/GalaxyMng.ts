@@ -2483,6 +2483,25 @@ export class GalaxyMng implements ILogger {
         }
     }
 
+    getRandomStarName(aStarLevels: number[]): string {
+        let names: string[] = [];
+        for (let i = 0; i < this._realStarsData.length; i++) {
+            const sd = this._realStarsData[i];
+            if (sd.starInfo) {
+                if (aStarLevels.indexOf(sd.starInfo.level) >= 0) {
+                    names.push(sd.starInfo.name);
+                }
+            }
+        }
+        if (names.length > 0) {
+            let id = MyMath.randomIntInRange(0, names.length - 1);
+            return names[id];
+        }
+        else {
+            return '';
+        }
+    }
+
     free() {
         this.removeFrontEvents();
         InputMng.getInstance().onClickSignal.remove(this.onClick, this);
