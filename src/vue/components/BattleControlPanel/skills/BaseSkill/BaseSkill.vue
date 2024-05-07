@@ -71,14 +71,14 @@ export default {
   },
   methods: {
     handleKeypress({ code, shiftKey }: KeyboardEvent) {
-      if (this.disabled || this.hasCooldown || code !== this.shortcut) {
+      if (this.disabled || code !== this.shortcut) {
         return
       }
 
       if (shiftKey) {
         this.canLevelUp && this.$emit('levelUp')
       } else {
-        this.active && this.$emit('apply')
+        this.active && !this.hasCooldown && this.$emit('apply')
       }
     }
   },
