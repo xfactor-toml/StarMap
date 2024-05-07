@@ -6,6 +6,8 @@
           :name="players.connected.name"
           :address="players.connected.address"
           :race="players.connected.race"
+          :star="players.connected.star"
+          :isNick="players.connected.isNick"
         />
       </div>
       <div class="BattleInitMode__vs">VS</div>
@@ -14,6 +16,8 @@
           :name="players.current.name"
           :address="players.current.address"
           :race="players.current.race"
+          :star="players.current.star"
+          :isNick="players.current.isNick"
           :reflected="true"
         />
       </div>
