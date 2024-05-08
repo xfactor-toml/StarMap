@@ -23,6 +23,7 @@ import { SCENES } from '@/settings';
 import { UISceneNames } from '@/types';
 import { default as anime } from 'animejs';
 import { WalletConnectPopup } from '@/components/WalletConnectPopup';
+import { GlobalParams } from '~/game/data/GlobalParams';
 
 export default {
   name: 'App',
@@ -30,7 +31,7 @@ export default {
     WalletConnectPopup
   },
   data: () => ({
-    version: 'v0.3.4'
+    version: GlobalParams.version
   }),
   computed: mapStores(
     useScenesStore,

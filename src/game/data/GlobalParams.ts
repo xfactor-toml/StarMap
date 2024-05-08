@@ -1,5 +1,4 @@
-﻿import * as datGui from "dat.gui";
-
+﻿
 export type GalaxyData = {
     starsCount: number;
     blinkStarsCount: number;
@@ -31,6 +30,7 @@ export type GalaxyData = {
  */
 export class GlobalParams {
 
+    static version = 'v0.3.401';
     static isDebugMode = false;
     static domCanvasParent: HTMLElement = null;
     static domTouchParent: HTMLElement = null;
