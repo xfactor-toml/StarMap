@@ -23,7 +23,6 @@ import { SCENES } from '@/settings';
 import { UISceneNames } from '@/types';
 import { default as anime } from 'animejs';
 import { WalletConnectPopup } from '@/components/WalletConnectPopup';
-import { BlockchainConnectService } from '~/blockchainTotal';
 
 export default {
   name: 'App',
@@ -66,10 +65,6 @@ export default {
   },
   created() {
     this.scenesStore.setScenes(SCENES, UISceneNames.Start)
-    
-    if (BlockchainConnectService.getInstance().isTelegram) {
-      this.$wallet.connect('telegram')
-    }
 
     // Game Events
     window.addEventListener('gameEvent', ClientEventsService.handleEvent);

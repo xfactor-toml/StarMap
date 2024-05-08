@@ -6,6 +6,8 @@ import { toMilliseconds, wait } from '@/utils';
 import { GameEvent } from '~/game/events/GameEvents';
 import { LogMng } from '~/game/utils/LogMng';
 import { toast } from 'vue3-toastify';
+import { useWallet } from '@/services/wallet';
+import { BlockchainConnectService } from '~/blockchainTotal';
 
 export class ClientEventsService {
   static async handleEvent({ detail: clientEvent }: Event & { detail: ClientEvent }) {
@@ -26,6 +28,10 @@ export class ClientEventsService {
       case GameEvent.GAME_LOADED:
         await starsStore.fetchStars();
         const client = useClient()
+        const wallet = useWallet()
+        if (BlockchainConnectService.getInstance().isTelegram) {
+          wallet.connect('telegram')
+        }
         client.run(false, starsStore.stars);
         scenesStore.setScene(UISceneNames.Galaxy);
         break;
