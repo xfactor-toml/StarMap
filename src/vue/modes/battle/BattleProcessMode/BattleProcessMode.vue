@@ -46,14 +46,16 @@
         </template>
       </div>
     </div>
-    <BattleControlPanel
-      :skills="battleStore.process.state.skills"
-      :skillsPendingList="battleStore.process.skillsPendingList"
-      :cooldown="battleStore.process.cooldown"
-      :level="battleStore.process.state.level"
-      :gold="battleStore.process.state.gold"
-      @action="$client.onBattleAction"
-    />
+    <div class="BattleProcessMode__panel">
+      <BattleControlPanel
+        :skills="battleStore.process.state.skills"
+        :skillsPendingList="battleStore.process.skillsPendingList"
+        :cooldown="battleStore.process.cooldown"
+        :level="battleStore.process.state.level"
+        :gold="battleStore.process.state.gold"
+        @action="$client.onBattleAction"
+      />
+    </div>
     <EmotionsSelect
       v-if="battleStore.emotions.selectorCoords"
       :coords="battleStore.emotions.selectorCoords"
