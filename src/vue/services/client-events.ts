@@ -128,6 +128,7 @@ export class ClientEventsService {
         break;
 
       case GameEvent.BATTLE_PREROLL_SHOW:
+        // debugger;
         battleStore.connecting.setPlayerSearchingState(false);
         scenesStore.setScene(UISceneNames.Battle);
         battleStore.process.setState({

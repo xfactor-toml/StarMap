@@ -198,8 +198,10 @@ export class GalaxyScene extends BasicScene {
     private onBattleStartPackage(aData: StartGameData) {
         switch (aData.cmd) {
             case 'start':
-                this.logDebug(`onBattleStartPackage...`);
-                
+                this.logDebug(`onBattleStartPackage, StartGameData:`, aData);
+
+                // debugger;
+
                 GameEventDispatcher.battlePrerollShow(aData);
 
                 setTimeout(() => {

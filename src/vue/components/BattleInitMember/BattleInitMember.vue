@@ -1,17 +1,14 @@
 <template>
-  <div
-    class="BattleInitMember"
-    :class="{
+  <div class="BattleInitMember" :class="{
       'is-reflected': reflected
-    }"
-  >
+    }">
     <div class="BattleInitMember__header">
       <div class="BattleInitMember__wallet">{{ isNick ? address : getShortAddress(address) }}</div>
       <div class="BattleInitMember__name">{{ name }}</div>
     </div>
     <div class="BattleInitMember__body">
-      <span>Wallet</span>
-      <span>{{ getShortAddress(address) }}</span>
+      <span>{{ isNick ? '' : 'Wallet'}}</span>
+      <span>{{ isNick ? address : getShortAddress(address) }}</span>
     </div>
     <div class="BattleInitMember__footer">
       <div class="BattleInitMember__race">{{ race }}</div>
