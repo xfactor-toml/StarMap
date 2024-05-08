@@ -1,7 +1,7 @@
 import { MyEventDispatcher } from "../basics/MyEventDispatcher";
 import { Socket, io } from "socket.io-client";
 import { GlobalParams } from "../data/GlobalParams";
-import { ClaimRewardData, DebugTestData, GameCompleteData, AcceptScreenData, PackTitle, SkillRequest, StartGameData, SearchGameData, SignData, PlayerLoadingData, Emotion, EmotionData } from "./Types";
+import { ClaimRewardData, DebugTestData, GameCompleteData, AcceptScreenData, PackTitle, SkillRequest, StartGameData, SearchGameData, SignData, PlayerLoadingData, Emotion, EmotionData, DuelInfo } from "./Types";
 import { BlockchainConnectService } from "~/blockchainTotal";
 
 export enum ConnectionEvent {
@@ -65,9 +65,9 @@ export class BattleConnection extends MyEventDispatcher {
             this.onSignRecv(aData);
         });
 
-        this._socket.on(PackTitle.challengeInfo, (aData) => {
+        this._socket.on(PackTitle.duel, (aData) => {
             this.logDebug(`challengeInfo:`, aData);
-            this.emit(PackTitle.challengeInfo, aData);
+            this.emit(PackTitle.duel, aData);
         });
 
         this._socket.on(PackTitle.gameSearching, (aData) => {
@@ -275,6 +275,14 @@ export class BattleConnection extends MyEventDispatcher {
             emotion: aEmotion
         }
         this._socket.emit(PackTitle.emotion, data);
+    }
+
+    sendDuelCheck(aUserNick: string) {
+        let data: DuelInfo = {
+            cmd: 'check',
+            userNick: aUserNick
+        }
+        this._socket.emit(PackTitle.duel, data);
     }
 
 }

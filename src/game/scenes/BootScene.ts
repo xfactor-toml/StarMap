@@ -5,7 +5,7 @@ import { SceneNames } from "./SceneNames";
 import { MyUtils } from "../utils/MyUtils";
 import { BattleConnection } from "../battle/BattleConnection";
 import { GameEvent, GameEventDispatcher } from "../events/GameEvents";
-import { ChallengeInfo, PackTitle } from "../battle/Types";
+import { DuelInfo, PackTitle } from "../battle/Types";
 import { FrontEvents } from "../events/FrontEvents";
 import { AudioMng } from "../audio/AudioMng";
 

@@ -123,6 +123,7 @@ export class GlobalParams {
     static POINTS_MAX_CHECK_RADIUS = 10;
 
     // battle
+    static duelChecked = false;
     static BATTLE = {
         // serverAddr: wsServerUrl,
         serverAddr: 'https://staging-api.vorpal.finance',

@@ -8,7 +8,7 @@ import { SceneNames } from './SceneNames';
 import { ThreeLoader } from '../utils/threejs/ThreeLoader';
 import { SimpleRenderer } from '../core/renderers/SimpleRenderer';
 import { BattleConnection, ConnectionEvent } from '../battle/BattleConnection';
-import { ChallengeInfo, PackTitle, StartGameData } from '../battle/Types';
+import { DuelInfo, PackTitle, StartGameData } from '../battle/Types';
 import { GameEvent, GameEventDispatcher } from '../events/GameEvents';
 import { DebugGui } from '../debug/DebugGui';
 import { useWallet } from '@/services';
@@ -16,10 +16,12 @@ import { AudioMng } from '../audio/AudioMng';
 import { AudioAlias } from '../audio/AudioData';
 import { BattleAcceptScreenMng, BattleAcceptScreenMngEvent } from '../controllers/BattleAcceptScreenMng';
 import { MyUtils } from '../utils/MyUtils';
+import { BlockchainConnectService } from '~/blockchainTotal';
 
 export class GalaxyScene extends BasicScene {
     private _galaxy: GalaxyMng;
     private _battleAcceptScreenMng: BattleAcceptScreenMng;
+    private _isDuelChecking = false;
     private _isBattleSearching = false;
 
     constructor() {
@@ -28,6 +30,7 @@ export class GalaxyScene extends BasicScene {
             initScene: true,
             initCamera: true
         });
+        this._isDuelChecking = !GlobalParams.duelChecked;
         this._isBattleSearching = false;
     }
 
@@ -59,8 +62,12 @@ export class GalaxyScene extends BasicScene {
         this.initGalaxy();
         this.initDuel();
         this.initEvents();
+        if (!GlobalParams.duelChecked) {
+            this.checkDuel();
+        }
         if (GlobalParams.isDebugMode) {
             this.initBlockchainDebugGui();
+            this.initDebugGui();
             this.initBattleDebugGui();
         }
     }
@@ -97,7 +104,7 @@ export class GalaxyScene extends BasicScene {
         let bc = BattleConnection.getInstance();
         bc.on(PackTitle.gameSearching, this.onGameSearchPack, this);
         bc.on(PackTitle.gameStart, this.onBattleStartPackage, this);
-        bc.on(PackTitle.challengeInfo, this.onChallengePack, this);
+        bc.on(PackTitle.duel, this.onDuelPack, this);
         bc.on(ConnectionEvent.disconnect, this.onServerDisconnected, this);
     }
 
@@ -114,8 +121,21 @@ export class GalaxyScene extends BasicScene {
         let bc = BattleConnection.getInstance();
         bc.remove(PackTitle.gameSearching, this.onGameSearchPack);
         bc.remove(PackTitle.gameStart, this.onBattleStartPackage);
-        bc.remove(PackTitle.challengeInfo, this.onChallengePack);
+        bc.remove(PackTitle.duel, this.onDuelPack);
         bc.remove(ConnectionEvent.disconnect, this.onServerDisconnected);
+    }
+
+    private checkDuel() {
+        let con = BattleConnection.getInstance();
+        if (!con.connected) {
+            return;
+        }
+        const bcs = BlockchainConnectService.getInstance();
+        if (!bcs.isTelegram()) {
+            return;
+        }
+        con.sendDuelCheck(bcs.TelegramLogin());
+        this._isDuelChecking = true;
     }
 
     private onLeftPanelGalaxyClick() {
@@ -200,8 +220,6 @@ export class GalaxyScene extends BasicScene {
             case 'start':
                 this.logDebug(`onBattleStartPackage, StartGameData:`, aData);
 
-                // debugger;
-
                 GameEventDispatcher.battlePrerollShow(aData);
 
                 setTimeout(() => {
@@ -215,9 +233,9 @@ export class GalaxyScene extends BasicScene {
         }
     }
     
-    private onChallengePack(aData: ChallengeInfo) {
+    private onDuelPack(aData: DuelInfo) {
         // generate link for challenge
-        this.logDebug(`onChallengePack`, aData);
+        this.logDebug(`onDuelPack:`, aData);
         switch (aData.cmd) {
             case 'number':
                 // gen link and copy
@@ -332,6 +350,35 @@ export class GalaxyScene extends BasicScene {
 
         f.add(BLOCKCHAIN_DEBUG_GUI, 'openBox');
         f.add(BLOCKCHAIN_DEBUG_GUI, 'getBoxList');
+    }
+
+    private initDebugGui() {
+        let bc = BattleConnection.getInstance();
+
+        const DEBUG_GUI_TG = {
+            tgLoginMaxMonax: () => {
+
+            },
+        }
+        // let f = DebugGui.getInstance().createFolder('TG');
+        // f.add(DEBUG_GUI_TG, 'tgLoginMaxMonax').name('TG Login Max');
+
+        const DEBUG_GUI_DUEL = {
+            duelMaxCheck: () => {
+                bc.sendDuelCheck(`maxmonax`);
+            },
+            duelIvemakerCheck: () => {
+                bc.sendDuelCheck(`ivemaker`);
+            },
+            duelBerumCheck: () => {
+                bc.sendDuelCheck(`berum`);
+            }
+        }
+        let f = DebugGui.getInstance().createFolder('Duels');
+        f.add(DEBUG_GUI_DUEL, 'duelMaxCheck').name('Duel Max Check');
+        f.add(DEBUG_GUI_DUEL, 'duelIvemakerCheck').name('Duel Ivemaker Check');
+        f.add(DEBUG_GUI_DUEL, 'duelBerumCheck').name('Duel Berum Check');
+
     }
 
     private initBattleDebugGui() {
