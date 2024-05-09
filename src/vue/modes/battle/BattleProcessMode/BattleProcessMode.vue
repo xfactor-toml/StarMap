@@ -63,7 +63,7 @@
       @close="battleStore.emotions.closeSelector"
     />
     <PlayerEmotion
-      v-if="battleStore.emotions.playerEmotion"
+      v-if="battleStore.emotions.playerEmotion && !battleStore.emotions.selectorCoords"
       :type="battleStore.emotions.playerEmotion.type"
       :coords="battleStore.emotions.playerEmotion.coords"
       @close="battleStore.emotions.removePlayerEmotion"
