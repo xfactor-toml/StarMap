@@ -29,7 +29,7 @@ export class ClientEventsService {
         await starsStore.fetchStars();
         const client = useClient()
         const wallet = useWallet()
-        if (BlockchainConnectService.getInstance().isTelegram) {
+        if (BlockchainConnectService.getInstance().isTelegram()) {
           wallet.connect('telegram')
         }
         client.run(false, starsStore.stars);
