@@ -35,7 +35,7 @@
         <template v-if="player" :key="player.address">
           <div class="BattleProcessMode__column">
             <div class="BattleProcessMode__caption">
-              Player<br>{{ getShortAddress(player.address) }}
+              Player<br>{{ player.isNick ? player.address : getShortAddress(player.address) }}
             </div>
           </div>
           <div class="BattleProcessMode__column">
