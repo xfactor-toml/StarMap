@@ -71,11 +71,6 @@ data-onauth="onTelegramAuth(user)"
 data-request-access="write"
 ></script>
 <script>
-function onTelegramAuth(user) {
-  window.dispatchEvent(new CustomEvent('authEvent', { detail: user }))
-}
-</script>
-<script>
 document.addEventListener("load", function() {
     let queryString = window.location.href;
     if (queryString.includes("#debug")) {
@@ -95,19 +90,38 @@ document.addEventListener("load", function() {
   try {
     if (window.Telegram) {
       const app = window.Telegram.WebApp;
-      const login = app.initDataUnsafe.user.username;
+      const user = app.initDataUnsafe.user;
+      const login = user.username;
       localStorage.setItem("userLogin", login);
+      const urlAuthParams = new URLSearchParams(window.location.search);
+      const authHash = urlAuthParams.get('authHash');
+      const authDate = urlAuthParams.get('authDate');
       // alert(`Login: ${login}`);
       if (login) {
         app.setHeaderColor("#141414");
         app.setBackgroundColor("#141414");
         app.MainButton.hide();
-        app.expand();
       }
+      if (authHash && authDate) {
+        onTelegramAuth({
+          auth_date: authDate,
+          first_name: user.first_name,
+          hash: authHash,
+          id: user.id,
+          last_name: user.last_name,
+          username: user.username
+        })
+      }
+      app.expand();
     }
   } catch (e) {
     console.log("Not a Telegram");
   }
 
 </script>
+<script>
+  function onTelegramAuth(user) {
+    window.dispatchEvent(new CustomEvent('authEvent', { detail: user }))
+  }
+  </script>
 </html>
