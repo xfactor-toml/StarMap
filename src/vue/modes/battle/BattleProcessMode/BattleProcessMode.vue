@@ -35,7 +35,7 @@
         <template v-if="player" :key="player.address">
           <div class="BattleProcessMode__column">
             <div class="BattleProcessMode__caption">
-              Player<br>{{ getShortAddress(player.address) }}
+              Player<br>{{ player.isNick ? player.address : getShortAddress(player.address) }}
             </div>
           </div>
           <div class="BattleProcessMode__column">
@@ -63,7 +63,7 @@
       @close="battleStore.emotions.closeSelector"
     />
     <PlayerEmotion
-      v-if="battleStore.emotions.playerEmotion"
+      v-if="battleStore.emotions.playerEmotion && !battleStore.emotions.selectorCoords"
       :type="battleStore.emotions.playerEmotion.type"
       :coords="battleStore.emotions.playerEmotion.coords"
       @close="battleStore.emotions.removePlayerEmotion"

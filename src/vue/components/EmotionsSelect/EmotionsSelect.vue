@@ -58,6 +58,7 @@ export default {
       emotions,
       order: [1, 3, 5, 4, 2, 0],
       timer: null,
+      animating: false,
     }
   },
   computed: {
@@ -84,6 +85,12 @@ export default {
       })
     },
     hide() {
+      if (this.animating) {
+        return Promise.resolve()
+      }
+
+      this.animating = true
+
       return anime({
         targets: this.elementsRefs,
         scale: [1, 0],
@@ -92,10 +99,17 @@ export default {
         translateY: (el, i) => getYOffset(i),
         duration: 600,
         delay: anime.stagger(40),
-        easing: 'easeInBack'
+        easing: 'easeInBack',
+        complete: () => {
+          this.animating = false
+        }
       }).finished
     },
     close() {
+      if (this.animating) {
+        return
+      }
+
       if (this.timer) {
         clearTimeout(this.timer)
         this.timer = null

@@ -15,7 +15,9 @@ export const useBattleEmotionsStore = defineStore('battleEmotions', () => {
     } | null>()
 
     const showSelector = (coords: Coords) => {
-        selectorCoords.value = coords
+        if (!selectorCoords.value) {
+            selectorCoords.value = coords
+        }
     }
 
     const closeSelector = () => {
