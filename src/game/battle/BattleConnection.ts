@@ -129,7 +129,7 @@ export class BattleConnection extends MyEventDispatcher {
             signData.displayName = this.signService.TelegramLogin();
         }
         else if (GlobalParams.isDebugMode) {
-            signData.displayName = 'TestNick';
+            signData.displayName = 'DebugNick';
         }
 
         if (!walletAddress) {
@@ -186,7 +186,7 @@ export class BattleConnection extends MyEventDispatcher {
     sendChallengeCreate() {
         let data: SearchGameData = {
             isChallenge: true,
-            challengeCmd: 'create',
+            duelCmd: 'create',
             isFreeConnect: GlobalParams.BATTLE.freeConnect
         }
         this._socket.emit(PackTitle.startSearchGame, data);
@@ -195,8 +195,8 @@ export class BattleConnection extends MyEventDispatcher {
     sendChallengeConnect(aChNumber: number) {
         let data: SearchGameData = {
             isChallenge: true,
-            challengeCmd: 'connect',
-            challengeNumber: aChNumber,
+            duelCmd: 'connect',
+            duelNumber: aChNumber,
             isFreeConnect: GlobalParams.BATTLE.freeConnect
         }
         this._socket.emit(PackTitle.startSearchGame, data);

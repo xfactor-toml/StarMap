@@ -238,8 +238,24 @@ export class BattleScene extends BasicScene {
 
     private onGameCompletePack(aData: GameCompleteData) {
         this._state = aData.status == 'win' ? BattleSceneState.win : BattleSceneState.loss;
-        // this.emit(BattleSceneEvent.onGameComplete, aData);
-        GameEventDispatcher.battleComplete(aData);
+
+        switch (aData.status) {
+            case 'duelReward':
+                this._state = BattleSceneState.win;
+                GameEventDispatcher.battleComplete(aData);
+                break;
+            
+            case 'duelEnemyDisconnected':
+                this._state = BattleSceneState.loss;
+                alert(`The opponent left the game.\nRewards will not be counted.`);
+                GameEventDispatcher.battleCompleteHide();
+                break;
+            
+            default:
+                GameEventDispatcher.battleComplete(aData);
+                break;
+        }
+        
     }
 
     private onSocketDisconnect() {

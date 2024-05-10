@@ -237,18 +237,28 @@ export class GalaxyScene extends BasicScene {
         // generate link for challenge
         this.logDebug(`onDuelPack:`, aData);
         switch (aData.cmd) {
-            case 'number':
+            // case 'number':
                 // gen link and copy
-                let link = `${window.location.origin}?duel=${aData.challengeNumber}#debug`;
-                this.logDebug(`link: ${link}`);
-                MyUtils.copyToClipboard(link);
-                // msg
-                GameEventDispatcher.showMessage(`Link copied to clipboard`);
+                // let link = `${window.location.origin}?duel=${aData.challengeNumber}#debug`;
+                // this.logDebug(`link: ${link}`);
+                // MyUtils.copyToClipboard(link);
+                // // msg
+                // GameEventDispatcher.showMessage(`Link copied to clipboard`);
+            // break;
+            
+            case 'found':
+                if (aData.enemyNick?.length > 0) {
+                    GameEventDispatcher.showMessage(`Duel with ${aData.enemyNick} found!`);
+                }
+                else {
+                    GameEventDispatcher.showMessage(`Duel found!`);
+                }
+                GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_START);
                 break;
 
             case 'notFound':
                 // msg
-                GameEventDispatcher.showMessage(`Challenge game not found`);
+                // GameEventDispatcher.showMessage(`Duel game not found`);
                 GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_STOP);
                 break;
         }

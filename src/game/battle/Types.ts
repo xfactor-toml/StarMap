@@ -54,14 +54,15 @@ export type SearchGameData = {
     isFreeConnect?: boolean,
     isChallenge?: boolean,
     withBot?: boolean,
-    challengeCmd?: 'create' | 'connect',
-    challengeNumber?: number,
+    duelCmd?: 'create' | 'connect',
+    duelNumber?: number,
 }
 
 export type DuelInfo = {
-    cmd: 'check' | 'number' | 'notFound',
+    cmd: 'check' | 'found' | 'notFound',
     userNick?: string,
-    challengeNumber?: number
+    enemyNick?: string,
+    duelId?: string
 }
 
 export type AcceptScreenAction = 'start' | 'update' | 'accept' | 'connect' | 'loading' | 'cancel' | 'closeClick';
@@ -97,7 +98,7 @@ export type StartGameData = {
 }
 
 export type GameCompleteData = {
-    status: 'win' | 'loss',
+    status: 'win' | 'loss' | 'duelEnemyDisconnected' | 'duelReward',
     showBoxClaim?: boolean,
     boxLevel?: number
 }
