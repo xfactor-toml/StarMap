@@ -8,6 +8,7 @@ import { GameEvent, GameEventDispatcher } from "../events/GameEvents";
 import { DuelInfo, PackTitle } from "../battle/Types";
 import { FrontEvents } from "../events/FrontEvents";
 import { AudioMng } from "../audio/AudioMng";
+import eruda from "eruda";
 
 export class BootScene extends BasicScene {
 
@@ -16,6 +17,12 @@ export class BootScene extends BasicScene {
     }
     
     onInit() {
+
+        // eruda
+        // if (GlobalParams.isDebugMode) {
+        eruda.init();
+        // }
+
         // init params
         GlobalParams.domCanvasParent = document.getElementById('game');
         GlobalParams.domTouchParent = document.getElementById('touch');

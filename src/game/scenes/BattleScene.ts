@@ -168,7 +168,7 @@ export class BattleScene extends BasicScene {
                     this.logWarn(`showEmotionSelection: player's sun not found!`);
                     return;
                 }
-                let pos2d = ThreeUtils.toScreenPosition(this._render.renderer, sun, this._camera, DeviceInfo.getInstance().devicePixelRatio);
+                let pos2d = ThreeUtils.toScreenPosition(this._render.renderer, sun, this._camera, Math.min(2, DeviceInfo.getInstance().devicePixelRatio));
                 GameEventDispatcher.showEmotionSelection(pos2d);
             },
             showRandomEmotion: () => {
@@ -178,7 +178,7 @@ export class BattleScene extends BasicScene {
                     this.logWarn(`showEmotionSelection: player's sun not found!`);
                     return;
                 }
-                let pos2d = ThreeUtils.toScreenPosition(this._render.renderer, sun, this._camera, DeviceInfo.getInstance().devicePixelRatio);
+                let pos2d = ThreeUtils.toScreenPosition(this._render.renderer, sun, this._camera, Math.min(2, DeviceInfo.getInstance().devicePixelRatio));
                 GameEventDispatcher.showRandomEmotion(pos2d);
             },
         }
@@ -190,7 +190,7 @@ export class BattleScene extends BasicScene {
     }
 
     private closeScene() {
-        GameEventDispatcher.dispatchEvent(GameEvent.GALAXY_MODE);
+        GameEventDispatcher.showGalaxyMode();
         this.startScene(SceneNames.GalaxyScene);
     }
 
@@ -248,7 +248,7 @@ export class BattleScene extends BasicScene {
             case 'duelEnemyDisconnected':
                 this._state = BattleSceneState.loss;
                 alert(`The opponent left the game.\nRewards will not be counted.`);
-                GameEventDispatcher.battleCompleteHide();
+                this.closeScene();
                 break;
             
             default:
@@ -277,7 +277,8 @@ export class BattleScene extends BasicScene {
             this.logWarn(`onServerEmotion: player's sun not found!`);
             return;
         }
-        let pos2d = ThreeUtils.toScreenPosition(this._render.renderer, sun, this._camera, DeviceInfo.getInstance().devicePixelRatio);
+        let pos2d = ThreeUtils.toScreenPosition(this._render.renderer, sun, this._camera,
+            Math.min(2, DeviceInfo.getInstance().devicePixelRatio));
         GameEventDispatcher.showEmotion(aData.emotion, pos2d);
     }
 

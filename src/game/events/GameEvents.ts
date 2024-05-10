@@ -90,6 +90,10 @@ export class GameEventDispatcher {
         }));
     }
 
+    static showGalaxyMode() {
+        this.dispatchEvent(GameEvent.GALAXY_MODE);
+    }
+
     static battlePrerollShow(aData: StartGameData) {
         aData[`eventName`] = GameEvent.BATTLE_PREROLL_SHOW;
         window.dispatchEvent(new CustomEvent('gameEvent', {

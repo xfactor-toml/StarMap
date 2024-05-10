@@ -565,7 +565,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     private onStarClick(aStar: BattleStar) {
         if (this.isCurrentOwner(aStar.owner)) {
             let pos2d = ThreeUtils.toScreenPosition(this._render.renderer, aStar, this._camera,
-                Math.min(2, window.devicePixelRatio));
+                Math.min(2, DeviceInfo.getInstance().devicePixelRatio));
             GameEventDispatcher.showEmotionSelection(pos2d);
         }
     }
