@@ -5,11 +5,14 @@ import { WalletStoreState, useBattleStore, useWalletStore } from '@/stores';
 import { markRaw, watch } from 'vue';
 import { UniversalProvider } from './providers/universal-provider';
 import { InitWalletconnectModal } from '~/blockchainTotal/walletconnect/auth';
+import { BlockchainConnectService } from '~/blockchainTotal';
+import { getShortAddress } from '@/utils';
 
 let walletInstance: WalletService | null = null
 
 export class WalletService {
   account = '';
+  login = '';
   connected = false;
   installed = false;
   currency = 'plasma';
@@ -24,6 +27,7 @@ export class WalletService {
   get state(): WalletStoreState {
     return {
       account: this.account,
+      login: this.login,
       connected: this.connected,
       installed: this.installed,
     }
@@ -62,8 +66,11 @@ export class WalletService {
       return false;
     }
 
+    const connectService = BlockchainConnectService.getInstance()
+
     this.connected = true;
     this.account = account;
+    this.login = connectService.TelegramLogin() ?? getShortAddress(account);
     this.emmiter.emit('state', this.state)
 
     return true;

@@ -43,7 +43,7 @@
     <div
       v-if="walletStore.connected"
       class="UserBar__account"
-    >{{ walletStore.shortAddress }}
+    >{{ walletStore.login }}
     </div>
     <button
       v-else

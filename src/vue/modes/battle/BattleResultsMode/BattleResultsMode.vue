@@ -28,13 +28,25 @@
         </div>
       </div>
       <div class="BattleResultsMode__footer">
-
         <Loader v-if="loading" />
         <template v-else>
-          <button v-if="results.box.show" class="BattleResultsMode__button" @click="openBox">Open Box lv.{{
-            results.box.level }}
+          <button
+            v-if="results.box.show"
+            class="BattleResultsMode__button"
+            @click="openBox"
+          >Open Box lv.{{ results.box.level }}
           </button>
-          <button v-if="results.claim.show" class="BattleResultsMode__button" @click="claim">Claim rewards
+          <button
+            v-if="results.claim.show"
+            class="BattleResultsMode__button"
+            @click="claim"
+          >Claim rewards
+          </button>
+          <button
+            v-if="!results.box.show && !results.claim.show"
+            class="BattleResultsMode__button"
+            @click="close"
+          >Close
           </button>
         </template>
       </div>
@@ -48,6 +60,7 @@ import { useBattleStore, useUiStore, useScenesStore } from '@/stores';
 import { getShortAddress, formatNumber } from '@/utils';
 import { mapStores } from 'pinia'; 
 import { Loader } from '@/components';
+import { UISceneNames } from '@/types';
 
 export default {
   name: 'BattleResultsMode',
@@ -98,6 +111,9 @@ export default {
     claim() {
       this.loading = true
       this.$client.onClaim()
+    },
+    close() {
+      this.scenesStore.setScene(UISceneNames.Galaxy);
     }
   },
   mounted() {
