@@ -207,7 +207,7 @@ export class BlockchainConnectService {
     }
 
     public TelegramLogin() {
-        return localStorage.getItem("userLogin");
+        return this.telegramAuthData?.username || "";
     }
 
     public isTelegram(): Boolean {
