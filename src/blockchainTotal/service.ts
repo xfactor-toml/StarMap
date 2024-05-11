@@ -8,6 +8,7 @@ import { WindowEthAuth, web3window } from "./windowEth";
 import { lsPrivateKey } from "./config/network";
 import { GenerateSignature } from "./walletconnect/methods";
 import * as getters from "./getters";
+import { web2assets } from "./getters/boxesWeb2";
 
 export class BlockchainConnectService  {
     public authMethod: AuthMethod;
@@ -134,7 +135,7 @@ export class BlockchainConnectService  {
         return signMsg;
     }
 
-    public async getUserAvailableBoxes () {
+    public async getUserAvailableBoxes (): Promise<number[]> {
         return new Promise ((resolve, reject) => {
             if (!this.telegramAuthData?.username) {
                 reject("User not authorized by login");
@@ -145,7 +146,7 @@ export class BlockchainConnectService  {
         })
     }
 
-    public async getUserAssets () {
+    public async getUserAssets (): Promise<web2assets> {
         return new Promise ((resolve, reject) => {
             if (!this.telegramAuthData?.username) {
                 reject("User not authorized by login");
