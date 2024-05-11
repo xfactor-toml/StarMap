@@ -21,7 +21,7 @@ export async function getUserBoxesToOpenWeb2 ( ownerAddress: string ): Promise<n
               "Content-Type": "application/json"
             },
             body: JSON.stringify({
-              ownerAddress: ownerAddress, 
+              ownerLogin: ownerAddress, 
             })
           }).then(res => {
             if (res.status !== 200) {
@@ -48,7 +48,7 @@ export async function GetGameAssetsWeb2 ( ownerAddress: string ): Promise<web2as
               "Content-Type": "application/json"
             },
             body: JSON.stringify({
-              ownerAddress: ownerAddress, 
+              ownerLogin: ownerAddress, 
             })
           }).then(res => {
             if (res.status !== 200) {
