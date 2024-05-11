@@ -353,21 +353,6 @@ export class BattleScene extends BasicScene {
             switch (aData.action) {
 
                 case 'accept':
-                    // getUserBoxesToOpen(wallet).then((aList: number[]) => {
-                    //     let list = aList.map(val => Number(val));
-                    //     this.logDebug(`Box ids to open:`);
-                    //     if (GlobalParams.isDebugMode) console.log(list);
-                    //     if (list.length > 0) {
-                    //         this._boxIdList = list;
-                    //         alert(`You have ${list.length} boxes for open`);
-                    //         GameEventDispatcher.showBoxOpenScreen({list});
-                    //     }
-                    //     else {
-                    //         alert(`No box found for this user...`);
-                    //     }
-                    //     // temp
-                    //     // this.emit(BattleSceneEvent.onCloseBattle);
-                    // });
 
                     getUserBoxesToOpenWeb2(wallet).then((aList: number[]) => {
                         let list = aList.map(val => Number(val));
