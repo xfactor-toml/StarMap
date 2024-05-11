@@ -128,9 +128,9 @@ export class BattleConnection extends MyEventDispatcher {
         if (this.signService.isTelegram()) {
             signData.displayName = this.signService.TelegramLogin();
         }
-        else if (GlobalParams.isDebugMode) {
-            signData.displayName = 'DebugNick';
-        }
+        // else if (GlobalParams.isDebugMode) {
+        //     signData.displayName = 'DebugNick';
+        // }
 
         if (!walletAddress) {
             const authPriority = this.signService.getDefaultAuthMethod();
