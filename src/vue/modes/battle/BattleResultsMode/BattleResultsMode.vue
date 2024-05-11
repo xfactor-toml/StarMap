@@ -113,7 +113,7 @@ export default {
       this.$client.onClaim()
     },
     close() {
-      this.scenesStore.setScene(UISceneNames.Galaxy);
+      this.$client.onCloseBox()
     }
   },
   mounted() {
