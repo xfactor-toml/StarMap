@@ -4,12 +4,14 @@ import { computed, ref } from 'vue';
 
 export type WalletStoreState = {
   account: string;
+  login: string;
   connected: boolean;
   installed: boolean;
 };
 
 export const useWalletStore = defineStore('wallet', () => {
   const account = ref('')
+  const login = ref('')
   const connected = ref(false)
   const installed = ref(false)
   const popup = ref(false)
@@ -20,6 +22,7 @@ export const useWalletStore = defineStore('wallet', () => {
 
   const setState = (state: WalletStoreState) => {
     account.value = state.account
+    login.value = state.login
     installed.value = state.installed
     connected.value = state.connected
   }
@@ -38,6 +41,7 @@ export const useWalletStore = defineStore('wallet', () => {
 
   return {
     account,
+    login,
     connected,
     installed,
     shortAddress,
