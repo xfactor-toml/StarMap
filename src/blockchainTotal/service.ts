@@ -40,6 +40,10 @@ export class BlockchainConnectService {
             return;
         }
         const user = webApp.initDataUnsafe.user;
+        if (!user) {
+            console.log("User not found ");
+            return;
+        }
         console.log("User info: ", user)
         if (!user.username) {
             alert("You need to have a visible username to enter a duel");
