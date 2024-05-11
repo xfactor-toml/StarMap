@@ -346,7 +346,7 @@ export class BattleScene extends BasicScene {
 
     private async claimBox() {
         const bcs = BlockchainConnectService.getInstance();
-        const wallet = bcs.getWalletAddress();
+        // const wallet = bcs.getWalletAddress();
 
         this._connection.socket.once(PackTitle.claimReward, async (aData: ClaimRewardData) => {
             this.logDebug(`Claim Box recieved`);
@@ -354,7 +354,8 @@ export class BattleScene extends BasicScene {
 
                 case 'accept':
 
-                    getUserBoxesToOpenWeb2(wallet).then((aList: number[]) => {
+                    // getUserBoxesToOpenWeb2(wallet).then((aList: number[]) => {
+                    bcs.getUserAvailableBoxes().then((aList: number[]) => {
                         let list = aList.map(val => Number(val));
                         this.logDebug(`Box ids to open:`);
                         if (GlobalParams.isDebugMode) console.log(list);
