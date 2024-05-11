@@ -19,6 +19,23 @@ export class BlockchainConnectService {
 
     public LoadTelegramData() {
         const tg = this.TelegramInfo;
+        const urlAuthParams = new URLSearchParams(window.location.search);
+        const authHash = urlAuthParams.get('authHash');
+        const authDate = urlAuthParams.get('authDate');
+        const userId = urlAuthParams.get('id');
+        const firstName = urlAuthParams.get('firstName');
+        const lastName = urlAuthParams.get('lastName');
+        const username = urlAuthParams.get('userName');
+        const AuthData: TelegramAuthData = {
+            id: Number(userId),
+            first_name: firstName,
+            last_name: lastName || "",
+            username: username || "",
+            hash: authHash || "",
+            auth_date: Number(authDate)
+        }
+        this.telegramAuthData = AuthData;
+        console.log("Auth data: ", AuthData);
         if (!tg) {
             console.log("Telegram script not installed");
             return;
@@ -29,9 +46,6 @@ export class BlockchainConnectService {
             return;
         }
         webApp.expand();
-        const urlAuthParams = new URLSearchParams(window.location.search);
-        const authHash = urlAuthParams.get('authHash');
-        const authDate = urlAuthParams.get('authDate');
         if (!authHash || !authDate) {
             console.log("Required auth data not found");
         }
@@ -44,20 +58,9 @@ export class BlockchainConnectService {
             console.log("User not found ");
             return;
         }
-        console.log("User info: ", user)
         if (!user.username) {
             alert("You need to have a visible username to enter a duel");
         }
-        const AuthData: TelegramAuthData = {
-            id: Number(user.id),
-            first_name: user.first_name,
-            last_name: user.last_name || "",
-            username: user.username || "",
-            hash: authHash || "",
-            auth_date: Number(authDate)
-        }
-        this.telegramAuthData = AuthData;
-        console.log("Auth data: ", AuthData);
     }
 
     public getDefaultAuthMethod(): AuthMethod {
