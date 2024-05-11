@@ -44,6 +44,13 @@ export class BootScene extends BasicScene {
         const LIST = [
             {
                 // load from file
+                keys: ['debugMode'],
+                onReadHandler: (aValue: string) => {
+                    GlobalParams.isDebugMode = aValue == '1';
+                }
+            },
+            {
+                // load from file
                 keys: ['loadfromfile'],
                 onReadHandler: (aValue: string) => {
                     GlobalParams.loadFromFile = aValue == '1';
