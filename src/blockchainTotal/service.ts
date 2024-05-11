@@ -7,8 +7,9 @@ import { AuthByLocal, web3local } from "./local/auth";
 import { WindowEthAuth, web3window } from "./windowEth";
 import { lsPrivateKey } from "./config/network";
 import { GenerateSignature } from "./walletconnect/methods";
+import * as getters from "./getters";
 
-export class BlockchainConnectService {
+export class BlockchainConnectService  {
     public authMethod: AuthMethod;
     public userAccount: account;
     public displayLogin: string;
@@ -16,6 +17,7 @@ export class BlockchainConnectService {
     public telegramAuthData: TelegramAuthData;
     private static instance: BlockchainConnectService | null = null;
     private TelegramInfo: any = window.Telegram;
+    public getters = getters;
 
     public LoadTelegramData() {
         const tg = this.TelegramInfo;
@@ -130,6 +132,28 @@ export class BlockchainConnectService {
         const dt = new Date().getTime();
         const signMsg = "auth_" + String(dt - (dt % 600000));
         return signMsg;
+    }
+
+    public async getUserAvailableBoxes () {
+        return new Promise ((resolve, reject) => {
+            if (!this.telegramAuthData?.username) {
+                reject("User not authorized by login");
+            }
+            this.getters.BoxesWeb2.getUserBoxesToOpenWeb2 (this.telegramAuthData.username).then((res) => {
+                resolve(res);
+            })
+        })
+    }
+
+    public async getUserAssets () {
+        return new Promise ((resolve, reject) => {
+            if (!this.telegramAuthData?.username) {
+                reject("User not authorized by login");
+            }
+            this.getters.BoxesWeb2.GetGameAssetsWeb2 (this.telegramAuthData.username).then((res) => {
+                resolve(res);
+            })
+        })
     }
 
     public async getSignedAuthMessage(): Promise<string> {
