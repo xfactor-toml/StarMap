@@ -15,6 +15,46 @@ export class BlockchainConnectService {
     public walletAddress: string;
     public telegramAuthData: TelegramAuthData;
     private static instance: BlockchainConnectService | null = null;
+    private TelegramInfo: any = window.Telegram;
+
+    public LoadTelegramData() {
+        const tg = this.TelegramInfo;
+        if (!tg) {
+            console.log("Telegram script not installed");
+            return;
+        }
+        const webApp = tg.WebApp;
+        if (!webApp) {
+            console.log("Web app telegram interface not found");
+            return;
+        }
+        webApp.expand();
+        const urlAuthParams = new URLSearchParams(window.location.search);
+        const authHash = urlAuthParams.get('authHash');
+        const authDate = urlAuthParams.get('authDate');
+        if (!authHash || !authDate) {
+            console.log("Required auth data not found");
+        }
+        if (!webApp.initDataUnsafe) {
+            console.log("Failed to get user id");
+            return;
+        }
+        const user = webApp.initDataUnsafe.user;
+        console.log("User info: ", user)
+        if (!user.username) {
+            alert("You need to have a visible username to enter a duel");
+        }
+        const AuthData: TelegramAuthData = {
+            id: Number(user.id),
+            first_name: user.first_name,
+            last_name: user.last_name || "",
+            username: user.username || "",
+            hash: authHash || "",
+            auth_date: Number(authDate)
+        }
+        this.telegramAuthData = AuthData;
+        console.log("Auth data: ", AuthData);
+    }
 
     public getDefaultAuthMethod(): AuthMethod {
         return "Local";
@@ -51,6 +91,7 @@ export class BlockchainConnectService {
         if (this.authMethod !== "Local") {
             InitWalletconnectModal();
         }
+        this.LoadTelegramData();
     }
 
     public static getInstance(): BlockchainConnectService {
