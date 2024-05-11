@@ -10,14 +10,14 @@
       <div class="GalaxyScene__headerColumn is-center">
         <SearchingIndicator v-if="battleStore.connecting.playerSearching" @click="$client.onSearchingClick" />
         <template v-else>
-          <StartGameButton
+          <!-- <StartGameButton
             @click="$client.onGameStart"
           >Start<br>game
-          </StartGameButton>
-          <StartGameButton
+          </StartGameButton> -->
+          <!-- <StartGameButton
             @click="$client.onGameStartDuel"
           >DUEL
-          </StartGameButton>
+          </StartGameButton> -->
           <StartGameButton
             class="GalaxyScene__playButton"
             @click="$client.onGameStartWithBot"

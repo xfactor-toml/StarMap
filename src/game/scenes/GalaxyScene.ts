@@ -60,7 +60,6 @@ export class GalaxyScene extends BasicScene {
         this.initBattleAcceptController();
         this.initSkybox();
         this.initGalaxy();
-        this.initDuel();
         this.initEvents();
         if (!GlobalParams.duelChecked) {
             this.checkDuel();
@@ -80,14 +79,6 @@ export class GalaxyScene extends BasicScene {
     private initBattleAcceptController() {
         this._battleAcceptScreenMng = new BattleAcceptScreenMng();
         this._battleAcceptScreenMng.on(BattleAcceptScreenMngEvent.Loading, this.onAcceptScreenLoading, this);
-    }
-
-    private initDuel() {
-        if (GlobalParams.BATTLE.duelNumber >= 0) {
-            let bc = BattleConnection.getInstance();
-            bc.sendChallengeConnect(GlobalParams.BATTLE.duelNumber);
-            GlobalParams.BATTLE.duelNumber = -1;
-        }
     }
 
     private initEvents() {
@@ -183,18 +174,29 @@ export class GalaxyScene extends BasicScene {
         this._isBattleSearching = true;
     }
 
-    private onFrontChallengeClick() {
-        let con = BattleConnection.getInstance();
-        if (!con.connected) {
-            GameEventDispatcher.showMessage(`No connection to server!`);
-            return;
-        }
-        GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_START);
-        con.sendChallengeCreate();
-    }
+    // private onFrontChallengeClick() {
+    //     let con = BattleConnection.getInstance();
+    //     if (!con.connected) {
+    //         GameEventDispatcher.showMessage(`No connection to server!`);
+    //         return;
+    //     }
+    //     GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_START);
+    //     con.sendDuelCreate();
+    // }
 
     private onFrontStopBattleSearch() {
-        BattleConnection.getInstance().sendStopSearchingGame();
+        let con = BattleConnection.getInstance();
+
+        if (this._isDuelChecking) {
+            if (confirm(`Are you sure you want to cancel the duel?`)) {
+                const bcs = BlockchainConnectService.getInstance();
+                con.sendDuelCancel(bcs.TelegramLogin());
+                BattleConnection.getInstance().sendStopSearchingGame();
+            }
+            else {
+                return;
+            }
+        }
     }
 
     private onGameSearchPack(aData: {
@@ -247,6 +249,8 @@ export class GalaxyScene extends BasicScene {
             // break;
             
             case 'found':
+                this._isDuelChecking = false;
+
                 if (aData.enemyNick?.length > 0) {
                     GameEventDispatcher.showMessage(`Duel with ${aData.enemyNick} found!`);
                 }
@@ -257,11 +261,19 @@ export class GalaxyScene extends BasicScene {
                 break;
 
             case 'notFound':
-                this.logDebug(`Duel game for this nick not found`);
+                this._isDuelChecking = false;
+
+                this.logDebug(`Duel game for this nick not found...`);
                 // msg
                 // GameEventDispatcher.showMessage(`Duel game not found`);
                 GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_STOP);
                 break;
+            
+            case 'cancel':
+                this.logDebug(`Duel game canceled...`);
+                GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_STOP);
+                break;
+            
         }
     }
 
@@ -441,18 +453,18 @@ export class GalaxyScene extends BasicScene {
             withdrawgame: () => {
                 // bc.sendStopSearchingGame();
             },
-            createChallenge: () => {
-                if (!bc.connected) {
-                    GameEventDispatcher.showMessage(`No connection to server!`);
-                    return;
-                }
-                bc.sendChallengeCreate();
-            }
+            // createChallenge: () => {
+                // if (!bc.connected) {
+                //     GameEventDispatcher.showMessage(`No connection to server!`);
+                //     return;
+                // }
+                // bc.sendDuelCreate();
+            // }
         }
 
         const f = DebugGui.getInstance().createFolder('Battle');
         f.add(DATA, 'searchGameBot').name('Play with Bot');
-        f.add(DATA, 'createChallenge').name('Create Challenge');
+        // f.add(DATA, 'createChallenge').name('Create Challenge');
     }
 
     protected onFree() {

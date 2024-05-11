@@ -52,6 +52,9 @@ export type BattleResults = {
   box: {
     show: boolean,
     level: number
+  },
+  claim: {
+    show: boolean
   }
 }
 

@@ -66,13 +66,13 @@ export class BootScene extends BasicScene {
                     LogMng.debug(`Settings.BATTLE.freeConnect = ${GlobalParams.BATTLE.freeConnect}`);
                 }
             },
-            {
-                keys: ['duel'],
-                onReadHandler: (aValue: string) => {
-                    GlobalParams.BATTLE.duelNumber = Number(aValue);
-                    LogMng.debug(`Settings.BATTLE.duelNumber = ${GlobalParams.BATTLE.duelNumber}`);
-                }
-            }
+            // {
+            //     keys: ['duel'],
+            //     onReadHandler: (aValue: string) => {
+            //         GlobalParams.BATTLE.duelNumber = Number(aValue);
+            //         LogMng.debug(`Settings.BATTLE.duelNumber = ${GlobalParams.BATTLE.duelNumber}`);
+            //     }
+            // }
         ];
 
         for (let i = 0; i < LIST.length; i++) {

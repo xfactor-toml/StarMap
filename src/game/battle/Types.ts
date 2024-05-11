@@ -59,7 +59,7 @@ export type SearchGameData = {
 }
 
 export type DuelInfo = {
-    cmd: 'check' | 'found' | 'notFound',
+    cmd: 'check' | 'found' | 'notFound' | 'cancel',
     userNick?: string,
     enemyNick?: string,
     duelId?: string
@@ -99,6 +99,7 @@ export type StartGameData = {
 
 export type GameCompleteData = {
     status: 'win' | 'loss' | 'duelEnemyDisconnected' | 'duelReward',
+    hideClaimBtn?: boolean,
     showBoxClaim?: boolean,
     boxLevel?: number
 }

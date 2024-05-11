@@ -183,24 +183,24 @@ export class BattleConnection extends MyEventDispatcher {
         this._socket.emit(PackTitle.startSearchGame, data);
     }
 
-    sendChallengeCreate() {
-        let data: SearchGameData = {
-            isChallenge: true,
-            duelCmd: 'create',
-            isFreeConnect: GlobalParams.BATTLE.freeConnect
-        }
-        this._socket.emit(PackTitle.startSearchGame, data);
-    }
+    // sendDuelCreate() {
+    //     let data: SearchGameData = {
+    //         isChallenge: true,
+    //         duelCmd: 'create',
+    //         isFreeConnect: GlobalParams.BATTLE.freeConnect
+    //     }
+    //     this._socket.emit(PackTitle.startSearchGame, data);
+    // }
 
-    sendChallengeConnect(aChNumber: number) {
-        let data: SearchGameData = {
-            isChallenge: true,
-            duelCmd: 'connect',
-            duelNumber: aChNumber,
-            isFreeConnect: GlobalParams.BATTLE.freeConnect
-        }
-        this._socket.emit(PackTitle.startSearchGame, data);
-    }
+    // sendDuelConnect(aChNumber: number) {
+    //     let data: SearchGameData = {
+    //         isChallenge: true,
+    //         duelCmd: 'connect',
+    //         duelNumber: aChNumber,
+    //         isFreeConnect: GlobalParams.BATTLE.freeConnect
+    //     }
+    //     this._socket.emit(PackTitle.startSearchGame, data);
+    // }
 
     sendBattleSceneLoaded() {
         this._socket.emit(PackTitle.battleSceneLoaded);
@@ -280,6 +280,14 @@ export class BattleConnection extends MyEventDispatcher {
     sendDuelCheck(aUserNick: string) {
         let data: DuelInfo = {
             cmd: 'check',
+            userNick: aUserNick
+        }
+        this._socket.emit(PackTitle.duel, data);
+    }
+
+    sendDuelCancel(aUserNick: string) {
+        let data: DuelInfo = {
+            cmd: 'cancel',
             userNick: aUserNick
         }
         this._socket.emit(PackTitle.duel, data);

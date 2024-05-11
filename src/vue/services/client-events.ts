@@ -225,6 +225,9 @@ export class ClientEventsService {
           box: {
             show: clientEvent.showBoxClaim,
             level: clientEvent.boxLevel
+          },
+          claim: {
+            show: !clientEvent.hideClaimBtn
           }
         })
 

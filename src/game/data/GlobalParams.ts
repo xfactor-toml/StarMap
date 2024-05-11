@@ -129,7 +129,7 @@ export class GlobalParams {
         serverAddr: 'https://staging-api.vorpal.finance',
         localConnect: false,
         freeConnect: false,
-        duelNumber: -1
+        // duelNumber: -1
     };
 
     // audio

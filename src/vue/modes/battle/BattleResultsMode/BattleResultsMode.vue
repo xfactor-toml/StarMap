@@ -2,10 +2,7 @@
   <div class="BattleResultsMode">
     <template v-if="results">
       <div class="BattleResultsMode__header">
-        <div
-          class="BattleResultsMode__status"
-          :data-type="results.type"
-        />
+        <div class="BattleResultsMode__status" :data-type="results.type" />
       </div>
       <div class="BattleResultsMode__body">
         <div class="BattleResultsMode__player">
@@ -15,46 +12,32 @@
           Owner: {{ getShortAddress(results.owner) }}
         </div>
         <div class="BattleResultsMode__rows">
-          <div
-            class="BattleResultsMode__row"
-            v-for="item in rows"
-            :key="item.key"
-          >
+          <div class="BattleResultsMode__row" v-for="item in rows" :key="item.key">
             <div class="BattleResultsMode__label">{{ item.label }}:</div>
             <div class="BattleResultsMode__value">{{ item.value }}</div>
           </div>
-          <div
-            class="BattleResultsMode__row"
-            key="rating"
-          >
+          <div class="BattleResultsMode__row" key="rating">
             <div class="BattleResultsMode__label">Raiting changed:</div>
             <div class="BattleResultsMode__value is-rating">
               {{ formatNumber(results.rating.current) }}
-              <span
-                :class="`BattleResultsMode__ratingChange ${ratingIncreased ? 'is-increased' : ''}`"
-              >{{ Math.abs(ratingChange) }}
+              <span :class="`BattleResultsMode__ratingChange ${ratingIncreased ? 'is-increased' : ''}`">{{
+                Math.abs(ratingChange) }}
               </span>
             </div>
           </div>
         </div>
       </div>
       <div class="BattleResultsMode__footer">
-        
-        <Loader v-if="loading"/>
+
+        <Loader v-if="loading" />
         <template v-else>
-          <button
-            v-if="results.box.show"
-            class="BattleResultsMode__button"
-            @click="openBox"
-          >Open Box lv.{{ results.box.level }}
+          <button v-if="results.box.show" class="BattleResultsMode__button" @click="openBox">Open Box lv.{{
+            results.box.level }}
           </button>
-          <button
-            class="BattleResultsMode__button"
-            @click="claim"
-          >Claim rewards
+          <button v-if="results.claim.show" class="BattleResultsMode__button" @click="claim">Claim rewards
           </button>
         </template>
-    </div>
+      </div>
     </template>
     <template v-else>Not found</template>
   </div>
