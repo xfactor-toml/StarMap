@@ -65,7 +65,7 @@
               </div>
             </template>
             <template v-else>
-              <div class="UserInventoryPopup__count">{{ userBoxes }}</div>
+              <div class="UserInventoryPopup__count">{{ userBoxes.length }}</div>
               <button
                 class="UserInventoryPopup__button"
                 @click="openBox"
