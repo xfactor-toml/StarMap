@@ -22,15 +22,15 @@
           <template v-if="currentTab === 'inventory'">
             <template v-if="walletStore.connected">
               <div class="UserInventoryPopup__list">
-                <template v-for="item in inventory" :key="item.id">
+                <template v-for="item in assets" :key="item.name">
                   <div
-                  class="UserInventoryPopup__card"
+                    class="UserInventoryPopup__card"
                     @click="selectCard(item)"
                   >
                     <div class="UserInventoryPopup__cardFigure">
-                      <img class="UserInventoryPopup__cardImage" :src="item.icon"/>
+                      <img class="UserInventoryPopup__cardImage" :src="item.image"/>
                     </div>
-                    <div class="UserInventoryPopup__cardCaption">{{ item.count }}</div>
+                    <div class="UserInventoryPopup__cardCaption">{{ item.value }}</div>
                   </div>
                 </template>
               </div>
@@ -94,9 +94,10 @@
 import { inventory, events } from './data'
 import { BoxContentPopup, InventoryCardPopup, Loader } from '@/components'
 import { useBattleStore, useWalletStore } from '@/stores';
+import { getAssetImageByKey, getAssetNameByKey } from '@/utils';
 import { mapStores } from 'pinia';
 
-const baseTabs = ['inventory','events']
+const baseTabs = ['inventory', 'events']
 
 export default {
   name: 'UserInventoryPopup',
@@ -109,10 +110,11 @@ export default {
     return {
       inventory,
       events,
-      balance: 2180923,
+      balance: 0,
       currentTab: 'inventory',
       selectedCard: null,
-      boxContent: []
+      boxContent: [],
+      assets: []
     }
   },
   computed: {
@@ -130,6 +132,11 @@ export default {
       return this.userBoxes.length > 0 ? [...baseTabs, 'unboxing'] : baseTabs
     }
   },
+  watch: {
+    'walletStore.connected'() {
+      this.fetchAssets()
+    }
+  },
   methods: {
     selectTab(tab) {
       this.currentTab = tab
@@ -140,8 +147,23 @@ export default {
     async openBox() {
       this.boxContent = await this.rewards.openBox()
     },
+    async fetchAssets() {
+      const userAssets = await this.$wallet.provider.getUserAssets()
+      
+      this.balance = userAssets.token || 0
+      this.assets = Object.keys(userAssets).map(key => ({
+        name: getAssetNameByKey(key),
+        image: getAssetImageByKey(key),
+        value: userAssets[key]
+      })).filter((asset) => asset.value && asset.name !== 'unknown')
+    },
     resetBoxes() {
       this.boxContent = []
+    },
+  },
+  async mounted() {
+    if (this.$wallet.connected) {
+      this.fetchAssets()
     }
   }
 };

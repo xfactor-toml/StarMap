@@ -1,4 +1,5 @@
 import { Ref } from "vue";
+import { BlockchainConnectService } from "~/blockchainTotal";
 import { getLaserLevel } from "~/blockchainTotal/getters/boxes";
 import { getBoxDataWeb2, getUserBoxesToOpenWeb2 } from "~/blockchainTotal/getters/boxesWeb2";
 import { GetCreationCost, GetSingleStarData, GetStarDataFromServer, GetStarsCount, RequiredPlasmaToApprove } from "~/blockchainTotal/getters/stars";
@@ -28,6 +29,14 @@ export abstract class BaseProvider {
   
   async getUserBoxesToOpen() {
     return this.checkConnection(() => getUserBoxesToOpenWeb2(this.account.value), []);
+  }
+
+  async getUserAssets() {
+    try {
+      return await BlockchainConnectService.getInstance().getUserAssets()
+    } catch (error) {
+      return []
+    }
   }
 
   async getBoxData(boxId: number) {

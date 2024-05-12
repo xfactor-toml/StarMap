@@ -5,6 +5,7 @@ import { useWallet } from '@/services';
 import { useScenesStore } from '@/stores/scenes';
 import { LogMng } from '~/game/utils/LogMng';
 import { BoxDataWeb2, BoxItemType } from '~/blockchainTotal/getters/boxesWeb2';
+import { getAssetImage, getAssetName } from '@/utils';
 
 export const useBattleRewardsStore = defineStore('battleRewards', () => {
     const list = ref<BattleReward[]>([])
@@ -75,39 +76,13 @@ export const useBattleRewardsStore = defineStore('battleRewards', () => {
                             }
                         ];
 
-                    let namesByType: { [key in BoxItemType]: string } = {
-                        'vrp': 'VRP',
-                        'biomass': 'Biomass',
-                        'carbon': 'Carbon',
-                        'metal': 'Metal',
-                        'spice': 'Spice',
-                        'spore': 'Spores',
-                        'laser': 'Laser'
-                    }
-
-                    let iconByType: { [key in BoxItemType]: string } = {
-                        'vrp': '/gui/images/icons/coins.png',
-                        'biomass': '/gui/images/icons/biomass.png',
-                        'carbon': '/gui/images/icons/hydrocarbon.png',
-                        'metal': '/gui/images/icons/metal.png',
-                        'spice': '/gui/images/icons/spice.png',
-                        'spore': '/gui/images/icons/spores.png',
-                        'laser': '/gui/images/icons/laser-red.png'
-                    }
-
-                    let iconByLaserLevel = {
-                        0: '/gui/images/icons/laser-red.png',
-                        1: '/gui/images/icons/laser-white.png',
-                        2: '/gui/images/icons/laser-violet.png'
-                    }
-
                     let showList: {
                         name: string,
                         image: string
                     }[] = [
                             {
-                                name: boxData.type == 'laser' ? `${namesByType[boxData.type]} Lv.${boxData.laserLevel}` : `${namesByType[boxData.type]} +${boxData.value}`,
-                                image: boxData.type == 'laser' ? iconByLaserLevel[boxData.laserLevel] : iconByType[boxData.type],
+                                name: getAssetName(boxData),
+                                image: getAssetImage(boxData),
                             }
                         ]
 
