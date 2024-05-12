@@ -10,6 +10,7 @@ export type web2assets = {
     metal: number;
     biomass: number;
     carbon: number;
+    trends: number;
 }
 
 export async function getUserBoxesToOpenWeb2 ( ownerAddress: string ): Promise<number[]> {
@@ -73,6 +74,7 @@ export async function GetGameAssetsWeb2 ( ownerAddress: string ): Promise<web2as
             metal: number;
             biomass: number;
             carbon: number;
+            trends: number;
         }}) => {
              resolve(res.assets)
              return res.assets;

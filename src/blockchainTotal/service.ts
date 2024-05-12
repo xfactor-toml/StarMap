@@ -148,7 +148,8 @@ export class BlockchainConnectService  {
 
     public async getUserAssets (): Promise<web2assets> {
         return new Promise ((resolve, reject) => {
-            if (!this.telegramAuthData?.username) {
+            console.log("Username: ", this.telegramAuthData.username);
+            if (!this.telegramAuthData.username) {
                 reject("User not authorized by login");
             }
             this.getters.BoxesWeb2.GetGameAssetsWeb2 (this.telegramAuthData.username).then((res) => {
