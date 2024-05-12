@@ -3,6 +3,7 @@ import { ethers } from 'ethers';
 import { jsonABIs, network } from "../../config";
 import { fastDataServerUrl } from "~/blockchainTotal/config/network";
 import { BlockchainConnectService } from "~/blockchainTotal";
+import { TelegramAuthData } from "~/blockchainTotal/types";
 
 export async function OpenBox (address: string, _boxId: number) {
     return new Promise(async (resolve, reject) => {
@@ -29,13 +30,16 @@ export async function OpenBox (address: string, _boxId: number) {
     })
 }
 
-export async function OpenBoxWeb2 (address: string, _boxId: number) {
+export async function OpenBoxWeb2 (_boxId: number, address?: string, telegramData?: TelegramAuthData) {
     return new Promise(async (resolve, reject) => {
+        if (!address && !telegramData) {
+            reject("At least 1 auth parameter muse exist")
+        }
         const url = fastDataServerUrl.concat('api/boxes/open');
         const connector = BlockchainConnectService.getInstance();
         const priority = connector.getDefaultAuthMethod();
         connector.SetupAuthMethod(priority);
-        const signature = await connector.getSignedAuthMessage();
+        const signature =  address ? await connector.getSignedAuthMessage() : "";
         if (!signature) {
             reject("Message is not signed")
         }
@@ -45,7 +49,8 @@ export async function OpenBoxWeb2 (address: string, _boxId: number) {
               "Content-Type": "application/json"
             },
             body: JSON.stringify({
-              signature: signature, 
+              signature: signature || "", 
+              telegramData,
               boxId: Number(_boxId)
             })
           }).then(res => {

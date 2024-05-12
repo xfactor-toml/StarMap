@@ -9,6 +9,7 @@ import { lsPrivateKey } from "./config/network";
 import { GenerateSignature } from "./walletconnect/methods";
 import * as getters from "./getters";
 import { web2assets } from "./getters/boxesWeb2";
+import { OpenBoxWeb2 } from "./local/methods";
 
 export class BlockchainConnectService  {
     public authMethod: AuthMethod;
@@ -225,6 +226,14 @@ export class BlockchainConnectService  {
             
         });
     
+    }
+
+    public async OpenBoxByTg (_boxId: number) {
+        if (!this.telegramAuthData.hash) {
+            Promise.reject("User not authorized");
+            return;
+        }
+        return await OpenBoxWeb2 (_boxId, "", this.telegramAuthData)
     }
 
     public async getWalletAddressWithConnect() {
