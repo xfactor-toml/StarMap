@@ -25,6 +25,7 @@
                 <template v-for="item in assets" :key="item.name">
                   <div
                     class="UserInventoryPopup__card"
+                    :data-rare="item.rare"
                     @click="selectCard(item)"
                   >
                     <div class="UserInventoryPopup__cardFigure">
@@ -94,7 +95,7 @@
 import { inventory, events } from './data'
 import { BoxContentPopup, InventoryCardPopup, Loader } from '@/components'
 import { useBattleStore, useWalletStore } from '@/stores';
-import { getAssetImageByKey, getAssetNameByKey } from '@/utils';
+import { getAssetImageByKey, getAssetNameByKey, getAssetRareByKey } from '@/utils';
 import { mapStores } from 'pinia';
 
 const baseTabs = ['inventory', 'events']
@@ -154,6 +155,7 @@ export default {
       this.assets = Object.keys(userAssets).map(key => ({
         name: getAssetNameByKey(key),
         image: getAssetImageByKey(key),
+        rare: getAssetRareByKey(key),
         value: userAssets[key]
       })).filter((asset) => asset.value && asset.name !== 'unknown')
     },

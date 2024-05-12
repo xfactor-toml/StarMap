@@ -152,14 +152,20 @@
 }
 
 .UserInventoryPopup__card {
+  --color: #00FFFF;
+
   display: flex;
   flex-direction: column;
   width: 100%;
-  border: 3px solid #00FFFF;
+  border: 3px solid var(--color);
   border-radius: 6px;
   background-color: #000;
   cursor: pointer;
 }
+
+.UserInventoryPopup__card[data-rare="rare"] { --color: #123EAB; }
+.UserInventoryPopup__card[data-rare="mithic"] { --color: #640CAB; }
+.UserInventoryPopup__card[data-rare="legendary"] { --color: #FF6200; }
 
 .UserInventoryPopup__cardFigure {
   display: flex;
@@ -182,7 +188,7 @@
   padding: 6px;
   padding-bottom: 4px;
   color: #000;
-  background-color: #00ffff;
+  background-color: var(--color);
   font-family: 'Exo 2';
   font-size: 12px;
   line-height: 1;
