@@ -21,8 +21,10 @@ import { BlockchainConnectService } from '~/blockchainTotal';
 export class GalaxyScene extends BasicScene {
     private _galaxy: GalaxyMng;
     private _battleAcceptScreenMng: BattleAcceptScreenMng;
-    private _isDuelChecking = false;
     private _isBattleSearching = false;
+
+    private _isDuelSearching = false;
+    private _timerDuelCheck = 0;
 
     constructor() {
         super(SceneNames.GalaxyScene, {
@@ -30,8 +32,8 @@ export class GalaxyScene extends BasicScene {
             initScene: true,
             initCamera: true
         });
-        this._isDuelChecking = !GlobalParams.duelChecked;
         this._isBattleSearching = false;
+        this._isDuelSearching = false;
     }
 
     protected initRenderer() {
@@ -61,9 +63,6 @@ export class GalaxyScene extends BasicScene {
         this.initSkybox();
         this.initGalaxy();
         this.initEvents();
-        if (!GlobalParams.duelChecked) {
-            this.checkDuel();
-        }
         if (GlobalParams.isDebugMode) {
             this.initBlockchainDebugGui();
             this.initDebugGui();
@@ -122,11 +121,18 @@ export class GalaxyScene extends BasicScene {
             return;
         }
         const bcs = BlockchainConnectService.getInstance();
+        const isTG = bcs.isTelegram();
+        this.logDebug(`checkDuel: isTelegram = ${isTG}`);
         if (!bcs.isTelegram()) {
             return;
         }
-        con.sendDuelCheck(bcs.TelegramLogin());
-        this._isDuelChecking = true;
+        const userNick = bcs.TelegramLogin();
+        this.logDebug(`checkDuel: userNick = ${userNick}`);
+        if (!userNick || userNick == '') {
+            return;
+        }
+        con.sendDuelCheck(userNick);
+        GlobalParams.duelChecked = true;
     }
 
     private onLeftPanelGalaxyClick() {
@@ -187,7 +193,7 @@ export class GalaxyScene extends BasicScene {
     private onFrontStopBattleSearch() {
         let con = BattleConnection.getInstance();
 
-        if (this._isDuelChecking) {
+        if (this._isDuelSearching) {
             if (confirm(`Are you sure you want to cancel the duel?`)) {
                 const bcs = BlockchainConnectService.getInstance();
                 con.sendDuelCancel(bcs.TelegramLogin());
@@ -249,8 +255,7 @@ export class GalaxyScene extends BasicScene {
             // break;
             
             case 'found':
-                this._isDuelChecking = false;
-
+                this._isDuelSearching = true;
                 if (aData.enemyNick?.length > 0) {
                     GameEventDispatcher.showMessage(`Duel with ${aData.enemyNick} found!`);
                 }
@@ -261,7 +266,7 @@ export class GalaxyScene extends BasicScene {
                 break;
 
             case 'notFound':
-                this._isDuelChecking = false;
+                this._isDuelSearching = false;
 
                 this.logDebug(`Duel game for this nick not found...`);
                 // msg
@@ -360,6 +365,12 @@ export class GalaxyScene extends BasicScene {
                 //         alert(`No box found for this user...`);
                 //     }
                 // });
+            },
+            getUserAssets() {
+                let bcs = BlockchainConnectService.getInstance();
+                bcs.getUserAssets().then(web2Assets => {
+                    console.log(`web2Assets:`, web2Assets);
+                })
             }
         }
 
@@ -372,7 +383,8 @@ export class GalaxyScene extends BasicScene {
         }).name(`Box id`);
 
         f.add(BLOCKCHAIN_DEBUG_GUI, 'openBox');
-        f.add(BLOCKCHAIN_DEBUG_GUI, 'getBoxList');
+        // f.add(BLOCKCHAIN_DEBUG_GUI, 'getBoxList');
+        f.add(BLOCKCHAIN_DEBUG_GUI, 'getUserAssets');
     }
 
     private initDebugGui() {
@@ -395,6 +407,9 @@ export class GalaxyScene extends BasicScene {
             tgLoginBerum: () => {
                 localStorage.setItem("userLogin", 'berum');
             },
+            clearLogin: () => {
+                localStorage.setItem("userLogin", '');
+            },
         }
         let fTg = DebugGui.getInstance().createFolder('TG');
         fTg.add(DEBUG_GUI_TG, 'tgLoginTest1').name('Login testNick1');
@@ -402,6 +417,7 @@ export class GalaxyScene extends BasicScene {
         fTg.add(DEBUG_GUI_TG, 'tgLoginMaxMonax').name('Login Max');
         fTg.add(DEBUG_GUI_TG, 'tgLoginIvemaker').name('Login Ivemaker');
         fTg.add(DEBUG_GUI_TG, 'tgLoginBerum').name('Login Berum');
+        fTg.add(DEBUG_GUI_TG, 'clearLogin').name('Clear Login');
 
         const DEBUG_GUI_DUEL = {
             duelTest1Check: () => {
@@ -475,7 +491,20 @@ export class GalaxyScene extends BasicScene {
         this._galaxy = null;
     }
 
+    private updateDuelCheck(dt: number) {
+
+        if (this._isDuelSearching) return;
+        if (GlobalParams.duelChecked) return;
+
+        this._timerDuelCheck -= dt;
+        if (this._timerDuelCheck <= 0) {
+            this._timerDuelCheck = 1;
+            this.checkDuel();
+        }
+    }
+
     update(dt: number) {
+        this.updateDuelCheck(dt);
         this._galaxy.update(dt);
     }
 

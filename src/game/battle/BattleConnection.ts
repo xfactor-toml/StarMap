@@ -116,8 +116,6 @@ export class BattleConnection extends MyEventDispatcher {
     private async signProcessLocal() {
         this.logDebug(`signProcessLocal()...`);
 
-        // const bcs = BlockchainConnectService.getInstance();
-        // const walletAddress = await bcs.getWalletAddressWithConnect();
         const walletAddress = this.signService.getWalletAddressWithConnect();
         this.logDebug(`signProcessLocal: walletAddress = ${walletAddress}`);
 
@@ -126,11 +124,12 @@ export class BattleConnection extends MyEventDispatcher {
         }
 
         if (this.signService.isTelegram()) {
-            signData.displayName = this.signService.TelegramLogin();
+            // signData.tgNick = this.signService.TelegramLogin();
+            signData.tgAuthData = this.signService.getTelegramAuthData();
         }
-        else if (GlobalParams.isDebugMode) {
-            signData.displayName = 'DebugNick';
-        }
+        // else if (GlobalParams.isDebugMode) {
+        //     signData.displayName = 'DebugNick';
+        // }
 
         if (!walletAddress) {
             const authPriority = this.signService.getDefaultAuthMethod();
