@@ -7,7 +7,8 @@ const iconByType: { [key in BoxItemType]: string } = {
   'metal': '/gui/images/icons/metal.png',
   'spice': '/gui/images/icons/spice.png',
   'spore': '/gui/images/icons/spores.png',
-  'laser': '/gui/images/icons/laser-red.png'
+  'laser': '/gui/images/icons/laser-red.png',
+  'trends': '/gui/images/icons/coins.png'
 }
 
 const iconByLaserLevel = {

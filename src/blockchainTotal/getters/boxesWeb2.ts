@@ -86,7 +86,7 @@ export function GetBoxPrizeTypeWeb2(prize: string) {
     return prize;
 }
 
-export type BoxItemType = 'vrp' | 'biomass' | 'carbon' | 'metal' | 'spice' | 'spore' | 'laser';
+export type BoxItemType = 'vrp' | 'biomass' | 'carbon' | 'metal' | 'spice' | 'spore' | 'laser' | 'trends';
 
 export type BoxDataWeb2 = {
     type: BoxItemType,

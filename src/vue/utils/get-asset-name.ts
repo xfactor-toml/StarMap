@@ -7,7 +7,8 @@ let namesByType: { [key in BoxItemType]: string } = {
   'metal': 'Metal',
   'spice': 'Spice',
   'spore': 'Spores',
-  'laser': 'Laser'
+  'laser': 'Laser',
+  'trends': 'Trends'
 }
 
 export const getAssetName = (asset: BoxDataWeb2) => {
