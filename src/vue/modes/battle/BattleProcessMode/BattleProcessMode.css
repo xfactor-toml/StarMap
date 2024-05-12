@@ -75,3 +75,15 @@
   top: 60px;
   pointer-events: all;
 }
+
+@media (max-width: 640px) {
+  .BattleProcessMode__section {
+    justify-content: space-between;
+  }
+
+  .BattleProcessMode__column {
+    padding: 6%;
+    flex-basis: auto;
+    flex-grow: 0;
+  }
+}
