@@ -366,7 +366,12 @@ export class GalaxyScene extends BasicScene {
                 //     }
                 // });
             },
-            
+            getUserAssets() {
+                let bcs = BlockchainConnectService.getInstance();
+                bcs.getUserAssets().then(web2Assets => {
+                    console.log(`web2Assets:`, web2Assets);
+                })
+            }
         }
 
         let f = DebugGui.getInstance().createFolder('Blockchain');
@@ -378,7 +383,8 @@ export class GalaxyScene extends BasicScene {
         }).name(`Box id`);
 
         f.add(BLOCKCHAIN_DEBUG_GUI, 'openBox');
-        f.add(BLOCKCHAIN_DEBUG_GUI, 'getBoxList');
+        // f.add(BLOCKCHAIN_DEBUG_GUI, 'getBoxList');
+        f.add(BLOCKCHAIN_DEBUG_GUI, 'getUserAssets');
     }
 
     private initDebugGui() {
