@@ -365,7 +365,8 @@ export class GalaxyScene extends BasicScene {
                 //         alert(`No box found for this user...`);
                 //     }
                 // });
-            }
+            },
+            
         }
 
         let f = DebugGui.getInstance().createFolder('Blockchain');

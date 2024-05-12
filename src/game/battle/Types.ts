@@ -37,13 +37,22 @@ export enum PackTitle {
 
 }
 
+export type TGAuthData = {
+    auth_date: number;
+    first_name: string;
+    hash: string;
+    id: number;
+    last_name: string;
+    username: string;
+}
+
 export type SignData = {
     fromServer?: 'request' | 'reject' | 'success',
     fromCli?: 'web3' | 'web2',
     signature?: string,
-    tgNick?: string,
+    message?: string,
     walletId?: string,
-    message?: string
+    tgAuthData?: TGAuthData
 }
 
 export type ObjectType = 'Star' | 'Planet' | 'Tower' | 'FighterShip' | 'BattleShip' | 'HomingMissile';
