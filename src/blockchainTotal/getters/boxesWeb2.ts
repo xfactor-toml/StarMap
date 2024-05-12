@@ -14,6 +14,10 @@ export type web2assets = {
 
 export async function getUserBoxesToOpenWeb2 ( ownerAddress: string ): Promise<number[]> {
     return new Promise((resolve, reject) => {
+        if (!ownerAddress) {
+            reject ("Login is not defuned");
+            return;
+        }
         const url = fastDataServerUrl.concat('api/boxes/available');
         fetch(url, {
             method: 'post',
@@ -41,6 +45,10 @@ export async function getUserBoxesToOpenWeb2 ( ownerAddress: string ): Promise<n
 
 export async function GetGameAssetsWeb2 ( ownerAddress: string ): Promise<web2assets> {
     return new Promise((resolve, reject) => {
+        if (!ownerAddress) {
+            reject ("Login is not defuned");
+            return;
+        }
         const url = fastDataServerUrl.concat('api/boxes/assets');
         fetch(url, {
             method: 'post',
@@ -48,7 +56,7 @@ export async function GetGameAssetsWeb2 ( ownerAddress: string ): Promise<web2as
               "Content-Type": "application/json"
             },
             body: JSON.stringify({
-              ownerLogin: ownerAddress, 
+                ownerLogin: ownerAddress, 
             })
           }).then(res => {
             if (res.status !== 200) {
