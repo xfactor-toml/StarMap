@@ -122,10 +122,10 @@ export class GalaxyScene extends BasicScene {
         }
         const bcs = BlockchainConnectService.getInstance();
         const isTG = bcs.isTelegram();
-        this.logDebug(`checkDuel: isTelegram = ${isTG}`);
-        if (!bcs.isTelegram()) {
+        if (!isTG) {
             return;
         }
+        this.logDebug(`checkDuel: isTelegram = ${isTG}`);
         const userNick = bcs.TelegramLogin();
         this.logDebug(`checkDuel: userNick = ${userNick}`);
         if (!userNick || userNick == '') {
@@ -389,26 +389,32 @@ export class GalaxyScene extends BasicScene {
 
     private initDebugGui() {
         let bc = BattleConnection.getInstance();
-        let bcCon = BlockchainConnectService.getInstance();
+        let bcs = BlockchainConnectService.getInstance();
 
         const DEBUG_GUI_TG = {
             tgLoginTest1: () => {
                 localStorage.setItem("userLogin", 'testNick1');
+                bcs.setTestUserName('testNick1');
             },
             tgLoginTest2: () => {
                 localStorage.setItem("userLogin", 'testNick2');
+                bcs.setTestUserName('testNick2');
             },
             tgLoginMaxMonax: () => {
                 localStorage.setItem("userLogin", 'maxmonax');
+                bcs.setTestUserName('maxmonax');
             },
             tgLoginIvemaker: () => {
                 localStorage.setItem("userLogin", 'ivemaker');
+                bcs.setTestUserName('ivemaker');
             },
             tgLoginBerum: () => {
                 localStorage.setItem("userLogin", 'berum');
+                bcs.setTestUserName('berum');
             },
             clearLogin: () => {
                 localStorage.setItem("userLogin", '');
+                bcs.setTestUserName('');
             },
         }
         let fTg = DebugGui.getInstance().createFolder('TG');
