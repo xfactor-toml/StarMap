@@ -1,7 +1,8 @@
 import { BoxDataWeb2, BoxItemType } from "~/blockchainTotal/getters/boxesWeb2"
 
-let namesByType: { [key in BoxItemType]: string } = {
+let namesByType: { [key in BoxItemType | 'token']: string } = {
   'vrp': 'VRP',
+  'token': 'VRP',
   'biomass': 'Biomass',
   'carbon': 'Carbon',
   'metal': 'Metal',
