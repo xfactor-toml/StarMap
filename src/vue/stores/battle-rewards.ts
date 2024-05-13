@@ -4,7 +4,7 @@ import { ref } from 'vue';
 import { useWallet } from '@/services';
 import { useScenesStore } from '@/stores/scenes';
 import { LogMng } from '~/game/utils/LogMng';
-import { BoxDataWeb2, BoxItemType } from '~/blockchainTotal/getters/boxesWeb2';
+import { BoxDataWeb2, BoxItemType, we2AssetsKeys, web2AssetsNameToBoxItemName, web2AssetsToBoxDataWeb2, web2assets } from '~/blockchainTotal/getters/boxesWeb2';
 import { getAssetImage, getAssetName, getAssetRare } from '@/utils';
 
 export const useBattleRewardsStore = defineStore('battleRewards', () => {
@@ -36,7 +36,7 @@ export const useBattleRewardsStore = defineStore('battleRewards', () => {
     const waitBox = () => {
         waitingBox.value = true
     }
-    
+
     const openBox = async () => {
         const [firstBoxId] = boxesIds.value
 
@@ -45,64 +45,55 @@ export const useBattleRewardsStore = defineStore('battleRewards', () => {
 
             const wallet = useWallet()
             const scenes = useScenesStore()
-            
+
             if (!wallet.connected) {
                 const connection = await wallet.connect("local");
             }
-            const openResult: any = await wallet.provider.openBox(firstBoxId);
+            const openResult: web2assets = await wallet.provider.openBox(firstBoxId);
             LogMng.debug(`openResult:`, openResult);
 
             if (openResult) {
                 boxesIds.value = boxesIds.value.slice(1)
                 LogMng.debug(`boxes left: ${boxesIds.value}`);
 
-                const boxData: BoxDataWeb2 = await wallet.provider.getBoxData(firstBoxId);
-                LogMng.debug(`boxData:`, boxData);
+                // const boxData: BoxDataWeb2 = await wallet.provider.getBoxData(firstBoxId);
+                // LogMng.debug(`boxData:`, boxData);
 
-                if (boxData.type != undefined) {
-
-                    let laserLevel = 0;
-                    // const rankByLevel = ['common', 'uncommon', 'rare'];
-
-                    let list: {
-                        type: BoxItemType,
-                        value?: number, // for res
-                        laserLevel?: number // 1-3
-                    }[] = [
-                            {
-                                type: boxData.type,
-                                value: boxData.value,
-                                laserLevel: boxData.laserLevel,
-                            }
-                        ];
-
-                    let showList: BattleReward[] = [
-                            {
-                                name: getAssetName(boxData),
-                                image: getAssetImage(boxData),
-                                rare: getAssetRare(boxData),
-                            }
-                        ]
-
-                    const testList = [
-                        // { name: `Laser (${rankByLevel[laserLevel] || laserLevel})`, image: '/gui/images/box.svg' },
-                        // { name: `VRP +500`, image: '/gui/images/icons/coins.png' },
-                        // { name: `Biomass +50`, image: '/gui/images/icons/biomass.png' },
-                        // { name: `Carbon +150`, image: '/gui/images/icons/hydrocarbon.png' },
-                        // { name: `Metal +10`, image: '/gui/images/icons/metal.png' },
-                        // { name: `Spice +100`, image: '/gui/images/icons/spice.png' },
-                        // { name: `Spores +80`, image: '/gui/images/icons/spores.png' },
-                        // { name: `Laser Lv.1`, image: '/gui/images/icons/laser-red.png' },
-                        // { name: `Laser Lv.2`, image: '/gui/images/icons/laser-white.png' },
-                        // { name: `Laser Lv.3`, image: '/gui/images/icons/laser-violet.png' },
-                    ]
-
-                    setRewards(openResult);
+                // if (boxData.type != undefined) {
+    
+                // create list
+                let list: BattleReward[] = [];
+                for (const key in openResult) {
+                    const value = openResult[key];
+                    let itemData: BoxDataWeb2 = web2AssetsToBoxDataWeb2(key as we2AssetsKeys, value);
+                    list.push({
+                        name: getAssetName(itemData),
+                        image: getAssetImage(itemData),
+                        rare: getAssetRare(itemData),
+                        value: value
+                    });
                 }
-                else {
-                    LogMng.error(`Box open error: ${openResult}`);
-                    alert(`Box opening error, try again.`);
-                }
+
+                // const testList = [
+                // { name: `Laser (${rankByLevel[laserLevel] || laserLevel})`, image: '/gui/images/box.svg' },
+                // { name: `VRP +500`, image: '/gui/images/icons/coins.png' },
+                // { name: `Biomass +50`, image: '/gui/images/icons/biomass.png' },
+                // { name: `Carbon +150`, image: '/gui/images/icons/hydrocarbon.png' },
+                // { name: `Metal +10`, image: '/gui/images/icons/metal.png' },
+                // { name: `Spice +100`, image: '/gui/images/icons/spice.png' },
+                // { name: `Spores +80`, image: '/gui/images/icons/spores.png' },
+                // { name: `Laser Lv.1`, image: '/gui/images/icons/laser-red.png' },
+                // { name: `Laser Lv.2`, image: '/gui/images/icons/laser-white.png' },
+                // { name: `Laser Lv.3`, image: '/gui/images/icons/laser-violet.png' },
+                // ]
+
+                // setRewards(openResult);
+                setRewards(list);
+                // }
+                // else {
+                //     LogMng.error(`Box open error: ${openResult}`);
+                //     alert(`Box opening error, try again.`);
+                // }
             }
             else {
                 LogMng.error(`Box open error: ${openResult}`);

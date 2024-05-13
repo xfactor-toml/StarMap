@@ -13,6 +13,8 @@ export type web2assets = {
     trends: number;
 }
 
+export type we2AssetsKeys = keyof web2assets;
+
 export async function getUserBoxesToOpenWeb2 ( ownerAddress: string ): Promise<number[]> {
     return new Promise((resolve, reject) => {
         if (!ownerAddress) {
@@ -93,6 +95,39 @@ export type BoxDataWeb2 = {
     value?: number,
     laserLevel?: number,
     isPaid?: boolean
+}
+
+export const web2AssetsNameToBoxItemName: Record<we2AssetsKeys, BoxItemType> = {
+    laser1: "laser",
+    laser2: "laser",
+    laser3: "laser",
+    token: "vrp",
+    biomass: "biomass",
+    spore: "spore",
+    metal: 'metal',
+    carbon: "carbon",
+    trends: "trends",
+    spice: "spice"
+}
+
+
+export function web2AssetsToBoxDataWeb2(aKey: we2AssetsKeys, aValue: number): BoxDataWeb2 {
+    let itemData: BoxDataWeb2 = {
+        type: web2AssetsNameToBoxItemName[aKey],
+        value: aValue,
+    }
+    switch (aKey) {
+        case 'laser1':
+            itemData.laserLevel = 1;
+            break;
+        case 'laser2':
+            itemData.laserLevel = 2;
+            break;
+        case 'laser3':
+            itemData.laserLevel = 3;
+            break;
+    }
+    return itemData;
 }
 
 export async function getBoxDataWeb2(_boxId: number): Promise<BoxDataWeb2> {
