@@ -21,7 +21,7 @@
               />
             </div>
             <div class="BoxContentPopup__cardCaption">
-              {{ item.name }}
+              {{ item.name }} +{{ item.value }}
             </div>
           </div>
         </template>

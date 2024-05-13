@@ -52,7 +52,7 @@ export const useBattleRewardsStore = defineStore('battleRewards', () => {
             const openResult: any = await wallet.provider.openBox(firstBoxId);
             LogMng.debug(`openResult:`, openResult);
 
-            if (openResult === true) {
+            if (openResult) {
                 boxesIds.value = boxesIds.value.slice(1)
                 LogMng.debug(`boxes left: ${boxesIds.value}`);
 
@@ -97,7 +97,7 @@ export const useBattleRewardsStore = defineStore('battleRewards', () => {
                         // { name: `Laser Lv.3`, image: '/gui/images/icons/laser-violet.png' },
                     ]
 
-                    setRewards(showList);
+                    setRewards(openResult);
                 }
                 else {
                     LogMng.error(`Box open error: ${openResult}`);
