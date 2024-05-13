@@ -100,6 +100,17 @@ import { mapStores } from 'pinia';
 
 const baseTabs = ['inventory', 'events']
 
+const mapUserAssets = (userAssets) => {
+  return Object.keys(userAssets).map(key => ({
+    name: getAssetNameByKey(key),
+    image: getAssetImageByKey(key),
+    rare: getAssetRareByKey(key),
+    value: userAssets[key]
+  })).filter((asset) => {
+    return asset.value && asset.name !== 'unknown'
+  })
+}
+
 export default {
   name: 'UserInventoryPopup',
   components: {
@@ -146,18 +157,14 @@ export default {
       this.selectedCard = card
     },
     async openBox() {
-      this.boxContent = await this.rewards.openBox()
+      const assets = await this.rewards.openBox()
+      this.boxContent = mapUserAssets(assets)
     },
     async fetchAssets() {
       const userAssets = await this.$wallet.provider.getUserAssets()
       
       this.balance = userAssets.token || 0
-      this.assets = Object.keys(userAssets).map(key => ({
-        name: getAssetNameByKey(key),
-        image: getAssetImageByKey(key),
-        rare: getAssetRareByKey(key),
-        value: userAssets[key]
-      })).filter((asset) => asset.value && asset.name !== 'unknown')
+      this.assets = mapUserAssets(userAssets)
     },
     resetBoxes() {
       this.boxContent = []
