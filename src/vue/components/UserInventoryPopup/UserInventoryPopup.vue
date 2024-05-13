@@ -95,21 +95,11 @@
 import { inventory, events } from './data'
 import { BoxContentPopup, InventoryCardPopup, Loader } from '@/components'
 import { useBattleStore, useWalletStore } from '@/stores';
-import { getAssetImageByKey, getAssetNameByKey, getAssetRareByKey } from '@/utils';
+import { mapAssets } from '@/utils';
 import { mapStores } from 'pinia';
 
 const baseTabs = ['inventory', 'events']
 
-const mapUserAssets = (userAssets) => {
-  return Object.keys(userAssets).map(key => ({
-    name: getAssetNameByKey(key),
-    image: getAssetImageByKey(key),
-    rare: getAssetRareByKey(key),
-    value: userAssets[key]
-  })).filter((asset) => {
-    return asset.value && asset.name !== 'unknown'
-  })
-}
 
 export default {
   name: 'UserInventoryPopup',
@@ -157,15 +147,14 @@ export default {
       this.selectedCard = card
     },
     async openBox() {
-      const assets = await this.rewards.openBox()
-      this.boxContent = mapUserAssets(assets)
+      this.boxContent = await this.rewards.openBox()
       this.fetchAssets()
     },
     async fetchAssets() {
       const userAssets = await this.$wallet.provider.getUserAssets()
       
       this.balance = userAssets.token || 0
-      this.assets = mapUserAssets(userAssets)
+      this.assets = mapAssets(userAssets)
     },
     resetBoxes() {
       this.boxContent = []

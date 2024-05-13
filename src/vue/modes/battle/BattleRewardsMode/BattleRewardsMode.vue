@@ -23,7 +23,7 @@
                   />
                 </div>
                 <div class="BattleRewardsMode__caption">
-                  {{ reward.name }}
+                  {{ reward.name }} {{ reward.value > 1 ? `+${reward.value}` : '' }}
                 </div>
               </div>
             </template>

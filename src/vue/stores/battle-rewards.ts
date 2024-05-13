@@ -4,8 +4,8 @@ import { ref } from 'vue';
 import { useWallet } from '@/services';
 import { useScenesStore } from '@/stores/scenes';
 import { LogMng } from '~/game/utils/LogMng';
-import { BoxDataWeb2, BoxItemType, we2AssetsKeys, web2AssetsNameToBoxItemName, web2AssetsToBoxDataWeb2, web2assets } from '~/blockchainTotal/getters/boxesWeb2';
-import { getAssetImage, getAssetName, getAssetRare } from '@/utils';
+import { web2assets } from '~/blockchainTotal/getters/boxesWeb2';
+import { mapAssets } from '@/utils';
 
 export const useBattleRewardsStore = defineStore('battleRewards', () => {
     const list = ref<BattleReward[]>([])
@@ -61,19 +61,6 @@ export const useBattleRewardsStore = defineStore('battleRewards', () => {
 
                 // if (boxData.type != undefined) {
     
-                // create list
-                let list: BattleReward[] = [];
-                for (const key in openResult) {
-                    const value = openResult[key];
-                    let itemData: BoxDataWeb2 = web2AssetsToBoxDataWeb2(key as we2AssetsKeys, value);
-                    list.push({
-                        name: getAssetName(itemData),
-                        image: getAssetImage(itemData),
-                        rare: getAssetRare(itemData),
-                        value: value
-                    });
-                }
-
                 // const testList = [
                 // { name: `Laser (${rankByLevel[laserLevel] || laserLevel})`, image: '/gui/images/box.svg' },
                 // { name: `VRP +500`, image: '/gui/images/icons/coins.png' },
@@ -87,8 +74,8 @@ export const useBattleRewardsStore = defineStore('battleRewards', () => {
                 // { name: `Laser Lv.3`, image: '/gui/images/icons/laser-violet.png' },
                 // ]
 
-                // setRewards(openResult);
-                setRewards(list);
+                setRewards(mapAssets(openResult));
+
                 // }
                 // else {
                 //     LogMng.error(`Box open error: ${openResult}`);
