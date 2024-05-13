@@ -10,7 +10,10 @@
           v-for="(item, index) in list"
           :key="item.name + index"
         >
-          <div class="BoxContentPopup__card">
+          <div
+            class="BoxContentPopup__card"
+            :data-rare="item.rare"
+          >
             <div class="BoxContentPopup__cardFigure">
               <img
                 class="BoxContentPopup__cardImage"
@@ -29,6 +32,7 @@
 
 <script lang="ts">
 import { BasePopup } from '@/components'
+import { BattleReward } from '@/types';
 import { PropType } from 'vue';
 
 export default {
@@ -37,10 +41,7 @@ export default {
     BasePopup
   },
   props: {
-    list: Array as PropType<Array<{
-      name: string,
-      image: string
-    }>>,
+    list: Array as PropType<BattleReward[]>,
   }
 };
 </script>
