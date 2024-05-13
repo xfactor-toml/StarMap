@@ -5,7 +5,7 @@ import { useWallet } from '@/services';
 import { useScenesStore } from '@/stores/scenes';
 import { LogMng } from '~/game/utils/LogMng';
 import { BoxDataWeb2, BoxItemType } from '~/blockchainTotal/getters/boxesWeb2';
-import { getAssetImage, getAssetName } from '@/utils';
+import { getAssetImage, getAssetName, getAssetRare } from '@/utils';
 
 export const useBattleRewardsStore = defineStore('battleRewards', () => {
     const list = ref<BattleReward[]>([])
@@ -76,13 +76,11 @@ export const useBattleRewardsStore = defineStore('battleRewards', () => {
                             }
                         ];
 
-                    let showList: {
-                        name: string,
-                        image: string
-                    }[] = [
+                    let showList: BattleReward[] = [
                             {
                                 name: getAssetName(boxData),
                                 image: getAssetImage(boxData),
+                                rare: getAssetRare(boxData),
                             }
                         ]
 

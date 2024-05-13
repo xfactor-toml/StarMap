@@ -18,6 +18,10 @@ let raresByLaserLevel: { [key: number]: string } = {
   3: 'legendary'
 }
 
+export const getAssetRare = (asset: BoxDataWeb2) => {
+  return asset.type == 'laser' ? raresByLaserLevel[asset.laserLevel] : raresByType[asset.type]
+}
+
 // biomass
 // carbon
 // laser1

@@ -77,4 +77,5 @@ export type BattleActionPayload = {
 export type BattleReward = {
   name: string,
   image: string
+  rare: string
 }
