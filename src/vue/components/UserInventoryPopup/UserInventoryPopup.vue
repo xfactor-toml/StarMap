@@ -159,6 +159,7 @@ export default {
     async openBox() {
       const assets = await this.rewards.openBox()
       this.boxContent = mapUserAssets(assets)
+      this.fetchAssets()
     },
     async fetchAssets() {
       const userAssets = await this.$wallet.provider.getUserAssets()

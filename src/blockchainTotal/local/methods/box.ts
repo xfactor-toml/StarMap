@@ -36,13 +36,14 @@ export async function OpenBoxWeb2 (_boxId: number, address?: string, telegramDat
         if (!address && !telegramData) {
             reject("At least 1 auth parameter muse exist")
         }
+
         const url = fastDataServerUrl.concat('api/boxes/open');
         const connector = BlockchainConnectService.getInstance();
         const priority = connector.getDefaultAuthMethod();
         connector.SetupAuthMethod(priority);
         const signature =  address ? await connector.getSignedAuthMessage() : "";
         const balancePrev = await GetGameAssetsWeb2 (telegramData.username || address);
-        const responce = await fetch(url, {
+        const response = await fetch(url, {
             method: 'post',
             headers: {
               "Content-Type": "application/json"
@@ -53,15 +54,18 @@ export async function OpenBoxWeb2 (_boxId: number, address?: string, telegramDat
               boxId: Number(_boxId)
             })
           });
-          if (responce.status !== 200) {
+          if (response.status !== 200) {
             reject("Api reqest failed")
           }
           const balanceNext = await GetGameAssetsWeb2 (telegramData.username || address);
-          console.log("Balances change: ", balancePrev, balanceNext)
+          console.log("Balances change: ", {
+            prev: balancePrev,
+            next: balanceNext
+          })
           const balanceResult: web2assets = Object.keys(balancePrev).reduce((acc, key) => {
             return { ...acc, [key]: balanceNext[key as keyof web2assets] - balancePrev[key as keyof web2assets] };
           }, {} as web2assets);
-          return balanceResult;
-        
+
+          resolve(balanceResult);
     })
 }
