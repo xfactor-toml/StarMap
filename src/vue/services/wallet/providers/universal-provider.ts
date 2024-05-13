@@ -63,12 +63,10 @@ export class UniversalProvider extends BaseProvider {
   async openBox(boxId: number) {
     console.log("Opening: ", boxId)
     try {
-      await OpenBoxWeb2(boxId, this.account.value || "", this.connectSubService.telegramAuthData || undefined);
-
-      return true
+      return await OpenBoxWeb2(boxId, this.account.value || "", this.connectSubService.telegramAuthData || undefined);
     } catch (error) {
       console.error(error);
-      return false
+      return null
     }
   }
 
