@@ -33,7 +33,10 @@ export enum PackTitle {
 
     claimReward = 'claimReward',
 
-    debugTest = 'debugTest'
+    debugTest = 'debugTest',
+
+    // universal message
+    message = 'message'
 
 }
 
@@ -233,4 +236,13 @@ export type Emotion = 'smile' | 'evil' | 'dead' | 'thinking' | 'angry' | 'sad';
 export type EmotionData = {
     owner?: string,
     emotion: Emotion
+}
+
+// message pack
+export type MessagePackInfoType = 'info' | 'warning' | 'error';
+export type MessagePackShowType = 'hide' | 'console' | 'popup' | 'alert';
+export type MessagePack = {
+    msg: string,
+    showType: MessagePackShowType,
+    infoType?: MessagePackInfoType,
 }

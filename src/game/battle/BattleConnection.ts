@@ -1,8 +1,9 @@
 import { MyEventDispatcher } from "../basics/MyEventDispatcher";
 import { Socket, io } from "socket.io-client";
 import { GlobalParams } from "../data/GlobalParams";
-import { ClaimRewardData, DebugTestData, GameCompleteData, AcceptScreenData, PackTitle, SkillRequest, StartGameData, SearchGameData, SignData, PlayerLoadingData, Emotion, EmotionData, DuelInfo } from "./Types";
+import { ClaimRewardData, DebugTestData, GameCompleteData, AcceptScreenData, PackTitle, SkillRequest, StartGameData, SearchGameData, SignData, PlayerLoadingData, Emotion, EmotionData, DuelInfo, MessagePack } from "./Types";
 import { BlockchainConnectService } from "~/blockchainTotal";
+import { GameEventDispatcher } from "../events/GameEvents";
 
 export enum ConnectionEvent {
     disconnect = 'disconnect'
@@ -90,6 +91,24 @@ export class BattleConnection extends MyEventDispatcher {
             this.emit(PackTitle.gameComplete, aData);
         });
 
+        this._socket.on(PackTitle.message, (aData: MessagePack) => {
+            this.onMessagePack(aData);
+        });
+
+    }
+
+    private onMessagePack(aData: MessagePack) {
+        switch (aData.showType) {
+            case 'console':
+                console.log(`Server:`, aData.msg);
+                break;
+            case 'popup':
+                GameEventDispatcher.showMessage(aData.msg);
+                break;
+            case 'alert':
+                alert(`Server: ${aData.msg}`);
+                break;
+        }
     }
 
     private onSignRecv(aData: SignData) {
