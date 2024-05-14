@@ -26,7 +26,6 @@
                   <div
                     class="UserInventoryPopup__card"
                     :data-rare="item.rare"
-                    @click="selectCard(item)"
                   >
                     <div class="UserInventoryPopup__cardFigure">
                       <img class="UserInventoryPopup__cardImage" :src="item.image"/>
@@ -45,16 +44,22 @@
           </template>
           <template v-if="currentTab === 'events'">
             <div class="UserInventoryPopup__list">
-              <template v-for="item in events" :key="item.id">
-                <div
-                  class="UserInventoryPopup__card"
-                  @click="selectCard(item)"
-                >
-                  <div class="UserInventoryPopup__cardFigure">
-                    <img class="UserInventoryPopup__cardImage" :src="item.icon"/>
+              <template v-if="eventsLoading">
+                Loading...
+              </template>
+              <template v-else>
+                <template v-for="item in events" :key="item.id">
+                  <div
+                    class="UserInventoryPopup__card is-store"
+                    :data-rare="item.rareness"
+                    @click="selectCard(item)"
+                  >
+                    <div class="UserInventoryPopup__cardFigure">
+                      <img class="UserInventoryPopup__cardImage" :src="item.img_preview"/>
+                    </div>
+                    <div class="UserInventoryPopup__cardCaption">{{ item.cost }} vrp</div>
                   </div>
-                  <div class="UserInventoryPopup__cardCaption">{{ item.price }} vrp</div>
-                </div>
+                </template>
               </template>
             </div>
           </template>
@@ -77,9 +82,9 @@
     </div>
     <InventoryCardPopup
       v-if="selectedCard"
-      :title="selectedCard.title"
+      :title="selectedCard.item"
       :description="selectedCard.description"
-      :image="selectedCard.image"
+      :image="selectedCard.img_full"
       :type="selectedCard.type"
       @close="selectCard(null)"
     />
@@ -92,14 +97,13 @@
 </template>
 
 <script lang="ts">
-import { inventory, events } from './data'
 import { BoxContentPopup, InventoryCardPopup, Loader } from '@/components'
 import { useBattleStore, useWalletStore } from '@/stores';
 import { mapAssets } from '@/utils';
 import { mapStores } from 'pinia';
+import { BlockchainConnectService } from '~/blockchainTotal';
 
 const baseTabs = ['inventory', 'events']
-
 
 export default {
   name: 'UserInventoryPopup',
@@ -110,13 +114,13 @@ export default {
   },
   data() {
     return {
-      inventory,
-      events,
+      events: [],
+      eventsLoading: false,
       balance: 0,
       currentTab: 'inventory',
       selectedCard: null,
       boxContent: [],
-      assets: []
+      assets: [],
     }
   },
   computed: {
@@ -156,6 +160,11 @@ export default {
       this.balance = userAssets.token || 0
       this.assets = mapAssets(userAssets)
     },
+    async fetchEvents() {
+      this.eventsLoading = true
+      this.events = await BlockchainConnectService.getInstance().store.GetStoreItems()
+      this.eventsLoading = false
+    },
     resetBoxes() {
       this.boxContent = []
     },
@@ -163,6 +172,7 @@ export default {
   async mounted() {
     if (this.$wallet.connected) {
       this.fetchAssets()
+      this.fetchEvents()
     }
   }
 };
