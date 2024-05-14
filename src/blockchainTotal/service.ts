@@ -8,6 +8,7 @@ import { WindowEthAuth, web3window } from "./windowEth";
 import { lsPrivateKey } from "./config/network";
 import { GenerateSignature } from "./walletconnect/methods";
 import * as getters from "./getters";
+import * as store from "./local/methods/store";
 import { web2assets } from "./getters/boxesWeb2";
 import { OpenBoxWeb2 } from "./local/methods";
 
@@ -20,6 +21,7 @@ export class BlockchainConnectService  {
     private static instance: BlockchainConnectService | null = null;
     private TelegramInfo: any = window.Telegram;
     public getters = getters;
+    public store = store;
 
     public LoadTelegramData() {
         const tg = this.TelegramInfo;
