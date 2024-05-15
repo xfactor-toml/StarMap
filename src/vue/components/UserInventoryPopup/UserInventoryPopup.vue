@@ -39,6 +39,11 @@
                   <div class="UserInventoryPopup__card is-store" :data-rare="item.rareness.toLowerCase()">
                     <div class="UserInventoryPopup__cardFigure" @click="selectCard(item)">
                       <img class="UserInventoryPopup__cardImage" :src="item.img_preview" />
+                      <div
+                        v-if="item.per_user"
+                        class="UserInventoryPopup__cardCount"
+                      >{{ item.per_user }}
+                      </div>
                     </div>
                     <div class="UserInventoryPopup__cardCaption" @click="buy(item)">{{ item.cost }} {{ getCurrencyByField(item.currency) }}</div>
                   </div>

@@ -178,6 +178,20 @@
   width: 100%;
   height: 80px;
   margin: auto;
+  position: relative;
+  z-index: 0;
+}
+
+.UserInventoryPopup__cardCount {
+  min-width: 16px;
+  padding: 1px 2px 2px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-size: 10px;
+  text-align: center;
+  background-color: var(--color);
+  border-radius: 0 0 0 3px;
 }
 
 .UserInventoryPopup__cardImage {
