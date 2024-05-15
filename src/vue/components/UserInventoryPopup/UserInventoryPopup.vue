@@ -36,11 +36,11 @@
               </template>
               <template v-else>
                 <template v-for="item in events" :key="item.id">
-                  <div class="UserInventoryPopup__card is-store" :data-rare="item.rareness" @click="selectCard(item)">
-                    <div class="UserInventoryPopup__cardFigure">
+                  <div class="UserInventoryPopup__card is-store" :data-rare="item.rareness">
+                    <div class="UserInventoryPopup__cardFigure" @click="selectCard(item)">
                       <img class="UserInventoryPopup__cardImage" :src="item.img_preview" />
                     </div>
-                    <div class="UserInventoryPopup__cardCaption">{{ item.cost }} {{ getCurrencyByField(item.currency) }}</div>
+                    <div class="UserInventoryPopup__cardCaption" @click="buy(item)">{{ item.cost }} {{ getCurrencyByField(item.currency) }}</div>
                   </div>
                 </template>
               </template>
@@ -128,6 +128,19 @@ export default {
         case 'trends':
           return 'Trends';
           break;
+      }
+    },
+    async buy(item) {
+      const confirmed = confirm(JSON.stringify(item, null, 2))
+
+      if (confirmed) {
+        const service = BlockchainConnectService.getInstance()
+
+        this.events = await service.store.BuyItem({
+          telegramData: service.telegramAuthData,
+          itemId: item.id,
+          amount: 1
+        })
       }
     },
     async openBox() {

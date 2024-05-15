@@ -188,12 +188,12 @@
 }
 
 .UserInventoryPopup__cardCaption {
-  padding: 6px;
-  padding-bottom: 4px;
+  padding: 4px;
+  padding-top: 6px;
   color: #000;
   background-color: var(--color);
   font-family: 'Exo 2';
-  font-size: 12px;
+  font-size: 11px;
   line-height: 1;
   text-align: center;
   text-transform: uppercase;

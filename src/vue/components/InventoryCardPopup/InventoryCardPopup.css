@@ -12,8 +12,9 @@
 }
 
 .InventoryCardPopup__preview {
-  width: 220px;
-  height: 220px;
+  max-width: 220px;
+  min-height: 72px;
+  max-height: 220px;
 }
 
 .InventoryCardPopup__image {
