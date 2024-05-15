@@ -3,12 +3,12 @@
     class="UserBar"
     :class="{ connected: walletStore.connected }"
   >
-    <button
+    <!-- <button
       v-if="walletStore.connected"
       class="UserBar__button is-mint"
       @mouseenter="$client.onHover()"
       @click="$emit('openPlasmaMintPopup')"
-    >Get plasma</button>
+    >Get plasma</button> -->
     <div class="UserBar__buttons">
       <button
         :class="`UserBar__button is-box ${userInventoryVisible && 'active'}`"
