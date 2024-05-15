@@ -13,14 +13,14 @@ export interface StoreItem {
     total_count: number | null;
     cost: number;
     currency: string;
-  }
-  
+}
+
 export interface StoreItemBalance {
     id: number;
     user_name: string;
     item_id: number;
     balance: number;
-  }
+}
 
 export interface BalanceRequestData {
     login: string;
@@ -49,7 +49,7 @@ export type BalancesList = {
     balance: number;
 }[]
 
-export async function GetStoreItems () : Promise<StoreItem[]> {
+export async function GetStoreItems(): Promise<StoreItem[]> {
     return new Promise((resolve, reject) => {
         fetch(fastDataServerUrl.concat('api/storeitems'))
             .then(res => {
@@ -63,50 +63,50 @@ export async function GetStoreItems () : Promise<StoreItem[]> {
     })
 }
 
-export async function GetUserItemBalance (data: BalanceRequestData) : Promise<number> {
+export async function GetUserItemBalance(data: BalanceRequestData): Promise<number> {
     return new Promise((resolve, reject) => {
         fetch(fastDataServerUrl.concat('api/store/userbalance'), {
-           method: 'post',
-           headers: {
-             "Content-Type": "application/json"
-           },
-           body: JSON.stringify({
-               login: data.login, 
-               itemId: data.itemId
-           })
-           }).then(res =>{ 
-                if (res.status !== 200) {
-                    reject("Failed to get data")
-                }
-                return res.json()
-           }).then((res: { balance: number}) =>{ 
-              resolve(res.balance)
-           })
+            method: 'post',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                login: data.login,
+                itemId: data.itemId
+            })
+        }).then(res => {
+            if (res.status !== 200) {
+                reject("Failed to get data")
+            }
+            return res.json()
+        }).then((res: { balance: number }) => {
+            resolve(res.balance)
+        })
     })
 }
 
-export async function GetUserItemBalanceAll (login: string) : Promise<BalancesList> {
+export async function GetUserItemBalanceAll(login: string): Promise<BalancesList> {
     return new Promise((resolve, reject) => {
         fetch(fastDataServerUrl.concat('api/store/userbalanceall'), {
-           method: 'post',
-           headers: {
-             "Content-Type": "application/json"
-           },
-           body: JSON.stringify({
-               login, 
-           })
-           }).then(res =>{ 
-                if (res.status !== 200) {
-                    reject("Failed to get data")
-                }
-                return res.json()
-           }).then((res: { balance: BalancesList}) =>{ 
-              resolve(res.balance)
-           })
+            method: 'post',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                login,
+            })
+        }).then(res => {
+            if (res.status !== 200) {
+                reject("Failed to get data")
+            }
+            return res.json()
+        }).then((res: { balance: BalancesList }) => {
+            resolve(res.balance)
+        })
     })
 }
 
-export async function IsAvailableToBuy (data: IsAllowBuyRequestData) : Promise<CheckResponce> {
+export async function IsAvailableToBuy(data: IsAllowBuyRequestData): Promise<CheckResponce> {
     return new Promise((resolve, reject) => {
         fetch(fastDataServerUrl.concat('api/store/isavailable'), {
             method: 'post',
@@ -114,39 +114,39 @@ export async function IsAvailableToBuy (data: IsAllowBuyRequestData) : Promise<C
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                login: data.login, 
+                login: data.login,
                 itemId: data.itemId,
                 amount: data.amount
-        })
-    }).then(res =>{ 
-        if (res.status !== 200) {
-            reject("Failed to get data")
-        }
-        return res.json()
-    }).then((res: CheckResponce) => {
-        resolve(res)
-    })
-    })
-}
-
-export async function BuyItem (data: BuyRequestData) : Promise<CheckResponce> {
-    return new Promise((resolve, reject) => {
-        fetch(fastDataServerUrl.concat('api/store/buy'), {
-             method: 'post',
-             headers: {
-                "Content-Type": "application/json"
-             },
-             body: JSON.stringify({
-                 telegramData: data.telegramData, 
-                 itemId: data.itemId, 
-                 amount: data.amount
             })
-        }).then(res =>{ 
+        }).then(res => {
             if (res.status !== 200) {
                 reject("Failed to get data")
             }
             return res.json()
-        }).then((res: CheckResponce)=> {
+        }).then((res: CheckResponce) => {
+            resolve(res)
+        })
+    })
+}
+
+export async function BuyItem(data: BuyRequestData): Promise<CheckResponce> {
+    return new Promise((resolve, reject) => {
+        fetch(fastDataServerUrl.concat('api/store/buy'), {
+            method: 'post',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                telegramData: data.telegramData,
+                itemId: data.itemId,
+                amount: data.amount
+            })
+        }).then(res => {
+            if (res.status !== 200) {
+                reject("Failed to get data")
+            }
+            return res.json()
+        }).then((res: CheckResponce) => {
             resolve(res)
         })
     })
