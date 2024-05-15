@@ -182,6 +182,20 @@
   z-index: 0;
 }
 
+.UserInventoryPopup__cardName {
+  min-width: 16px;
+  padding: 0px 3px 1px;
+  position: absolute;
+  left: 50%;
+  top: 0;
+  font-size: 9px;
+  text-align: center;
+  white-space: nowrap;
+  background-color: var(--color);
+  border-radius: 0 0 3px 3px;
+  transform: translateX(-50%);
+}
+
 .UserInventoryPopup__cardCount {
   min-width: 16px;
   padding: 1px 2px 2px;
@@ -270,6 +284,10 @@
 .UserInventoryPopup__loader {
   flex-grow: 1;
   display: flex;
+}
+
+.UserInventoryPopup__loader.in-store {
+  margin: auto;
 }
 
 

@@ -1,0 +1,59 @@
+.ConfirmPopup {
+  --base-popup-padding: 0;
+  --base-min-height: 100px;
+}
+
+.ConfirmPopup__content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 6px;
+  padding-bottom: 12px;
+  color: #fff;
+}
+
+.ConfirmPopup__title {
+  color: #F9EB21;
+  font-size: 22px;
+}
+
+.ConfirmPopup__text {
+  font-size: 12px;
+  font-weight: 300;
+  text-transform: uppercase;
+}
+
+.ConfirmPopup__buttons {
+  display: flex;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.ConfirmPopup__button {
+  max-width: 100px;
+  padding: 8px;
+  border: none;
+  background-color: #F9EB21;
+  color: #000;
+  font-size: 14px;
+  font-family: inherit;
+  font-weight: 400;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: ease 200ms transform;
+  will-change: transform;
+}
+
+
+.ConfirmPopup__button.is-cancel {
+  background-color: #00FFFF;
+
+}
+
+.ConfirmPopup__button:hover {
+  transform: scale(1.04);
+}
+
+.ConfirmPopup__button:active {
+  transform: scale(1);
+}

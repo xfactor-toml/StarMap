@@ -21,7 +21,7 @@
 
 .BasePopup__box {
   width: var(--base-popup-width, 340px);
-  min-height: 180px;
+  min-height: var(--base-min-height, 180px);
   margin: auto;
   padding: 10px;
   position: relative;

@@ -18,9 +18,14 @@
                 <template v-for="item in assets" :key="item.name">
                   <div class="UserInventoryPopup__card" :data-rare="item.rare">
                     <div class="UserInventoryPopup__cardFigure">
+                      <div
+                        v-if="item.name === 'vrp' || item.name === 'trends'"
+                        class="UserInventoryPopup__cardName"
+                      >{{ item.name }}
+                      </div>
                       <img class="UserInventoryPopup__cardImage" :src="item.image" />
                     </div>
-                    <div class="UserInventoryPopup__cardCaption">{{ item.value }}</div>
+                    <div class="UserInventoryPopup__cardCaption"> {{ item.value }}</div>
                   </div>
                 </template>
               </div>
@@ -30,24 +35,22 @@
             </template>
           </template>
           <template v-if="currentTab === 'events'">
-            <div class="UserInventoryPopup__list">
-              <template v-if="loading">
-                Loading...
-              </template>
-              <template v-else>
-                <template v-for="item in events" :key="item.id">
-                  <div class="UserInventoryPopup__card is-store" :data-rare="item.rareness.toLowerCase()">
-                    <div class="UserInventoryPopup__cardFigure" @click="selectCard(item)">
-                      <img class="UserInventoryPopup__cardImage" :src="item.img_preview" />
-                      <div
-                        v-if="item.per_user"
-                        class="UserInventoryPopup__cardCount"
-                      >{{ item.per_user }}
-                      </div>
+            <div v-if="loading || buying" class="UserInventoryPopup__loader in-store">
+              <Loader />
+            </div>
+            <div v-else class="UserInventoryPopup__list">
+              <template v-for="item in events" :key="item.id">
+                <div class="UserInventoryPopup__card is-store" :data-rare="item.rareness.toLowerCase()">
+                  <div class="UserInventoryPopup__cardFigure" @click="selectCard(item)">
+                    <img class="UserInventoryPopup__cardImage" :src="item.img_preview" />
+                    <div
+                      v-if="item.per_user"
+                      class="UserInventoryPopup__cardCount"
+                    >{{ item.per_user }}
                     </div>
-                    <div class="UserInventoryPopup__cardCaption" @click="buy(item)">{{ item.cost }} {{ getCurrencyByField(item.currency) }}</div>
                   </div>
-                </template>
+                  <div class="UserInventoryPopup__cardCaption" @click="buy(item)">{{ item.cost }} {{ getCurrencyByField(item.currency) }}</div>
+                </div>
               </template>
             </div>
           </template>
@@ -65,14 +68,29 @@
         </div>
       </div>
     </div>
-    <InventoryCardPopup v-if="selectedCard" :title="selectedCard.item" :description="selectedCard.description"
-      :image="selectedCard.img_full" :type="selectedCard.type" @close="selectCard(null)" />
-    <BoxContentPopup v-if="boxContent.length > 0" :list="boxContent" @close="resetBoxes()" />
+    <InventoryCardPopup
+      v-if="selectedCard"
+      :title="selectedCard.item"
+      :description="selectedCard.description"
+      :image="selectedCard.img_full"
+      :type="selectedCard.type"
+      @close="selectCard(null)"
+    />
+    <BoxContentPopup
+      v-if="boxContent.length > 0"
+      :list="boxContent"
+      @close="resetBoxes()"
+    />
+    <ConfirmPopup
+      v-if="confirmation"
+      @close="confirmResolver(false)"
+      @confirm="confirmResolver(true)"
+    />
   </div>
 </template>
 
 <script lang="ts">
-import { BoxContentPopup, InventoryCardPopup, Loader } from '@/components'
+import { BoxContentPopup, ConfirmPopup, InventoryCardPopup, Loader } from '@/components'
 import { useBattleStore, useWalletStore } from '@/stores';
 import { mapAssets } from '@/utils';
 import { mapStores } from 'pinia';
@@ -84,6 +102,7 @@ export default {
   name: 'UserInventoryPopup',
   components: {
     BoxContentPopup,
+    ConfirmPopup,
     InventoryCardPopup,
     Loader,
   },
@@ -91,6 +110,9 @@ export default {
     return {
       events: [],
       loading: false,
+      buying: false,
+      confirmation: false,
+      confirmResolver: null,
       balance: 0,
       currentTab: 'inventory',
       selectedCard: null,
@@ -136,19 +158,24 @@ export default {
       }
     },
     async buy(item) {
-      const confirmed = confirm('Confirm action')
+      const confirmed = await this.confirm()
 
       if (confirmed) {
+        this.buying = true
+
         const service = BlockchainConnectService.getInstance()
 
-        this.events = await service.store.BuyItem({
+        await service.store.BuyItem({
           telegramData: service.telegramAuthData,
           itemId: item.id,
           amount: 1
         })
 
-        this.fetchAssets()
+        await this.fetchAssets()
+
+        this.buying = false
       }
+
     },
     async openBox() {
       this.boxContent = await this.rewards.openBox()
@@ -190,6 +217,14 @@ export default {
       this.events = events
 
       this.loading = false
+    },
+    async confirm() {
+      this.confirmation = true
+      const confirmed = await new Promise(resolve => {
+        this.confirmResolver = resolve
+      })
+      this.confirmation = false
+      return confirmed
     },
     resetBoxes() {
       this.boxContent = []
