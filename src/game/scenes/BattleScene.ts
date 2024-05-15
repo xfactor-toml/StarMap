@@ -237,7 +237,13 @@ export class BattleScene extends BasicScene {
     }
 
     private onGameCompletePack(aData: GameCompleteData) {
+        const bcs = BlockchainConnectService.getInstance();
+        const ownerName = bcs.isTelegram() ? bcs.TelegramLogin() : bcs.walletAddress;
+
         this._state = aData.status == 'win' ? BattleSceneState.win : BattleSceneState.loss;
+
+        // set login
+        if (!aData.ownerName) aData.ownerName = ownerName;
 
         switch (aData.status) {
             case 'duelReward':
@@ -252,6 +258,7 @@ export class BattleScene extends BasicScene {
                 break;
             
             default:
+                
                 GameEventDispatcher.battleComplete(aData);
                 break;
         }
