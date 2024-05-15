@@ -45,11 +45,15 @@
             </div>
             <div v-else class="UserInventoryPopup__list">
               <template v-for="item in events" :key="item.id">
-                <div class="UserInventoryPopup__card is-store" :data-rare="item.rareness.toLowerCase()">
+                <div
+                  class="UserInventoryPopup__card is-store"
+                  :data-rare="item.rareness.toLowerCase()"
+                  :data-amount="item.per_user"
+                >
                   <div class="UserInventoryPopup__cardFigure" @click="selectCard(item)">
                     <img class="UserInventoryPopup__cardImage" :src="item.img_preview" />
                     <div
-                      v-if="item.per_user"
+                      v-if="item.per_user !== null"
                       class="UserInventoryPopup__cardCount"
                     >{{ item.per_user }}
                     </div>
@@ -220,6 +224,7 @@ export default {
         service.store.GetUserItemBalanceAll(service.TelegramLogin())
       ])
 
+      const balancesMap = Object.fromEntries(balances.map((item) => [item.itemId, item.balance]))
       const storeItemsMap = Object.fromEntries(events.map((item) => [item.id, item]))
       const storeAssets = balances.map(({ itemId, balance }) => {
         const storeAsset = storeItemsMap[itemId]
@@ -236,9 +241,14 @@ export default {
         }
       }).filter(Boolean)
 
+      const recalcEvents = events.map(event => ({
+        ...event,
+        per_user: event.per_user ? event.per_user - (balancesMap[event.id] || 0) : event.per_user
+      }))
+
       this.balance = userAssets.token || 0
       this.assets = [...mapAssets(userAssets), ...storeAssets]
-      this.events = this.sortStoreItems(events)
+      this.events = this.sortStoreItems(recalcEvents)
 
       this.loading = false
     },

@@ -186,6 +186,13 @@
   cursor: pointer;
 }
 
+.UserInventoryPopup__card[data-amount="0"] {
+  cursor: default;
+  user-select: none;
+  pointer-events: none;
+  opacity: 0.3;
+}
+
 .UserInventoryPopup__card[data-rare="rare"] { --color: #123EAB; }
 .UserInventoryPopup__card[data-rare="mythic"] { --color: #640CAB; }
 .UserInventoryPopup__card[data-rare="mithic"] { --color: #640CAB; }
