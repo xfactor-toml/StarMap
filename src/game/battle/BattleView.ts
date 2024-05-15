@@ -488,7 +488,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 // add hp bar
                 this._objectHpViewer.addBar(obj);
 
-                AudioMng.getInstance().playSfx({ alias: AudioAlias.battleCreepSpawn, volume: .2 });
+                AudioMng.getInstance().playSfx({ alias: AudioAlias.battleCreepSpawn, volume: .15 });
 
             } break;
 
@@ -521,7 +521,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 // add hp bar
                 this._objectHpViewer.addBar(obj);
 
-                AudioMng.getInstance().playSfx({ alias: AudioAlias.battleCreepSpawn, volume: .4 });
+                AudioMng.getInstance().playSfx({ alias: AudioAlias.battleCreepSpawn, volume: .3 });
 
             } break;
 

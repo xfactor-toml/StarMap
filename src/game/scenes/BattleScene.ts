@@ -211,6 +211,7 @@ export class BattleScene extends BasicScene {
     }
 
     private onFrontClaimRewardClick() {
+        AudioMng.getInstance().playSfx({ alias: AudioAlias.battleBtnClick });
         switch (this._state) {
             case 'win':
                 this.logDebug('onFrontClaimClick: win handling...');
@@ -227,16 +228,19 @@ export class BattleScene extends BasicScene {
     
     private onFrontClaimBoxClick() {
         this.logDebug('onFrontOpenBoxClick...');
+        AudioMng.getInstance().playSfx({ alias: AudioAlias.battleBtnClick });
         this.claimBox();
     }
 
     private onFrontBattleRewardCloseClick() {
         // this.emit(BattleSceneEvent.onCloseBattle);
+        AudioMng.getInstance().playSfx({ alias: AudioAlias.battleBtnClick });
         this.closeScene();
     }
 
     private onFrontBattleEmotion(aEmotion: Emotion) {
         this.logDebug(`onFrontBattleEmotion: ${aEmotion}`);
+        AudioMng.getInstance().playSfx({ alias: AudioAlias.battleBtnClick });
         this._connection.sendEmotion(aEmotion);
     }
 
