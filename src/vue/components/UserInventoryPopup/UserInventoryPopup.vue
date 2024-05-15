@@ -36,7 +36,7 @@
               </template>
               <template v-else>
                 <template v-for="item in events" :key="item.id">
-                  <div class="UserInventoryPopup__card is-store" :data-rare="item.rareness">
+                  <div class="UserInventoryPopup__card is-store" :data-rare="item.rareness.toLowerCase()">
                     <div class="UserInventoryPopup__cardFigure" @click="selectCard(item)">
                       <img class="UserInventoryPopup__cardImage" :src="item.img_preview" />
                     </div>
