@@ -31,7 +31,7 @@
           </template>
           <template v-if="currentTab === 'events'">
             <div class="UserInventoryPopup__list">
-              <template v-if="eventsLoading">
+              <template v-if="loading">
                 Loading...
               </template>
               <template v-else>
@@ -90,7 +90,7 @@ export default {
   data() {
     return {
       events: [],
-      eventsLoading: false,
+      loading: false,
       balance: 0,
       currentTab: 'inventory',
       selectedCard: null,
@@ -136,7 +136,7 @@ export default {
       }
     },
     async buy(item) {
-      const confirmed = confirm(JSON.stringify(item, null, 2))
+      const confirmed = confirm('Confirm action')
 
       if (confirmed) {
         const service = BlockchainConnectService.getInstance()
@@ -146,6 +146,8 @@ export default {
           itemId: item.id,
           amount: 1
         })
+
+        this.fetchAssets()
       }
     },
     async openBox() {
@@ -153,15 +155,41 @@ export default {
       this.fetchAssets()
     },
     async fetchAssets() {
-      const userAssets = await this.$wallet.provider.getUserAssets()
-      
+      const service = BlockchainConnectService.getInstance()
+
+      this.loading = true
+
+      const [
+        userAssets,
+        events,
+        balances
+      ] = await Promise.all([
+        this.$wallet.provider.getUserAssets(),
+        service.store.GetStoreItems(),
+        service.store.GetUserItemBalanceAll(service.TelegramLogin())
+      ])
+
+      const storeItemsMap = Object.fromEntries(events.map((item) => [item.id, item]))
+      const storeAssets = balances.map(({ itemId, balance }) => {
+        const storeAsset = storeItemsMap[itemId]
+
+        if (!storeAsset) {
+          return null
+        }
+
+        return {
+          name: storeAsset.item,
+          image: storeAsset.img_preview,
+          rare: storeAsset.rareness.toLowerCase(),
+          value: balance
+        }
+      }).filter(Boolean)
+
       this.balance = userAssets.token || 0
-      this.assets = mapAssets(userAssets)
-    },
-    async fetchEvents() {
-      this.eventsLoading = true
-      this.events = await BlockchainConnectService.getInstance().store.GetStoreItems()
-      this.eventsLoading = false
+      this.assets = [...mapAssets(userAssets), ...storeAssets]
+      this.events = events
+
+      this.loading = false
     },
     resetBoxes() {
       this.boxContent = []
@@ -170,7 +198,6 @@ export default {
   async mounted() {
     if (this.$wallet.connected) {
       this.fetchAssets()
-      this.fetchEvents()
     }
   }
 };
