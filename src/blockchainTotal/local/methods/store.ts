@@ -44,17 +44,17 @@ export interface CheckResponce {
     error: string;
 }
 
-export async function GetStoreItems () : Promise<StoreItem[]> {
+export async function GetStoreItems(): Promise<StoreItem[]> {
     return new Promise((resolve, reject) => {
         fetch(fastDataServerUrl.concat('api/storeitems'))
-        .then(res =>{ 
-           if (res.status !== 200) {
-              reject("Failed to get data")
-           }
-           return res.json()
-        }).then((res:{ items: StoreItem[]}) => {
-            resolve(res.items)
-        })
+            .then(res => {
+                if (res.status !== 200) {
+                    reject("Failed to get data")
+                }
+                return res.json()
+            }).then((res: { items: StoreItem[] }) => {
+                resolve(res.items)
+            })
     })
 }
 
