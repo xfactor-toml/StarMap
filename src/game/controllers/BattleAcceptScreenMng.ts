@@ -1,3 +1,5 @@
+import { AudioAlias } from "../audio/AudioData";
+import { AudioMng } from "../audio/AudioMng";
 import { MyEventDispatcher } from "../basics/MyEventDispatcher";
 import { BattleConnection } from "../battle/BattleConnection";
 import { AcceptScreenData, PackTitle, PlayerLoadingData } from "../battle/Types";
@@ -46,6 +48,7 @@ export class BattleAcceptScreenMng extends MyEventDispatcher {
 
     private onFrontBattleAcceptClick() {
         this.logDebug(`onFrontBattleAcceptClick...`);
+        AudioMng.getInstance().playSfx({ alias: AudioAlias.battleBtnClick });
         BattleConnection.getInstance().sendAcceptConfirmation();
         this.clearDeadlineTimeout();
     }

@@ -26,6 +26,8 @@ import { ClickableMesh } from '../objects/basic/ClickableMesh';
 import { GameEventDispatcher } from '../events/GameEvents';
 import { DeviceInfo } from '../utils/DeviceInfo';
 import { Renderer } from '../core/renderers/Renderer';
+import { AudioMng } from '../audio/AudioMng';
+import { AudioAlias } from '../audio/AudioData';
 
 type ServerFieldParams = {
 
@@ -485,6 +487,9 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
                 // add hp bar
                 this._objectHpViewer.addBar(obj);
+
+                AudioMng.getInstance().playSfx({ alias: AudioAlias.battleCreepSpawn, volume: .2 });
+
             } break;
 
             case 'BattleShip': {
@@ -515,6 +520,9 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
                 // add hp bar
                 this._objectHpViewer.addBar(obj);
+
+                AudioMng.getInstance().playSfx({ alias: AudioAlias.battleCreepSpawn, volume: .4 });
+
             } break;
 
             case 'HomingMissile': {
@@ -548,6 +556,15 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
                 // add hp bar
                 // this._objectHpViewer.addBar(obj);
+
+                // let snd = AudioMng.getInstance().getSound(AudioAlias.battleRocketFly);
+                // if (!snd.isPlaying) {
+                //     snd.loop = true;
+                //     snd.volume = AudioMng.getInstance().sfxVolume;
+                //     snd.play();
+                // }
+                AudioMng.getInstance().playSfx(AudioAlias.battleRocketFly);
+
             } break;
 
             default:
@@ -713,6 +730,9 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                     duration: dur,
                     ease: 'none',
                     onStart: () => {
+                        const sounds = [AudioAlias.battleFireCreep_1, AudioAlias.battleFireCreep_2];
+                        let sndAlias = sounds[MyMath.randomIntInRange(0, sounds.length - 1)];
+                        AudioMng.getInstance().playSfx(sndAlias);
                     },
                     onComplete: () => {
                         laser.free();
@@ -812,6 +832,9 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             maxRadius: .5
         });
         this._dummyMain.add(laser);
+
+        AudioMng.getInstance().playSfx(AudioAlias.battlePlanetLaserFire);
+
         laser.hide({
             dur: 1,
             cb: () => {
@@ -824,6 +847,11 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     private onExplosionPack(aData: ExplosionData) {
         let pos = this.getPositionByServerV3(aData.pos);
         this._explosionSystem.exposion(pos);
+
+        const snd = [AudioAlias.battleExplosionSmall_1, AudioAlias.battleExplosionSmall_2, AudioAlias.battleExplosionBig];
+        let sndAlias = snd[MyMath.randomIntInRange(0, snd.length - 1)];
+        AudioMng.getInstance().playSfx(sndAlias);
+
     }
 
     private onSniperPack(aSniperData: SniperData) {
@@ -853,7 +881,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             this.logError(`updateObject(): !obj`, aId);
             return;
         }
-        
+
         obj.free();
         this._objects.delete(aId);
 

@@ -15,6 +15,8 @@ import { BlockchainConnectService } from '~/blockchainTotal';
 import { GetGameAssetsWeb2, getUserBoxesToOpenWeb2 } from '~/blockchainTotal/getters/boxesWeb2';
 import { ThreeUtils } from '../utils/threejs/ThreejsUtils';
 import { DeviceInfo } from '../utils/DeviceInfo';
+import { AudioMng } from '../audio/AudioMng';
+import { AudioAlias } from '../audio/AudioData';
 
 export enum BattleSceneEvent {
     onGameStart = 'onEnterGame',
@@ -199,10 +201,12 @@ export class BattleScene extends BasicScene {
     }
 
     private onFrontSkillClick(aSkillId: number) {
+        AudioMng.getInstance().playSfx({ alias: AudioAlias.battleBtnClick });
         this._connection.sendSkillActionClick(aSkillId);
     }
 
     private onFrontSkillUpClick(aSkillId: number) {
+        AudioMng.getInstance().playSfx({ alias: AudioAlias.battleBtnUpgrade });
         this._connection.sendSkillLevelUpClick(aSkillId);
     }
 
@@ -262,6 +266,8 @@ export class BattleScene extends BasicScene {
                 GameEventDispatcher.battleComplete(aData);
                 break;
         }
+
+        AudioMng.getInstance().playSfx(AudioAlias.battleVictory);
         
     }
 
