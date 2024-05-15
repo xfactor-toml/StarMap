@@ -10,7 +10,6 @@
       <div class="InventoryCardPopup__title">{{ title }}</div>
       <div class="InventoryCardPopup__text">{{ description }}</div>
       <button
-        v-if="type==='event'"
         class="InventoryCardPopup__button"
         @click="$emit('buy')"
       >Buy</button>

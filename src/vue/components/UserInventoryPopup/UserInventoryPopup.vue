@@ -54,7 +54,11 @@
                     >{{ item.per_user }}
                     </div>
                   </div>
-                  <div class="UserInventoryPopup__cardCaption" @click="buy(item)">{{ item.cost }} {{ getCurrencyByField(item.currency) }}</div>
+                  <div
+                    class="UserInventoryPopup__cardCaption"
+                    @click="buy(item)"
+                  >{{ item.cost }} {{ getCurrencyByField(item.currency) }}
+                  </div>
                 </div>
               </template>
             </div>
@@ -79,6 +83,7 @@
       :description="selectedCard.description"
       :image="selectedCard.img_full"
       :type="selectedCard.type"
+      @buy="buy(selectedCard)"
       @close="selectCard(null)"
     />
     <BoxContentPopup
@@ -179,6 +184,7 @@ export default {
       const confirmed = await this.confirm()
 
       if (confirmed) {
+        this.selectCard(null)
         this.buying = true
 
         const service = BlockchainConnectService.getInstance()
