@@ -8,8 +8,12 @@
       <div class="UserInventoryPopup__balance">Balance VRP: {{ balance }}</div>
       <div class="UserInventoryPopup__body">
         <div class="UserInventoryPopup__tabs">
-          <button v-for="tab in tabs" :key="tab"
-            :class="['UserInventoryPopup__tab', tab, currentTab === tab ? 'active' : '']" @click="selectTab(tab)" />
+          <button
+            v-for="tab in tabs"
+            :key="tab"
+            :class="['UserInventoryPopup__tab', tab, currentTab === tab ? 'active' : '']"
+            @click="selectTab(tab)"
+          />
         </div>
         <div :class="`UserInventoryPopup__content ${currentTab}`">
           <template v-if="currentTab === 'inventory'">
@@ -19,7 +23,7 @@
                   <div class="UserInventoryPopup__card" :data-rare="item.rare">
                     <div class="UserInventoryPopup__cardFigure">
                       <div
-                        v-if="item.name === 'vrp' || item.name === 'trends'"
+                        v-if="item.name === 'VRP' || item.name === 'Trends'"
                         class="UserInventoryPopup__cardName"
                       >{{ item.name }}
                       </div>
