@@ -12,7 +12,8 @@
 }
 
 .InventoryCardPopup__preview {
-  width: 100%;
+  width: 220px;
+  height: 220px;
 }
 
 .InventoryCardPopup__image {

@@ -1,8 +1,9 @@
 import { BoxDataWeb2, BoxItemType } from "~/blockchainTotal/getters/boxesWeb2"
 
 // none, common, rare, mithic, legendary, vorpal
-let raresByType: { [key in BoxItemType]: string } = {
+let raresByType: { [key in BoxItemType | 'token']: string } = {
   'vrp': 'none',
+  'token': 'none',
   'biomass': 'common',
   'carbon': 'common',
   'metal': 'common',

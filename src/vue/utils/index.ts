@@ -5,6 +5,7 @@ export * from './get-asset-image';
 export * from './get-asset-name';
 export * from './get-asset-rare';
 export * from './get-short-address';
+export * from './map-assets';
 export * from './round-number';
 export * from './to-milliseconds';
 export * from './to-seconds';

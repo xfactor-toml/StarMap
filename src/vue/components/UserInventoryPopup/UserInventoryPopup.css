@@ -160,6 +160,9 @@
   border: 3px solid var(--color);
   border-radius: 6px;
   background-color: #000;
+}
+
+.UserInventoryPopup__card.is-store {
   cursor: pointer;
 }
 

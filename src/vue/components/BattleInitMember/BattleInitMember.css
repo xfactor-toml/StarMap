@@ -23,8 +23,8 @@
 }
 
 .BattleInitMember__name {
-  color: #ffffff;
-  font-size: 42px;
+  color: #ffd900;
+  font-size: 30px;
 }
 
 .BattleInitMember__body {
@@ -33,8 +33,10 @@
   align-items: center;
   justify-content: center;
   flex-grow: 1;
-  color: #EA1C24;
-  font-size: 21px;
+  /* color: #EA1C24; */
+  color: #ffffff;
+  /* font-size: 21px; */
+  font-size: 40px;
 }
 
 .BattleInitMember__footer {
@@ -65,7 +67,8 @@
 }
 
 .BattleInitMember.is-reflected .BattleInitMember__body {
-  color: #39B24A;
+  /* color: #39B24A; */
+  color: #ffffff;
 }
 
 .BattleInitMember.is-reflected .BattleInitMember__footer {

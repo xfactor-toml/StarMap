@@ -2,7 +2,7 @@ import { playersConnectMock } from '@/mocks';
 import { useClient } from '@/services/client';
 import { useBattleStore, useScenesStore, useStarsStore, useUiStore } from '@/stores';
 import { BattleActionType, ClientEvent, UISceneNames } from '@/types';
-import { toMilliseconds, wait } from '@/utils';
+import { MyMath, toMilliseconds, wait } from '@/utils';
 import { GameEvent } from '~/game/events/GameEvents';
 import { LogMng } from '~/game/utils/LogMng';
 import { toast } from 'vue3-toastify';
@@ -213,11 +213,11 @@ export class ClientEventsService {
 
         battleStore.results.setResults({
           type: typeByStatus[clientEvent.status],
-          player: '0xA089D195D994e8145dda68993A91C4a6D1704535',
-          owner: '0xA089D195D994e8145dda68993A91C4a6D1704535',
-          demage: 1000,
-          gold: 1000,
-          exp: 51323,
+          player: clientEvent.ownerName,
+          owner: clientEvent.ownerName,
+          demage: MyMath.randomIntInRange(5000, 8000),
+          gold: MyMath.randomIntInRange(500, 2000),
+          exp: MyMath.randomIntInRange(10000, 50000),
           rating: {
             prevoius: 1310,
             current: 1422

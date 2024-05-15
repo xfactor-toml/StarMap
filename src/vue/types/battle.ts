@@ -78,4 +78,5 @@ export type BattleReward = {
   name: string,
   image: string
   rare: string
+  value?: number
 }

@@ -1,7 +1,8 @@
 import { BoxDataWeb2, BoxItemType } from "~/blockchainTotal/getters/boxesWeb2"
 
-const iconByType: { [key in BoxItemType]: string } = {
+const iconByType: { [key in BoxItemType | 'token']: string } = {
   'vrp': '/gui/images/icons/coins.png',
+  'token': '/gui/images/icons/coins.png',
   'biomass': '/gui/images/icons/biomass.png',
   'carbon': '/gui/images/icons/hydrocarbon.png',
   'metal': '/gui/images/icons/metal.png',

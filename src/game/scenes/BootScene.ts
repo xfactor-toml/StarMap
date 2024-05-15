@@ -3,9 +3,6 @@ import { GlobalParams } from "../data/GlobalParams";
 import { BasicScene } from "../core/scene/BasicScene";
 import { SceneNames } from "./SceneNames";
 import { MyUtils } from "../utils/MyUtils";
-import { BattleConnection } from "../battle/BattleConnection";
-import { GameEvent, GameEventDispatcher } from "../events/GameEvents";
-import { DuelInfo, PackTitle } from "../battle/Types";
 import { FrontEvents } from "../events/FrontEvents";
 import { AudioMng } from "../audio/AudioMng";
 import eruda from "eruda";
@@ -20,7 +17,7 @@ export class BootScene extends BasicScene {
 
         // eruda
         // if (GlobalParams.isDebugMode) {
-        eruda.init();
+        // eruda.init();
         // }
 
         // init params

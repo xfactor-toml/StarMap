@@ -4,6 +4,7 @@ import { jsonABIs, network } from "../../config";
 import { fastDataServerUrl } from "~/blockchainTotal/config/network";
 import { BlockchainConnectService } from "~/blockchainTotal";
 import { TelegramAuthData } from "~/blockchainTotal/types";
+import { GetGameAssetsWeb2, web2assets } from "~/blockchainTotal/getters/boxesWeb2";
 
 export async function OpenBox (address: string, _boxId: number) {
     return new Promise(async (resolve, reject) => {
@@ -35,15 +36,14 @@ export async function OpenBoxWeb2 (_boxId: number, address?: string, telegramDat
         if (!address && !telegramData) {
             reject("At least 1 auth parameter muse exist")
         }
+
         const url = fastDataServerUrl.concat('api/boxes/open');
         const connector = BlockchainConnectService.getInstance();
         const priority = connector.getDefaultAuthMethod();
         connector.SetupAuthMethod(priority);
         const signature =  address ? await connector.getSignedAuthMessage() : "";
-        if (!signature) {
-            reject("Message is not signed")
-        }
-        fetch(url, {
+        const balancePrev = await GetGameAssetsWeb2 (telegramData.username || address);
+        const response = await fetch(url, {
             method: 'post',
             headers: {
               "Content-Type": "application/json"
@@ -53,14 +53,19 @@ export async function OpenBoxWeb2 (_boxId: number, address?: string, telegramDat
               telegramData,
               boxId: Number(_boxId)
             })
-          }).then(res => {
-            if (res.status !== 200) {
-                reject("Api reqest failed")
-            }
-            return res.json()
-        }).then(res => {
-            console.log(res)
-            resolve(true);
-        })
+          });
+          if (response.status !== 200) {
+            reject("Api reqest failed")
+          }
+          const balanceNext = await GetGameAssetsWeb2 (telegramData.username || address);
+          console.log("Balances change: ", {
+            prev: balancePrev,
+            next: balanceNext
+          })
+          const balanceResult: web2assets = Object.keys(balancePrev).reduce((acc, key) => {
+            return { ...acc, [key]: balanceNext[key as keyof web2assets] - balancePrev[key as keyof web2assets] };
+          }, {} as web2assets);
+
+          resolve(balanceResult);
     })
 }

@@ -6,10 +6,10 @@
       </div>
       <div class="BattleResultsMode__body">
         <div class="BattleResultsMode__player">
-          Player: {{ getShortAddress(results.player) }}
+          Player: {{ results.player }}
         </div>
         <div class="BattleResultsMode__owner">
-          Owner: {{ getShortAddress(results.owner) }}
+          Owner: {{ results.owner }}
         </div>
         <div class="BattleResultsMode__rows">
           <div class="BattleResultsMode__row" v-for="item in rows" :key="item.key">
