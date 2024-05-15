@@ -163,6 +163,18 @@ export default {
           break;
       }
     },
+    sortStoreItems(items) {
+      const order = {
+        Common: 1,
+        Rare: 2,
+        Mythic: 3,
+        Legendary: 4,
+      }
+
+      return items.sort((a, b) => {
+        return order[a.rareness] - order[b.rareness]
+      })
+    },
     async buy(item) {
       const confirmed = await this.confirm()
 
@@ -220,7 +232,7 @@ export default {
 
       this.balance = userAssets.token || 0
       this.assets = [...mapAssets(userAssets), ...storeAssets]
-      this.events = events
+      this.events = this.sortStoreItems(events)
 
       this.loading = false
     },
