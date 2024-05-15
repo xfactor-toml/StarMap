@@ -4,7 +4,7 @@
     @close="$emit('close')"
   >
     <div class="ConfirmPopup__content">
-      <div class="ConfirmPopup__title">Confirm action</div>
+      <div class="ConfirmPopup__title">{{ title || 'Confirm' }}</div>
       <div
         v-if="description"
         class="ConfirmPopup__text"
@@ -14,7 +14,7 @@
         <button
           class="ConfirmPopup__button"
           @click="$emit('confirm')"
-          >Confirm
+          >Yes
         </button>
         <button
           class="ConfirmPopup__button is-cancel"

@@ -21,12 +21,12 @@
               <div class="UserInventoryPopup__list">
                 <template v-for="item in assets" :key="item.name">
                   <div class="UserInventoryPopup__card" :data-rare="item.rare">
+                    <div
+                      v-if="item.name === 'VRP' || item.name === 'Trends'"
+                      class="UserInventoryPopup__cardName"
+                    >{{ item.name }}
+                    </div>
                     <div class="UserInventoryPopup__cardFigure">
-                      <div
-                        v-if="item.name === 'VRP' || item.name === 'Trends'"
-                        class="UserInventoryPopup__cardName"
-                      >{{ item.name }}
-                      </div>
                       <img class="UserInventoryPopup__cardImage" :src="item.image" />
                     </div>
                     <div class="UserInventoryPopup__cardCaption"> {{ item.value }}</div>
@@ -87,6 +87,7 @@
     />
     <ConfirmPopup
       v-if="confirmation"
+      :title="'Are you sure you want to make this purchase?'"
       @close="confirmResolver(false)"
       @confirm="confirmResolver(true)"
     />
