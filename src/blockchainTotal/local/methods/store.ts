@@ -44,7 +44,12 @@ export interface CheckResponce {
     error: string;
 }
 
-export async function GetStoreItems(): Promise<StoreItem[]> {
+export type BalancesList = {
+    itemId: number;
+    balance: number;
+}[]
+
+export async function GetStoreItems () : Promise<StoreItem[]> {
     return new Promise((resolve, reject) => {
         fetch(fastDataServerUrl.concat('api/storeitems'))
             .then(res => {
@@ -75,6 +80,27 @@ export async function GetUserItemBalance (data: BalanceRequestData) : Promise<nu
                 }
                 return res.json()
            }).then((res: { balance: number}) =>{ 
+              resolve(res.balance)
+           })
+    })
+}
+
+export async function GetUserItemBalanceAll (login: string) : Promise<BalancesList> {
+    return new Promise((resolve, reject) => {
+        fetch(fastDataServerUrl.concat('api/store/userbalanceall'), {
+           method: 'post',
+           headers: {
+             "Content-Type": "application/json"
+           },
+           body: JSON.stringify({
+               login, 
+           })
+           }).then(res =>{ 
+                if (res.status !== 200) {
+                    reject("Failed to get data")
+                }
+                return res.json()
+           }).then((res: { balance: BalancesList}) =>{ 
               resolve(res.balance)
            })
     })
