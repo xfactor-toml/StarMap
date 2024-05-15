@@ -12,6 +12,7 @@
             v-for="tab in tabs"
             :key="tab"
             :class="['UserInventoryPopup__tab', tab, currentTab === tab ? 'active' : '']"
+            :data-count="userBoxes.length"
             @click="selectTab(tab)"
           />
         </div>
