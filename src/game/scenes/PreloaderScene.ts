@@ -140,11 +140,13 @@ export class PreloaderScene extends BasicScene {
             });
         }
 
-        // sounds
+        // sounds init and loading
         let am = AudioMng.getInstance({});
-        // storage data
-        am.musicVolume = Number(localStorage.getItem(`musicVolume`)) ?? GlobalParams.AUDIO.defaultMusicVolume;
-        am.sfxVolume = Number(localStorage.getItem(`sfxVolume`)) ?? GlobalParams.AUDIO.defaultSfxVolume;
+        // load storage data
+        let musicCacheVolume = localStorage.getItem(`musicVolume`);
+        let sfxCacheVolume = localStorage.getItem(`sfxVolume`);
+        am.musicVolume = musicCacheVolume ? Number(musicCacheVolume) : GlobalParams.AUDIO.defaultMusicVolume;
+        am.sfxVolume = sfxCacheVolume ? Number(sfxCacheVolume) : GlobalParams.AUDIO.defaultSfxVolume;
         am.init({
             musicList: MusicLoadList,
             soundList: SoundLoadList
