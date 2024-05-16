@@ -6,6 +6,9 @@ import { MyMath } from '@/utils';
 import { ThreeUtils } from '~/game/utils/threejs/ThreejsUtils';
 import { ParticleSystem } from '~/game/core/effects/ParticleSystem';
 import { TextureAlias } from '~/game/data/TextureData';
+import { AudioMng } from '~/game/audio/AudioMng';
+import { AudioAlias } from '~/game/audio/AudioData';
+import { Sound } from '@pixi/sound';
 
 type LightParams = {
     parent: THREE.Object3D,
@@ -34,6 +37,8 @@ export class HomingMissile extends BattleObject {
     protected _lightHeight = 0;
     protected _pointLight: THREE.PointLight;
     protected _lightHelper: THREE.Line;
+    // sfx
+    protected _sfx: Sound;
 
     constructor(aParams: HomingMissileParams) {
         super(aParams, 'HomingMissile');
@@ -45,6 +50,7 @@ export class HomingMissile extends BattleObject {
         this.initSimpleModel();
         // this.initPointLight(aParams.light);
         this.initFireEffect();
+        this.initSfx();
     }
 
     private initSimpleModel() {
@@ -59,6 +65,7 @@ export class HomingMissile extends BattleObject {
 
     private initFireEffect() {
         let loader = ThreeLoader.getInstance();
+        let pos = this.getFireEffectPos() || new THREE.Vector3();
 
         this._fireEffect = new ParticleSystem({
             parent: this._effectsParent,
@@ -68,7 +75,7 @@ export class HomingMissile extends BattleObject {
             lifeTime: 1,
             size: { min: .1, max: .5 },
 
-            position: this._mesh.position.clone(),
+            position: pos,
 
             velocity: new THREE.Vector3(0, 0, 0),
             deltaVelocity: {
@@ -154,6 +161,14 @@ export class HomingMissile extends BattleObject {
         this._lightParent.add(this._lightHelper);
     }
 
+    private initSfx() {
+        this._sfx = AudioMng.getInstance().playSfx({
+            alias: AudioAlias.battleRocketFly,
+            // loop: true
+            volume: .5
+        });
+    }
+
     private getCurrentGunLocalPoint(): THREE.Vector3 {
         const dx = 1.5;
         if (this._currGunNumber == 1) {
@@ -173,6 +188,15 @@ export class HomingMissile extends BattleObject {
         else {
             this._currGunNumber = 1;
         }
+    }
+
+    private getFireEffectPos(): THREE.Vector3 {
+        let res: THREE.Vector3;
+        if (!this.position) return res;
+        let dir = new THREE.Vector3(0, 0, 1);
+        dir = dir.applyQuaternion(this.quaternion).multiplyScalar(this.radius / 2);
+        res = this.position.clone().sub(dir);
+        return res;
     }
 
     public get lightHeight(): number {
@@ -238,10 +262,9 @@ export class HomingMissile extends BattleObject {
     }
 
     protected updateFireEffect(dt: number) {
-        if (!this.position) return;
-        let dir = new THREE.Vector3(0, 0, 1);
-        dir = dir.applyQuaternion(this.quaternion).multiplyScalar(this.radius / 2);
-        this._fireEffect?.position.copy(this.position.clone().sub(dir));
+        let pos = this.getFireEffectPos();
+        if (!pos) return;
+        this._fireEffect?.position.copy(pos);
         this._fireEffect?.update(dt);
     }
 
@@ -252,6 +275,12 @@ export class HomingMissile extends BattleObject {
     }
 
     free() {
+
+        if (this._sfx && this._sfx.isPlaying) {
+            this._sfx.stop();
+        }
+        this._sfx = null;
+        
         this.clear();
 
         this._fireEffect.free();

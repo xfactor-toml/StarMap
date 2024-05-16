@@ -159,7 +159,7 @@ export class GalaxyScene extends BasicScene {
     }
 
     private onFrontStartBattleSearch() {
-        AudioMng.getInstance().playSfx({ alias: AudioAlias.battleBtnClick });
+        AudioMng.getInstance().playSfx({ alias: AudioAlias.SFX_CLICK });
         let con = BattleConnection.getInstance();
         if (!con.connected) {
             GameEventDispatcher.showMessage(`No connection to server!`);
@@ -171,7 +171,7 @@ export class GalaxyScene extends BasicScene {
     }
 
     private onFrontStartBattleBotSearch() {
-        AudioMng.getInstance().playSfx({ alias: AudioAlias.battleBtnClick });
+        AudioMng.getInstance().playSfx({ alias: AudioAlias.SFX_CLICK });
         let con = BattleConnection.getInstance();
         if (!con.connected) {
             GameEventDispatcher.showMessage(`No connection to server!`);
@@ -193,7 +193,7 @@ export class GalaxyScene extends BasicScene {
     // }
 
     private onFrontStopBattleSearch() {
-        AudioMng.getInstance().playSfx({ alias: AudioAlias.battleBtnClick });
+        AudioMng.getInstance().playSfx({ alias: AudioAlias.SFX_CLICK });
         let con = BattleConnection.getInstance();
 
         if (this._isDuelSearching) {

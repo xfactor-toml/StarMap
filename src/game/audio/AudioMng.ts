@@ -124,7 +124,7 @@ export class AudioMng implements ILogger {
         else params = { alias: atr1 as string };
 
         let snd = this._sounds[params.alias];
-        snd.volume = params.volume != null ? params.volume : this.sfxVolume;
+        snd.volume = params.volume != null ? this.sfxVolume * params.volume : this.sfxVolume;
         snd.loop = params.loop != null ? params.loop : false;
         snd.play();
 

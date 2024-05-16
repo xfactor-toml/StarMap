@@ -556,15 +556,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
                 // add hp bar
                 // this._objectHpViewer.addBar(obj);
-
-                // let snd = AudioMng.getInstance().getSound(AudioAlias.battleRocketFly);
-                // if (!snd.isPlaying) {
-                //     snd.loop = true;
-                //     snd.volume = AudioMng.getInstance().sfxVolume;
-                //     snd.play();
-                // }
-                AudioMng.getInstance().playSfx(AudioAlias.battleRocketFly);
-
+                
             } break;
 
             default:
