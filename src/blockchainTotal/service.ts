@@ -1,5 +1,6 @@
 import { useWeb3ModalAccount, useWeb3ModalProvider } from "@web3modal/ethers5/vue";
 import { Socket, io } from "socket.io-client";
+import { useWebAppClosingConfirmation } from 'vue-tg'
 import { network } from "./config";
 import { AuthMethod, TelegramAuthData, account } from "./types";
 import { ConnectWalletWC, InitWalletconnectModal } from "./walletconnect/auth";
@@ -32,6 +33,44 @@ export class BlockchainConnectService  {
             const hash = initDataSearchParams.get('hash');
             const webApp = tg.WebApp;
             webApp.expand();
+            window.addEventListener("touchmove", (e) => e.preventDefault(), { passive: false });
+            window.scrollTo(0, 100);
+            // webApp.isClosingConfirmationEnabled = true;
+
+            const overflow = 100
+            document.body.style.overflowY = 'hidden'
+            document.body.style.marginTop = `${overflow}px`
+            document.body.style.height = window.innerHeight + overflow + "px"
+            document.body.style.paddingBottom = `${overflow}px`
+            window.scrollTo(0, overflow)
+        
+            let ts: number | undefined
+        const onTouchStart = (e: TouchEvent) => {
+          ts = e.touches[0].clientY
+        }
+        const onTouchMove = (e: TouchEvent) => {
+          if (document.body) {
+            const scroll = document.body.scrollTop
+            const te = e.changedTouches[0].clientY
+            if (scroll <= 0 && ts! < te) {
+              e.preventDefault()
+            }
+          } else {
+            e.preventDefault()
+          }
+        }
+        document.documentElement.addEventListener('touchstart', onTouchStart, { passive: false })
+        document.documentElement.addEventListener('touchmove', onTouchMove, { passive: false })
+        
+            // alert("Closing confirmation 12: ");
+            // document.body.style.height = '100vh';
+            // document.body.style.overflow = 'hidden';
+            // document.body.style.paddingTop = '100px';
+            document.body.classList.add("tgAppBody");
+            // const { enableClosingConfirmation, disableClosingConfirmation } = useWebAppClosingConfirmation()
+            // enableClosingConfirmation();
+
+            webApp.ready();
             if (hash) {
                 const AuthData: TelegramAuthData = {
                     id: user.id,
