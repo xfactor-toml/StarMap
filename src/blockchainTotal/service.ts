@@ -25,6 +25,26 @@ export class BlockchainConnectService  {
 
     public LoadTelegramData() {
         const tg = this.TelegramInfo;
+        if (tg && tg.WebApp && tg.WebApp.initData) {
+            const initDataSearchParams = new URLSearchParams(window.Telegram.WebApp.initData);
+            const user = JSON.parse(initDataSearchParams.get('user'));
+            const authDate = initDataSearchParams.get('auth_date');
+            const hash = initDataSearchParams.get('hash');
+            const webApp = tg.WebApp;
+            webApp.expand();
+            if (hash) {
+                const AuthData: TelegramAuthData = {
+                    id: user.id,
+                    first_name: user.first_name,
+                    last_name: user.last_name,
+                    username: user.username,
+                    hash: hash,
+                    auth_date: Number(authDate)
+                }
+                this.telegramAuthData = AuthData;
+                return;
+            }
+        }
         const urlAuthParams = new URLSearchParams(window.location.search);
         const authHash = urlAuthParams.get('authHash');
         const authDate = urlAuthParams.get('authDate');
@@ -41,7 +61,7 @@ export class BlockchainConnectService  {
             auth_date: Number(authDate)
         }
         this.telegramAuthData = AuthData;
-        console.log("Auth data: ", AuthData);
+        // console.log("Auth data: ", AuthData);
         if (!tg) {
             console.log("Telegram script not installed");
             return;
