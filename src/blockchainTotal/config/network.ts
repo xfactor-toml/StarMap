@@ -2,7 +2,7 @@ import { connectRpc } from "../types"
 
 export const mobileMetamaskUrl = `https://metamask.app.link/dapp/${document.location.hostname}/`;
 export const wsServerUrl = 'wss://staging-api.vorpal.finance/ws/';
-export const fastDataServerUrl = 'https://staging-api.vorpal.finance/';
+export const fastDataServerUrl = process.env.API_SERVER || 'https://staging-api.vorpal.finance/';
 export const walletChangingEventName = 'wallet';
 export const env = window.ethereum
 export const pingPongDelay = 3000

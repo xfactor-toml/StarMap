@@ -56,6 +56,7 @@
         "ua-parser-js": "^1.0.33",
         "vue": "^3.2.47",
         "vue-slider-component": "^4.1.0-beta.7",
+        "vue-tg": "^0.6.1",
         "vue3-toastify": "^0.2.1",
         "web3": "^4.5.0",
         "websocket": "^1.0.34"
