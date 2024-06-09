@@ -3,7 +3,6 @@ import { BattleObject, BattleObjectData } from './BattleObject';
 import { ThreeLoader } from '~/game/utils/threejs/ThreeLoader';
 import { ModelAlias } from '~/game/data/ModelData';
 import { MyMath } from '@/utils';
-import { TextureAlias } from '~/game/data/TextureData';
 
 type FighterParams = BattleObjectData & {
     

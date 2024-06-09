@@ -1,5 +1,10 @@
 ﻿import { InterpolationUtils } from "./InterpolateUtils";
 
+type Point = {
+    x: number;
+    y: number;
+};
+
 export class Vec2 {
 
     x: number;
@@ -290,6 +295,41 @@ export class MyMath {
 
     public static isCirclesIntersect(x1: number, y1: number, r1: number, x2: number, y2: number, r2: number): boolean {
         return MyMath.getVec2Length(x1, y1, x2, y2) <= r1 + r2;
+    }
+    
+    /**
+     * Check point in sector
+     * @param center - sector center
+     * @param point - point to check
+     * @param directionAngle - dir of sector in deg
+     * @param sectorAngle - sector angle on deg
+     * @param radius - sector radius
+     * @returns true or false
+     */
+    public static isPointInSector(
+        center: Point,
+        point: Point,
+        directionAngle: number,
+        sectorAngle: number,
+        radius: number
+    ): boolean {
+        const dx = point.x - center.x;
+        const dy = point.y - center.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance > radius) {
+            return false;
+        }
+
+        const angleToPoint = (Math.atan2(dy, dx) * 180) / Math.PI;
+        const normalizedAngleToPoint = (angleToPoint + 360) % 360;
+        const normalizedDirectionAngle = (directionAngle + 360) % 360;
+        const halfSectorAngle = sectorAngle / 2;
+
+        return (
+            normalizedAngleToPoint >= normalizedDirectionAngle - halfSectorAngle &&
+            normalizedAngleToPoint <= normalizedDirectionAngle + halfSectorAngle
+        );
     }
 
     /**

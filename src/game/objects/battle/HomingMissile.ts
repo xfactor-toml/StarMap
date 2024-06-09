@@ -296,6 +296,7 @@ export class HomingMissile extends BattleObject {
             this._pointLight.dispose();
             this._pointLight = null;
         }
+        
         if (this._lightHelper) {
             this._lightHelper.visible = false;
             this._lightParent.remove(this._lightHelper);

@@ -901,6 +901,14 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
     initDebugGui(aFolder: GUI) {
         
+        const DEBUG_OBJ = {
+            testObjects: () => {
+                for (let i = 0; i < 1000; i++) {
+                                        
+                }
+            }
+        }
+
         const f = aFolder;
 
         f.add(DEBUG_GUI, 'showAxies').onChange((aShow: boolean) => {
@@ -953,7 +961,9 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 const tower = towers[i];
                 tower.lightHelperVisible = aVal;
             }
-        })
+        });
+
+        f.add(DEBUG_OBJ, 'testObjects').name('Test Objects MemLeak');
 
         // star lights
         let starsFolder = f.addFolder('Stars');
@@ -1037,6 +1047,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     }
 
     destroyAllObjects() {
+
         this._objects.forEach(obj => {
             obj.free();
         });
@@ -1064,16 +1075,17 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         this.destroyAllObjects();
     }
 
-    update(dt: number) {
-
-        this._cameraMng.update(dt);
-
+    private updateObjects(dt: number) {
         this._objects.forEach((obj) => {
             obj.update(dt);
         });
+    }
 
+    update(dt: number) {
+
+        this._cameraMng.update(dt);
+        this.updateObjects(dt);
         this._objectHpViewer.update(dt);
-
         this._explosionSystem?.update(dt);
 
     }

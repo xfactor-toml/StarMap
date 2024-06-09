@@ -1,6 +1,4 @@
 import { useWeb3ModalAccount, useWeb3ModalProvider } from "@web3modal/ethers5/vue";
-import { Socket, io } from "socket.io-client";
-import { useWebAppClosingConfirmation } from 'vue-tg'
 import { network } from "./config";
 import { AuthMethod, TelegramAuthData, account } from "./types";
 import { ConnectWalletWC, InitWalletconnectModal } from "./walletconnect/auth";
