@@ -213,19 +213,13 @@ export class BattleObject extends MyObject3D {
         this._dirrection = null;
         this._targetQuaternion = null;
 
-        if (this._debugRadiusSphere) {
-            ThreeUtils.removeAndDispose(this._debugRadiusSphere);
-        }
+        if (this._debugRadiusSphere) ThreeUtils.removeAndDispose(this._debugRadiusSphere);
         this._debugRadiusSphere = null;
 
-        if (this._debugAttackRadius) {
-            ThreeUtils.removeAndDispose(this._debugAttackRadius);
-        }
+        if (this._debugAttackRadius) ThreeUtils.removeAndDispose(this._debugAttackRadius);
         this._debugAttackRadius = null;
 
-        if (this._meshColorLayer) {
-            ThreeUtils.removeAndDispose(this._meshColorLayer);
-        }
+        if (this._meshColorLayer) ThreeUtils.removeAndDispose(this._meshColorLayer);
         this._meshColorLayer = null;
 
         super.free();

@@ -194,10 +194,15 @@ export class Tower extends BattleObject {
         this.clear();
 
         if (this._mesh) {
-            this.remove(this._mesh);
-            this._mesh = null;
+            ThreeUtils.removeAndDispose(this._mesh);
         }
+        this._mesh = null;
 
+        if (this._model) {
+            ThreeUtils.removeAndDispose(this._model);
+        }
+        this._model = null;
+        
         if (this._pointLight) {
             this._lightParent.remove(this._pointLight);
             this._pointLight.dispose();

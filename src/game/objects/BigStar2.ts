@@ -3,6 +3,7 @@ import { ThreeLoader } from "../utils/threejs/ThreeLoader";
 import * as datGui from "dat.gui";
 import vsSun from '../shaders/sunTextured/vert.glsl';
 import fsSun from '../shaders/sunTextured/frag.glsl';
+import { ThreeUtils } from "../utils/threejs/ThreejsUtils";
 
 export type BigStar2Params = {
     starSize: number;
@@ -155,6 +156,7 @@ export class BigStar2 extends THREE.Group {
     }
 
     free() {
+        // debug gui
         if (this._gui) {
             for (let i = 0; i < this._guiControllers.length; i++) {
                 const gctrl = this._guiControllers[i];
@@ -162,6 +164,22 @@ export class BigStar2 extends THREE.Group {
             }
             this._gui.removeFolder(this._guiFolder);
         }
+        this._gui = null;
+        this._guiFolder = null;
+        this._guiControllers = null;
+
+        this._parentPos = null;
+        this._camera = null;
+        this._params = null;
+        if (this._light) {
+            this._light.dispose();
+        }
+        this._light = null;
+        if (this._mesh) {
+            ThreeUtils.removeAndDispose(this._mesh);
+        }
+        this._mesh = null;
+        this._uniforms = null;
 
     }
 

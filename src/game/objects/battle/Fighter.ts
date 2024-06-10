@@ -97,7 +97,7 @@ export class Fighter extends BattleObject {
     }
 
     free() {
-        
+
         if (this._mesh) {
             ThreeUtils.removeAndDispose(this._mesh);
         }

@@ -862,7 +862,7 @@ export class GalaxyMng implements ILogger {
 
         // REAL STARS
         if (this._quadTreeReal) {
-            this._quadTreeReal.destroy();
+            this._quadTreeReal.free();
             this._quadTreeReal = null;
         }
 
@@ -877,7 +877,7 @@ export class GalaxyMng implements ILogger {
 
         // PHANTOM STARS
         if (this._quadTreePhantom) {
-            this._quadTreePhantom.destroy();
+            this._quadTreePhantom.free();
             this._quadTreePhantom = null;
         }
 
@@ -2569,9 +2569,9 @@ export class GalaxyMng implements ILogger {
         this._smallFlySystem?.free();
         this._smallFlySystem = null;
 
-        this._quadTreeReal?.destroy();
+        this._quadTreeReal?.free();
         this._quadTreeReal = null;
-        this._quadTreePhantom?.destroy();
+        this._quadTreePhantom?.free();
         this._quadTreePhantom = null;
         this._qtDebugRender?.clear();
         this._qtDebugRender = null;

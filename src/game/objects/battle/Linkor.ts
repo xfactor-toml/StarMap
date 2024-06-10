@@ -63,7 +63,7 @@ export class Linkor extends BattleObject {
     updateQuaternion(dt: number) {
         // clear override
     }
-    
+
     free() {
         if (this._mesh) {
             ThreeUtils.removeAndDispose(this._mesh);

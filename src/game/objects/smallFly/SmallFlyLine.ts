@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { ThreeUtils } from '~/game/utils/threejs/ThreejsUtils';
 
 const START_COLOR = {
     r: 1,
@@ -111,8 +112,12 @@ export class SmallFlyLine {
     }
 
     free() {
-        this._parent.remove(this._lines);
+        if (this._lines) {
+            ThreeUtils.removeAndDispose(this._lines);
+        }
         this._lines = null;
+        
+        if (this._geometry) this._geometry.dispose();
         this._geometry = null;
 
         this._curve = null;

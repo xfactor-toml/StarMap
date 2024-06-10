@@ -49,7 +49,6 @@ export class HomingMissile extends BattleObject {
         this._lightHeight = aParams.light.height || 0;
         this.initSimpleModel();
         // this.initPointLight(aParams.light);
-        this.initFireEffect();
         this.initSfx();
     }
 
@@ -264,6 +263,11 @@ export class HomingMissile extends BattleObject {
     protected updateFireEffect(dt: number) {
         let pos = this.getFireEffectPos();
         if (!pos) return;
+
+        if (!this._fireEffect) {
+            this.initFireEffect();
+        }
+
         this._fireEffect?.position.copy(pos);
         this._fireEffect?.update(dt);
     }
@@ -283,7 +287,7 @@ export class HomingMissile extends BattleObject {
         
         this.clear();
 
-        this._fireEffect.free();
+        if (this._fireEffect) this._fireEffect.free();
         this._fireEffect = null;
 
         if (this._mesh) {

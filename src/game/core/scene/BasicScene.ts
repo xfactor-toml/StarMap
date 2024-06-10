@@ -74,6 +74,8 @@ export class BasicScene implements ILogger, IUpdatable {
     }
 
     protected freeScene() {
+        this._scene.clear();
+        this._scene = null;
         if (this._render) this._render.scene = null;
     }
 
