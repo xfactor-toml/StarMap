@@ -170,10 +170,10 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             this.onObjectDestroyPack(aIds);
         });
         this._connection.socket.on(PackTitle.rotate, (aData) => {
-            this.onRotateObject(aData);
+            this.onRotatePack(aData);
         });
         this._connection.socket.on(PackTitle.jump, (aData) => {
-            this.onJumpObject(aData);
+            this.onJumpPack(aData);
         });
         this._connection.socket.on(PackTitle.attack, (aData: AttackData) => {
             this.attack(aData);
@@ -185,24 +185,49 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             this.rayStop(aData);
         });
         this._connection.socket.on(PackTitle.damage, (aData: DamageData) => {
-            this.onDamage(aData);
+            this.onDamagePack(aData);
         });
+
         // skills
         this._connection.socket.on(PackTitle.planetLaser, (aData: PlanetLaserData) => {
             this.planetLaser(aData);
         });
-
-        this._connection.socket.on(PackTitle.explosion, (aData: ExplosionData) => {
-            this.onExplosionPack(aData);
-        });
         this._connection.socket.on(PackTitle.sniper, (aData: SniperData) => {
             this.onSniperPack(aData);
         });
+
+        // effects
+        this._connection.socket.on(PackTitle.explosion, (aData: ExplosionData) => {
+            this.onExplosionPack(aData);
+        });
+    }
+
+    private removeConnectionListeners() {
+        this._connection.socket.removeListener(PackTitle.fieldInit);
+        this._connection.socket.removeListener(PackTitle.objectCreate);
+        this._connection.socket.removeListener(PackTitle.objectUpdate);
+        this._connection.socket.removeListener(PackTitle.objectDestroy);
+        this._connection.socket.removeListener(PackTitle.rotate);
+        this._connection.socket.removeListener(PackTitle.jump);
+        this._connection.socket.removeListener(PackTitle.attack);
+        this._connection.socket.removeListener(PackTitle.rayStart);
+        this._connection.socket.removeListener(PackTitle.rayStop);
+        this._connection.socket.removeListener(PackTitle.damage);
+        // skills
+        this._connection.socket.removeListener(PackTitle.planetLaser);
+        this._connection.socket.removeListener(PackTitle.sniper);
+        // effects
+        this._connection.socket.removeListener(PackTitle.explosion);
     }
 
     private initInput() {
         let inputMng = InputMng.getInstance();
         inputMng.onClickSignal.add(this.onClick, this);
+    }
+
+    private removeInput() {
+        let inputMng = InputMng.getInstance();
+        inputMng.onClickSignal.remove(this.onClick, this);
     }
 
     private onClick(aClientX: number, aClientY: number) {
@@ -459,100 +484,29 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 this._objectHpViewer.addBar(obj);
                 break;
 
-            case 'FighterShip': {
-                obj = new Fighter({
-                    ...aData,
-                    ...{
-                        highlighting: {
-                            active: true,
-                            isEnemy: !this.isCurrentOwner(aData.owner),
-                        },
-                        race: this.getRaceForWalletAddr(aData.owner),
-                        showRadius: DEBUG_GUI.showObjectRadius,
-                        showAttackRadius: DEBUG_GUI.showObjectAttackRadius
-                    }
-                });
+            case 'FighterShip':
+                this.createFighter(aData);
+                break;
 
-                if (aData.pos) {
-                    const clientPos = this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z });
-                    obj.position.copy(clientPos);
-                }
-
-                if (aData.q) {
-                    obj.setQuaternion(aData.q);
-                    obj.setTargetQuaternion(aData.q);
-                }
-
-                if (aData.lookDir) obj.lookByDir(aData.lookDir);
-
-                // add hp bar
-                this._objectHpViewer.addBar(obj);
-
-                AudioMng.getInstance().playSfx({ alias: AudioAlias.battleCreepSpawn, volume: .15 });
-
-            } break;
-
-            case 'BattleShip': {
-                obj = new Linkor({
-                    ...aData,
-                    ...{
-                        highlighting: {
-                            active: true,
-                            isEnemy: !this.isCurrentOwner(aData.owner),
-                        },
-                        race: this.getRaceForWalletAddr(aData.owner),
-                        showRadius: DEBUG_GUI.showObjectRadius,
-                        showAttackRadius: DEBUG_GUI.showObjectAttackRadius
-                    }
-                });
-
-                if (aData.pos) {
-                    const clientPos = this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z });
-                    obj.position.copy(clientPos);
-                }
-
-                if (aData.q) {
-                    obj.setQuaternion(aData.q);
-                    obj.setTargetQuaternion(aData.q);
-                }
-
-                if (aData.lookDir) obj.lookByDir(aData.lookDir);
-
-                // add hp bar
-                this._objectHpViewer.addBar(obj);
-
-                AudioMng.getInstance().playSfx({ alias: AudioAlias.battleCreepSpawn, volume: .3 });
-
-            } break;
+            case 'BattleShip':
+                this.createLinkor(aData);
+                break;
 
             case 'HomingMissile': {
-                obj = new HomingMissile({
-                    ...aData,
-                    ...{
-                        camera: this._camera,
-                        effectsParent: this._dummyMain,
-                        race: this.getRaceForWalletAddr(aData.owner),
-                        light: {
-                            parent: this._dummyMain,
-                            ...SETTINGS.towers.light,
-                            color: this.isCurrentOwner(aData.owner) ? SETTINGS.towers.light.ownerColor : SETTINGS.towers.light.enemyColor
-                        },
-                        showRadius: DEBUG_GUI.showObjectRadius,
-                        showAttackRadius: DEBUG_GUI.showObjectAttackRadius
-                    }
-                });
+                this.createHomingMissile(aData);
 
-                if (aData.pos) {
-                    const clientPos = this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z });
-                    obj.position.copy(clientPos);
-                }
-
-                if (aData.q) {
-                    obj.setQuaternion(aData.q);
-                    obj.setTargetQuaternion(aData.q);
-                }
-
-                if (aData.lookDir) obj.lookByDir(aData.lookDir);
+                // test create
+                // const iskomId = aData.id;
+                // for (let i = 0; i < 100; i++) {
+                //     setTimeout(() => {
+                //         const id = iskomId + 10000 + i;
+                //         aData.id = id;
+                //         this.createHomingMissile(aData);
+                //         setTimeout(() => {
+                //             this.destroyObject(id);
+                //         }, 3000 + i * 100);
+                //     }, 10 * i);
+                // }
 
                 // add hp bar
                 // this._objectHpViewer.addBar(obj);
@@ -570,7 +524,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             this._objects.set(aData.id, obj);
         }
     }
-
+    
     private onStarClick(aStar: BattleStar) {
         if (this.isCurrentOwner(aStar.owner)) {
             let pos2d = ThreeUtils.toScreenPosition(this._render.renderer, aStar, this._camera,
@@ -589,18 +543,6 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 return;
             }
 
-            // if (obj instanceof BattlePlanet) {
-                // this.logDebug(`planet update:`, data);
-            // }
-
-            // if (obj instanceof Linkor) {
-                // this.logDebug(`BattleShip update:`, data);
-            // }
-
-            // if (obj instanceof HomingMissile) {
-                // this.logDebug(`HomingMissile update:`, data);
-            // }
-
             if (data.pos) {
                 obj.targetPosition = {
                     x: this.serverToClientX(data.pos.x),
@@ -613,21 +555,11 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             }
 
             if (data.hp != undefined) {
-                // let prevHp = obj.hp;
-                // let dtHp = prevHp - data.hp;
                 obj.hp = data.hp;
-                // if (dtHp > 2) {
-                //     this._damageViewer.showDamage(obj, -dtHp);
-                // }
             }
 
             if (data.shield != undefined) {
-                // let prevShield = obj.shield;
-                // let dt = prevShield - data.shield;
                 obj.shield = data.shield;
-                // if (dt > 1) {
-                    // this._damageViewer.showShieldDamage(obj, -dt);
-                // }
             }
 
         }
@@ -640,7 +572,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         }
     }
 
-    private onRotateObject(aData: {
+    private onRotatePack(aData: {
         id: number,
         type: 'toPoint' | 'toDir',
         target: { x, y, z },
@@ -658,7 +590,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         }
     }
 
-    private onJumpObject(aData: {
+    private onJumpPack(aData: {
         id: number,
         pos: { x, y, z },
         duration: number
@@ -675,6 +607,136 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
     }
 
+    private onDamagePack(aData: DamageData) {
+        let obj = this.getObjectById(aData.id);
+        if (this.isCurrentOwner(obj?.owner) && !DEBUG_GUI.showMyDamage) {
+            return;
+        }
+        let pos = this.getPositionByServerV3(aData.pos);
+        this._damageViewer.showDamage(pos, aData.info);
+    }
+
+    private createFighter(aData: ObjectCreateData): BattleObject {
+        let obj = new Fighter({
+            ...aData,
+            ...{
+                highlighting: {
+                    active: true,
+                    isEnemy: !this.isCurrentOwner(aData.owner),
+                },
+                race: this.getRaceForWalletAddr(aData.owner),
+                showRadius: DEBUG_GUI.showObjectRadius,
+                showAttackRadius: DEBUG_GUI.showObjectAttackRadius
+            }
+        });
+
+        if (!obj) {
+            this.logError(`createFighter: obj == NULL`);
+            return;
+        }
+
+        // position
+        if (aData.pos) {
+            const clientPos = this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z });
+            obj.position.copy(clientPos);
+        }
+
+        // rotation by quaternion
+        if (aData.q) {
+            obj.setQuaternion(aData.q);
+            obj.setTargetQuaternion(aData.q);
+        }
+
+        if (aData.lookDir) obj.lookByDir(aData.lookDir);
+
+        // hp bar
+        this._objectHpViewer.addBar(obj);
+        
+        // sfx
+        AudioMng.getInstance().playSfx({ alias: AudioAlias.battleCreepSpawn, volume: .15 });
+
+        this._dummyMain.add(obj);
+        this._objects.set(aData.id, obj);
+
+        return obj;
+    }
+
+    private createLinkor(aData: ObjectCreateData) {
+        let obj = new Linkor({
+            ...aData,
+            ...{
+                highlighting: {
+                    active: true,
+                    isEnemy: !this.isCurrentOwner(aData.owner),
+                },
+                race: this.getRaceForWalletAddr(aData.owner),
+                showRadius: DEBUG_GUI.showObjectRadius,
+                showAttackRadius: DEBUG_GUI.showObjectAttackRadius
+            }
+        });
+
+        if (aData.pos) {
+            const clientPos = this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z });
+            obj.position.copy(clientPos);
+        }
+
+        if (aData.q) {
+            obj.setQuaternion(aData.q);
+            obj.setTargetQuaternion(aData.q);
+        }
+
+        if (aData.lookDir) obj.lookByDir(aData.lookDir);
+
+        // add hp bar
+        this._objectHpViewer.addBar(obj);
+
+        AudioMng.getInstance().playSfx({ alias: AudioAlias.battleCreepSpawn, volume: .3 });
+
+        this._dummyMain.add(obj);
+        this._objects.set(aData.id, obj);
+
+        return obj;
+
+    }
+
+    private createHomingMissile(aData: ObjectCreateData) {
+        let obj = new HomingMissile({
+            ...aData,
+            ...{
+                camera: this._camera,
+                effectsParent: this._dummyMain,
+                race: this.getRaceForWalletAddr(aData.owner),
+                light: {
+                    parent: this._dummyMain,
+                    ...SETTINGS.towers.light,
+                    color: this.isCurrentOwner(aData.owner) ? SETTINGS.towers.light.ownerColor : SETTINGS.towers.light.enemyColor
+                },
+                showRadius: DEBUG_GUI.showObjectRadius,
+                showAttackRadius: DEBUG_GUI.showObjectAttackRadius
+            }
+        });
+
+        if (!obj) {
+            this.logError(`createHomingMissile: obj == NULL`);
+            return;
+        }
+
+        if (aData.pos) {
+            const clientPos = this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z });
+            obj.position.copy(clientPos);
+        }
+
+        if (aData.q) {
+            obj.setQuaternion(aData.q);
+            obj.setTargetQuaternion(aData.q);
+        }
+
+        if (aData.lookDir) obj.lookByDir(aData.lookDir);
+
+        this._dummyMain.add(obj);
+        this._objects.set(aData.id, obj);
+    }
+
     private attack(aData: AttackData) {
         
         let objFrom = this.getObjectById(aData.idFrom);
@@ -688,6 +750,9 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             this.logWarn(`attack: !toObj`, aData);
             return;
         }
+
+        // DEBUG
+        // return;
 
         let laserColor = this.getShipLaserColor(objFrom.owner);
 
@@ -730,7 +795,9 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                         laser.free();
                     }
                 });
+
                 this._dummyMain.add(laser);
+
                 break;
 
             case 'ray': {
@@ -748,6 +815,9 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         idFrom: number,
         idTo: number
     }) {
+
+        // DEBUG
+        // return;
 
         let objFrom = this.getObjectById(aData.idFrom);
         if (!objFrom) {
@@ -794,21 +864,15 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         });
     }
 
-    private onDamage(aData: DamageData) {
-        let obj = this.getObjectById(aData.id);
-        if (this.isCurrentOwner(obj?.owner) && !DEBUG_GUI.showMyDamage) {
-            return;
-        }
-        let pos = this.getPositionByServerV3(aData.pos);
-        this._damageViewer.showDamage(pos, aData.info);
-    }
-
     private planetLaser(aData: PlanetLaserData) {
         let planet = this.getObjectById(aData.planetId);
         if (!planet) {
             LogMng.warn(`planetLaser: !planet for...`, aData);
             return;
         }
+
+        // DEBUG
+        // return;
 
         let laserColor = this.getPlanetLaserColor(aData.skin);
         let originPos = this.getPositionByServerV3(aData.pos);
@@ -902,11 +966,45 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     initDebugGui(aFolder: GUI) {
         
         const DEBUG_OBJ = {
-            testObjects: () => {
+            createTestFighters: () => {
                 for (let i = 0; i < 1000; i++) {
-                                        
+                    this.createFighter({
+                        type: 'FighterShip',
+                        attackRadius: 0,
+                        hp: 1000,
+                        id: 100000 + i,
+                        pos: {
+                            x: i * 10 % 100,
+                            y: 0,
+                            z: Math.trunc(i * 10 / 100)
+                        },
+                        radius: 2,
+                        shield: 1000
+                    });
                 }
-            }
+            },
+            createTestLinkors: () => {
+                for (let i = 0; i < 1000; i++) {
+                    this.createLinkor({
+                        type: 'BattleShip',
+                        attackRadius: 0,
+                        hp: 1000,
+                        id: 100000 + i,
+                        pos: {
+                            x: i * 10 % 100,
+                            y: 0,
+                            z: Math.trunc(i * 10 / 100)
+                        },
+                        radius: 2,
+                        shield: 1000
+                    });
+                }
+            },
+            destroyTestObjects: () => {
+                for (let i = 0; i < 1000; i++) {
+                    this.destroyObject(100000 + i);
+                }
+            },
         }
 
         const f = aFolder;
@@ -963,7 +1061,9 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             }
         });
 
-        f.add(DEBUG_OBJ, 'testObjects').name('Test Objects MemLeak');
+        f.add(DEBUG_OBJ, 'createTestFighters').name('Test Fighters');
+        f.add(DEBUG_OBJ, 'createTestLinkors').name('Test Linkors');
+        f.add(DEBUG_OBJ, 'destroyTestObjects').name('Test Objects Destroy');
 
         // star lights
         let starsFolder = f.addFolder('Stars');
@@ -1070,9 +1170,39 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     }
 
     clear() {
+
+        this.removeInput();
+        this.removeConnectionListeners();
+
+        this._damageViewer.free();
         this._objectHpViewer.clear();
+
         // clear all objects
         this.destroyAllObjects();
+
+        this._render = null;
+        this._scene = null;
+        this._camera = null;
+        this._raycaster = null;
+        this._connection = null;
+        this._cameraTarget = null;
+        this._cameraMng.free();
+        this._cameraMng = null;
+
+        this._playerRace = null;
+        this._enemyRace = null;
+
+        this._dummyMain.clear();
+        this._dummyMain = null;
+        this._objects = null;
+
+        this._objectHpViewer = null;
+        this._damageViewer = null;
+        this._attackRays = null;
+        this._explosionSystem = null;
+
+        this._axiesHelper = null;
+
     }
 
     private updateObjects(dt: number) {

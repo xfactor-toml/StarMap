@@ -1,10 +1,9 @@
 import * as THREE from 'three';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
-import { Font } from "three/examples/jsm/loaders/FontLoader";
 import { ThreeLoader } from '../utils/threejs/ThreeLoader';
 import gsap from 'gsap';
 import { MyMath } from '../utils/MyMath';
-// import { TextGeometry } from 'three/examples/jsm/';
+import { ThreeUtils } from '../utils/threejs/ThreejsUtils';
 
 export class DamageNumber {
     private _camera: THREE.Camera;
@@ -49,13 +48,17 @@ export class DamageNumber {
                 this._mesh.quaternion.copy(this._camera.quaternion);
             },
             onComplete: () => {
-                this.dispose();
+                this.free();
             }
         });
     }
 
-    dispose() {
-        this._mesh.parent?.remove(this._mesh);
+    free() {
+        if (this._mesh) {
+            ThreeUtils.removeAndDispose(this._mesh);
+        }
+        this._mesh = null;
+        this._camera = null;
     }
 
 

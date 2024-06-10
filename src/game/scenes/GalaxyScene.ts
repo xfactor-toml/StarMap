@@ -17,6 +17,7 @@ import { AudioAlias } from '../audio/AudioData';
 import { BattleAcceptScreenMng, BattleAcceptScreenMngEvent } from '../controllers/BattleAcceptScreenMng';
 import { MyUtils } from '../utils/MyUtils';
 import { BlockchainConnectService } from '~/blockchainTotal';
+import sizeof from 'object-sizeof';
 
 export class GalaxyScene extends BasicScene {
     private _galaxy: GalaxyMng;
@@ -67,6 +68,7 @@ export class GalaxyScene extends BasicScene {
             this.initBlockchainDebugGui();
             this.initDebugGui();
             this.initBattleDebugGui();
+            this.initTestsDebugGui();
         }
     }
 
@@ -460,9 +462,6 @@ export class GalaxyScene extends BasicScene {
         let bc = BattleConnection.getInstance();
 
         const DATA = {
-            connectLocal: () => {
-                // this._connection.connectLocal();
-            },
             searchGame: () => {
                 if (!bc.connected) {
                     GameEventDispatcher.showMessage(`No connection to server!`);
@@ -477,21 +476,26 @@ export class GalaxyScene extends BasicScene {
                 }
                 bc.sendSearchGameBot();
             },
-            withdrawgame: () => {
-                // bc.sendStopSearchingGame();
-            },
-            // createChallenge: () => {
-                // if (!bc.connected) {
-                //     GameEventDispatcher.showMessage(`No connection to server!`);
-                //     return;
-                // }
-                // bc.sendDuelCreate();
-            // }
         }
 
         const f = DebugGui.getInstance().createFolder('Battle');
         f.add(DATA, 'searchGameBot').name('Play with Bot');
-        // f.add(DATA, 'createChallenge').name('Create Challenge');
+    }
+
+    private initTestsDebugGui() {
+        const DATA = {
+            getGlobalSize: () => {
+                if (!global) {
+                    this.logDebug(`global == NULL`);
+                    return;
+                }
+                const size = sizeof(global);
+                this.logDebug(`Size global = ${size}`);
+            }
+        }
+
+        const f = DebugGui.getInstance().createFolder('Tests');
+        f.add(DATA, 'getGlobalSize').name('Global Size'); 
     }
 
     protected onFree() {

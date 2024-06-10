@@ -2,7 +2,6 @@ import * as THREE from 'three';
 import { ILogger } from "../core/interfaces/ILogger";
 import { IUpdatable } from "../core/interfaces/IUpdatable";
 import { LogMng } from '../utils/LogMng';
-import { BattleObject } from '../objects/battle/BattleObject';
 import { DamageNumber } from './DamageNumber';
 import { DamageInfo } from './Types';
 
@@ -71,6 +70,12 @@ export class DamageViewer implements ILogger, IUpdatable {
 
     clear() {
 
+    }
+
+    free() {
+        this._parent = null;
+        this._camera = null;
+        this._damageText = [];
     }
 
     update(dt: number) {

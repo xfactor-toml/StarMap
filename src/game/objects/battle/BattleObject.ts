@@ -5,6 +5,7 @@ import { MyObject3D } from "~/game/basics/MyObject3D";
 import { ObjectCreateData, ObjectType } from '~/game/battle/Types';
 import { TextureAlias } from '~/game/data/TextureData';
 import { ThreeLoader } from '~/game/utils/threejs/ThreeLoader';
+import { ThreeUtils } from '~/game/utils/threejs/ThreejsUtils';
 
 export type BattleObjectData = ObjectCreateData & {
     showRadius?: boolean,
@@ -206,9 +207,27 @@ export class BattleObject extends MyObject3D {
     }
 
     free() {
-        this._debugRadiusSphere = null;
-        this._debugAttackRadius = null;
         this._params = null;
+
+        this._targetPosition = null;
+        this._dirrection = null;
+        this._targetQuaternion = null;
+
+        if (this._debugRadiusSphere) {
+            ThreeUtils.removeAndDispose(this._debugRadiusSphere);
+        }
+        this._debugRadiusSphere = null;
+
+        if (this._debugAttackRadius) {
+            ThreeUtils.removeAndDispose(this._debugAttackRadius);
+        }
+        this._debugAttackRadius = null;
+
+        if (this._meshColorLayer) {
+            ThreeUtils.removeAndDispose(this._meshColorLayer);
+        }
+        this._meshColorLayer = null;
+
         super.free();
     }
 

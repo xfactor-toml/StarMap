@@ -73,7 +73,14 @@ export class BattleCameraMng extends MyEventDispatcher implements IUpdatable {
         this._orbitControl.minPolarAngle = MyMath.toRadian(aParams.stopAngleTop || 0);
         this._orbitControl.maxPolarAngle = MyMath.toRadian(aParams.stopAngleBot || 0);
         this._orbitControl.target = this._cameraTarget;
-        
+
+    }
+
+    private freeOrbitController() {
+        if (!this._orbitControl) return;
+        this._orbitControl.enabled = false;
+        this._orbitControl.dispose();
+        this._orbitControl = null;
     }
 
     private updateAccordingMode() {
@@ -156,6 +163,13 @@ export class BattleCameraMng extends MyEventDispatcher implements IUpdatable {
 
     update(dt: number) {
         this._fsm.update(dt);
+    }
+
+    free() {
+        this._fsm.free();
+        this.freeOrbitController();
+        this._camera = null;
+        this._cameraTarget = null;
     }
 
 }

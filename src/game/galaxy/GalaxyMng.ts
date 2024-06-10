@@ -96,7 +96,7 @@ export class GalaxyMng implements ILogger {
 
     private galaxySaveAnimData: any = {};
 
-    private smallFlySystem: SmallFlySystem;
+    private _smallFlySystem: SmallFlySystem;
 
     // rot sound
     private _rotSndStartTimer = 0;
@@ -234,7 +234,7 @@ export class GalaxyMng implements ILogger {
                 starsPos.push(new THREE.Vector3(pos.X, pos.Y, pos.Z));
             }
         }
-        this.smallFlySystem = new SmallFlySystem(this._dummyGalaxy, starsPos);
+        this._smallFlySystem = new SmallFlySystem(this._dummyGalaxy, starsPos);
 
         // camera controls
         this.createCameraControls({
@@ -1670,7 +1670,7 @@ export class GalaxyMng implements ILogger {
         this._phantomStarsParticles.visible = false;
         this._realStarsParticles.visible = true;
 
-        this.smallFlySystem.activeSpawn = true;
+        this._smallFlySystem.activeSpawn = true;
     }
 
     private onStateRealUpdate(dt: number) {
@@ -1691,7 +1691,7 @@ export class GalaxyMng implements ILogger {
         this.updateRotationSound(dt);
         this.updateStarPoints();
 
-        this.smallFlySystem.update(dt);
+        this._smallFlySystem.update(dt);
 
         if (DeviceInfo.getInstance().desktop) {
             this.checkMousePointerTimer -= dt;
@@ -1714,7 +1714,7 @@ export class GalaxyMng implements ILogger {
         this._realStarsParticles.visible = false;
         this._phantomStarsParticles.visible = true;
 
-        this.smallFlySystem.activeSpawn = false;
+        this._smallFlySystem.activeSpawn = false;
     }
 
     private onStatePhantomUpdate(dt: number) {
@@ -1734,7 +1734,7 @@ export class GalaxyMng implements ILogger {
         this.updateRotationSound(dt);
         this.updateStarPoints();
 
-        this.smallFlySystem.update(dt);
+        this._smallFlySystem.update(dt);
 
         if (DeviceInfo.getInstance().desktop) {
             this.checkMousePointerTimer -= dt;
@@ -2034,7 +2034,7 @@ export class GalaxyMng implements ILogger {
             }
         });
 
-        this.smallFlySystem.activeSpawn = false;
+        this._smallFlySystem.activeSpawn = false;
 
         AudioMng.getInstance().playSfx(AudioAlias.SFX_DIVE_IN);
 
@@ -2061,7 +2061,7 @@ export class GalaxyMng implements ILogger {
 
         if (this._solarSystemBlinkStarsParticles?.visible) this._solarSystemBlinkStarsParticles.update(dt);
 
-        this.smallFlySystem.update(dt);
+        this._smallFlySystem.update(dt);
 
     }
 
@@ -2114,7 +2114,7 @@ export class GalaxyMng implements ILogger {
 
         if (this._solarSystemBlinkStarsParticles?.visible) this._solarSystemBlinkStarsParticles.update(dt);
 
-        this.smallFlySystem.update(dt);
+        this._smallFlySystem.update(dt);
     }
 
     private onStateFromStarEnter() {
@@ -2283,7 +2283,7 @@ export class GalaxyMng implements ILogger {
 
         GameEventDispatcher.dispatchEvent(GameEvent.HIDE_STAR_PREVIEW);
 
-        this.smallFlySystem.activeSpawn = true;
+        this._smallFlySystem.activeSpawn = true;
 
         AudioMng.getInstance().playSfx(AudioAlias.SFX_DIVE_OUT);
         setTimeout(() => {
@@ -2308,7 +2308,7 @@ export class GalaxyMng implements ILogger {
 
         if (this._solarSystemBlinkStarsParticles?.visible) this._solarSystemBlinkStarsParticles.update(dt);
 
-        this.smallFlySystem.update(dt);
+        this._smallFlySystem.update(dt);
 
 
     }
@@ -2460,7 +2460,7 @@ export class GalaxyMng implements ILogger {
         //     ease: 'sine.inOut'
         // });
 
-        this.smallFlySystem.activeSpawn = false;
+        this._smallFlySystem.activeSpawn = false;
     }
 
     private onStateDisabledUpdate() {
@@ -2547,6 +2547,7 @@ export class GalaxyMng implements ILogger {
         this._smallGalaxies = [];
 
         this._orbitControl.enabled = false;
+        this._orbitControl.dispose();
         this._orbitControl = null;
 
         this.axiesHelper = null;
@@ -2565,8 +2566,8 @@ export class GalaxyMng implements ILogger {
 
         this.galaxySaveAnimData = {};
 
-        this.smallFlySystem?.free();
-        this.smallFlySystem = null;
+        this._smallFlySystem?.free();
+        this._smallFlySystem = null;
 
         this._quadTreeReal?.destroy();
         this._quadTreeReal = null;
