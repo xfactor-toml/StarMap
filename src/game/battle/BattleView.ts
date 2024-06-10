@@ -113,6 +113,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
     private _isTopPosition = false;
     private _axiesHelper: THREE.AxesHelper;
+    private _fieldCells: FieldCell[];
 
     constructor(aParams: {
         render: Renderer,
@@ -169,37 +170,37 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         this._connection.socket.on(PackTitle.objectDestroy, (aIds: number[]) => {
             this.onObjectDestroyPack(aIds);
         });
-        this._connection.socket.on(PackTitle.rotate, (aData) => {
-            this.onRotatePack(aData);
-        });
-        this._connection.socket.on(PackTitle.jump, (aData) => {
-            this.onJumpPack(aData);
-        });
-        this._connection.socket.on(PackTitle.attack, (aData: AttackData) => {
-            this.attack(aData);
-        });
-        this._connection.socket.on(PackTitle.rayStart, (aData) => {
-            this.rayStart(aData);
-        });
-        this._connection.socket.on(PackTitle.rayStop, (aData) => {
-            this.rayStop(aData);
-        });
-        this._connection.socket.on(PackTitle.damage, (aData: DamageData) => {
-            this.onDamagePack(aData);
-        });
+        // this._connection.socket.on(PackTitle.rotate, (aData) => {
+        //     this.onRotatePack(aData);
+        // });
+        // this._connection.socket.on(PackTitle.jump, (aData) => {
+        //     this.onJumpPack(aData);
+        // });
+        // this._connection.socket.on(PackTitle.attack, (aData: AttackData) => {
+        //     this.attack(aData);
+        // });
+        // this._connection.socket.on(PackTitle.rayStart, (aData) => {
+        //     this.rayStart(aData);
+        // });
+        // this._connection.socket.on(PackTitle.rayStop, (aData) => {
+        //     this.rayStop(aData);
+        // });
+        // this._connection.socket.on(PackTitle.damage, (aData: DamageData) => {
+        //     this.onDamagePack(aData);
+        // });
 
         // skills
-        this._connection.socket.on(PackTitle.planetLaser, (aData: PlanetLaserData) => {
-            this.planetLaser(aData);
-        });
-        this._connection.socket.on(PackTitle.sniper, (aData: SniperData) => {
-            this.onSniperPack(aData);
-        });
+        // this._connection.socket.on(PackTitle.planetLaser, (aData: PlanetLaserData) => {
+        //     this.planetLaser(aData);
+        // });
+        // this._connection.socket.on(PackTitle.sniper, (aData: SniperData) => {
+        //     this.onSniperPack(aData);
+        // });
 
         // effects
-        this._connection.socket.on(PackTitle.explosion, (aData: ExplosionData) => {
-            this.onExplosionPack(aData);
-        });
+        // this._connection.socket.on(PackTitle.explosion, (aData: ExplosionData) => {
+        //     this.onExplosionPack(aData);
+        // });
     }
 
     private removeConnectionListeners() {
@@ -274,14 +275,22 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     private initField() {
         const fSize = SETTINGS.server.field.size;
 
+        this._fieldCells = [];
+
         for (let cy = 0; cy < fSize.rows; cy++) {
             for (let cx = 0; cx < fSize.cols; cx++) {
                 let fieldCell = new FieldCell(4);
+                this._fieldCells.push(fieldCell);
                 fieldCell.position.copy(this.getPosByCellPos({ x: cx, y: cy }));
                 this._dummyMain.add(fieldCell);
             }
         }
 
+    }
+
+    private clearFieldCells() {
+        this._fieldCells.forEach(cell => cell.free());
+        this._fieldCells = [];
     }
 
     private initCameraPosition(aIsTop: boolean) {
@@ -1192,6 +1201,8 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         this._playerRace = null;
         this._enemyRace = null;
 
+        this.clearFieldCells();
+        
         this._dummyMain.clear();
         this._dummyMain = null;
         this._objects = null;
