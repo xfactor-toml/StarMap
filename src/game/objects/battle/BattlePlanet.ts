@@ -96,19 +96,13 @@ export class BattlePlanet extends BattleObject {
     }
 
     free() {
-        if (this._mesh) {
-            ThreeUtils.removeAndDispose(this._mesh);
-            this._mesh = null;
-        }
+        if (this._mesh) ThreeUtils.removeAndDispose(this._mesh);
+        this._mesh = null;
 
-        if (this._settelite) {
-            ThreeUtils.removeAndDispose(this._settelite);
-        }
+        if (this._settelite) ThreeUtils.removeAndDispose(this._settelite);
         this._settelite = null;
 
-        if (this._aimLine) {
-            ThreeUtils.removeAndDispose(this._aimLine);
-        }
+        if (this._aimLine) ThreeUtils.removeAndDispose(this._aimLine);
         this._aimLine = null;
 
         super.free();

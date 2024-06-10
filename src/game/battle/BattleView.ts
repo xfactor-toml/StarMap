@@ -768,6 +768,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         switch (aData.attackType) {
 
             case 'laser':
+                
                 // create laser
                 const laserLen = 2;
                 let r = ThreeUtils.randomVector(objTo.radius / 10);
@@ -778,35 +779,42 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                     targetPoint.add(dir.multiplyScalar(objTo.radius * 4));
                 }
 
-                let laser = new LaserLine({
-                    posStart: new THREE.Vector3(0, 0, 0),
-                    posEnd: new THREE.Vector3(0, 0, laserLen),
-                    color: laserColor,
-                    minRadius: .02,
-                    maxRadius: .2
-                });
-                laser.position.copy(firePoint);
-                laser.lookAt(targetPoint);
+                // let laser = new LaserLine({
+                //     posStart: new THREE.Vector3(0, 0, 0),
+                //     posEnd: new THREE.Vector3(0, 0, laserLen),
+                //     color: laserColor,
+                //     minRadius: .02,
+                //     maxRadius: .2
+                // });
+                // laser.position.copy(firePoint);
+                // laser.lookAt(targetPoint);
 
                 // show laser
-                const dur = .25;
-                gsap.to(laser.position, {
-                    x: targetPoint.x,
-                    y: targetPoint.y,
-                    z: targetPoint.z,
-                    duration: dur,
-                    ease: 'none',
-                    onStart: () => {
-                        const sounds = [AudioAlias.battleFireCreep_1, AudioAlias.battleFireCreep_2];
-                        let sndAlias = sounds[MyMath.randomIntInRange(0, sounds.length - 1)];
-                        AudioMng.getInstance().playSfx(sndAlias);
-                    },
-                    onComplete: () => {
-                        laser.free();
-                    }
-                });
+                // const dur = .25;
+                // gsap.to(laser.position, {
+                //     x: targetPoint.x,
+                //     y: targetPoint.y,
+                //     z: targetPoint.z,
+                //     duration: dur,
+                //     ease: 'none',
+                //     onStart: () => {
+                //         const sounds = [AudioAlias.battleFireCreep_1, AudioAlias.battleFireCreep_2];
+                //         let sndAlias = sounds[MyMath.randomIntInRange(0, sounds.length - 1)];
+                //         AudioMng.getInstance().playSfx(sndAlias);
+                //     },
+                //     onComplete: () => {
+                //         laser.free();
+                //     }
+                // });
 
-                this._dummyMain.add(laser);
+                // this._dummyMain.add(laser);
+
+                this.createLaser({
+                    length: laserLen,
+                    color: laserColor,
+                    startPos: firePoint,
+                    endPos: targetPoint,
+                });
 
                 break;
             
@@ -821,7 +829,6 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         length,
         startPos,
         endPos,
-        dy?,
         color,
     }) {
         const laserLen = params.length;

@@ -214,14 +214,10 @@ export class BattleStar extends BattleObject {
 
         this.freeClickZone();
 
-        if (this._mesh) {
-            ThreeUtils.removeAndDispose(this._mesh);
-            this._mesh = null;
-        }
+        if (this._mesh) ThreeUtils.removeAndDispose(this._mesh);
+        this._mesh = null;
 
-        if (this._star) {
-            this._star.free();
-        }
+        if (this._star) this._star.free();
         this._star = null;
 
         this._starHpBar = null;
