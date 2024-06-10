@@ -158,7 +158,7 @@ export class BlockchainConnectService  {
             console.log("Auth passed, login: ", event.detail?.username)
             this.telegramAuthData = event.detail;
         })
-        if (this.authMethod !== "Local") {
+        if (this.authMethod === "Walletconnect") {
             InitWalletconnectModal();
         }
         this.LoadTelegramData();

@@ -21,7 +21,6 @@ export class WalletService {
 
   constructor() {
     walletInstance = this
-    InitWalletconnectModal()
   }
 
   get state(): WalletStoreState {
@@ -39,6 +38,7 @@ export class WalletService {
     }
 
     if (provider === 'walletconnect') {
+      InitWalletconnectModal();
       this.provider = new UniversalProvider()
     }
 
