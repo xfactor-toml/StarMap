@@ -31,12 +31,12 @@ export async function OpenBox (address: string, _boxId: number) {
     })
 }
 
-export async function OpenBoxWeb2 (_boxId: number, address?: string, telegramData?: TelegramAuthData) {
+export async function OpenBoxWeb2 (_boxId: number, address?: string, telegramData?: TelegramAuthData, telegramInitData?: any) {
     return new Promise(async (resolve, reject) => {
-        if (!address && !telegramData) {
+        if (!address && !telegramData && !telegramInitData) {
             reject("At least 1 auth parameter muse exist")
         }
-
+        // alert(`Box open called, promise ${telegramInitData}`)
         const url = fastDataServerUrl.concat('api/boxes/open');
         const connector = BlockchainConnectService.getInstance();
         const priority = connector.getDefaultAuthMethod();
@@ -51,7 +51,8 @@ export async function OpenBoxWeb2 (_boxId: number, address?: string, telegramDat
             body: JSON.stringify({
               signature: signature || "", 
               telegramData,
-              boxId: Number(_boxId)
+              boxId: Number(_boxId),
+              telegramInitData
             })
           });
           if (response.status !== 200) {

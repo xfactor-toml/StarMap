@@ -21,10 +21,14 @@ export class BlockchainConnectService  {
     private TelegramInfo: any = window.Telegram;
     public getters = getters;
     public store = store;
+    public telegramInitData: any;
+    
 
     public LoadTelegramData() {
+        // alert("Telegram auth started: ");
         const tg = this.TelegramInfo;
         if (tg && tg.WebApp && tg.WebApp.initData) {
+            this.telegramInitData = tg.WebApp.initData;
             const initDataSearchParams = new URLSearchParams(window.Telegram.WebApp.initData);
             const user = JSON.parse(initDataSearchParams.get('user'));
             const authDate = initDataSearchParams.get('auth_date');
@@ -292,7 +296,7 @@ export class BlockchainConnectService  {
             Promise.reject("User not authorized");
             return;
         }
-        return await OpenBoxWeb2 (_boxId, "", this.telegramAuthData)
+        return await OpenBoxWeb2 (_boxId, "", this.telegramAuthData, this.telegramInitData)
     }
 
     public async getWalletAddressWithConnect() {
