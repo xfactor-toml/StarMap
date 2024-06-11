@@ -271,7 +271,7 @@ export class QuadTree {
         return res;
     }
 
-    destroy() {
+    free() {
         this._boundary = null;
         this._points = [];
         this._children = [];

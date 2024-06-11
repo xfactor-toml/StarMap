@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { MyObject3D } from '~/game/basics/MyObject3D';
 import { MyMath } from '~/game/utils/MyMath';
 import gsap from 'gsap';
+import { ThreeUtils } from '~/game/utils/threejs/ThreejsUtils';
 
 const LINES_CNT = 10;
 
@@ -9,15 +10,15 @@ const START_OPACITY = 0.2;
 const FINAL_OPACITY = 0;
 
 export class LaserLine extends MyObject3D {
-    private materials: THREE.MeshBasicMaterial[];
-    private meshes: THREE.Mesh[];
-    private tweens: gsap.core.Tween[];
+    private _materials: THREE.MeshBasicMaterial[];
+    private _meshes: THREE.Mesh[];
+    private _tweens: gsap.core.Tween[];
     private _color: string;
     private _points: any[];
     private _hided = false;
     private _lighted = false;
-    private minRadius = 0.01;
-    private maxRadius = 0.08;
+    private _minRadius = 0.01;
+    private _maxRadius = 0.08;
 
     constructor(aParams: {
         posStart: THREE.Vector3,
@@ -28,8 +29,8 @@ export class LaserLine extends MyObject3D {
     }) {
         super();
 
-        if (aParams.minRadius != undefined) this.minRadius = aParams.minRadius;
-        if (aParams.maxRadius != undefined) this.maxRadius = aParams.maxRadius;
+        if (aParams.minRadius != undefined) this._minRadius = aParams.minRadius;
+        if (aParams.maxRadius != undefined) this._maxRadius = aParams.maxRadius;
 
         this._color = aParams.color;
         this._points = [aParams.posStart, aParams.posEnd];
@@ -42,9 +43,9 @@ export class LaserLine extends MyObject3D {
 
         let distance = newPos1.distanceTo(newPos2);
 
-        this.tweens = [];
-        this.materials = [];
-        this.meshes = [];
+        this._tweens = [];
+        this._materials = [];
+        this._meshes = [];
         let len = LINES_CNT;
 
         for (let i = 0; i < len; i++) {
@@ -60,7 +61,7 @@ export class LaserLine extends MyObject3D {
                 blending: THREE.AdditiveBlending
             });
 
-            let radius = this.minRadius + i / len * (this.maxRadius - this.minRadius);
+            let radius = this._minRadius + i / len * (this._maxRadius - this._minRadius);
             let geometry = new THREE.CylinderGeometry(radius, radius, distance, 8, 1, false);
             // shift it so one end rests on the origin
             geometry.applyMatrix4(new THREE.Matrix4().makeTranslation(0, distance / 2, 0));
@@ -75,8 +76,8 @@ export class LaserLine extends MyObject3D {
             mesh.lookAt(newPos2);
             this.add(mesh);
 
-            this.materials.push(mat);
-            this.meshes.push(mesh);
+            this._materials.push(mat);
+            this._meshes.push(mesh);
         }
 
     }
@@ -90,18 +91,18 @@ export class LaserLine extends MyObject3D {
     }
 
     public set lineScale(aScale: number) {
-        for (let i = 0; i < this.meshes.length; i++) {
-            const mesh = this.meshes[i];
+        for (let i = 0; i < this._meshes.length; i++) {
+            const mesh = this._meshes[i];
             mesh.scale.set(aScale, aScale, 1);
         }
     }
 
     private stopAllTweens() {
-        for (let i = 0; i < this.tweens.length; i++) {
-            const tw = this.tweens[i];
+        for (let i = 0; i < this._tweens.length; i++) {
+            const tw = this._tweens[i];
             tw.kill();
         }
-        this.tweens = [];
+        this._tweens = [];
     }
 
     private getOpacityForLine(aLineId: number): number {
@@ -132,15 +133,15 @@ export class LaserLine extends MyObject3D {
         if (!aParams.easing) aParams.easing = 'sine.inOut';
 
         if (aParams.isFast == true) {
-            for (let i = 0; i < this.materials.length; i++) {
-                const mat = this.materials[i];
+            for (let i = 0; i < this._materials.length; i++) {
+                const mat = this._materials[i];
                 mat.opacity = 0;
             }
             aParams.cb?.call(aParams.ctx);
         }
         else {
-            for (let i = 0; i < this.materials.length; i++) {
-                const mat = this.materials[i];
+            for (let i = 0; i < this._materials.length; i++) {
+                const mat = this._materials[i];
                 let tw = gsap.to(mat, {
                     opacity: 0,
                     duration: aParams.dur || 1000,
@@ -150,7 +151,7 @@ export class LaserLine extends MyObject3D {
                         aParams.cb?.call(aParams.ctx);
                     }
                 });
-                this.tweens.push(tw);
+                this._tweens.push(tw);
             }
         }
     }
@@ -168,8 +169,8 @@ export class LaserLine extends MyObject3D {
 
         if (!aParams.easing) aParams.easing = 'sine.inOut';
 
-        for (let i = 0; i < this.materials.length; i++) {
-            const mat = this.materials[i];
+        for (let i = 0; i < this._materials.length; i++) {
+            const mat = this._materials[i];
             // let opacity = BASE_OPACITY / i;
             let opacity = this.getOpacityForLine(i); // BASE_OPACITY - i / len;
             if (aParams.isFast == true) {
@@ -182,7 +183,7 @@ export class LaserLine extends MyObject3D {
                     delay: aParams.delay || 0,
                     ease: aParams.easing
                 });
-                this.tweens.push(tw);
+                this._tweens.push(tw);
             }
         }
 
@@ -201,9 +202,9 @@ export class LaserLine extends MyObject3D {
 
         if (!aParams.easing) aParams.easing = 'sine.inOut';
 
-        let len = this.materials.length;
-        for (let i = 0; i < this.materials.length; i++) {
-            const mat = this.materials[i];
+        let len = this._materials.length;
+        for (let i = 0; i < this._materials.length; i++) {
+            const mat = this._materials[i];
             let opacity = this.getLightOpacityForLine(i);
             if (aParams.intensFactor > 0) opacity *= aParams.intensFactor;
 
@@ -234,9 +235,9 @@ export class LaserLine extends MyObject3D {
 
         if (!aParams.easing) aParams.easing = 'sine.inOut';
 
-        let len = this.materials.length;
-        for (let i = 0; i < this.materials.length; i++) {
-            const mat = this.materials[i];
+        let len = this._materials.length;
+        for (let i = 0; i < this._materials.length; i++) {
+            const mat = this._materials[i];
             let opacity = this.getOpacityForLine(i);
             if (aParams.isFast == true) {
                 mat.opacity = opacity;
@@ -253,16 +254,39 @@ export class LaserLine extends MyObject3D {
 
     }
 
-    free() {
+    private freeMeshes() {
+        for (let i = 0; i < this._meshes.length; i++) {
+            const m = this._meshes[i];
+            try {
+                ThreeUtils.removeAndDispose(m);
+            } catch (error) {
+                
+            }
+        }
+        this._meshes = [];
+    }
 
-        for (let i = 0; i < this.tweens.length; i++) {
-            const tw = this.tweens[i];
+    private freeMaterials() {
+        for (let i = 0; i < this._materials.length; i++) {
+            const m = this._materials[i];
+            try {
+                m.dispose();
+            } catch (error) {
+
+            }
+        }
+        this._materials = [];
+    }
+
+    free() {
+        for (let i = 0; i < this._tweens.length; i++) {
+            const tw = this._tweens[i];
             tw.kill();
         }
-        this.tweens = [];
-        this.materials = [];
-        this.meshes = [];
+        this._tweens = [];
         this._points = [];
+        this.freeMeshes();
+        this.freeMaterials();
 
         super.free();
     }

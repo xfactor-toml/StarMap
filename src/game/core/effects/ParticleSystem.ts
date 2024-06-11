@@ -239,17 +239,20 @@ export class ParticleSystem {
             }
 
             // pos
-            p.position.add(p.velocity.clone().multiplyScalar(dt));
+            p.position.addScaledVector(p.velocity, dt);
 
-            p.velocity.add(this._params.gravity.clone().multiplyScalar(dt));
+            p.velocity.addScaledVector(this._params.gravity, dt);
         }
 
-        this._particles = this._particles.filter(p => {
-            return p.lifeProgress < p.lifeTime;
-        });
+        for (let i = this._particles.length - 1; i >= 0; i--) {
+            const p = this._particles[i];
+            if (p.lifeProgress >= p.lifeTime) {
+                this._particles.splice(i, 1);
+            }
+        }
 
         // sort
-        if (this._params.sorting == true) {
+        if (this._params.sorting) {
             this._particles.sort((a, b) => {
                 const d1 = this._params.camera.position.distanceTo(a.position);
                 const d2 = this._params.camera.position.distanceTo(b.position);
@@ -271,13 +274,23 @@ export class ParticleSystem {
     free() {
         this._destroyed = true;
         this.activated = false;
+
+        if (this._points && this._params.parent) {
+            this._params.parent.remove(this._points);
+        }
+        this._points = null;
+
         this._particles = [];
         this.updateGeometry();
+        
+        if (this._material) this._material.dispose();
+        this._material = null;
+        
+        if (this._geometry) this._geometry.dispose();
+        this._geometry = null;
+        
         this._params = null;
         this._uniforms = null;
-        this._material = null;
-        this._geometry = null;
-        this._points = null;
         this._alphaSpline = null;
         this._scaleFactorSpline = null;
         this._particles = null;

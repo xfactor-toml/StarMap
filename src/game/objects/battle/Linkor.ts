@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { BattleObject, BattleObjectData } from './BattleObject';
 import { ThreeLoader } from '~/game/utils/threejs/ThreeLoader';
 import { ModelAlias } from '~/game/data/ModelData';
+import { ThreeUtils } from '~/game/utils/threejs/ThreejsUtils';
 
 type LinkorParams = BattleObjectData & {
 
@@ -64,8 +65,16 @@ export class Linkor extends BattleObject {
     }
 
     free() {
+        if (this._mesh) {
+            ThreeUtils.removeAndDispose(this._mesh);
+        }
         this._mesh = null;
+
+        if (this._model) {
+            ThreeUtils.removeAndDispose(this._model);
+        }
         this._model = null;
+
         super.free();
     }
 

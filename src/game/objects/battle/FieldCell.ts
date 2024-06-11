@@ -3,6 +3,7 @@ import { MyObject3D } from "~/game/basics/MyObject3D";
 import { TextureAlias } from '~/game/data/TextureData';
 import { MyMath } from '~/game/utils/MyMath';
 import { ThreeLoader } from '~/game/utils/threejs/ThreeLoader';
+import { ThreeUtils } from '~/game/utils/threejs/ThreejsUtils';
 
 export class FieldCell extends MyObject3D {
     protected _radius = 5;
@@ -77,6 +78,9 @@ export class FieldCell extends MyObject3D {
     }
 
     free() {
+        if (this._mesh) {
+            ThreeUtils.removeAndDispose(this._mesh);
+        }
         this._mesh = null;
         super.free();
     }

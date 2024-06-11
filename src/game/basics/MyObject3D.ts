@@ -8,7 +8,7 @@ export class MyObject3D extends THREE.Group implements ILogger, IUpdatable {
 
     constructor(aClassName?: string) {
         super();
-        this._className = aClassName || 'MyBasicClass';
+        this._className = aClassName || 'MyObject3D';
     }
 
     logDebug(aMsg: string, aData?: any): void {

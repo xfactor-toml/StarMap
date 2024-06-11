@@ -123,4 +123,28 @@ export class ThreeUtils {
         return this.randomNormalVector().multiplyScalar(aLength);
     }
 
+    public static disposeObject(object) {
+        if (object.geometry) {
+            object.geometry.dispose();
+        }
+        if (object.material) {
+            if (Array.isArray(object.material)) {
+                object.material.forEach((material) => {
+                    if (material.map) material.map.dispose();
+                    material.dispose();
+                });
+            } else {
+                if (object.material.map) object.material.map.dispose();
+                object.material.dispose();
+            }
+        }
+    }
+
+    public static removeAndDispose(mesh) {
+        if (mesh.parent) {
+            mesh.parent.remove(mesh);
+        }
+        this.disposeObject(mesh);
+    }
+
 }

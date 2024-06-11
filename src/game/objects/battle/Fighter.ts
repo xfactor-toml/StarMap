@@ -3,6 +3,7 @@ import { BattleObject, BattleObjectData } from './BattleObject';
 import { ThreeLoader } from '~/game/utils/threejs/ThreeLoader';
 import { ModelAlias } from '~/game/data/ModelData';
 import { MyMath } from '@/utils';
+import { ThreeUtils } from '~/game/utils/threejs/ThreejsUtils';
 
 type FighterParams = BattleObjectData & {
     
@@ -96,8 +97,17 @@ export class Fighter extends BattleObject {
     }
 
     free() {
+
+        if (this._mesh) {
+            ThreeUtils.removeAndDispose(this._mesh);
+        }
         this._mesh = null;
+
+        if (this._model) {
+            ThreeUtils.removeAndDispose(this._model);
+        }
         this._model = null;
+
         super.free();
     }
 

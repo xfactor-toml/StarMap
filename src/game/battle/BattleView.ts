@@ -113,6 +113,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
     private _isTopPosition = false;
     private _axiesHelper: THREE.AxesHelper;
+    private _fieldCells: FieldCell[];
 
     constructor(aParams: {
         render: Renderer,
@@ -170,39 +171,64 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             this.onObjectDestroyPack(aIds);
         });
         this._connection.socket.on(PackTitle.rotate, (aData) => {
-            this.onRotateObject(aData);
+            this.onRotatePack(aData);
         });
         this._connection.socket.on(PackTitle.jump, (aData) => {
-            this.onJumpObject(aData);
+            this.onJumpPack(aData);
         });
         this._connection.socket.on(PackTitle.attack, (aData: AttackData) => {
-            this.attack(aData);
+            this.attackPack(aData);
         });
         this._connection.socket.on(PackTitle.rayStart, (aData) => {
             this.rayStart(aData);
         });
         this._connection.socket.on(PackTitle.rayStop, (aData) => {
-            this.rayStop(aData);
+            this.stopRay(aData.idFrom);
         });
         this._connection.socket.on(PackTitle.damage, (aData: DamageData) => {
-            this.onDamage(aData);
+            this.onDamagePack(aData);
         });
+
         // skills
         this._connection.socket.on(PackTitle.planetLaser, (aData: PlanetLaserData) => {
             this.planetLaser(aData);
         });
-
-        this._connection.socket.on(PackTitle.explosion, (aData: ExplosionData) => {
-            this.onExplosionPack(aData);
-        });
         this._connection.socket.on(PackTitle.sniper, (aData: SniperData) => {
             this.onSniperPack(aData);
         });
+
+        // effects
+        this._connection.socket.on(PackTitle.explosion, (aData: ExplosionData) => {
+            this.onExplosionPack(aData);
+        });
+    }
+
+    private removeConnectionListeners() {
+        this._connection.socket.removeListener(PackTitle.fieldInit);
+        this._connection.socket.removeListener(PackTitle.objectCreate);
+        this._connection.socket.removeListener(PackTitle.objectUpdate);
+        this._connection.socket.removeListener(PackTitle.objectDestroy);
+        this._connection.socket.removeListener(PackTitle.rotate);
+        this._connection.socket.removeListener(PackTitle.jump);
+        this._connection.socket.removeListener(PackTitle.attack);
+        this._connection.socket.removeListener(PackTitle.rayStart);
+        this._connection.socket.removeListener(PackTitle.rayStop);
+        this._connection.socket.removeListener(PackTitle.damage);
+        // skills
+        this._connection.socket.removeListener(PackTitle.planetLaser);
+        this._connection.socket.removeListener(PackTitle.sniper);
+        // effects
+        this._connection.socket.removeListener(PackTitle.explosion);
     }
 
     private initInput() {
         let inputMng = InputMng.getInstance();
         inputMng.onClickSignal.add(this.onClick, this);
+    }
+
+    private removeInput() {
+        let inputMng = InputMng.getInstance();
+        inputMng.onClickSignal.remove(this.onClick, this);
     }
 
     private onClick(aClientX: number, aClientY: number) {
@@ -249,14 +275,22 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     private initField() {
         const fSize = SETTINGS.server.field.size;
 
+        this._fieldCells = [];
+
         for (let cy = 0; cy < fSize.rows; cy++) {
             for (let cx = 0; cx < fSize.cols; cx++) {
                 let fieldCell = new FieldCell(4);
+                this._fieldCells.push(fieldCell);
                 fieldCell.position.copy(this.getPosByCellPos({ x: cx, y: cy }));
                 this._dummyMain.add(fieldCell);
             }
         }
 
+    }
+
+    private clearFieldCells() {
+        this._fieldCells.forEach(cell => cell.free());
+        this._fieldCells = [];
     }
 
     private initCameraPosition(aIsTop: boolean) {
@@ -459,100 +493,29 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 this._objectHpViewer.addBar(obj);
                 break;
 
-            case 'FighterShip': {
-                obj = new Fighter({
-                    ...aData,
-                    ...{
-                        highlighting: {
-                            active: true,
-                            isEnemy: !this.isCurrentOwner(aData.owner),
-                        },
-                        race: this.getRaceForWalletAddr(aData.owner),
-                        showRadius: DEBUG_GUI.showObjectRadius,
-                        showAttackRadius: DEBUG_GUI.showObjectAttackRadius
-                    }
-                });
+            case 'FighterShip':
+                this.createFighter(aData);
+                break;
 
-                if (aData.pos) {
-                    const clientPos = this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z });
-                    obj.position.copy(clientPos);
-                }
-
-                if (aData.q) {
-                    obj.setQuaternion(aData.q);
-                    obj.setTargetQuaternion(aData.q);
-                }
-
-                if (aData.lookDir) obj.lookByDir(aData.lookDir);
-
-                // add hp bar
-                this._objectHpViewer.addBar(obj);
-
-                AudioMng.getInstance().playSfx({ alias: AudioAlias.battleCreepSpawn, volume: .15 });
-
-            } break;
-
-            case 'BattleShip': {
-                obj = new Linkor({
-                    ...aData,
-                    ...{
-                        highlighting: {
-                            active: true,
-                            isEnemy: !this.isCurrentOwner(aData.owner),
-                        },
-                        race: this.getRaceForWalletAddr(aData.owner),
-                        showRadius: DEBUG_GUI.showObjectRadius,
-                        showAttackRadius: DEBUG_GUI.showObjectAttackRadius
-                    }
-                });
-
-                if (aData.pos) {
-                    const clientPos = this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z });
-                    obj.position.copy(clientPos);
-                }
-
-                if (aData.q) {
-                    obj.setQuaternion(aData.q);
-                    obj.setTargetQuaternion(aData.q);
-                }
-
-                if (aData.lookDir) obj.lookByDir(aData.lookDir);
-
-                // add hp bar
-                this._objectHpViewer.addBar(obj);
-
-                AudioMng.getInstance().playSfx({ alias: AudioAlias.battleCreepSpawn, volume: .3 });
-
-            } break;
+            case 'BattleShip':
+                this.createLinkor(aData);
+                break;
 
             case 'HomingMissile': {
-                obj = new HomingMissile({
-                    ...aData,
-                    ...{
-                        camera: this._camera,
-                        effectsParent: this._dummyMain,
-                        race: this.getRaceForWalletAddr(aData.owner),
-                        light: {
-                            parent: this._dummyMain,
-                            ...SETTINGS.towers.light,
-                            color: this.isCurrentOwner(aData.owner) ? SETTINGS.towers.light.ownerColor : SETTINGS.towers.light.enemyColor
-                        },
-                        showRadius: DEBUG_GUI.showObjectRadius,
-                        showAttackRadius: DEBUG_GUI.showObjectAttackRadius
-                    }
-                });
+                this.createHomingMissile(aData);
 
-                if (aData.pos) {
-                    const clientPos = this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z });
-                    obj.position.copy(clientPos);
-                }
-
-                if (aData.q) {
-                    obj.setQuaternion(aData.q);
-                    obj.setTargetQuaternion(aData.q);
-                }
-
-                if (aData.lookDir) obj.lookByDir(aData.lookDir);
+                // MASS TEST
+                // const iskomId = aData.id;
+                // for (let i = 0; i < 100; i++) {
+                //     setTimeout(() => {
+                //         const id = iskomId + 10000 + i;
+                //         aData.id = id;
+                //         this.createHomingMissile(aData);
+                //         setTimeout(() => {
+                //             this.destroyObject(id);
+                //         }, 3000 + i * 100);
+                //     }, 10 * i);
+                // }
 
                 // add hp bar
                 // this._objectHpViewer.addBar(obj);
@@ -570,7 +533,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             this._objects.set(aData.id, obj);
         }
     }
-
+    
     private onStarClick(aStar: BattleStar) {
         if (this.isCurrentOwner(aStar.owner)) {
             let pos2d = ThreeUtils.toScreenPosition(this._render.renderer, aStar, this._camera,
@@ -589,18 +552,6 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 return;
             }
 
-            // if (obj instanceof BattlePlanet) {
-                // this.logDebug(`planet update:`, data);
-            // }
-
-            // if (obj instanceof Linkor) {
-                // this.logDebug(`BattleShip update:`, data);
-            // }
-
-            // if (obj instanceof HomingMissile) {
-                // this.logDebug(`HomingMissile update:`, data);
-            // }
-
             if (data.pos) {
                 obj.targetPosition = {
                     x: this.serverToClientX(data.pos.x),
@@ -613,21 +564,11 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             }
 
             if (data.hp != undefined) {
-                // let prevHp = obj.hp;
-                // let dtHp = prevHp - data.hp;
                 obj.hp = data.hp;
-                // if (dtHp > 2) {
-                //     this._damageViewer.showDamage(obj, -dtHp);
-                // }
             }
 
             if (data.shield != undefined) {
-                // let prevShield = obj.shield;
-                // let dt = prevShield - data.shield;
                 obj.shield = data.shield;
-                // if (dt > 1) {
-                    // this._damageViewer.showShieldDamage(obj, -dt);
-                // }
             }
 
         }
@@ -640,7 +581,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         }
     }
 
-    private onRotateObject(aData: {
+    private onRotatePack(aData: {
         id: number,
         type: 'toPoint' | 'toDir',
         target: { x, y, z },
@@ -658,7 +599,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         }
     }
 
-    private onJumpObject(aData: {
+    private onJumpPack(aData: {
         id: number,
         pos: { x, y, z },
         duration: number
@@ -675,7 +616,137 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
     }
 
-    private attack(aData: AttackData) {
+    private onDamagePack(aData: DamageData) {
+        let obj = this.getObjectById(aData.id);
+        if (this.isCurrentOwner(obj?.owner) && !DEBUG_GUI.showMyDamage) {
+            return;
+        }
+        let pos = this.getPositionByServerV3(aData.pos);
+        this._damageViewer.showDamage(pos, aData.info);
+    }
+
+    private createFighter(aData: ObjectCreateData): BattleObject {
+        let obj = new Fighter({
+            ...aData,
+            ...{
+                highlighting: {
+                    active: true,
+                    isEnemy: !this.isCurrentOwner(aData.owner),
+                },
+                race: this.getRaceForWalletAddr(aData.owner),
+                showRadius: DEBUG_GUI.showObjectRadius,
+                showAttackRadius: DEBUG_GUI.showObjectAttackRadius
+            }
+        });
+
+        if (!obj) {
+            this.logError(`createFighter: obj == NULL`);
+            return;
+        }
+
+        // position
+        if (aData.pos) {
+            const clientPos = this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z });
+            obj.position.copy(clientPos);
+        }
+
+        // rotation by quaternion
+        if (aData.q) {
+            obj.setQuaternion(aData.q);
+            obj.setTargetQuaternion(aData.q);
+        }
+
+        if (aData.lookDir) obj.lookByDir(aData.lookDir);
+
+        // hp bar
+        this._objectHpViewer.addBar(obj);
+        
+        // sfx
+        AudioMng.getInstance().playSfx({ alias: AudioAlias.battleCreepSpawn, volume: .15 });
+
+        this._dummyMain.add(obj);
+        this._objects.set(aData.id, obj);
+
+        return obj;
+    }
+
+    private createLinkor(aData: ObjectCreateData) {
+        let obj = new Linkor({
+            ...aData,
+            ...{
+                highlighting: {
+                    active: true,
+                    isEnemy: !this.isCurrentOwner(aData.owner),
+                },
+                race: this.getRaceForWalletAddr(aData.owner),
+                showRadius: DEBUG_GUI.showObjectRadius,
+                showAttackRadius: DEBUG_GUI.showObjectAttackRadius
+            }
+        });
+
+        if (aData.pos) {
+            const clientPos = this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z });
+            obj.position.copy(clientPos);
+        }
+
+        if (aData.q) {
+            obj.setQuaternion(aData.q);
+            obj.setTargetQuaternion(aData.q);
+        }
+
+        if (aData.lookDir) obj.lookByDir(aData.lookDir);
+
+        // add hp bar
+        this._objectHpViewer.addBar(obj);
+
+        AudioMng.getInstance().playSfx({ alias: AudioAlias.battleCreepSpawn, volume: .3 });
+
+        this._dummyMain.add(obj);
+        this._objects.set(aData.id, obj);
+
+        return obj;
+
+    }
+
+    private createHomingMissile(aData: ObjectCreateData) {
+        let obj = new HomingMissile({
+            ...aData,
+            ...{
+                camera: this._camera,
+                effectsParent: this._dummyMain,
+                race: this.getRaceForWalletAddr(aData.owner),
+                light: {
+                    parent: this._dummyMain,
+                    ...SETTINGS.towers.light,
+                    color: this.isCurrentOwner(aData.owner) ? SETTINGS.towers.light.ownerColor : SETTINGS.towers.light.enemyColor
+                },
+                showRadius: DEBUG_GUI.showObjectRadius,
+                showAttackRadius: DEBUG_GUI.showObjectAttackRadius
+            }
+        });
+
+        if (!obj) {
+            this.logError(`createHomingMissile: obj == NULL`);
+            return;
+        }
+
+        if (aData.pos) {
+            const clientPos = this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z });
+            obj.position.copy(clientPos);
+        }
+
+        if (aData.q) {
+            obj.setQuaternion(aData.q);
+            obj.setTargetQuaternion(aData.q);
+        }
+
+        if (aData.lookDir) obj.lookByDir(aData.lookDir);
+
+        this._dummyMain.add(obj);
+        this._objects.set(aData.id, obj);
+    }
+
+    private attackPack(aData: AttackData) {
         
         let objFrom = this.getObjectById(aData.idFrom);
         if (!objFrom) {
@@ -689,11 +760,15 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             return;
         }
 
+        // DEBUG
+        // return;
+
         let laserColor = this.getShipLaserColor(objFrom.owner);
 
         switch (aData.attackType) {
 
             case 'laser':
+                
                 // create laser
                 const laserLen = 2;
                 let r = ThreeUtils.randomVector(objTo.radius / 10);
@@ -703,40 +778,46 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 if (aData.isMiss) {
                     targetPoint.add(dir.multiplyScalar(objTo.radius * 4));
                 }
-                let laser = new LaserLine({
-                    posStart: new THREE.Vector3(0, 0, 0),
-                    posEnd: new THREE.Vector3(0, 0, laserLen),
-                    color: laserColor,
-                    minRadius: .02,
-                    maxRadius: .2
-                });
-                laser.position.copy(firePoint);
-                laser.lookAt(targetPoint);
+
+                // let laser = new LaserLine({
+                //     posStart: new THREE.Vector3(0, 0, 0),
+                //     posEnd: new THREE.Vector3(0, 0, laserLen),
+                //     color: laserColor,
+                //     minRadius: .02,
+                //     maxRadius: .2
+                // });
+                // laser.position.copy(firePoint);
+                // laser.lookAt(targetPoint);
 
                 // show laser
-                const dur = .25;
-                gsap.to(laser.position, {
-                    x: targetPoint.x,
-                    y: targetPoint.y,
-                    z: targetPoint.z,
-                    duration: dur,
-                    ease: 'none',
-                    onStart: () => {
-                        const sounds = [AudioAlias.battleFireCreep_1, AudioAlias.battleFireCreep_2];
-                        let sndAlias = sounds[MyMath.randomIntInRange(0, sounds.length - 1)];
-                        AudioMng.getInstance().playSfx(sndAlias);
-                    },
-                    onComplete: () => {
-                        laser.free();
-                    }
+                // const dur = .25;
+                // gsap.to(laser.position, {
+                //     x: targetPoint.x,
+                //     y: targetPoint.y,
+                //     z: targetPoint.z,
+                //     duration: dur,
+                //     ease: 'none',
+                //     onStart: () => {
+                //         const sounds = [AudioAlias.battleFireCreep_1, AudioAlias.battleFireCreep_2];
+                //         let sndAlias = sounds[MyMath.randomIntInRange(0, sounds.length - 1)];
+                //         AudioMng.getInstance().playSfx(sndAlias);
+                //     },
+                //     onComplete: () => {
+                //         laser.free();
+                //     }
+                // });
+
+                // this._dummyMain.add(laser);
+
+                this.createLaser({
+                    length: laserLen,
+                    color: laserColor,
+                    startPos: firePoint,
+                    endPos: targetPoint,
                 });
-                this._dummyMain.add(laser);
+
                 break;
-
-            case 'ray': {
-                
-            } break;
-
+            
             default:
                 this.logWarn(`onAttackPack: unknown attack type:`, aData);
                 break;
@@ -744,11 +825,72 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
     }
 
+    private createLaser(params: {
+        length,
+        startPos,
+        endPos,
+        color,
+    }) {
+        const laserLen = params.length;
+        const laserColor = params.color;
+        const firePoint = params.startPos;
+        const targetPoint = params.endPos;
+
+        let laser = new LaserLine({
+            posStart: new THREE.Vector3(0, 0, 0),
+            posEnd: new THREE.Vector3(0, 0, laserLen),
+            color: laserColor,
+            minRadius: .02,
+            maxRadius: .2
+        });
+        laser.position.copy(firePoint);
+        laser.lookAt(targetPoint);
+
+        // show laser
+        const dur = .25;
+        gsap.to(laser.position, {
+            x: targetPoint.x,
+            y: targetPoint.y,
+            z: targetPoint.z,
+            duration: dur,
+            ease: 'none',
+            onStart: () => {
+                const sounds = [AudioAlias.battleFireCreep_1, AudioAlias.battleFireCreep_2];
+                let sndAlias = sounds[MyMath.randomIntInRange(0, sounds.length - 1)];
+                AudioMng.getInstance().playSfx(sndAlias);
+            },
+            onComplete: () => {
+                laser.free();
+            }
+        });
+
+        this._dummyMain.add(laser);
+    }
+
+    private createRay(params: {
+        id,
+        startPos,
+        endPos,
+        dy?,
+        color,
+    }) {
+        const startPoint = params.startPos;
+        if (params.dy) startPoint.y += params.dy;
+        let laser = new LaserLine({
+            posStart: startPoint,
+            posEnd: params.endPos,
+            color: params.color,
+            minRadius: 0.1,
+            maxRadius: 0.3
+        });
+        this._dummyMain.add(laser);
+        this._attackRays[params.id] = laser;
+    }
+
     private rayStart(aData: {
         idFrom: number,
         idTo: number
     }) {
-
         let objFrom = this.getObjectById(aData.idFrom);
         if (!objFrom) {
             this.logWarn(`rayStart: !fromObj`, aData);
@@ -764,43 +906,38 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         let laserColor = this.getShipLaserColor(objFrom.owner);
 
         // create ray
-
-        const startPoint = objFrom.position.clone();
-        startPoint.y -= objFrom.radius / 6;
-        let laser = new LaserLine({
-            posStart: startPoint,
-            posEnd: objTo.position.clone(),
+        this.createRay({
+            id: aData.idFrom,
             color: laserColor,
-            minRadius: 0.1,
-            maxRadius: 0.3
+            startPos: objFrom.position,
+            endPos: objTo.position,
+            dy: -objFrom.radius / 6,
         });
-        this._dummyMain.add(laser);
 
-        this._attackRays[aData.idFrom] = laser;
+        // startPoint.y -= objFrom.radius / 6;
+        // let laser = new LaserLine({
+        //     posStart: startPoint,
+        //     posEnd: objTo.position.clone(),
+        //     color: laserColor,
+        //     minRadius: 0.1,
+        //     maxRadius: 0.3
+        // });
+        // this._dummyMain.add(laser);
+
+        // this._attackRays[aData.idFrom] = laser;
 
     }
 
-    private rayStop(aData: {
-        idFrom: number
-    }) {
-        // create ray
-        let laser = this._attackRays[aData.idFrom];
+    private stopRay(aRayId: number) {
+        let laser = this._attackRays[aRayId];
+        this._attackRays[aRayId] = null;
         laser?.hide({
             dur: 1,
             cb: () => {
-                this._dummyMain.add(laser);
+                laser.free();
             },
             ctx: this
         });
-    }
-
-    private onDamage(aData: DamageData) {
-        let obj = this.getObjectById(aData.id);
-        if (this.isCurrentOwner(obj?.owner) && !DEBUG_GUI.showMyDamage) {
-            return;
-        }
-        let pos = this.getPositionByServerV3(aData.pos);
-        this._damageViewer.showDamage(pos, aData.info);
     }
 
     private planetLaser(aData: PlanetLaserData) {
@@ -839,7 +976,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     private onExplosionPack(aData: ExplosionData) {
         let pos = this.getPositionByServerV3(aData.pos);
         this._explosionSystem.exposion(pos);
-
+        // snd
         const snd = [AudioAlias.battleExplosionSmall_1, AudioAlias.battleExplosionSmall_2, AudioAlias.battleExplosionBig];
         let sndAlias = snd[MyMath.randomIntInRange(0, snd.length - 1)];
         AudioMng.getInstance().playSfx(sndAlias);
@@ -867,16 +1004,19 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
     private destroyObject(aId: number) {
 
+        // remove object bars
         this._objectHpViewer.removeBar(aId);
+
+        // remove object
         let obj = this.getObjectById(aId);
         if (!obj) {
             this.logError(`updateObject(): !obj`, aId);
             return;
         }
-
         obj.free();
         this._objects.delete(aId);
 
+        // remove object rays
         let rayEfect = this._attackRays[aId];
         if (rayEfect) {
             rayEfect.hide({
@@ -902,9 +1042,87 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     initDebugGui(aFolder: GUI) {
         
         const DEBUG_OBJ = {
-            testObjects: () => {
+            createTestFighters: () => {
                 for (let i = 0; i < 1000; i++) {
-                                        
+                    this.createFighter({
+                        type: 'FighterShip',
+                        attackRadius: 0,
+                        hp: 1000,
+                        id: 100000 + i,
+                        pos: {
+                            x: i * 10 % 100,
+                            y: 0,
+                            z: Math.trunc(i * 10 / 100)
+                        },
+                        radius: 2,
+                        shield: 1000
+                    });
+                }
+            },
+            createTestLinkors: () => {
+                for (let i = 0; i < 1000; i++) {
+                    this.createLinkor({
+                        type: 'BattleShip',
+                        attackRadius: 0,
+                        hp: 1000,
+                        id: 100000 + i,
+                        pos: {
+                            x: i * 10 % 100,
+                            y: 0,
+                            z: Math.trunc(i * 10 / 100)
+                        },
+                        radius: 2,
+                        shield: 1000
+                    });
+                }
+            },
+            destroyTestObjects: () => {
+                for (let i = 0; i < 1000; i++) {
+                    this.destroyObject(100000 + i);
+                }
+            },
+            testRays: () => {
+                for (let i = 0; i < 1000; i++) {
+                    const id = 200000 + i;
+                    setTimeout(() => {
+                        this.createRay({
+                            id: id,
+                            color: 0xffffff,
+                            startPos: new THREE.Vector3(
+                                MyMath.randomInRange(0, 100),
+                                0,
+                                MyMath.randomInRange(0, 100),
+                            ),
+                            endPos: new THREE.Vector3(
+                                MyMath.randomInRange(0, 100),
+                                0,
+                                MyMath.randomInRange(0, 100),
+                            ),
+                        });
+                        setTimeout(() => {
+                            this.stopRay(id);
+                        }, 3000);
+                    }, 3000 + i * 2);
+                }
+            },
+            testLasers: () => {
+                for (let i = 0; i < 1000; i++) {
+                    setTimeout(() => {
+                        this.createLaser({
+                            length: 2,
+                            color: 0xffffff,
+                            startPos: new THREE.Vector3(
+                                MyMath.randomInRange(0, 100),
+                                0,
+                                MyMath.randomInRange(0, 100),
+                            ),
+                            endPos: new THREE.Vector3(
+                                MyMath.randomInRange(0, 100),
+                                0,
+                                MyMath.randomInRange(0, 100),
+                            ),
+                        });
+                    }, 3000 + i * 2);
                 }
             }
         }
@@ -963,7 +1181,11 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             }
         });
 
-        f.add(DEBUG_OBJ, 'testObjects').name('Test Objects MemLeak');
+        f.add(DEBUG_OBJ, 'createTestFighters').name('Test Fighters');
+        f.add(DEBUG_OBJ, 'createTestLinkors').name('Test Linkors');
+        f.add(DEBUG_OBJ, 'destroyTestObjects').name('Test Objects Destroy');
+        f.add(DEBUG_OBJ, 'testRays').name('Test Rays');
+        f.add(DEBUG_OBJ, 'testLasers').name('Test Lasers');
 
         // star lights
         let starsFolder = f.addFolder('Stars');
@@ -1070,9 +1292,41 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     }
 
     clear() {
+
+        this.removeInput();
+        this.removeConnectionListeners();
+
+        this._damageViewer.free();
         this._objectHpViewer.clear();
+
         // clear all objects
         this.destroyAllObjects();
+
+        this._render = null;
+        this._scene = null;
+        this._camera = null;
+        this._raycaster = null;
+        this._connection = null;
+        this._cameraTarget = null;
+        this._cameraMng.free();
+        this._cameraMng = null;
+
+        this._playerRace = null;
+        this._enemyRace = null;
+
+        this.clearFieldCells();
+
+        this._dummyMain.clear();
+        this._dummyMain = null;
+        this._objects = null;
+
+        this._objectHpViewer = null;
+        this._damageViewer = null;
+        this._attackRays = null;
+        this._explosionSystem = null;
+
+        this._axiesHelper = null;
+
     }
 
     private updateObjects(dt: number) {

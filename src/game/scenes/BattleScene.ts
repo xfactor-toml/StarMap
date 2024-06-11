@@ -411,6 +411,8 @@ export class BattleScene extends BasicScene {
         if (GlobalParams.isDebugMode) DebugGui.getInstance().clear();
         this._view.clear();
         this._view = null;
+        this._connection = null;
+        this._boxIdList = null;
     }
 
     update(dt: number) {

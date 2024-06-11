@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { MyObject3D } from '~/game/basics/MyObject3D';
+import { ThreeUtils } from '~/game/utils/threejs/ThreejsUtils';
 
 export class ShipEnergyBar extends MyObject3D {
     protected _mesh: THREE.Mesh;
@@ -30,13 +31,14 @@ export class ShipEnergyBar extends MyObject3D {
     }
 
     free() {
-        this.clear();
-
-        if (this._mesh) {
-            this.remove(this._mesh);
-            this._mesh = null;
+        try {
+            if (this._mesh) {
+                ThreeUtils.removeAndDispose(this._mesh);
+            }
+        } catch (error) {
+            
         }
-
+        this._mesh = null;
         super.free();
     }
 
