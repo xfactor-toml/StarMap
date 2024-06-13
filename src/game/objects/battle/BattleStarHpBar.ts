@@ -1,7 +1,7 @@
-import { MyMath } from '@/utils';
 import * as THREE from 'three';
 import { MyObject3D } from '~/game/basics/MyObject3D';
 import { ThreeUtils } from '~/game/utils/threejs/ThreejsUtils';
+import { MyMath } from '@/utils';
 
 export class BattleStarHpBar extends MyObject3D {
     private _radius: number;
@@ -48,7 +48,7 @@ export class BattleStarHpBar extends MyObject3D {
 
     private removeBar() {
         if (!this._bar) return;
-        this.remove(this._bar);
+        ThreeUtils.removeAndDispose(this._bar);
         this._bar = null;
     }
 
@@ -58,8 +58,7 @@ export class BattleStarHpBar extends MyObject3D {
     }
 
     free() {
-        if (this._bar) ThreeUtils.removeAndDispose(this._bar);
-        this._bar = null;
+        this.removeBar();
         super.free();
     }
     

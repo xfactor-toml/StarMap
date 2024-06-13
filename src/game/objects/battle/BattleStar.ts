@@ -202,7 +202,7 @@ export class BattleStar extends BattleObject {
 
         if (this._prevHp != this.hp) {
             this._prevHp = this.hp;
-            this._starHpBar.hp = this.hp;
+            if (this._starHpBar) this._starHpBar.hp = this.hp;
         }
 
         if (this._pointLight) this.updateLight();
@@ -210,6 +210,8 @@ export class BattleStar extends BattleObject {
     }
 
     free() {
+        this.onClick.removeAll();
+
         this.clear();
 
         this.freeClickZone();
@@ -224,7 +226,7 @@ export class BattleStar extends BattleObject {
 
         if (this._pointLight) {
             this._lightParent.remove(this._pointLight);
-            this._pointLight.dispose();
+            if (this._pointLight.dispose) this._pointLight.dispose();
             this._pointLight = null;
         }
         if (this._lightHelper) {
@@ -232,6 +234,8 @@ export class BattleStar extends BattleObject {
             this._lightParent.remove(this._lightHelper);
             this._lightHelper = null;
         }
+
+        this._lightParent = null;
 
         super.free();
     }
