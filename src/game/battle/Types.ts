@@ -25,7 +25,8 @@ export enum PackTitle {
     damage = 'damage',
     exp = 'exp',
     skill = 'skill',
-
+    
+    rocket = 'rocket',
     sniper = 'sniper',
     explosion = 'explosion',
 
@@ -226,6 +227,12 @@ export type ExplosionType = 'rocket';
 export type ExplosionData = {
     type: ExplosionType,
     pos: { x: number, y: number, z: number }
+}
+
+export type RocketPacket = {
+    action: 'targetCreate',
+    rocketId: number,
+    targetId: number
 }
 
 export type SniperData = {
