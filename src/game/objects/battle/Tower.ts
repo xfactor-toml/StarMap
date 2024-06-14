@@ -4,6 +4,7 @@ import { ThreeLoader } from '~/game/utils/threejs/ThreeLoader';
 import { ModelAlias } from '~/game/data/ModelData';
 import { MyMath } from '@/utils';
 import { ThreeUtils } from '~/game/utils/threejs/ThreejsUtils';
+import { TextureAlias } from '~/game/data/TextureData';
 
 type LightParams = {
     parent: THREE.Object3D,
@@ -33,7 +34,8 @@ export class Tower extends BattleObject {
         this._currGunNumber = MyMath.randomIntInRange(1, 2);
         this._lightParent = aParams.light.parent;
         this._lightHeight = aParams.light.height || 0;
-        this.initSimpleModel();
+        // this.initSimpleModel();
+        this.initModel();
         this.initPointLight(aParams.light);
     }
 
@@ -52,19 +54,19 @@ export class Tower extends BattleObject {
         let modelAlias: ModelAlias;
         switch (this._params.race) {
             case 'Insects':
-                modelAlias = ModelAlias.FighterInsects;
+                modelAlias = ModelAlias.Tower;
                 break;
             default:
-                modelAlias = ModelAlias.FighterWaters;
+                modelAlias = ModelAlias.Tower;
                 break;
         }
         this._model = ThreeLoader.getInstance().getModel(modelAlias);
-        // let tMap = ThreeLoader.getInstance().getTexture(TextureAlias.ship1Color);
+        let tMap = ThreeLoader.getInstance().getTexture(TextureAlias.tower);
 
-        let m = new THREE.MeshStandardMaterial({
-        // let m = new THREE.MeshBasicMaterial({
-            // map: tMap
-            color: 0xffffff
+        // let m = new THREE.MeshPhongMaterial({
+        let m = new THREE.MeshBasicMaterial({
+            map: tMap,
+            color: 0xcccccc
         });
 
         this._model.traverse((aObj) => {
@@ -75,9 +77,9 @@ export class Tower extends BattleObject {
         });
 
         // basic rotation
-        this._model.rotation.y = Math.PI / 2;
+        // this._model.rotation.y = Math.PI / 2;
 
-        const sc = this.radius * 0.0015;
+        const sc = this.radius * 0.0026;
         this._model.scale.set(sc, sc, sc);
 
         this.add(this._model);

@@ -16,14 +16,10 @@ export class RocketTargetViewer implements ILogger, IUpdatable {
 
     private _className = 'RocketTargetViewer';
     private _parent: THREE.Group;
-    // private _targets: Map<number, BattleObject>;
-    // private _aims: Map<number, RocketTargetAim>;
     private _records: TargetRecord[];
 
     constructor(aParent: THREE.Group) {
         this._parent = aParent;
-        // this._targets = new Map();
-        // this._aims = new Map();
         this._records = [];
     }
 
