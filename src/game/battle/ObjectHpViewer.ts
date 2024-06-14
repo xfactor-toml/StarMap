@@ -6,7 +6,6 @@ import { LogMng } from '../utils/LogMng';
 import { BattleObject } from '../objects/battle/BattleObject';
 
 export class ObjectHpViewer implements ILogger, IUpdatable {
-
     private _className = 'ObjectHpViewer';
     private _parent: THREE.Group;
     private _objects: Map<number, BattleObject>;
@@ -106,6 +105,14 @@ export class ObjectHpViewer implements ILogger, IUpdatable {
             }
 
         });
+    }
+
+    free() {
+        this.clear();
+        this._parent = null;
+        this._objects = null;
+        this._hpBars = null;
+        this._shieldBars = null;
     }
 
 }

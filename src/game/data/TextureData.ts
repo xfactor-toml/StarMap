@@ -8,6 +8,7 @@ export enum TextureAlias {
     planet0_256 = `planet0_256`,
     particleCircle = 'particleCircle',
     particleWhiteCircle = 'particleWhiteCircle',
+    rocketTargetAim = 'rocketTargetAim'
 };
 
 /**
@@ -22,4 +23,5 @@ export const TEXTURE_LOAD_LIST = [
     { alias: TextureAlias.planet0_256, file: 'sprites/planets/0_256.jpg' },
     { alias: TextureAlias.particleCircle, file: 'particles/circle.png' },
     { alias: TextureAlias.particleWhiteCircle, file: 'particles/whiteCircle2.png' },
+    { alias: TextureAlias.rocketTargetAim, file: 'sprites/battle/missileTarget_512.png' },
 ];

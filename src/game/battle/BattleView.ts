@@ -12,7 +12,7 @@ import { MyMath } from '../utils/MyMath';
 import { BattleCameraMng } from './BattleCameraMng';
 import { ObjectHpViewer } from './ObjectHpViewer';
 import { Linkor } from '../objects/battle/Linkor';
-import { FieldInitData, PlanetLaserData, ObjectCreateData, ObjectType, ObjectUpdateData, PackTitle, AttackData, DamageData, PlanetLaserSkin, ExplosionData, SniperData, ObjectRace } from './Types';
+import { FieldInitData, PlanetLaserData, ObjectCreateData, ObjectType, ObjectUpdateData, PackTitle, AttackData, DamageData, PlanetLaserSkin, ExplosionData, SniperData, ObjectRace, RocketPacket } from './Types';
 import { BattleConnection } from './BattleConnection';
 import { FieldCell } from '../objects/battle/FieldCell';
 import { LogMng } from '../utils/LogMng';
@@ -28,6 +28,7 @@ import { DeviceInfo } from '../utils/DeviceInfo';
 import { Renderer } from '../core/renderers/Renderer';
 import { AudioMng } from '../audio/AudioMng';
 import { AudioAlias } from '../audio/AudioData';
+import { RocketTargetViewer } from './RocketTargetViewer';
 
 type ServerFieldParams = {
 
@@ -110,6 +111,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     private _damageViewer: DamageViewer;
     private _attackRays: { [index: string]: LaserLine } = {};
     private _explosionSystem: Explosion;
+    private _rocketTargetViewer: RocketTargetViewer;
 
     private _isTopPosition = false;
     private _axiesHelper: THREE.AxesHelper;
@@ -140,6 +142,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         this._objects = new Map();
         this._objectHpViewer = new ObjectHpViewer(this._dummyMain);
         this._damageViewer = new DamageViewer(this._dummyMain, this._camera);
+        this._rocketTargetViewer = new RocketTargetViewer(this._dummyMain);
 
         this._explosionSystem = new Explosion({
             parent: this._dummyMain,
@@ -193,6 +196,9 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         this._connection.socket.on(PackTitle.planetLaser, (aData: PlanetLaserData) => {
             this.planetLaser(aData);
         });
+        this._connection.socket.on(PackTitle.rocket, (aData: RocketPacket) => {
+            this.onRocketPacket(aData);
+        });
         this._connection.socket.on(PackTitle.sniper, (aData: SniperData) => {
             this.onSniperPack(aData);
         });
@@ -216,6 +222,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         this._connection.socket.removeListener(PackTitle.damage);
         // skills
         this._connection.socket.removeListener(PackTitle.planetLaser);
+        this._connection.socket.removeListener(PackTitle.rocket);
         this._connection.socket.removeListener(PackTitle.sniper);
         // effects
         this._connection.socket.removeListener(PackTitle.explosion);
@@ -983,6 +990,18 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
     }
 
+    private onRocketPacket(aData: RocketPacket) {
+        switch (aData.action) {
+            case 'targetCreate':
+                let obj = this.getObjectById(aData.targetId);
+                this._rocketTargetViewer.createAim(obj, aData);
+                break;
+        
+            default:
+                break;
+        }
+    }
+
     private onSniperPack(aSniperData: SniperData) {
         let planet = this._objects.get(aSniperData.planetId) as BattlePlanet;
         if (!planet) {
@@ -1003,6 +1022,9 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
     }
 
     private destroyObject(aId: number) {
+
+        // 
+        this._rocketTargetViewer.onObjectDestroy(aId);
 
         // remove object bars
         this._objectHpViewer.removeBar(aId);
@@ -1297,7 +1319,13 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         this.removeConnectionListeners();
 
         this._damageViewer.free();
-        this._objectHpViewer.clear();
+        this._damageViewer = null;
+
+        this._objectHpViewer.free();
+        this._objectHpViewer = null;
+
+        this._rocketTargetViewer.free();
+        this._rocketTargetViewer = null;
 
         // clear all objects
         this.destroyAllObjects();
@@ -1320,8 +1348,6 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         this._dummyMain = null;
         this._objects = null;
 
-        this._objectHpViewer = null;
-        this._damageViewer = null;
         this._attackRays = null;
         this._explosionSystem = null;
 
@@ -1341,6 +1367,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         this.updateObjects(dt);
         this._objectHpViewer.update(dt);
         this._explosionSystem?.update(dt);
+        this._rocketTargetViewer?.update(dt);
 
     }
 

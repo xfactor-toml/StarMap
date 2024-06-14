@@ -10,6 +10,7 @@ import { useWallet } from '@/services/wallet';
 import { BlockchainConnectService } from '~/blockchainTotal';
 
 export class ClientEventsService {
+  
   static async handleEvent({ detail: clientEvent }: Event & { detail: ClientEvent }) {
     const battleStore = useBattleStore();
     const scenesStore = useScenesStore();

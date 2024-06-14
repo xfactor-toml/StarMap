@@ -1,9 +1,7 @@
-import { LogMng } from '../utils/LogMng';
 import { GlobalParams } from '../data/GlobalParams';
 import { AudioMng } from '../audio/AudioMng';
 import { GameEvent, GameEventDispatcher } from '../events/GameEvents';
 import { FrontEvents } from '../events/FrontEvents';
-import { Signal } from '../utils/events/Signal';
 import { AudioAlias, MusicLoadList, SoundLoadList } from '../audio/AudioData';
 import { MODEL_LOAD_LIST } from '../data/ModelData';
 import { ThreeLoader } from '../utils/threejs/ThreeLoader';
@@ -15,7 +13,6 @@ import { DB } from '../data/DB';
 
 export class PreloaderScene extends BasicScene {
     private _loader: ThreeLoader;
-    private _assetsPath: string;
     private _currLoadPerc = 0;
 
     constructor() {
@@ -23,8 +20,6 @@ export class PreloaderScene extends BasicScene {
     }   
 
     protected onInit(aData?: any): void {
-        this._assetsPath = GlobalParams.assetsPath;
-
         // init ThreeLoader
         this._loader = ThreeLoader.getInstance({
             retryCount: 2
