@@ -10,7 +10,7 @@ const getDefaultState = (mobileViewport = false) => {
     return {
       levels: false,
       modes: false,
-      views: false,
+      views: true,
     }
   }
   

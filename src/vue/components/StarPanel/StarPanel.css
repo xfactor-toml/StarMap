@@ -18,6 +18,20 @@
   color: var(--accent-color);
 }
 
+.StarPanel__close {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  position: absolute;
+  right: calc(50% - 284px);
+  top: 64px;
+  border: none;
+  background-color: transparent;
+  background-image: url(../gui/images/close.svg);
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
 .StarPanel__title,
 .StarPanel__text {
   font-size: 17px;
