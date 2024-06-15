@@ -52,21 +52,25 @@ export class Tower extends BattleObject {
 
     private initModel() {
         let modelAlias: ModelAlias;
+        let textureAlias: TextureAlias;
         switch (this._params.race) {
             case 'Insects':
                 modelAlias = ModelAlias.Tower;
+                textureAlias = TextureAlias.tower;
                 break;
             default:
-                modelAlias = ModelAlias.Tower;
+                modelAlias = ModelAlias.WaterTower;
+                textureAlias = TextureAlias.waterTower;
                 break;
         }
         this._model = ThreeLoader.getInstance().getModel(modelAlias);
-        let tMap = ThreeLoader.getInstance().getTexture(TextureAlias.tower);
+        let tMap = ThreeLoader.getInstance().getTexture(textureAlias);
 
         // let m = new THREE.MeshPhongMaterial({
         let m = new THREE.MeshBasicMaterial({
             map: tMap,
-            color: 0xcccccc
+            color: 0xcccccc,
+            side: THREE.DoubleSide
         });
 
         this._model.traverse((aObj) => {

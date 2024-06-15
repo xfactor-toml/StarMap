@@ -9,7 +9,8 @@ export enum TextureAlias {
     particleCircle = 'particleCircle',
     particleWhiteCircle = 'particleWhiteCircle',
     rocketTargetAim = 'rocketTargetAim',
-    tower = 'tower'
+    tower = 'tower',
+    waterTower = 'waterTower',
 };
 
 /**
@@ -26,4 +27,5 @@ export const TEXTURE_LOAD_LIST = [
     { alias: TextureAlias.particleWhiteCircle, file: 'particles/whiteCircle2.png' },
     { alias: TextureAlias.rocketTargetAim, file: 'sprites/battle/missileTarget_512.png' },
     { alias: TextureAlias.tower, file: 'models/battle/towerTexture.jpg' },
+    { alias: TextureAlias.waterTower, file: 'models/battle/waterTowerTexture.jpg' },
 ];
