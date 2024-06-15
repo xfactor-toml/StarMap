@@ -69,7 +69,7 @@ export class Tower extends BattleObject {
         // let m = new THREE.MeshPhongMaterial({
         let m = new THREE.MeshBasicMaterial({
             map: tMap,
-            color: 0xcccccc,
+            color: 0xaaaaaa,
             side: THREE.DoubleSide
         });
 
@@ -83,7 +83,7 @@ export class Tower extends BattleObject {
         // basic rotation
         // this._model.rotation.y = Math.PI / 2;
 
-        const sc = this.radius * 0.0026;
+        const sc = this.radius * 0.0020;
         this._model.scale.set(sc, sc, sc);
 
         this.add(this._model);
