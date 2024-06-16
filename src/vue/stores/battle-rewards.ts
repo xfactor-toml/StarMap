@@ -39,7 +39,6 @@ export const useBattleRewardsStore = defineStore('battleRewards', () => {
 
     const openBox = async () => {
         const [firstBoxId] = boxesIds.value
-
         if (firstBoxId) {
             waitingBox.value = true
 
