@@ -10,6 +10,7 @@ import * as getters from "./getters";
 import * as store from "./local/methods/store";
 import { web2assets } from "./getters/boxesWeb2";
 import { OpenBoxWeb2 } from "./local/methods";
+import { AcceptDuelInvitation } from "./local/methods/duel";
 
 export class BlockchainConnectService  {
     public authMethod: AuthMethod;
@@ -30,6 +31,16 @@ export class BlockchainConnectService  {
         if (tg && tg.WebApp && tg.WebApp.initData) {
             this.telegramInitData = tg.WebApp.initData;
             const initDataSearchParams = new URLSearchParams(window.Telegram.WebApp.initData);
+            const urlParams = new URLSearchParams(window.location.search);
+            const inviterId = urlParams.get('startapp')?.replace("inviterId_", "");
+            if (inviterId) {
+                AcceptDuelInvitation(this.telegramInitData, inviterId).then((res) => {
+                    alert("Duel found, invitation accepted")
+                    window.dispatchEvent(new CustomEvent('duelEvent', { detail: { with: inviterId } }))
+                }).catch((err) => {
+                    alert("Duel invitation failed")
+                })
+            }
             const user = JSON.parse(initDataSearchParams.get('user'));
             const authDate = initDataSearchParams.get('auth_date');
             const hash = initDataSearchParams.get('hash');
