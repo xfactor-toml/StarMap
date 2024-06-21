@@ -17,6 +17,7 @@ export class RocketTargetAim extends MyObject3D {
     }
 
     private initMesh(size) {
+        this.logDebug(`initMesh`);
         let g = new THREE.PlaneGeometry(size, size);
         let t = ThreeLoader.getInstance().getTexture(TextureAlias.rocketTargetAim);
         let m = new THREE.MeshBasicMaterial({
@@ -39,6 +40,7 @@ export class RocketTargetAim extends MyObject3D {
     }
 
     free() {
+        this.logDebug(`free`);
         if (this._mesh) ThreeUtils.removeAndDispose(this._mesh);
         this._mesh = null;
         super.free();

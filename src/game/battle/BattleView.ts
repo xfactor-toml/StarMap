@@ -472,32 +472,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                 break;
             
             case 'Tower':
-                obj = new Tower({
-                    ...aData,
-                    ...{
-                        race: this.getRaceForWalletAddr(aData.owner),
-                        light: {
-                            parent: this._dummyMain,
-                            ...SETTINGS.towers.light,
-                            color: this.isCurrentOwner(aData.owner) ? SETTINGS.towers.light.ownerColor : SETTINGS.towers.light.enemyColor
-                        },
-                        showRadius: DEBUG_GUI.showObjectRadius,
-                        showAttackRadius: DEBUG_GUI.showObjectAttackRadius
-                    }
-                });
-
-                if (aData.pos) {
-                    const clientPos = this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z });
-                    obj.position.copy(clientPos);
-                }
-
-                if (aData.q) {
-                    obj.setQuaternion(aData.q);
-                    obj.setTargetQuaternion(aData.q);
-                }
-
-                // add hp bar
-                this._objectHpViewer.addBar(obj);
+                this.createTower(aData);
                 break;
 
             case 'FighterShip':
@@ -630,6 +605,41 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         }
         let pos = this.getPositionByServerV3(aData.pos);
         this._damageViewer.showDamage(pos, aData.info);
+    }
+
+    private createTower(aData: ObjectCreateData) {
+
+        let obj = new Tower({
+            ...aData,
+            ...{
+                race: this.getRaceForWalletAddr(aData.owner),
+                light: {
+                    parent: this._dummyMain,
+                    ...SETTINGS.towers.light,
+                    color: this.isCurrentOwner(aData.owner) ? SETTINGS.towers.light.ownerColor : SETTINGS.towers.light.enemyColor
+                },
+                showRadius: DEBUG_GUI.showObjectRadius,
+                showAttackRadius: DEBUG_GUI.showObjectAttackRadius
+            }
+        });
+
+        if (aData.pos) {
+            const clientPos = this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z });
+            obj.position.copy(clientPos);
+        }
+
+        if (aData.q) {
+            obj.setQuaternion(aData.q);
+            obj.setTargetQuaternion(aData.q);
+        }
+
+        // hp bar
+        this._objectHpViewer.addBar(obj);
+
+        this._dummyMain.add(obj);
+        this._objects.set(aData.id, obj);
+
+        return obj;
     }
 
     private createFighter(aData: ObjectCreateData): BattleObject {
