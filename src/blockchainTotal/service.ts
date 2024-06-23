@@ -26,13 +26,20 @@ export class BlockchainConnectService  {
     
 
     public LoadTelegramData() {
-        // alert("Telegram auth started: ");
         const tg = this.TelegramInfo;
         if (tg && tg.WebApp && tg.WebApp.initData) {
             this.telegramInitData = tg.WebApp.initData;
             const initDataSearchParams = new URLSearchParams(window.Telegram.WebApp.initData);
-            const urlParams = new URLSearchParams(window.location.search);
-            const inviterId = urlParams.get('startapp')?.replace("inviterId_", "");
+            const inviterId = String(tg.WebApp.initData.start_param).replace("inviterId_", "");
+            alert("Init data all param #3:")
+            alert(this.telegramInitData)
+            alert("Param 1: ")
+            alert(this.telegramInitData.start_param)
+            alert("Param 2:")
+            alert(initDataSearchParams.get('start_param'))
+            alert("Param 3:")
+            alert(this.telegramInitData.split('&'))
+            alert(inviterId)
             if (inviterId) {
                 AcceptDuelInvitation(this.telegramInitData, inviterId).then((res) => {
                     alert("Duel found, invitation accepted")
