@@ -11,6 +11,7 @@ import * as store from "./local/methods/store";
 import { web2assets } from "./getters/boxesWeb2";
 import { OpenBoxWeb2 } from "./local/methods";
 import { AcceptDuelInvitation } from "./local/methods/duel";
+import { getQueryParam } from "@/utils/parsers";
 
 export class BlockchainConnectService  {
     public authMethod: AuthMethod;
@@ -30,22 +31,18 @@ export class BlockchainConnectService  {
         if (tg && tg.WebApp && tg.WebApp.initData) {
             this.telegramInitData = tg.WebApp.initData;
             const initDataSearchParams = new URLSearchParams(window.Telegram.WebApp.initData);
-            const inviterId = String(tg.WebApp.initData.start_param).replace("inviterId_", "");
-            alert("Init data all param #3:")
-            alert(this.telegramInitData)
-            alert("Param 1: ")
-            alert(this.telegramInitData.start_param)
-            alert("Param 2:")
-            alert(initDataSearchParams.get('start_param'))
-            alert("Param 3:")
-            alert(this.telegramInitData.split('&'))
-            alert(inviterId)
+            let inviterId = initDataSearchParams.get('start_param')?.replace("inviterId_", "");
+
+
             if (inviterId) {
                 AcceptDuelInvitation(this.telegramInitData, inviterId).then((res) => {
-                    alert("Duel found, invitation accepted")
-                    window.dispatchEvent(new CustomEvent('duelEvent', { detail: { with: inviterId } }))
+                    //alert("Duel found, invitation accepted")
+                    if (res) {
+                        window.dispatchEvent(new CustomEvent('duelEvent', { detail: { with: inviterId } }))
+                    } 
                 }).catch((err) => {
-                    alert("Duel invitation failed")
+                    console.log(err)
+                    // alert("Duel invitation failed")
                 })
             }
             const user = JSON.parse(initDataSearchParams.get('user'));

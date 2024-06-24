@@ -1,7 +1,7 @@
 import Web3 from "web3";
 import { ethers } from 'ethers';
 import { jsonABIs, network } from "../../config";
-import { fastDataServerUrl } from "~/blockchainTotal/config/network";
+import { fastDataServerUrl } from "../../config/network";
 
 
 export async function AcceptDuelInvitation (authData: any, inviter: string) {
