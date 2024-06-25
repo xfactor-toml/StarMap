@@ -38,7 +38,10 @@
         </div>
       </template>
       <transition name="fade">
-        <template v-if="scenesStore.current.clientScene?.name === 'galaxy'">
+        <template v-if="
+          config.SHOW_STARS_FILTER_BY_LEVEL &&
+          scenesStore.current.clientScene?.name === 'galaxy'
+        ">
           <div class="GalaxyScene__levels">
             <LevelsPanel />
           </div>
@@ -70,6 +73,7 @@ import {
 import { useBattleStore, useScenesStore, useSettingsStore, useWalletStore } from '@/stores';
 import { mapStores } from 'pinia';
 import { default as vClickOutside } from 'click-outside-vue3';
+import { config } from '@/config';
 
 export default {
   name: 'GalaxyScene',
@@ -85,7 +89,8 @@ export default {
   },
   data: () => {
     return {
-      showPlasmaMintPopup: false
+      showPlasmaMintPopup: false,
+      config
     }
   },
   directives: {

@@ -8,6 +8,7 @@ import { LogMng } from '~/game/utils/LogMng';
 import { toast } from 'vue3-toastify';
 import { useWallet } from '@/services/wallet';
 import { BlockchainConnectService } from '~/blockchainTotal';
+import { config } from '@/config';
 
 export class ClientEventsService {
   
@@ -34,7 +35,13 @@ export class ClientEventsService {
           wallet.connect('telegram')
         }
         client.run(false, starsStore.stars);
-        scenesStore.setScene(UISceneNames.Galaxy);
+        if (config.SKIP_WELCOME_SCREEN) {
+          scenesStore.setScene(UISceneNames.Galaxy);
+        } else {
+          scenesStore.setScene(UISceneNames.Start, {
+            mode: 'welcome'
+          });
+        }
         break;
 
       case GameEvent.GAME_CREATED:
