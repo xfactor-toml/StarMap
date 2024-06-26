@@ -223,12 +223,12 @@ export class ClientEventsService {
           type: typeByStatus[clientEvent.status],
           player: clientEvent.ownerName,
           owner: clientEvent.ownerName,
-          demage: MyMath.randomIntInRange(5000, 8000),
-          gold: MyMath.randomIntInRange(500, 2000),
-          exp: MyMath.randomIntInRange(10000, 50000),
+          demage: clientEvent.params.damageDone,
+          gold: clientEvent.params.goldEarned,
+          exp: clientEvent.params.expReceived,
           rating: {
-            prevoius: 1310,
-            current: 1422
+            previous: clientEvent.params.rating.previous,
+            current: clientEvent.params.rating.current
           },
           box: {
             show: clientEvent.showBoxClaim,
