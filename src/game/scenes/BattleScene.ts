@@ -266,7 +266,6 @@ export class BattleScene extends BasicScene {
                 break;
             
             default:
-                
                 GameEventDispatcher.battleComplete(aData);
                 break;
         }

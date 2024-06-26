@@ -32,19 +32,19 @@
     <template v-else>
       <div class="WelcomeScene__logo" />
       <div class="WelcomeScene__logo-text" />
-      <button
+      <!-- <button
         class="WelcomeScene__button active"
         @mouseenter="$client.onHover()"
         @click="handleRunClick(true)"
       >
         Run fullscreen
-      </button>
+      </button> -->
       <button
-        class="WelcomeScene__button"
+        class="WelcomeScene__button active"
         @mouseenter="$client.onHover()"
         @click="handleRunClick(false)"
       >
-        Run windowed
+        Play
       </button>
     </template>
   </div>

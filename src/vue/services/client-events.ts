@@ -8,6 +8,7 @@ import { LogMng } from '~/game/utils/LogMng';
 import { toast } from 'vue3-toastify';
 import { useWallet } from '@/services/wallet';
 import { BlockchainConnectService } from '~/blockchainTotal';
+import { config } from '@/config';
 
 export class ClientEventsService {
   
@@ -34,7 +35,13 @@ export class ClientEventsService {
           wallet.connect('telegram')
         }
         client.run(false, starsStore.stars);
-        scenesStore.setScene(UISceneNames.Galaxy);
+        if (config.SKIP_WELCOME_SCREEN) {
+          scenesStore.setScene(UISceneNames.Galaxy);
+        } else {
+          scenesStore.setScene(UISceneNames.Start, {
+            mode: 'welcome'
+          });
+        }
         break;
 
       case GameEvent.GAME_CREATED:
@@ -216,12 +223,12 @@ export class ClientEventsService {
           type: typeByStatus[clientEvent.status],
           player: clientEvent.ownerName,
           owner: clientEvent.ownerName,
-          demage: MyMath.randomIntInRange(5000, 8000),
-          gold: MyMath.randomIntInRange(500, 2000),
-          exp: MyMath.randomIntInRange(10000, 50000),
+          demage: clientEvent.params.damageDone,
+          gold: clientEvent.params.goldEarned,
+          exp: clientEvent.params.expReceived,
           rating: {
-            prevoius: 1310,
-            current: 1422
+            previous: clientEvent.params.rating.previous,
+            current: clientEvent.params.rating.current
           },
           box: {
             show: clientEvent.showBoxClaim,

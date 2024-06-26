@@ -1,5 +1,9 @@
 <template>
   <div class="StarPanel" :style="panelStyle">
+    <button
+      class="StarPanel__close"
+      @click="$emit('close')"
+    />
     <svg viewBox="0 0 854 638" class="StarPanel__svg">
       <defs>
         <radialGradient id="leftButtonGradient" cx="0.65" fx="0.65">
