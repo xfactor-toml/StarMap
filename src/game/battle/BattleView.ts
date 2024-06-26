@@ -1033,7 +1033,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
     private destroyObject(aId: number) {
 
-        // 
+        // remove rocket targets
         this._rocketTargetViewer.onObjectDestroy(aId);
 
         // remove object bars
