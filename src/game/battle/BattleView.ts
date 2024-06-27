@@ -763,85 +763,6 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         this._objects.set(aData.id, obj);
     }
 
-    private attackPack(aData: AttackData) {
-        
-        let objFrom = this.getObjectById(aData.idFrom);
-        if (!objFrom) {
-            this.logWarn(`attack: !fromObj`, aData);
-            return;
-        }
-
-        let objTo = this.getObjectById(aData.idTo);
-        if (!objTo) {
-            this.logWarn(`attack: !toObj`, aData);
-            return;
-        }
-
-        // DEBUG
-        // return;
-
-        let laserColor = this.getShipLaserColor(objFrom.owner);
-
-        switch (aData.attackType) {
-
-            case 'laser':
-                
-                // create laser
-                const laserLen = 2;
-                let r = ThreeUtils.randomVector(objTo.radius / 10);
-                const targetPoint = objTo.position.clone().add(r);
-                const firePoint = objFrom.getGlobalFirePoint();
-                const dir = targetPoint.clone().sub(firePoint).normalize();
-                if (aData.isMiss) {
-                    targetPoint.add(dir.multiplyScalar(objTo.radius * 4));
-                }
-
-                // let laser = new LaserLine({
-                //     posStart: new THREE.Vector3(0, 0, 0),
-                //     posEnd: new THREE.Vector3(0, 0, laserLen),
-                //     color: laserColor,
-                //     minRadius: .02,
-                //     maxRadius: .2
-                // });
-                // laser.position.copy(firePoint);
-                // laser.lookAt(targetPoint);
-
-                // show laser
-                // const dur = .25;
-                // gsap.to(laser.position, {
-                //     x: targetPoint.x,
-                //     y: targetPoint.y,
-                //     z: targetPoint.z,
-                //     duration: dur,
-                //     ease: 'none',
-                //     onStart: () => {
-                //         const sounds = [AudioAlias.battleFireCreep_1, AudioAlias.battleFireCreep_2];
-                //         let sndAlias = sounds[MyMath.randomIntInRange(0, sounds.length - 1)];
-                //         AudioMng.getInstance().playSfx(sndAlias);
-                //     },
-                //     onComplete: () => {
-                //         laser.free();
-                //     }
-                // });
-
-                // this._dummyMain.add(laser);
-
-                this.createLaser({
-                    length: laserLen,
-                    color: laserColor,
-                    startPos: firePoint,
-                    endPos: targetPoint,
-                });
-
-                break;
-            
-            default:
-                this.logWarn(`onAttackPack: unknown attack type:`, aData);
-                break;
-        }
-
-    }
-
     private createLaser(params: {
         length,
         startPos,
@@ -902,6 +823,59 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         });
         this._dummyMain.add(laser);
         this._attackRays[params.id] = laser;
+    }
+
+    private attackPack(aData: AttackData) {
+
+        let objFrom = this.getObjectById(aData.idFrom);
+        if (!objFrom) {
+            this.logWarn(`attack: !fromObj`, aData);
+            return;
+        }
+
+        let objTo = this.getObjectById(aData.idTo);
+        if (!objTo) {
+            this.logWarn(`attack: !toObj`, aData);
+            return;
+        }
+
+        // DEBUG
+        // return;
+
+        let laserColor = this.getShipLaserColor(objFrom.owner);
+
+        switch (aData.attackType) {
+
+            case 'laser':
+
+                // create laser
+                const laserLen = 2;
+                let r = ThreeUtils.randomVector(objTo.radius / 10);
+                const targetPoint = objTo.position.clone().add(r);
+                const firePoint = objFrom.getGlobalFirePoint();
+                const dir = targetPoint.clone().sub(firePoint).normalize();
+                if (aData.isMiss) {
+                    targetPoint.add(dir.multiplyScalar(objTo.radius * 4));
+                }
+
+                this.createLaser({
+                    length: laserLen,
+                    color: laserColor,
+                    startPos: firePoint,
+                    endPos: targetPoint,
+                });
+
+                break;
+            
+            case 'ray':
+                // nothing
+                break;
+
+            default:
+                this.logWarn(`onAttackPack: unknown attack type:`, aData);
+                break;
+        }
+
     }
 
     private rayStart(aData: {
