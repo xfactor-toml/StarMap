@@ -282,6 +282,8 @@ export class ClientEventsService {
           progress: clientEvent.levelExpPercent
         });
 
+        battleStore.process.setGold(clientEvent.gold);
+
         LogMng.debug(`GUI: update skiils: ${clientEvent.skills}`);
 
         for (let i = 0; i < clientEvent.skills.length; i++) {

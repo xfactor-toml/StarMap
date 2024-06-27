@@ -5,7 +5,7 @@ import gsap from 'gsap';
 import { MyMath } from '../utils/MyMath';
 import { ThreeUtils } from '../utils/threejs/ThreejsUtils';
 
-export class DamageNumber {
+export class PopupText {
     private _camera: THREE.Camera;
     private _mesh: THREE.Mesh;
 

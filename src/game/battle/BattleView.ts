@@ -12,7 +12,7 @@ import { MyMath } from '../utils/MyMath';
 import { BattleCameraMng } from './BattleCameraMng';
 import { ObjectHpViewer } from './ObjectHpViewer';
 import { Linkor } from '../objects/battle/Linkor';
-import { FieldInitData, PlanetLaserData, ObjectCreateData, ObjectType, ObjectUpdateData, PackTitle, AttackData, DamageData, PlanetLaserSkin, ExplosionData, SniperData, ObjectRace, RocketPacket } from './Types';
+import { FieldInitData, PlanetLaserData, ObjectCreateData, ObjectType, ObjectUpdateData, PackTitle, AttackData, DamageData, PlanetLaserSkin, ExplosionData, SniperData, ObjectRace, RocketPacket, ExpTextData, GoldTextData } from './Types';
 import { BattleConnection } from './BattleConnection';
 import { FieldCell } from '../objects/battle/FieldCell';
 import { LogMng } from '../utils/LogMng';
@@ -29,6 +29,7 @@ import { Renderer } from '../core/renderers/Renderer';
 import { AudioMng } from '../audio/AudioMng';
 import { AudioAlias } from '../audio/AudioData';
 import { RocketTargetViewer } from './RocketTargetViewer';
+import { TextViewer } from './TextViewer';
 
 type ServerFieldParams = {
 
@@ -109,6 +110,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
     private _objectHpViewer: ObjectHpViewer;
     private _damageViewer: DamageViewer;
+    private _textViewer: TextViewer;
     private _attackRays: { [index: string]: LaserLine } = {};
     private _explosionSystem: Explosion;
     private _rocketTargetViewer: RocketTargetViewer;
@@ -142,6 +144,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         this._objects = new Map();
         this._objectHpViewer = new ObjectHpViewer(this._dummyMain);
         this._damageViewer = new DamageViewer(this._dummyMain, this._camera);
+        this._textViewer = new TextViewer(this._dummyMain, this._camera);
         this._rocketTargetViewer = new RocketTargetViewer(this._dummyMain);
 
         this._explosionSystem = new Explosion({
@@ -190,6 +193,9 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         });
         this._connection.socket.on(PackTitle.damage, (aData: DamageData) => {
             this.onDamagePack(aData);
+        });
+        this._connection.socket.on(PackTitle.goldText, (aData: GoldTextData) => {
+            this.onGoldTextPack(aData);
         });
 
         // skills
@@ -605,6 +611,15 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         }
         let pos = this.getPositionByServerV3(aData.pos);
         this._damageViewer.showDamage(pos, aData.info);
+    }
+
+    private onGoldTextPack(aData: GoldTextData) {
+        let pos = this.getPositionByServerV3(aData.pos);
+        this._textViewer.showText({
+            pos: pos,
+            text: `+${aData.gold} G`,
+            color: 0xF9EB21
+        });
     }
 
     private createTower(aData: ObjectCreateData) {
@@ -1304,6 +1319,9 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
         this._damageViewer.free();
         this._damageViewer = null;
+
+        this._textViewer.free();
+        this._textViewer = null;
 
         this._objectHpViewer.free();
         this._objectHpViewer = null;
