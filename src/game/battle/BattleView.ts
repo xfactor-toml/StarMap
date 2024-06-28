@@ -12,7 +12,7 @@ import { MyMath } from '../utils/MyMath';
 import { BattleCameraMng } from './BattleCameraMng';
 import { ObjectHpViewer } from './ObjectHpViewer';
 import { Linkor } from '../objects/battle/Linkor';
-import { FieldInitData, PlanetLaserData, ObjectCreateData, ObjectType, ObjectUpdateData, PackTitle, AttackData, DamageData, PlanetLaserSkin, ExplosionData, SniperData, ObjectRace, RocketPacket } from './Types';
+import { FieldInitData, PlanetLaserData, ObjectCreateData, ObjectType, ObjectUpdateData, PackTitle, AttackData, DamageData, PlanetLaserSkin, ExplosionData, SniperData, ObjectRace, RocketPacket, ExpTextData, GoldTextData } from './Types';
 import { BattleConnection } from './BattleConnection';
 import { FieldCell } from '../objects/battle/FieldCell';
 import { LogMng } from '../utils/LogMng';
@@ -29,6 +29,7 @@ import { Renderer } from '../core/renderers/Renderer';
 import { AudioMng } from '../audio/AudioMng';
 import { AudioAlias } from '../audio/AudioData';
 import { RocketTargetViewer } from './RocketTargetViewer';
+import { TextViewer } from './TextViewer';
 
 type ServerFieldParams = {
 
@@ -109,6 +110,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
     private _objectHpViewer: ObjectHpViewer;
     private _damageViewer: DamageViewer;
+    private _textViewer: TextViewer;
     private _attackRays: { [index: string]: LaserLine } = {};
     private _explosionSystem: Explosion;
     private _rocketTargetViewer: RocketTargetViewer;
@@ -142,6 +144,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         this._objects = new Map();
         this._objectHpViewer = new ObjectHpViewer(this._dummyMain);
         this._damageViewer = new DamageViewer(this._dummyMain, this._camera);
+        this._textViewer = new TextViewer(this._dummyMain, this._camera);
         this._rocketTargetViewer = new RocketTargetViewer(this._dummyMain);
 
         this._explosionSystem = new Explosion({
@@ -191,6 +194,9 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         this._connection.socket.on(PackTitle.damage, (aData: DamageData) => {
             this.onDamagePack(aData);
         });
+        this._connection.socket.on(PackTitle.goldText, (aData: GoldTextData) => {
+            this.onGoldTextPack(aData);
+        });
 
         // skills
         this._connection.socket.on(PackTitle.planetLaser, (aData: PlanetLaserData) => {
@@ -220,6 +226,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         this._connection.socket.removeListener(PackTitle.rayStart);
         this._connection.socket.removeListener(PackTitle.rayStop);
         this._connection.socket.removeListener(PackTitle.damage);
+        this._connection.socket.removeListener(PackTitle.goldText);
         // skills
         this._connection.socket.removeListener(PackTitle.planetLaser);
         this._connection.socket.removeListener(PackTitle.rocket);
@@ -607,6 +614,15 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         this._damageViewer.showDamage(pos, aData.info);
     }
 
+    private onGoldTextPack(aData: GoldTextData) {
+        let pos = this.getPositionByServerV3(aData.pos);
+        this._textViewer.showText({
+            pos: pos,
+            text: `+${aData.gold} G`,
+            color: 0xF9EB21
+        });
+    }
+
     private createTower(aData: ObjectCreateData) {
 
         let obj = new Tower({
@@ -763,85 +779,6 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         this._objects.set(aData.id, obj);
     }
 
-    private attackPack(aData: AttackData) {
-        
-        let objFrom = this.getObjectById(aData.idFrom);
-        if (!objFrom) {
-            this.logWarn(`attack: !fromObj`, aData);
-            return;
-        }
-
-        let objTo = this.getObjectById(aData.idTo);
-        if (!objTo) {
-            this.logWarn(`attack: !toObj`, aData);
-            return;
-        }
-
-        // DEBUG
-        // return;
-
-        let laserColor = this.getShipLaserColor(objFrom.owner);
-
-        switch (aData.attackType) {
-
-            case 'laser':
-                
-                // create laser
-                const laserLen = 2;
-                let r = ThreeUtils.randomVector(objTo.radius / 10);
-                const targetPoint = objTo.position.clone().add(r);
-                const firePoint = objFrom.getGlobalFirePoint();
-                const dir = targetPoint.clone().sub(firePoint).normalize();
-                if (aData.isMiss) {
-                    targetPoint.add(dir.multiplyScalar(objTo.radius * 4));
-                }
-
-                // let laser = new LaserLine({
-                //     posStart: new THREE.Vector3(0, 0, 0),
-                //     posEnd: new THREE.Vector3(0, 0, laserLen),
-                //     color: laserColor,
-                //     minRadius: .02,
-                //     maxRadius: .2
-                // });
-                // laser.position.copy(firePoint);
-                // laser.lookAt(targetPoint);
-
-                // show laser
-                // const dur = .25;
-                // gsap.to(laser.position, {
-                //     x: targetPoint.x,
-                //     y: targetPoint.y,
-                //     z: targetPoint.z,
-                //     duration: dur,
-                //     ease: 'none',
-                //     onStart: () => {
-                //         const sounds = [AudioAlias.battleFireCreep_1, AudioAlias.battleFireCreep_2];
-                //         let sndAlias = sounds[MyMath.randomIntInRange(0, sounds.length - 1)];
-                //         AudioMng.getInstance().playSfx(sndAlias);
-                //     },
-                //     onComplete: () => {
-                //         laser.free();
-                //     }
-                // });
-
-                // this._dummyMain.add(laser);
-
-                this.createLaser({
-                    length: laserLen,
-                    color: laserColor,
-                    startPos: firePoint,
-                    endPos: targetPoint,
-                });
-
-                break;
-            
-            default:
-                this.logWarn(`onAttackPack: unknown attack type:`, aData);
-                break;
-        }
-
-    }
-
     private createLaser(params: {
         length,
         startPos,
@@ -902,6 +839,59 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         });
         this._dummyMain.add(laser);
         this._attackRays[params.id] = laser;
+    }
+
+    private attackPack(aData: AttackData) {
+
+        let objFrom = this.getObjectById(aData.idFrom);
+        if (!objFrom) {
+            this.logWarn(`attack: !fromObj`, aData);
+            return;
+        }
+
+        let objTo = this.getObjectById(aData.idTo);
+        if (!objTo) {
+            this.logWarn(`attack: !toObj`, aData);
+            return;
+        }
+
+        // DEBUG
+        // return;
+
+        let laserColor = this.getShipLaserColor(objFrom.owner);
+
+        switch (aData.attackType) {
+
+            case 'laser':
+
+                // create laser
+                const laserLen = 2;
+                let r = ThreeUtils.randomVector(objTo.radius / 10);
+                const targetPoint = objTo.position.clone().add(r);
+                const firePoint = objFrom.getGlobalFirePoint();
+                const dir = targetPoint.clone().sub(firePoint).normalize();
+                if (aData.isMiss) {
+                    targetPoint.add(dir.multiplyScalar(objTo.radius * 4));
+                }
+
+                this.createLaser({
+                    length: laserLen,
+                    color: laserColor,
+                    startPos: firePoint,
+                    endPos: targetPoint,
+                });
+
+                break;
+            
+            case 'ray':
+                // nothing
+                break;
+
+            default:
+                this.logWarn(`onAttackPack: unknown attack type:`, aData);
+                break;
+        }
+
     }
 
     private rayStart(aData: {
@@ -1033,7 +1023,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
     private destroyObject(aId: number) {
 
-        // 
+        // remove rocket targets
         this._rocketTargetViewer.onObjectDestroy(aId);
 
         // remove object bars
@@ -1330,6 +1320,9 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
         this._damageViewer.free();
         this._damageViewer = null;
+
+        this._textViewer.free();
+        this._textViewer = null;
 
         this._objectHpViewer.free();
         this._objectHpViewer = null;

@@ -76,7 +76,7 @@ export default {
       return this.battleStore.results.state
     },
     ratingChange() {
-      return this.results.rating.current - this.results.rating.prevoius
+      return this.results.rating.current - this.results.rating.previous
     },
     ratingIncreased() {
       return this.ratingChange >= 0

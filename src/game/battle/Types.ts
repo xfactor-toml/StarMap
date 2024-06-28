@@ -23,6 +23,8 @@ export enum PackTitle {
     rayStop = 'rayStop',
     planetLaser = 'planetLaser',
     damage = 'damage',
+    expText = 'expText',
+    goldText = 'goldText',
     exp = 'exp',
     skill = 'skill',
     
@@ -208,8 +210,23 @@ export type SkillData = {
 export type ExpData = {
     exp: number,
     level: number,
+    gold: number,
+    damage: number,
     levelExpPercent: number,
     skills: SkillData[]
+}
+
+/**
+ * Exp text in battle field
+ */
+export type ExpTextData = {
+    pos: { x: number, y: number, z: number },
+    exp: number
+}
+
+export type GoldTextData = {
+    pos: { x: number, y: number, z: number },
+    gold: number
 }
 
 export type BoxOpenData = {
@@ -231,10 +248,8 @@ export type DebugTestData = {
     action: 'win' | 'loss'
 }
 
-export type ExplosionType = 'rocket';
-
 export type ExplosionData = {
-    type: ExplosionType,
+    type: ObjectType,
     pos: { x: number, y: number, z: number }
 }
 

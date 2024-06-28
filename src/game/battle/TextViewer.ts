@@ -3,19 +3,16 @@ import { ILogger } from "../core/interfaces/ILogger";
 import { IUpdatable } from "../core/interfaces/IUpdatable";
 import { LogMng } from '../utils/LogMng';
 import { PopupText } from './PopupText';
-import { DamageInfo } from './Types';
 
-export class DamageViewer implements ILogger, IUpdatable {
-    private _className = 'DamageViewer';
+export class TextViewer implements ILogger, IUpdatable {
+    private _className = 'TextViewer';
     private _parent: THREE.Group;
     private _camera: THREE.Camera;
-    private _damageText: any[];
     private _isTopViewPosition = false;
 
     constructor(aParent: THREE.Group, aCamera: THREE.Camera) {
         this._parent = aParent;
         this._camera = aCamera;
-        this._damageText = [];
     }
 
     logDebug(aMsg: string, aData?: any): void {
@@ -37,36 +34,23 @@ export class DamageViewer implements ILogger, IUpdatable {
         this._isTopViewPosition = value;
     }
 
-    showDamage(aPosition: THREE.Vector3, aDamageInfo: DamageInfo) {
-        let text = '';
-        let clr = 0xff1e1e;
-        if (aDamageInfo.isMiss) {
-            text = 'MISS';
-            clr = 0x30b4ff;
-        }
-        else {
-            if (aDamageInfo.isCrit) {
-                text = `${aDamageInfo.damage} CRIT`;
-            }
-            else {
-                text = `${aDamageInfo.damage}`;
-            }
-        }
-        const damageNumber = new PopupText({
+    showText(aParams: {
+        pos: THREE.Vector3,
+        text: string,
+        color: number,
+        dirrection?: THREE.Vector3
+    }) {
+        let text = aParams.text;
+        let clr = aParams.color;
+        const popupText = new PopupText({
             parent: this._parent,
             camera: this._camera,
-            position: aPosition,
+            position: aParams.pos,
             text: text,
             color: clr
         });
-        damageNumber.animate(1);
+        popupText.animate(1);
     }
-
-    // showShieldDamage(aObject: BattleObject, aDamage: number) {
-    //     const damageNumber = new DamageNumber(this._parent, this._camera,
-    //         aObject.position, aDamage, 0x30b4ff);
-    //     damageNumber.animate();
-    // }
 
     clear() {
 
@@ -75,14 +59,10 @@ export class DamageViewer implements ILogger, IUpdatable {
     free() {
         this._parent = null;
         this._camera = null;
-        this._damageText = [];
     }
 
     update(dt: number) {
-        const f = this._isTopViewPosition ? -1 : 1;
-        this._damageText.forEach(obj => {
-            
-        });
+        
     }
 
 }

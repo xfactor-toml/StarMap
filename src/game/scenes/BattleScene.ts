@@ -254,6 +254,7 @@ export class BattleScene extends BasicScene {
         if (!aData.ownerName) aData.ownerName = ownerName;
 
         switch (aData.status) {
+            
             case 'duelReward':
                 this._state = BattleSceneState.win;
                 GameEventDispatcher.battleComplete(aData);
