@@ -226,6 +226,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         this._connection.socket.removeListener(PackTitle.rayStart);
         this._connection.socket.removeListener(PackTitle.rayStop);
         this._connection.socket.removeListener(PackTitle.damage);
+        this._connection.socket.removeListener(PackTitle.goldText);
         // skills
         this._connection.socket.removeListener(PackTitle.planetLaser);
         this._connection.socket.removeListener(PackTitle.rocket);
