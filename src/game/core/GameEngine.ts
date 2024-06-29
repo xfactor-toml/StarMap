@@ -71,11 +71,11 @@ export class GameEngine extends MyLogger {
     private animate() {
         let dt = this._clock.getDelta();
 
-        if (GlobalParams.isDebugMode) this._stats.begin();
+        if (GlobalParams.isDebugMode || GlobalParams.isFPSShow) this._stats.begin();
         this.update(dt);
         this.render();
-        if (GlobalParams.isDebugMode) this._stats.end();
-
+        if (GlobalParams.isDebugMode || GlobalParams.isFPSShow) this._stats.end();
+        
         requestAnimationFrame(() => this.animate());
     }
 
