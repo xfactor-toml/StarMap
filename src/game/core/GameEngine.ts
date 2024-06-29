@@ -30,9 +30,9 @@ export class GameEngine extends MyLogger {
         this.initScenes(this._params.scenes);
         this.animate();
     }
-
+    
     private initStats() {
-        if (GlobalParams.isDebugMode) {
+        if (this.isStatsActive()) {
             this._stats = new Stats();
             this._stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
             document.body.appendChild(this._stats.dom);
@@ -61,6 +61,10 @@ export class GameEngine extends MyLogger {
         });
     }
 
+    private isStatsActive(): boolean {
+        return GlobalParams.isDebugMode || GlobalParams.isFPSShow;
+    }
+
     private onWindowResize() {
         this._sceneMng.onWindowResize();
     }
@@ -71,14 +75,14 @@ export class GameEngine extends MyLogger {
     private animate() {
         let dt = this._clock.getDelta();
 
-        if (GlobalParams.isDebugMode || GlobalParams.isFPSShow) this._stats.begin();
+        if (this.isStatsActive()) this._stats.begin();
         this.update(dt);
         this.render();
-        if (GlobalParams.isDebugMode || GlobalParams.isFPSShow) this._stats.end();
-        
+        if (this.isStatsActive()) this._stats.end();
+
         requestAnimationFrame(() => this.animate());
     }
-
+    
     update(dt: number) {
         this._sceneMng.update(dt);
     }
