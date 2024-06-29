@@ -34,7 +34,10 @@ export class ClientEventsService {
         if (BlockchainConnectService.getInstance().isTelegram()) {
           wallet.connect('telegram')
         }
-        client.run(false, starsStore.stars);
+
+        // fast start
+        // client.run(false, starsStore.stars);
+
         if (config.SKIP_WELCOME_SCREEN) {
           scenesStore.setScene(UISceneNames.Galaxy);
         } else {
