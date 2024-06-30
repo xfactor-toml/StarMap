@@ -1,9 +1,5 @@
 <template>
   <div class="StarPanel" :style="panelStyle">
-    <button
-      class="StarPanel__close"
-      @click="$emit('close')"
-    />
     <svg viewBox="0 0 854 638" class="StarPanel__svg">
       <defs>
         <radialGradient id="leftButtonGradient" cx="0.65" fx="0.65">
@@ -15,6 +11,12 @@
           <stop offset="100%" stop-color="rgb(0 255 255 / 25%)" />
         </radialGradient>
       </defs>
+      <foreignObject x="760" y="40" width="32" height="32">
+        <button
+          class="StarPanel__close"
+          @click="$emit('close')"
+        />
+      </foreignObject>
       <g id="star-info">
         <g id="star-info-name">
           <text class="StarPanel__title" text-anchor="middle">

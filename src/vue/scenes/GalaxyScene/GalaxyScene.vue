@@ -47,9 +47,11 @@
           </div>
         </template>
       </transition>
-      <div class="GalaxyScene__modes">
-        <ModesPanel />
-      </div>
+      <template v-if="scenesStore.current.clientScene?.name !== 'star'">
+        <div class="GalaxyScene__modes">
+          <ModesPanel />
+        </div>
+      </template>
     </div>
     <PlasmaMintPopup
       v-if="showPlasmaMintPopup"
@@ -70,7 +72,13 @@ import {
   UserBar,
   ViewsPanel,
 } from '@/components';
-import { useBattleStore, useScenesStore, useSettingsStore, useWalletStore } from '@/stores';
+import {
+  useBattleStore,
+  useScenesStore,
+  useSettingsStore,
+  useUiStore,
+  useWalletStore
+} from '@/stores';
 import { mapStores } from 'pinia';
 import { default as vClickOutside } from 'click-outside-vue3';
 import { config } from '@/config';
@@ -96,7 +104,29 @@ export default {
   directives: {
     clickOutside: vClickOutside.directive
   },
-  computed: mapStores(useBattleStore, useScenesStore, useSettingsStore, useWalletStore),
+  computed: mapStores(
+    useBattleStore,
+    useScenesStore,
+    useSettingsStore,
+    useUiStore,
+    useWalletStore,
+  ),
+  watch: {
+    ['scenesStore.current.clientScene']: {
+      handler() {
+        switch (this.scenesStore.current.clientScene?.name) {
+          case 'star': {
+            this.uiStore.panels.setPanelState('views', true)
+            break
+          }
+          case 'galaxy': {
+            this.uiStore.panels.setPanelState('modes', true)
+            break
+          }
+        }
+      }
+    }
+  },
   methods: {
     openPlasmaMintPopup() {
       this.showPlasmaMintPopup = true
