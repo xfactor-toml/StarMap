@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { ILogger } from "../core/interfaces/ILogger";
 import { IUpdatable } from "../core/interfaces/IUpdatable";
-import { LogMng } from '../utils/LogMng';
+import { LogMng } from '../../monax/LogMng';
 import { PopupText } from './PopupText';
 
 export class TextViewer implements ILogger, IUpdatable {

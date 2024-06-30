@@ -7,7 +7,7 @@ import {
     Vector2,
     Vector3
 } from 'three';
-import { LogMng } from '../utils/LogMng';
+import { LogMng } from '../../monax/LogMng';
 
 // This set of controls performs orbiting, dollying (zooming), and panning.
 // Unlike TrackballControls, it maintains the "up" direction object.up (+Y by default).

@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { MyMath } from "../../utils/MyMath";
+import { MyMath } from "../../../monax/MyMath";
 import { MySpline } from "../../utils/InterpolateUtils";
 
 import vertShader from "../shaders/particles/vert.glsl";

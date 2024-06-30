@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { MyObject3D } from '~/game/basics/MyObject3D';
-import { MyMath } from '~/game/utils/MyMath';
 import gsap from 'gsap';
 import { ThreeUtils } from '~/game/utils/threejs/ThreejsUtils';
+import { MyMath } from '@/utils';
 
 const LINES_CNT = 10;
 

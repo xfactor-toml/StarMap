@@ -6,7 +6,7 @@ import { FontLoader, Font } from "three/examples/jsm/loaders/FontLoader";
 import { TTFLoader } from "three/examples/jsm/loaders/TTFLoader";
 import { GLTFLoader, GLTF } from "three/examples/jsm/loaders/GLTFLoader";
 import * as SkeletonUtils from 'three/examples/jsm/utils/SkeletonUtils';
-import { LogMng } from "../LogMng";
+import { LogMng } from "../../../monax/LogMng";
 import { Callbacks } from "../events/Callbacks";
 
 export enum ThreeLoaderFileType {

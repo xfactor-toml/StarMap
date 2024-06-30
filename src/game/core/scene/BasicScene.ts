@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { LogMng } from "../../utils/LogMng";
+import { LogMng } from "../../../monax/LogMng";
 import { Renderer } from "../renderers/Renderer";
 import { Signal } from "../../utils/events/Signal";
 import { SimpleRenderer } from "../renderers/SimpleRenderer";

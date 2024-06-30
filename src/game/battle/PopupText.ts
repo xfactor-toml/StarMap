@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
 import { ThreeLoader } from '../utils/threejs/ThreeLoader';
 import gsap from 'gsap';
-import { MyMath } from '../utils/MyMath';
+import { MyMath } from '../../monax/MyMath';
 import { ThreeUtils } from '../utils/threejs/ThreejsUtils';
 
 export class PopupText {

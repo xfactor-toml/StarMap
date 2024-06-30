@@ -2,9 +2,9 @@ import * as THREE from 'three';
 import { BattleObject, BattleObjectData } from './BattleObject';
 import { ThreeLoader } from '~/game/utils/threejs/ThreeLoader';
 import { ModelAlias } from '~/game/data/ModelData';
-import { MyMath } from '@/utils';
 import { ThreeUtils } from '~/game/utils/threejs/ThreejsUtils';
 import { TextureAlias } from '~/game/data/TextureData';
+import { MyMath } from '@/utils';
 
 type LightParams = {
     parent: THREE.Object3D,

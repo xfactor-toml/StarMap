@@ -483,8 +483,9 @@
 <script lang="ts">
 import { StarHudParam } from '@/models';
 import { useStarsStore, useWalletStore } from '@/stores';
-import { formatNumber, MyMath } from '@/utils';
+import { formatNumber } from '@/utils';
 import { mapStores } from 'pinia';
+import { MyMath } from '~/monax/MyMath';
 
 export default {
   name: 'StarPanel',

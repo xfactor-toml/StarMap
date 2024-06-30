@@ -5,7 +5,7 @@ import { debounce } from "typescript-debounce-decorator";
 import { logger } from '@/services/logger';
 import { useBattleStore, useScenesStore } from '@/stores';
 import { BattleActionPayload, UISceneNames } from '@/types';
-import { LogMng } from '~/game/utils/LogMng';
+import { LogMng } from '~/monax/LogMng';
 import { Emotion } from '~/game/battle/Types';
 
 export class ClientService {

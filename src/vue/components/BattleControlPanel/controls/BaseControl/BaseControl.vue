@@ -82,7 +82,6 @@
 </template>
 
 <script lang="ts">
-import { MyMath } from '@/utils';
 
 import {
   InvisibilityIcon,
@@ -92,6 +91,7 @@ import {
 } from './icons';
 import { DefineComponent, PropType } from 'vue';
 import { BattleActionType } from '@/types';
+import { MyMath } from '~/monax/MyMath';
 
 export default {
   name: 'BaseControl',

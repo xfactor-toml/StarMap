@@ -7,7 +7,7 @@ import { FXAAShader } from "three/examples/jsm/shaders/FXAAShader";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass";
 import { SMAAPass } from "three/examples/jsm/postprocessing/SMAAPass";
 
-import { LogMng } from "../utils/LogMng";
+import { LogMng } from "../../monax/LogMng";
 import { GlobalParams } from "../data/GlobalParams";
 import { FrontEvents } from "../events/FrontEvents";
 import { GameEvent, GameEventDispatcher } from "../events/GameEvents";

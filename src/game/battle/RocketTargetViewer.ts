@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { ILogger } from '../core/interfaces/ILogger';
 import { IUpdatable } from '../core/interfaces/IUpdatable';
-import { LogMng } from '../utils/LogMng';
+import { LogMng } from '../../monax/LogMng';
 import { BattleObject } from '../objects/battle/BattleObject';
 import { RocketTargetAim } from './RocketTargetAim';
 import { RocketPacket } from './Types';

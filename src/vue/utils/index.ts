@@ -10,4 +10,4 @@ export * from './round-number';
 export * from './to-milliseconds';
 export * from './to-seconds';
 export * from './wait';
-export * from '~/game/utils/MyMath';
+export * from '~/monax/MyMath';

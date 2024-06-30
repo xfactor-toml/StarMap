@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { MyMath } from '../utils/MyMath';
+import { MyMath } from '../../monax/MyMath';
 import { GalaxyStarParams } from '~/game/data/Types';
 
 export class QTPoint {

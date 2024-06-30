@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import * as datGui from "dat.gui";
-import { MyMath } from '../utils/MyMath';
+import { MyMath } from '../../monax/MyMath';
 import gsap from 'gsap';
 import { GlobalParams } from '../data/GlobalParams';
 import { FarStars } from '../objects/FarStars';
@@ -18,7 +18,7 @@ import { GameUtils } from '../math/GameUtils';
 import { QTCircle, QTDebugRender, QTPoint, QTRect, QuadTree } from '../systems/QuadTree';
 import { StarPointsMng } from '../mng/StarPointsMng';
 import { DB, FAR_STAR_COLORS } from '../data/DB';
-import { LogMng } from '../utils/LogMng';
+import { LogMng } from '../../monax/LogMng';
 import { FileMng } from '../mng/FileMng';
 import { FarGalaxyParams, GalaxyStarParams, ServerStarData } from '~/game/data/Types';
 import { StarGenerator } from '~/game/mng/StarGenerator';

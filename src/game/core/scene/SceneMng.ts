@@ -1,4 +1,4 @@
-import { LogMng } from "../../utils/LogMng";
+import { LogMng } from "../../../monax/LogMng";
 import { ILogger } from "../interfaces/ILogger";
 import { BasicScene } from "./BasicScene"
 
