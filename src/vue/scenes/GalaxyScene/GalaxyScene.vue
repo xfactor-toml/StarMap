@@ -135,11 +135,6 @@ export default {
       this.showPlasmaMintPopup = false
     },
   },
-  created() {
-    this.$wallet.on('state', (state) => {
-      this.walletStore.setState(state)
-    })
-  }
 };
 </script>
 

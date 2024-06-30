@@ -66,6 +66,10 @@ export default {
   },
   created() {
     this.scenesStore.setScenes(SCENES, UISceneNames.Start)
+    
+    this.$wallet.on('state', (state) => {
+      this.walletStore.setState(state)
+    })
 
     // Game Events
     window.addEventListener('gameEvent', ClientEventsService.handleEvent);
