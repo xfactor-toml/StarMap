@@ -57,7 +57,7 @@ export const SCENES: GuiScenes = {
             name: 'star',
             label: 'Star',
             enabled: true,
-            clickable: false
+            clickable: false,
           },
           {
             name: 'planet',

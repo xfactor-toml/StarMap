@@ -1,4 +1,4 @@
-import { LogMng } from "../utils/LogMng";
+import { LogMng } from "../../monax/LogMng";
 import { GlobalParams } from "../data/GlobalParams";
 import { BasicScene } from "../core/scene/BasicScene";
 import { SceneNames } from "./SceneNames";

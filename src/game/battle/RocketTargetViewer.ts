@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { ILogger } from '../core/interfaces/ILogger';
 import { IUpdatable } from '../core/interfaces/IUpdatable';
-import { LogMng } from '../utils/LogMng';
+import { LogMng } from '../../monax/LogMng';
 import { BattleObject } from '../objects/battle/BattleObject';
 import { RocketTargetAim } from './RocketTargetAim';
 import { RocketPacket } from './Types';
@@ -54,7 +54,10 @@ export class RocketTargetViewer implements ILogger, IUpdatable {
     }
 
     onObjectDestroy(aObjectId: number) {
-        let id = this._records.findIndex(item => item.data.targetId == aObjectId || item.data.rocketId == aObjectId);
+        let id = this._records.findIndex(
+            item => item.data.targetId == aObjectId
+            || item.data.rocketId == aObjectId
+        );
         if (id < 0) return;
 
         let rec = this._records[id];
@@ -69,16 +72,26 @@ export class RocketTargetViewer implements ILogger, IUpdatable {
     }
 
     update(dt: number) {
-        this._records.forEach(item => {
-            let aim = item.aim;
-            let obj = item.targetObject;
-            if (!aim || !obj) return;
+        this._records.forEach(rec => {
+            let aim = rec.aim;
+            let obj = rec.targetObject;
+            if (!aim) return;
+            if (!obj) {
+                rec.aim.free();
+                rec.aim = null;
+                return;
+            }
+            
             // update position
-            aim.position.x = obj.position.x;
-            aim.position.y = obj.position.y + .1;
-            aim.position.z = obj.position.z;
+            try {
+                aim.position.x = obj.position.x;
+                aim.position.y = obj.position.y + .1;
+                aim.position.z = obj.position.z;
+                aim.update(dt);
+            } catch (error) {
+                return;
+            }
 
-            aim.update(dt);
         });
     }
 

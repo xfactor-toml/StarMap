@@ -3,7 +3,7 @@ import { MyObject3D } from '~/game/basics/MyObject3D';
 import { ThreeUtils } from '~/game/utils/threejs/ThreejsUtils';
 import { ThreeLoader } from '../utils/threejs/ThreeLoader';
 import { TextureAlias } from '../data/TextureData';
-import { MyMath } from '../utils/MyMath';
+import { MyMath } from '../../monax/MyMath';
 
 export class RocketTargetAim extends MyObject3D {
     protected _mesh: THREE.Mesh;

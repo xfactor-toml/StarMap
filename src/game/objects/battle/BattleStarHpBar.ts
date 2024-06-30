@@ -1,7 +1,7 @@
+import { MyMath } from '@/utils';
 import * as THREE from 'three';
 import { MyObject3D } from '~/game/basics/MyObject3D';
 import { ThreeUtils } from '~/game/utils/threejs/ThreejsUtils';
-import { MyMath } from '@/utils';
 
 export class BattleStarHpBar extends MyObject3D {
     private _radius: number;

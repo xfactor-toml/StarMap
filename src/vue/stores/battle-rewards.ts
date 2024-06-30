@@ -3,7 +3,7 @@ import { BattleReward, UISceneNames } from '@/types';
 import { ref } from 'vue';
 import { useWallet } from '@/services';
 import { useScenesStore } from '@/stores/scenes';
-import { LogMng } from '~/game/utils/LogMng';
+import { LogMng } from '~/monax/LogMng';
 import { web2assets } from '~/blockchainTotal/getters/boxesWeb2';
 import { mapAssets } from '@/utils';
 

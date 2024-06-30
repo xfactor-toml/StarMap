@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { IBaseClass } from "../core/interfaces/IBaseClass";
-import { MyMath } from "../utils/MyMath";
+import { MyMath } from "../../monax/MyMath";
 import { GlobalParams } from "../data/GlobalParams";
 
 import vsFarStars from '../shaders/farStars/vs.glsl';

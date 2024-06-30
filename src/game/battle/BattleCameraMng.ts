@@ -4,7 +4,7 @@ import { MyEventDispatcher } from '../basics/MyEventDispatcher';
 import { IUpdatable } from '../core/interfaces/IUpdatable';
 import { FSM } from '../states/FSM';
 import { GlobalParams } from '../data/GlobalParams';
-import { MyMath } from '../utils/MyMath';
+import { MyMath } from '../../monax/MyMath';
 import gsap from 'gsap';
 
 type BattleCameraMode = 'static' | 'orbit';

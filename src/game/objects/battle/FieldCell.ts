@@ -1,7 +1,7 @@
+import { MyMath } from '@/utils';
 import * as THREE from 'three';
 import { MyObject3D } from "~/game/basics/MyObject3D";
 import { TextureAlias } from '~/game/data/TextureData';
-import { MyMath } from '~/game/utils/MyMath';
 import { ThreeLoader } from '~/game/utils/threejs/ThreeLoader';
 import { ThreeUtils } from '~/game/utils/threejs/ThreejsUtils';
 

@@ -1,4 +1,4 @@
-﻿import { InterpolationUtils } from "./InterpolateUtils";
+﻿import { InterpolationUtils } from "../game/utils/InterpolateUtils";
 
 type Point = {
     x: number;

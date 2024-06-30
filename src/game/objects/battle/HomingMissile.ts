@@ -2,13 +2,13 @@ import * as THREE from 'three';
 import { BattleObject, BattleObjectData } from './BattleObject';
 import { ThreeLoader } from '~/game/utils/threejs/ThreeLoader';
 import { ModelAlias } from '~/game/data/ModelData';
-import { MyMath } from '@/utils';
 import { ThreeUtils } from '~/game/utils/threejs/ThreejsUtils';
 import { ParticleSystem } from '~/game/core/effects/ParticleSystem';
 import { TextureAlias } from '~/game/data/TextureData';
 import { AudioMng } from '~/game/audio/AudioMng';
 import { AudioAlias } from '~/game/audio/AudioData';
 import { Sound } from '@pixi/sound';
+import { MyMath } from '@/utils';
 
 type LightParams = {
     parent: THREE.Object3D,

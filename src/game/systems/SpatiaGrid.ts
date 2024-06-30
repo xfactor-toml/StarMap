@@ -1,4 +1,4 @@
-import { MyMath } from "../utils/MyMath";
+import { MyMath } from "../../monax/MyMath";
 
 export const SpatialGrid = (() => {
 

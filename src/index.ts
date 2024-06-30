@@ -6,7 +6,7 @@ import { ClientService, WalletService } from '@/services';
 import { default as toastify, type ToastContainerOptions } from 'vue3-toastify';
 import { default as anime } from 'animejs';
 import { GlobalParams } from './game/data/GlobalParams';
-import { LogMng } from './game/utils/LogMng';
+import { LogMng } from './monax/LogMng';
 import { GameEngine } from './game/core/GameEngine';
 import { BootScene } from './game/scenes/BootScene';
 import { PreloaderScene } from './game/scenes/PreloaderScene';

@@ -2,10 +2,10 @@ import * as THREE from 'three';
 import { BattleObject, BattleObjectData } from './BattleObject';
 import { BigStar2 } from '../BigStar2';
 import { ThreeUtils } from '~/game/utils/threejs/ThreejsUtils';
-import { MyMath } from '@/utils';
 import { BattleStarHpBar } from './BattleStarHpBar';
 import { ClickableGroup } from '../basic/ClickableGroup';
 import { Signal } from '~/game/utils/events/Signal';
+import { MyMath } from '@/utils';
 
 type BattleStarParams = BattleObjectData & {
     camera: THREE.Camera,

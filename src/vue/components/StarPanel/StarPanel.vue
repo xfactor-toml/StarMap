@@ -11,6 +11,12 @@
           <stop offset="100%" stop-color="rgb(0 255 255 / 25%)" />
         </radialGradient>
       </defs>
+      <foreignObject x="760" y="40" width="32" height="32">
+        <button
+          class="StarPanel__close"
+          @click="$emit('close')"
+        />
+      </foreignObject>
       <g id="star-info">
         <g id="star-info-name">
           <text class="StarPanel__title" text-anchor="middle">
@@ -479,8 +485,9 @@
 <script lang="ts">
 import { StarHudParam } from '@/models';
 import { useStarsStore, useWalletStore } from '@/stores';
-import { formatNumber, MyMath } from '@/utils';
+import { formatNumber } from '@/utils';
 import { mapStores } from 'pinia';
+import { MyMath } from '~/monax/MyMath';
 
 export default {
   name: 'StarPanel',

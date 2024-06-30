@@ -46,7 +46,7 @@ export type BattleResults = {
   gold: number
   exp: number
   rating: {
-    prevoius: number
+    previous: number
     current: number
   },
   box: {

@@ -99,8 +99,12 @@
     padding-bottom: 10px;
   }
 
+  .GalaxyScene__views {
+    order: 1;
+  }
+
   .GalaxyScene__levels {
-    order: -1;
+    order: 2;
   }
 
   .GalaxyScene__views,

@@ -1,6 +1,6 @@
 import * as datGui from "dat.gui";
 import { ILogger } from "../core/interfaces/ILogger";
-import { LogMng } from "../utils/LogMng";
+import { LogMng } from "../../monax/LogMng";
 
 type GuiElementType = 'field' | 'folder';
 

@@ -38,15 +38,20 @@
         </div>
       </template>
       <transition name="fade">
-        <template v-if="scenesStore.current.clientScene?.name === 'galaxy'">
+        <template v-if="
+          config.SHOW_STARS_FILTER_BY_LEVEL &&
+          scenesStore.current.clientScene?.name === 'galaxy'
+        ">
           <div class="GalaxyScene__levels">
             <LevelsPanel />
           </div>
         </template>
       </transition>
-      <div class="GalaxyScene__modes">
-        <ModesPanel />
-      </div>
+      <template v-if="scenesStore.current.clientScene?.name !== 'star'">
+        <div class="GalaxyScene__modes">
+          <ModesPanel />
+        </div>
+      </template>
     </div>
     <PlasmaMintPopup
       v-if="showPlasmaMintPopup"
@@ -67,9 +72,16 @@ import {
   UserBar,
   ViewsPanel,
 } from '@/components';
-import { useBattleStore, useScenesStore, useSettingsStore, useWalletStore } from '@/stores';
+import {
+  useBattleStore,
+  useScenesStore,
+  useSettingsStore,
+  useUiStore,
+  useWalletStore
+} from '@/stores';
 import { mapStores } from 'pinia';
 import { default as vClickOutside } from 'click-outside-vue3';
+import { config } from '@/config';
 
 export default {
   name: 'GalaxyScene',
@@ -85,13 +97,36 @@ export default {
   },
   data: () => {
     return {
-      showPlasmaMintPopup: false
+      showPlasmaMintPopup: false,
+      config
     }
   },
   directives: {
     clickOutside: vClickOutside.directive
   },
-  computed: mapStores(useBattleStore, useScenesStore, useSettingsStore, useWalletStore),
+  computed: mapStores(
+    useBattleStore,
+    useScenesStore,
+    useSettingsStore,
+    useUiStore,
+    useWalletStore,
+  ),
+  watch: {
+    ['scenesStore.current.clientScene']: {
+      handler() {
+        switch (this.scenesStore.current.clientScene?.name) {
+          case 'star': {
+            this.uiStore.panels.setPanelState('views', true)
+            break
+          }
+          case 'galaxy': {
+            this.uiStore.panels.setPanelState('modes', true)
+            break
+          }
+        }
+      }
+    }
+  },
   methods: {
     openPlasmaMintPopup() {
       this.showPlasmaMintPopup = true
@@ -100,11 +135,6 @@ export default {
       this.showPlasmaMintPopup = false
     },
   },
-  created() {
-    this.$wallet.on('state', (state) => {
-      this.walletStore.setState(state)
-    })
-  }
 };
 </script>
 

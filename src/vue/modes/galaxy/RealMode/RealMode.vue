@@ -6,6 +6,7 @@
           :starId="uiStore.star.starPanel.starId"
           :scale="uiStore.star.starPanel.scale"
           @callStarBoost="uiStore.star.showStarBoostPanel"
+          @close="goToGalaxy"
         />
       </template>
     </transition>
@@ -59,6 +60,10 @@ export default {
       if (!this.uiStore.overlay.active) return;
       this.uiStore.star.hideStarBoostPanel();
       this.uiStore.star.hideStarTooltip();
+    },
+    goToGalaxy() {
+      this.uiStore.star.hideStarPanel();
+      this.$client.onLeftPanelGalaxyClick();
     }
   },
   unmounted() {

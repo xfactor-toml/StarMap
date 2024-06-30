@@ -3,8 +3,8 @@ import { PHANTOM_BIG_STAR_COLOR, PHANTOM_STAR_COLOR, STAR_COLOR_2 } from "../dat
 import { GlobalParams } from "../data/GlobalParams";
 import { GalaxyCircleParams, GalaxyParams, GalaxySmallParams, GalaxyStarParams, ServerStarData } from "../data/Types";
 import { ILogger } from "../core/interfaces/ILogger";
-import { LogMng } from "../utils/LogMng";
-import { MyMath } from "../utils/MyMath";
+import { LogMng } from "../../monax/LogMng";
+import { MyMath } from "../../monax/MyMath";
 import { EaseUtils } from "../utils/EaseUtils";
 
 export class StarGenerator implements ILogger {
