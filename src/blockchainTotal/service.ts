@@ -28,8 +28,10 @@ export class BlockchainConnectService  {
 
     public LoadTelegramData() {
         const tg = this.TelegramInfo;
+        alert("Loading tg")
         if (tg && tg.WebApp && tg.WebApp.initData) {
             this.telegramInitData = tg.WebApp.initData;
+            alert("Init data found")
             const initDataSearchParams = new URLSearchParams(window.Telegram.WebApp.initData);
             let inviterId = initDataSearchParams.get('start_param')?.replace("inviterId_", "");
             alert(`Inviter id: ${inviterId}`)
@@ -180,6 +182,7 @@ export class BlockchainConnectService  {
         if (this.authMethod === "Walletconnect") {
             InitWalletconnectModal();
         }
+        alert("Service started")
         this.LoadTelegramData();
     }
 
