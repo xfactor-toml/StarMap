@@ -30,9 +30,9 @@ export type GalaxyData = {
  */
 export class GlobalParams {
 
-    static version = 'v0.3.505';
-    static isDebugMode = false;
-    static isFPSShow = true;
+    static version = 'v0.3.506';
+    static isDebugMode = false; // TODO: move to env parameters
+    static isFPSShow = false; // TODO: move to env parameters
     static domCanvasParent: HTMLElement = null;
     static domTouchParent: HTMLElement = null;
     static domGuiParent: HTMLElement = null;
