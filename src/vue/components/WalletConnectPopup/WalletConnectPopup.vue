@@ -14,7 +14,7 @@
       <button
         class="WalletConnectPopup__wallet is-ton"
         type="button"
-        disabled
+        @click="tonConnect"
       >TON
       </button>
     </div>
@@ -35,6 +35,11 @@ export default {
         this.$emit('close')
       });
     },
+    tonConnect() {
+      this.$wallet.connect('TON').then(() => {
+        this.$emit('close')
+      });
+    }
   }
 };
 </script>

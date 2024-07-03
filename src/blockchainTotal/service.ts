@@ -195,6 +195,7 @@ export class BlockchainConnectService  {
     }
 
     public async connect(method: AuthMethod = this.authMethod): Promise<string> {
+        console.log("Connect called", method)
         switch (method) {
             case "Walletconnect" :
                 this.walletAddress = (await ConnectWalletWC()).value;
@@ -323,7 +324,7 @@ export class BlockchainConnectService  {
     }
 
     public TelegramLogin() {
-        return this.telegramAuthData?.username || "";
+        return this.telegramAuthData?.username || this.walletAddress;
     }
 
     public isTelegram(): Boolean {
