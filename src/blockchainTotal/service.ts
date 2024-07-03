@@ -12,6 +12,7 @@ import { web2assets } from "./getters/boxesWeb2";
 import { OpenBoxWeb2 } from "./local/methods";
 import { AcceptDuelInvitation } from "./local/methods/duel";
 import { getQueryParam } from "@/utils/parsers";
+import { TheOpenNetworkAuth } from "./ton/auth";
 
 export class BlockchainConnectService  {
     public authMethod: AuthMethod;
@@ -200,6 +201,9 @@ export class BlockchainConnectService  {
                 return this.walletAddress;
             case "WindowEth" :
                 this.walletAddress = await WindowEthAuth();
+                return this.walletAddress;
+            case "TON":
+                this.walletAddress = await TheOpenNetworkAuth();
                 return this.walletAddress;
             default:
                 this.walletAddress = await AuthByLocal();
