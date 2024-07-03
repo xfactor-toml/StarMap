@@ -13,6 +13,7 @@ import { OpenBoxWeb2 } from "./local/methods";
 import { AcceptDuelInvitation } from "./local/methods/duel";
 import { getQueryParam } from "@/utils/parsers";
 import { TheOpenNetworkAuth } from "./ton/auth";
+import { getShortAddress } from "@/utils";
 
 export class BlockchainConnectService  {
     public authMethod: AuthMethod;
@@ -146,7 +147,7 @@ export class BlockchainConnectService  {
     }
 
     public getDefaultAuthMethod(): AuthMethod {
-        return "Local";
+        return "TON";
         let tgLogin;
         try {
             tgLogin = window.Telegram.WebApp.initDataUnsafe.user.username;
@@ -324,7 +325,7 @@ export class BlockchainConnectService  {
     }
 
     public TelegramLogin() {
-        return this.telegramAuthData?.username || this.walletAddress;
+        return this.telegramAuthData?.username || getShortAddress(this.walletAddress);
     }
 
     public isTelegram(): Boolean {
