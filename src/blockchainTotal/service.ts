@@ -34,7 +34,6 @@ export class BlockchainConnectService  {
             this.telegramInitData = tg.WebApp.initData;
             const initDataSearchParams = new URLSearchParams(window.Telegram.WebApp.initData);
             let inviterId = initDataSearchParams.get('start_param')?.replace("inviterId_", "");
-
             if (inviterId) {
                 AcceptDuelInvitation(this.telegramInitData, inviterId).then((res) => {
                     //alert("Duel found, invitation accepted")
@@ -141,9 +140,9 @@ export class BlockchainConnectService  {
             console.log("User not found ");
             return;
         }
-        if (!user.username) {
+        /* if (!user.username) {
             alert("You need to have a visible username to enter a duel");
-        }
+        } */
     }
 
     public getDefaultAuthMethod(): AuthMethod {
@@ -221,10 +220,10 @@ export class BlockchainConnectService  {
 
     public async getUserAvailableBoxes (): Promise<number[]> {
         return new Promise ((resolve, reject) => {
-            if (!this.telegramAuthData?.username) {
+            if (!this.telegramAuthData?.id) {
                 reject("User not authorized by login");
             }
-            this.getters.BoxesWeb2.getUserBoxesToOpenWeb2 (this.telegramAuthData.username).then((res) => {
+            this.getters.BoxesWeb2.getUserBoxesToOpenWeb2 (String(this.telegramAuthData.id)).then((res) => {
                 resolve(res);
             })
         })
@@ -233,10 +232,10 @@ export class BlockchainConnectService  {
     public async getUserAssets (): Promise<web2assets> {
         return new Promise ((resolve, reject) => {
             console.log("Username: ", this.telegramAuthData.username);
-            if (!this.telegramAuthData.username) {
+            /* if (!this.telegramAuthData.username) {
                 reject("User not authorized by login");
-            }
-            this.getters.BoxesWeb2.GetGameAssetsWeb2 (this.telegramAuthData.username).then((res) => {
+            } */
+            this.getters.BoxesWeb2.GetGameAssetsWeb2 (String(this.telegramAuthData.id)).then((res) => {
                 resolve(res);
             })
         })
@@ -246,7 +245,7 @@ export class BlockchainConnectService  {
         return new Promise (async (resolve, reject) => {
             const signMsg = this.GetAuthMessageToSign();
             let signature = ""
-            if (this.authMethod === "Local") {
+            if (this.authMethod === "Local" || this.authMethod === "TON") {
                 let tempPK = localStorage.getItem(lsPrivateKey);
                 if (!tempPK) {
                     try {
@@ -326,6 +325,10 @@ export class BlockchainConnectService  {
 
     public TelegramLogin() {
         return this.telegramAuthData?.username || getShortAddress(this.walletAddress);
+    }
+
+    public TelegramId() {
+        return this.telegramAuthData?.id || this.walletAddress;
     }
 
     public isTelegram(): Boolean {

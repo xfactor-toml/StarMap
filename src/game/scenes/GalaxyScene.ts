@@ -128,7 +128,7 @@ export class GalaxyScene extends BasicScene {
             return;
         }
         this.logDebug(`checkDuel: isTelegram = ${isTG}`);
-        const userNick = bcs.TelegramLogin();
+        const userNick = String(bcs.TelegramId());
         this.logDebug(`checkDuel: userNick = ${userNick}`);
         if (!userNick || userNick == '') {
             return;

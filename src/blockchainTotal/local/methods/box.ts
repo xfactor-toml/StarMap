@@ -42,7 +42,7 @@ export async function OpenBoxWeb2 (_boxId: number, address?: string, telegramDat
         const priority = connector.getDefaultAuthMethod();
         connector.SetupAuthMethod(priority);
         const signature =  address ? await connector.getSignedAuthMessage() : "";
-        const balancePrev = await GetGameAssetsWeb2 (telegramData.username || address);
+        const balancePrev = await GetGameAssetsWeb2 (String(telegramData.id) || address);
         const response = await fetch(url, {
             method: 'post',
             headers: {
@@ -58,7 +58,7 @@ export async function OpenBoxWeb2 (_boxId: number, address?: string, telegramDat
           if (response.status !== 200) {
             reject("Api reqest failed")
           }
-          const balanceNext = await GetGameAssetsWeb2 (telegramData.username || address);
+          const balanceNext = await GetGameAssetsWeb2 (String(telegramData.id) || address);
           console.log("Balances change: ", {
             prev: balancePrev,
             next: balanceNext
