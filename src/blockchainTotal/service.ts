@@ -347,6 +347,11 @@ export class BlockchainConnectService  {
         return this.telegramAuthData;
     }
 
+    public getTelegramInitData() : TelegramAuthData | undefined {
+        return this.telegramInitData;
+    }
+
+
     setTestUserName(aUserName: string) {
         if (this.telegramAuthData) {
             this.telegramAuthData.username = aUserName;
