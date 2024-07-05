@@ -12,7 +12,7 @@ import { web2assets } from "./getters/boxesWeb2";
 import { OpenBoxWeb2 } from "./local/methods";
 import { AcceptDuelInvitation } from "./local/methods/duel";
 import { getQueryParam } from "@/utils/parsers";
-import { TheOpenNetworkAuth } from "./ton/auth";
+import { TONPreconnect, TheOpenNetworkAuth } from "./ton/auth";
 import { getShortAddress } from "@/utils";
 
 export class BlockchainConnectService  {
@@ -181,6 +181,7 @@ export class BlockchainConnectService  {
             InitWalletconnectModal();
         }
         this.LoadTelegramData();
+        // TONPreconnect();
     }
 
     public static getInstance(): BlockchainConnectService {
