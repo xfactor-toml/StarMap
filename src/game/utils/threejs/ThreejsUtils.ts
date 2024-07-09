@@ -6,10 +6,10 @@ import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js';
 export class ThreeUtils {
 
     public static toScreenPosition(renderer, obj, camera, devicePixelRatio: number) {
-        var vector = new THREE.Vector3();
+        let vector = new THREE.Vector3();
 
-        var widthHalf = 0.5 * renderer.getContext().canvas.width;
-        var heightHalf = 0.5 * renderer.getContext().canvas.height;
+        const widthHalf = 0.5 * renderer.getContext().canvas.width;
+        const heightHalf = 0.5 * renderer.getContext().canvas.height;
 
         obj.updateMatrixWorld();
         vector.setFromMatrixPosition(obj.matrixWorld);
@@ -22,7 +22,20 @@ export class ThreeUtils {
             x: vector.x / devicePixelRatio,
             y: vector.y / devicePixelRatio
         };
+    }
 
+    public static vectorToScreenPosition(renderer, vector: THREE.Vector3, camera: THREE.Camera, devicePixelRatio: number) {
+        const widthHalf = 0.5 * renderer.getContext().canvas.width;
+        const heightHalf = 0.5 * renderer.getContext().canvas.height;
+
+        vector.project(camera);
+        vector.x = (vector.x * widthHalf) + widthHalf;
+        vector.y = - (vector.y * heightHalf) + heightHalf;
+
+        return {
+            x: vector.x / devicePixelRatio,
+            y: vector.y / devicePixelRatio
+        };
     }
 
     public static drawLineCircle(aParams: {
