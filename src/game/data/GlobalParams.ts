@@ -131,6 +131,7 @@ export class GlobalParams {
         localConnect: false,
         freeConnect: false,
         // duelNumber: -1
+        explosion2d: true
     };
 
     // audio

@@ -40,8 +40,6 @@ export class Tower extends BattleObject {
     }
 
     private initSimpleModel() {
-        // let g = new THREE.TetrahedronGeometry(this.radius);
-        // let g = new THREE.IcosahedronGeometry(this.radius);
         let g = new THREE.OctahedronGeometry(this.radius);
         let m = new THREE.MeshBasicMaterial({
             color: 0xaaaaaa
