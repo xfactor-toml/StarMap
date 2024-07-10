@@ -1,7 +1,7 @@
 import { TonConnect, isWalletInfoCurrentlyInjected  } from '@tonconnect/sdk';
 
 const connector = new TonConnect({
-    manifestUrl: 'https://starmap.vorpal.finance/tonmanifest.json',// Замените на ваш URL манифеста
+    manifestUrl: 'https://starmap.vorpal.finance/tonmanifest.json',
 });
 
 export async function TONPreconnect() {
@@ -19,12 +19,24 @@ export async function TONPreconnect() {
             return;
         }
         const itm: any = usingItem
-        connector.connect({
-            jsBridgeKey: itm.jsBridgeKey
-        })
+        if (itm.jsBridgeKey){
+            connector.connect({
+              jsBridgeKey: itm.jsBridgeKey
+            })
+          } else {
+             return;
+          }
     }).catch((e) => {
         console.log("Err: ", e)
     });
+}
+
+export async function GetAvailableTONWallets() {
+    const list = await connector.getWallets()
+    const usingItem = list.find((item) => {
+        return isWalletInfoCurrentlyInjected(item)
+    });
+    return usingItem;
 }
 
 export async function TheOpenNetworkAuth (): Promise<string> {
@@ -38,18 +50,24 @@ export async function TheOpenNetworkAuth (): Promise<string> {
             if (!usingItem) {
                 console.log("No TON wallet found");
                 resolve(null)
+                return;
             }
             connector.onStatusChange((wallet) => {
                 if (!wallet || !wallet.account) {
                     console.log("No access to wallet");
                     resolve(null)
+                    return;
                 }
                 resolve(wallet.account.publicKey)
             })
             const itm: any = usingItem
-            connector.connect({
+            if (itm.jsBridgeKey){
+              connector.connect({
                 jsBridgeKey: itm.jsBridgeKey
-            })
+              })
+            } else {
+                resolve(null)
+            }
         })
         return;
     })
