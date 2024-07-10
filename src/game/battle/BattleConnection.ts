@@ -12,12 +12,12 @@ export enum ConnectionEvent {
 export class BattleConnection extends MyEventDispatcher {
     private static _instance: BattleConnection;
     private _socket: Socket;
-    private signService: BlockchainConnectService;
+    private _bcConnectService: BlockchainConnectService;
 
     private constructor() {
         super('BattleConnection');
         // auto connection
-        this.signService = BlockchainConnectService.getInstance();
+        this._bcConnectService = BlockchainConnectService.getInstance();
         if (GlobalParams.BATTLE.localConnect) {
             this.connectLocal();
         }
@@ -115,7 +115,7 @@ export class BattleConnection extends MyEventDispatcher {
         switch (aData.fromServer) {
             case 'request':
                 this.logDebug(`onSignRecv: request...`);
-                const authPriority = this.signService.getDefaultAuthMethod();
+                const authPriority = this._bcConnectService.getDefaultAuthMethod();
                 this.logDebug(`onSignRecv: authPriority: ${authPriority}`);
                 // always local
                 this.signProcessLocal();
@@ -135,26 +135,27 @@ export class BattleConnection extends MyEventDispatcher {
     private async signProcessLocal() {
         this.logDebug(`signProcessLocal()...`);
 
-        const walletAddress = this.signService.getWalletAddressWithConnect();
+        const walletAddress = this._bcConnectService.getWalletAddressWithConnect();
         this.logDebug(`signProcessLocal: walletAddress = ${walletAddress}`);
 
         let signData: SignData = {
             fromCli: 'web2'
         }
 
-        if (this.signService.isTelegram()) {
+        if (this._bcConnectService.isTelegram()) {
             // signData.tgNick = this.signService.TelegramLogin();
-            signData.tgAuthData = this.signService.getTelegramAuthData();
+            signData.tgInitData = this._bcConnectService.getTelegramInitData();
+            signData.tgAuthData = this._bcConnectService.getTelegramAuthData();
         }
         // else if (GlobalParams.isDebugMode) {
         //     signData.displayName = 'DebugNick';
         // }
 
         if (!walletAddress) {
-            const authPriority = this.signService.getDefaultAuthMethod();
+            const authPriority = this._bcConnectService.getDefaultAuthMethod();
             this.logDebug(`signProcessLocal: Priority`, authPriority);
-            this.signService.SetupAuthMethod('Local');
-            this.signService.getSignedAuthMessage().then((aSignature) => {
+            this._bcConnectService.SetupAuthMethod('Local');
+            this._bcConnectService.getSignedAuthMessage().then((aSignature) => {
                 this.logDebug(`signProcessLocal: local wallet auth...`);
                 signData.signature = aSignature;
                 this.sendPacket(PackTitle.sign, signData);
@@ -162,7 +163,7 @@ export class BattleConnection extends MyEventDispatcher {
             return;
         }
         else {
-            this.signService.getSignedAuthMessage().then(aSignature => {
+            this._bcConnectService.getSignedAuthMessage().then(aSignature => {
                 this.logDebug(`signProcessLocal: getSignedAuthMessage signature = ${aSignature}`);
                 signData.signature = aSignature;
                 this.sendPacket(PackTitle.sign, signData);
