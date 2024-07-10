@@ -34,7 +34,7 @@ export async function OpenBox (address: string, _boxId: number) {
 export async function OpenBoxWeb2 (_boxId: number, address?: string, telegramData?: TelegramAuthData, telegramInitData?: any) {
     return new Promise(async (resolve, reject) => {
         if (!address && !telegramData && !telegramInitData) {
-            reject("At least 1 auth parameter muse exist")
+            reject("At least 1 auth parameter must exist")
         }
         // alert(`Box open called, promise ${telegramInitData}`)
         const url = fastDataServerUrl.concat('api/boxes/open');

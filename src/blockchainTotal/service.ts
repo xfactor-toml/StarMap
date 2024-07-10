@@ -364,7 +364,7 @@ export class BlockchainConnectService  {
         return this.telegramAuthData;
     }
 
-    public getTelegramInitData() : TelegramAuthData | undefined {
+    public getTelegramInitData() : string | undefined {
         return this.telegramInitData;
     }
 
