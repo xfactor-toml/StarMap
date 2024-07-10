@@ -58,7 +58,7 @@ export type SignData = {
     signature?: string,
     message?: string,
     walletId?: string,
-    tgInitData?: string,
+    tgInitString?: string,
     tgAuthData?: TGAuthData
 }
 
