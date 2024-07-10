@@ -35,6 +35,7 @@
         "webpack-merge": "^5.8.0"
     },
     "dependencies": {
+        "@tonconnect/sdk": "^3.0.3",
         "@web3modal/ethers5": "^4.0.11",
         "@web3modal/wagmi": "^4.0.11",
         "animejs": "^3.2.2",
