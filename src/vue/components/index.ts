@@ -15,6 +15,7 @@ export * from './PlasmaMintPopup';
 export * from './PlasmaSlider';
 export * from './PlayerEmotion';
 export * from './PowerIndicator';
+export * from './RivCanvas';
 export * from './SearchInput';
 export * from './SearchingIndicator';
 export * from './SettingsPopup';
