@@ -1,7 +1,7 @@
 <template>
   <div class="StartScene">
     <!-- <PowerIndicator/> -->
-    <RivCanvas/>
+    <RivCanvas src="/rocket.riv"/>
     <component :is="scenesStore.current.mode.getComponent()" />
   </div>
 </template>

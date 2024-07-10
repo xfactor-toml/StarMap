@@ -2,8 +2,8 @@
   <canvas
     ref="canvas"
     class="RivCanvas"
-    width="200"
-    height="200"
+    :width="width"
+    :height="height"
   />
 </template>
 
@@ -12,6 +12,20 @@ import { Rive } from "@rive-app/canvas";
 
 export default {
   name: 'RivCanvas',
+  props: {
+    src: {
+      type: String,
+      required: true
+    },
+    width: {
+      type: Number,
+      default: 200
+    },
+    height: {
+      type: Number,
+      default: 200
+    },
+  },
   data() {
     return {
       riv: null
@@ -19,7 +33,7 @@ export default {
   },
   mounted() {
     this.riv = new Rive({
-        src: '/rocket.riv',
+        src: this.src,
         canvas: this.$refs.canvas,
         autoplay: true,
     });
