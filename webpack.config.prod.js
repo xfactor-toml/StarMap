@@ -7,7 +7,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 module.exports = merge(common, {
     mode: 'production',
     output: {
-      filename: 'bundle.[fullhash:4].js',
+      filename: 'bundle.js',
     },
     resolve: {
         plugins: [new TsconfigPathsPlugin({
@@ -17,7 +17,7 @@ module.exports = merge(common, {
     },
     plugins: [
       new MiniCssExtractPlugin({
-        filename: 'css/style.[fullhash:4].css'
+        filename: 'css/style.css'
       }),
     ],
 });

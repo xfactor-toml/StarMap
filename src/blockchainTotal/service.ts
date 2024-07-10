@@ -12,6 +12,8 @@ import { web2assets } from "./getters/boxesWeb2";
 import { OpenBoxWeb2 } from "./local/methods";
 import { AcceptDuelInvitation } from "./local/methods/duel";
 import { getQueryParam } from "@/utils/parsers";
+import { TONPreconnect, TheOpenNetworkAuth } from "./ton/auth";
+import { getShortAddress } from "@/utils";
 
 export class BlockchainConnectService  {
     public authMethod: AuthMethod;
@@ -31,8 +33,8 @@ export class BlockchainConnectService  {
         if (tg && tg.WebApp && tg.WebApp.initData) {
             this.telegramInitData = tg.WebApp.initData;
             const initDataSearchParams = new URLSearchParams(window.Telegram.WebApp.initData);
+            // console.log("Init data: ", this.telegramInitData);
             let inviterId = initDataSearchParams.get('start_param')?.replace("inviterId_", "");
-
             if (inviterId) {
                 AcceptDuelInvitation(this.telegramInitData, inviterId).then((res) => {
                     //alert("Duel found, invitation accepted")
@@ -139,27 +141,31 @@ export class BlockchainConnectService  {
             console.log("User not found ");
             return;
         }
-        if (!user.username) {
+        /* if (!user.username) {
             alert("You need to have a visible username to enter a duel");
-        }
+        } */
     }
 
     public getDefaultAuthMethod(): AuthMethod {
-        return "Local";
-        let tgLogin;
+        console.log("Search auth method x3")
+        let tgId;
+        console.log("Telegram data: ", window.Telegram.WebApp.initDataUnsafe)
         try {
-            tgLogin = window.Telegram.WebApp.initDataUnsafe.user.username;
+            tgId = window.Telegram.WebApp.initDataUnsafe.user.id;
         } catch (e) {
-            tgLogin = "";
+            tgId = "";
         }
 
-        if (tgLogin) {
-            this.displayLogin = tgLogin;
-            return "Local"
+        if (tgId) {
+            this.displayLogin = tgId;
+            return "telegram"
         }
+
         if (network.env && network.env.request) {
             return "WindowEth"
         }
+
+        return "TON"
         try { 
           const { address } = useWeb3ModalAccount()
           console.log(address, address.value)
@@ -180,6 +186,7 @@ export class BlockchainConnectService  {
             InitWalletconnectModal();
         }
         this.LoadTelegramData();
+        // TONPreconnect();
     }
 
     public static getInstance(): BlockchainConnectService {
@@ -194,13 +201,25 @@ export class BlockchainConnectService  {
     }
 
     public async connect(method: AuthMethod = this.authMethod): Promise<string> {
+        console.log("Connect called x2", method)
         switch (method) {
+            case "telegram" :
+                this.walletAddress = this.telegramInitData?.user?.id || this.telegramAuthData.id;
+                return this.walletAddress;
             case "Walletconnect" :
                 this.walletAddress = (await ConnectWalletWC()).value;
                 return this.walletAddress;
             case "WindowEth" :
                 this.walletAddress = await WindowEthAuth();
                 return this.walletAddress;
+            case "TON":
+                try {
+                    this.walletAddress = await TheOpenNetworkAuth();
+                    return this.walletAddress;
+                } catch (e) {
+                    console.log(e);
+                    return null;
+                }
             default:
                 this.walletAddress = await AuthByLocal();
                return this.walletAddress;
@@ -214,11 +233,11 @@ export class BlockchainConnectService  {
     }
 
     public async getUserAvailableBoxes (): Promise<number[]> {
+        console.log("Boxes request called")
         return new Promise ((resolve, reject) => {
-            if (!this.telegramAuthData?.username) {
-                reject("User not authorized by login");
-            }
-            this.getters.BoxesWeb2.getUserBoxesToOpenWeb2 (this.telegramAuthData.username).then((res) => {
+            console.log("User data to box: ", this.telegramAuthData)
+
+            this.getters.BoxesWeb2.getUserBoxesToOpenWeb2 (String(this.telegramAuthData.id)).then((res) => {
                 resolve(res);
             })
         })
@@ -226,11 +245,14 @@ export class BlockchainConnectService  {
 
     public async getUserAssets (): Promise<web2assets> {
         return new Promise ((resolve, reject) => {
-            console.log("Username: ", this.telegramAuthData.username);
-            if (!this.telegramAuthData.username) {
+            console.log("Username: ", this.telegramAuthData);
+            /* if (!this.telegramAuthData.username) {
                 reject("User not authorized by login");
-            }
-            this.getters.BoxesWeb2.GetGameAssetsWeb2 (this.telegramAuthData.username).then((res) => {
+            } */
+            console.log("User id calc: ", this.telegramAuthData.id)
+            // const idToRequest = this.telegramInitData?.user.id || this.telegramAuthData.id || "unknown";
+            // console.log("User id: ", idToRequest )
+            this.getters.BoxesWeb2.GetGameAssetsWeb2 (String(this.telegramAuthData.id)).then((res) => {
                 resolve(res);
             })
         })
@@ -240,7 +262,7 @@ export class BlockchainConnectService  {
         return new Promise (async (resolve, reject) => {
             const signMsg = this.GetAuthMessageToSign();
             let signature = ""
-            if (this.authMethod === "Local") {
+            if (this.authMethod === "telegram" || this.authMethod === "Local" || this.authMethod === "TON") {
                 let tempPK = localStorage.getItem(lsPrivateKey);
                 if (!tempPK) {
                     try {
@@ -319,7 +341,11 @@ export class BlockchainConnectService  {
     }
 
     public TelegramLogin() {
-        return this.telegramAuthData?.username || "";
+        return this.telegramAuthData?.username || getShortAddress(this.walletAddress);
+    }
+
+    public TelegramId() {
+        return this.telegramAuthData?.id || this.walletAddress;
     }
 
     public isTelegram(): Boolean {
@@ -337,6 +363,11 @@ export class BlockchainConnectService  {
     public getTelegramAuthData() : TelegramAuthData | undefined {
         return this.telegramAuthData;
     }
+
+    public getTelegramInitData() : string | undefined {
+        return this.telegramInitData;
+    }
+
 
     setTestUserName(aUserName: string) {
         if (this.telegramAuthData) {
