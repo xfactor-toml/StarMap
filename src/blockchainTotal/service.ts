@@ -33,6 +33,7 @@ export class BlockchainConnectService  {
         if (tg && tg.WebApp && tg.WebApp.initData) {
             this.telegramInitData = tg.WebApp.initData;
             const initDataSearchParams = new URLSearchParams(window.Telegram.WebApp.initData);
+            // console.log("Init data: ", this.telegramInitData);
             let inviterId = initDataSearchParams.get('start_param')?.replace("inviterId_", "");
             if (inviterId) {
                 AcceptDuelInvitation(this.telegramInitData, inviterId).then((res) => {

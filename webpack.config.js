@@ -12,7 +12,7 @@ module.exports = {
   entry: './src/index.ts',
 
   output: {
-    filename: 'bundle.[contenthash].js',
+    filename: 'bundle.js',
     path: path.resolve(__dirname, 'build')
   },
   
