@@ -194,6 +194,7 @@ export default {
         const service = BlockchainConnectService.getInstance()
 
         await service.store.BuyItem({
+          telegramInitData: String(service.telegramInitData),
           telegramData: service.telegramAuthData,
           itemId: item.id,
           amount: 1
