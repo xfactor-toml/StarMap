@@ -3,7 +3,7 @@
     <component :is="scenesStore.current.mode.getComponent()" />
     <!-- <PowerIndicator/> -->
     <RivCanvas
-      v-if="activeAnimation"
+      v-if="showTestAnimation && activeAnimation"
       :src="'/expl.riv'"
       :position="pos"
       @end="() => activeAnimation = false"
@@ -15,6 +15,7 @@
 import { useScenesStore } from '@/stores';
 import { PowerIndicator, RivCanvas } from '@/components';
 import { mapStores } from 'pinia';
+import { config } from '@/config';
 
 export default {
   name: 'StartScene',
@@ -27,7 +28,8 @@ export default {
       x: 0,
       y: 0
     },
-    activeAnimation: false
+    activeAnimation: false,
+    showTestAnimation: config.SHOW_RIV_TEST_ANIMATION,
   }),
   methods: {
     handleClick(event: MouseEvent) {
