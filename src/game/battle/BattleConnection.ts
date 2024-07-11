@@ -139,35 +139,60 @@ export class BattleConnection extends MyEventDispatcher {
             fromCli: 'web2'
         }
 
-        if (this._bcConnectService.isTelegram()) {
-            // signData.tgNick = this.signService.TelegramLogin();
-            signData.tgInitString = this._bcConnectService.getTelegramInitData();
-            signData.tgAuthData = this._bcConnectService.getTelegramAuthData();
-        }
-        // else if (GlobalParams.isDebugMode) {
-        //     signData.displayName = 'DebugNick';
-        // }
+        if (GlobalParams.isDebugMode) {
 
-        const walletAddress = await this._bcConnectService.getWalletAddressWithConnect();
-        this.logDebug(`signProcessLocal: walletAddress = ${walletAddress}`);
+            signData.walletId = 'DebugNick';
+            signData.tgInitString = '12345678';
+            signData.tgAuthData = {
+                auth_date: 0,
+                id: 12345678,
+                first_name: 'Debug',
+                username: 'DebugNick',
+                hash: '12345678',
+            };
+            this.sendPacket(PackTitle.sign, signData);
 
-        if (!walletAddress) {
-            const authPriority = this._bcConnectService.getDefaultAuthMethod();
-            this.logDebug(`signProcessLocal: Priority`, authPriority);
-            this._bcConnectService.SetupAuthMethod('Local');
-            this._bcConnectService.getSignedAuthMessage().then((aSignature) => {
-                this.logDebug(`signProcessLocal: local wallet auth...`);
-                signData.signature = aSignature;
-                this.sendPacket(PackTitle.sign, signData);
-            })
-            return;
         }
         else {
-            this._bcConnectService.getSignedAuthMessage().then(aSignature => {
-                this.logDebug(`signProcessLocal: getSignedAuthMessage signature = ${aSignature}`);
-                signData.signature = aSignature;
+
+            if (this._bcConnectService.isTelegram()) {
+                
+                // TG
+                // signData.tgNick = this.signService.TelegramLogin();
+                signData.tgInitString = this._bcConnectService.getTelegramInitData();
+                signData.tgAuthData = this._bcConnectService.getTelegramAuthData();
                 this.sendPacket(PackTitle.sign, signData);
-            });
+
+            }
+            else {
+
+                // Web3
+                signData.fromCli = 'web3';
+                
+                const walletAddress = await this._bcConnectService.getWalletAddressWithConnect();
+                this.logDebug(`signProcessLocal: walletAddress = ${walletAddress}`);
+
+                if (!walletAddress) {
+                    const authPriority = this._bcConnectService.getDefaultAuthMethod();
+                    this.logDebug(`signProcessLocal: Priority`, authPriority);
+                    this._bcConnectService.SetupAuthMethod('Local');
+                    this._bcConnectService.getSignedAuthMessage().then((aSignature) => {
+                        this.logDebug(`signProcessLocal: local wallet auth...`);
+                        signData.signature = aSignature;
+                        this.sendPacket(PackTitle.sign, signData);
+                    })
+                    return;
+                }
+                else {
+                    this._bcConnectService.getSignedAuthMessage().then(aSignature => {
+                        this.logDebug(`signProcessLocal: getSignedAuthMessage signature = ${aSignature}`);
+                        signData.signature = aSignature;
+                        this.sendPacket(PackTitle.sign, signData);
+                    });
+                }
+
+            }
+
         }
 
     }

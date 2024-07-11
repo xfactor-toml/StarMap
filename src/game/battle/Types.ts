@@ -48,7 +48,7 @@ export type TGAuthData = {
     first_name: string;
     hash: string;
     id: number;
-    last_name: string;
+    last_name?: string;
     username: string;
 }
 
@@ -106,6 +106,7 @@ export type PlayerData = {
     name: string,
     isNick: boolean,
     starName: string,
+    displayNick: string,
     race: ObjectRace
 }
 export type StartGameData = {
