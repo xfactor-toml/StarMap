@@ -135,9 +135,6 @@ export class BattleConnection extends MyEventDispatcher {
     private async signProcessLocal() {
         this.logDebug(`signProcessLocal()...`);
 
-        const walletAddress = this._bcConnectService.getWalletAddressWithConnect();
-        this.logDebug(`signProcessLocal: walletAddress = ${walletAddress}`);
-
         let signData: SignData = {
             fromCli: 'web2'
         }
@@ -150,6 +147,9 @@ export class BattleConnection extends MyEventDispatcher {
         // else if (GlobalParams.isDebugMode) {
         //     signData.displayName = 'DebugNick';
         // }
+
+        const walletAddress = await this._bcConnectService.getWalletAddressWithConnect();
+        this.logDebug(`signProcessLocal: walletAddress = ${walletAddress}`);
 
         if (!walletAddress) {
             const authPriority = this._bcConnectService.getDefaultAuthMethod();
