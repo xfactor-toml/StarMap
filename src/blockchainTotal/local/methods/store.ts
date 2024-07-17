@@ -34,6 +34,7 @@ export interface IsAllowBuyRequestData {
 }
 
 export interface BuyRequestData {
+    telegramInitData?: string;
     telegramData: TelegramAuthData;
     itemId: number;
     amount: number;
@@ -137,6 +138,7 @@ export async function BuyItem(data: BuyRequestData): Promise<CheckResponce> {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
+                telegramInitData: data.telegramInitData,
                 telegramData: data.telegramData,
                 itemId: data.itemId,
                 amount: data.amount

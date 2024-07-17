@@ -30,6 +30,7 @@ import { AudioMng } from '../audio/AudioMng';
 import { AudioAlias } from '../audio/AudioData';
 import { RocketTargetViewer } from './RocketTargetViewer';
 import { TextViewer } from './TextViewer';
+import { GlobalParams } from '../data/GlobalParams';
 
 type ServerFieldParams = {
 
@@ -982,7 +983,15 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
 
     private onExplosionPack(aData: ExplosionData) {
         let pos = this.getPositionByServerV3(aData.pos);
-        this._explosionSystem.exposion(pos);
+
+        if (GlobalParams.BATTLE.explosion2d) {
+            let pos2d = ThreeUtils.vectorToScreenPosition(this._render.renderer, pos, this._camera, Math.min(2, DeviceInfo.getInstance().devicePixelRatio));
+            GameEventDispatcher.explosion(pos2d);
+        }
+        else {
+            this._explosionSystem.exposion(pos);
+        }
+
         // snd
         const snd = [AudioAlias.battleExplosionSmall_1, AudioAlias.battleExplosionSmall_2, AudioAlias.battleExplosionBig];
         let sndAlias = snd[MyMath.randomIntInRange(0, snd.length - 1)];

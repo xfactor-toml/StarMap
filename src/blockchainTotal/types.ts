@@ -12,7 +12,7 @@ export type Coords = {
 }
 
 export type Race = "Waters" | "Humans" | "Insects" | "Lizards";
-export type AuthMethod = "WindowEth" | "Walletconnect" | "Local" | "TON";
+export type AuthMethod = "telegram" | "WindowEth" | "Walletconnect" | "Local" | "TON";
 
 export type GameStats = {
   games: number,

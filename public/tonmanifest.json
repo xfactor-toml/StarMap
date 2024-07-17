@@ -1,0 +1,7 @@
+{
+    "name": "Vorpal Galaxy",
+    "description": "Starmap, play Star defender game, explore stars",
+    "url": "https://starmap.vorpal.finance",
+    "icons": [],
+    "bridge": "https://bridge.tonapi.io/bridge"
+  }

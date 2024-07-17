@@ -128,7 +128,7 @@ export class GalaxyScene extends BasicScene {
             return;
         }
         this.logDebug(`checkDuel: isTelegram = ${isTG}`);
-        const userNick = bcs.TelegramLogin();
+        const userNick = String(bcs.TelegramId());
         this.logDebug(`checkDuel: userNick = ${userNick}`);
         if (!userNick || userNick == '') {
             return;
@@ -399,37 +399,12 @@ export class GalaxyScene extends BasicScene {
         let bcs = BlockchainConnectService.getInstance();
 
         const DEBUG_GUI_TG = {
-            tgLoginTest1: () => {
-                localStorage.setItem("userLogin", 'testNick1');
-                bcs.setTestUserName('testNick1');
-            },
-            tgLoginTest2: () => {
-                localStorage.setItem("userLogin", 'testNick2');
-                bcs.setTestUserName('testNick2');
-            },
-            tgLoginMaxMonax: () => {
-                localStorage.setItem("userLogin", 'maxmonax');
-                bcs.setTestUserName('maxmonax');
-            },
-            tgLoginIvemaker: () => {
-                localStorage.setItem("userLogin", 'ivemaker');
-                bcs.setTestUserName('ivemaker');
-            },
-            tgLoginBerum: () => {
-                localStorage.setItem("userLogin", 'berum');
-                bcs.setTestUserName('berum');
-            },
             clearLogin: () => {
                 localStorage.setItem("userLogin", '');
                 bcs.setTestUserName('');
             },
         }
         let fTg = DebugGui.getInstance().createFolder('TG');
-        fTg.add(DEBUG_GUI_TG, 'tgLoginTest1').name('Login testNick1');
-        fTg.add(DEBUG_GUI_TG, 'tgLoginTest2').name('Login testNick2');
-        fTg.add(DEBUG_GUI_TG, 'tgLoginMaxMonax').name('Login Max');
-        fTg.add(DEBUG_GUI_TG, 'tgLoginIvemaker').name('Login Ivemaker');
-        fTg.add(DEBUG_GUI_TG, 'tgLoginBerum').name('Login Berum');
         fTg.add(DEBUG_GUI_TG, 'clearLogin').name('Clear Login');
 
         const DEBUG_GUI_DUEL = {
@@ -438,23 +413,11 @@ export class GalaxyScene extends BasicScene {
             },
             duelTest2Check: () => {
                 bc.sendDuelCheck(`testNick2`);
-            },
-            duelMaxCheck: () => {
-                bc.sendDuelCheck(`maxmonax`);
-            },
-            duelIvemakerCheck: () => {
-                bc.sendDuelCheck(`ivemaker`);
-            },
-            duelBerumCheck: () => {
-                bc.sendDuelCheck(`berum`);
             }
         }
         let f = DebugGui.getInstance().createFolder('Duels');
         f.add(DEBUG_GUI_DUEL, 'duelTest1Check').name('Test1 Check');
         f.add(DEBUG_GUI_DUEL, 'duelTest2Check').name('Test2 Check');
-        f.add(DEBUG_GUI_DUEL, 'duelMaxCheck').name('maxmonax Check');
-        f.add(DEBUG_GUI_DUEL, 'duelIvemakerCheck').name('ivemaker Check');
-        f.add(DEBUG_GUI_DUEL, 'duelBerumCheck').name('berum Check');
 
     }
 

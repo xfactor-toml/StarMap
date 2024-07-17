@@ -19,6 +19,11 @@ export type EmotionData = {
     position2d?: { x: number, y: number }
 }
 
+export type ExplosionData = {
+    eventName: GameEvent.BATTLE_EXPLOSION,
+    position2d: { x: number, y: number }
+}
+
 export enum GameEvent {
 
     MESSAGE = 'MESSAGE',
@@ -71,6 +76,9 @@ export enum GameEvent {
     // battle process
     BATTLE_EXP_DATA = 'BATTLE_EXP_DATA',
     BATTLE_EMOTION = 'BATTLE_EMOTION',
+
+    BATTLE_EXPLOSION = 'BATTLE_EXPLOSION'
+
 }
 
 export class GameEventDispatcher {
@@ -217,6 +225,16 @@ export class GameEventDispatcher {
             eventName: GameEvent.BATTLE_EMOTION,
             type: 'show',
             emotion: emotion,
+            position2d: aPos2d
+        };
+        window.dispatchEvent(new CustomEvent('gameEvent', {
+            detail: data
+        }));
+    }
+
+    static explosion(aPos2d: { x: number, y: number }) {
+        let data: ExplosionData = {
+            eventName: GameEvent.BATTLE_EXPLOSION,
             position2d: aPos2d
         };
         window.dispatchEvent(new CustomEvent('gameEvent', {

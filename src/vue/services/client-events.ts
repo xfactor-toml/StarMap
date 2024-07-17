@@ -151,14 +151,14 @@ export class ClientEventsService {
         battleStore.process.setState({
           players: {
             connected: {
-              address: clientEvent.enemyData.name || '0xADDR-ENEMY',
+              address: clientEvent.enemyData.displayNick || '0xADDR-ENEMY',
               name: clientEvent.enemyData.starName,
               race: clientEvent.enemyData.race,
               star: clientEvent.enemyData.starName,
               isNick: clientEvent.enemyData.isNick,
             },
             current: {
-              address: clientEvent.playerData.name || '0xADDR-PLAYER',
+              address: clientEvent.playerData.displayNick || '0xADDR-PLAYER',
               name: clientEvent.playerData.starName,
               race: clientEvent.playerData.race,
               star: clientEvent.playerData.starName,
