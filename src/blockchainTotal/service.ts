@@ -341,7 +341,7 @@ export class BlockchainConnectService  {
     }
 
     public TelegramLogin() {
-        return this.telegramAuthData?.username || getShortAddress(this.walletAddress);
+        return this.telegramAuthData?.username || this.telegramAuthData?.first_name || "Anonimous";
     }
 
     public TelegramId() {
