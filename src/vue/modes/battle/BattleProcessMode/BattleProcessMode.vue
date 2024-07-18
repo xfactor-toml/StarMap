@@ -46,15 +46,18 @@
         </template>
       </div>
     </div>
-    <div class="BattleProcessMode__panel">
-      <BattleControlPanel
+    <div v-if="showBattleControlPanel" class="BattleProcessMode__panel">
+      <!-- <BattleControlPanel
         :skills="battleStore.process.state.skills"
         :skillsPendingList="battleStore.process.skillsPendingList"
         :cooldown="battleStore.process.cooldown"
         :level="battleStore.process.state.level"
         :gold="battleStore.process.state.gold"
         @action="$client.onBattleAction"
-      />
+        @openShop="toggleControlPanel"
+      /> -->
+      <BattleShop />
+      
     </div>
     <EmotionsSelect
       v-if="battleStore.emotions.selectorCoords"
@@ -74,6 +77,7 @@
 <script lang="ts">
 import { useBattleStore, useSettingsStore, useUiStore } from '@/stores';
 import { BattleControlPanel, EmotionsSelect, PlayerEmotion, SettingsPopup } from '@/components';
+import BattleShop from '@/components/BattleShop/BattleShop.vue';
 import { getShortAddress } from '@/utils';
 import { mapStores } from 'pinia'; 
 import { default as vClickOutside } from 'click-outside-vue3';
@@ -85,13 +89,15 @@ export default {
     EmotionsSelect,
     PlayerEmotion,
     SettingsPopup,
+    BattleShop,
   },
   directives: {
     clickOutside: vClickOutside.directive
   },
   data() {
     return {
-      settingsPopupVisible: false
+      settingsPopupVisible: false,
+      showBattleControlPanel: true,
     }
   },
   computed: mapStores(useBattleStore, useSettingsStore, useUiStore),
@@ -107,6 +113,10 @@ export default {
     exitFromBattle() {
       this.$client.onBattleExit()
       this.battleStore.process.reset()
+    },
+    toggleControlPanel() {
+      this.showBattleControlPanel = !this.showBattleControlPanel;
+      console.log('1234',"=============")
     }
   }
 };

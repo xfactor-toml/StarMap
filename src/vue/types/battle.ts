@@ -2,6 +2,8 @@ import { Race } from "~/blockchainTotal/types";
 
 export type BattleActionType = 'satelliteFire' | 'rocketFire' | 'slowdown' | 'invisibility';
 
+export type BattleItemType = 'thunder' | 'velocityVector' | 'surgesSpire' | 'spiralSentinel' | 'nuclearOrb' | 'momentumMatrix' | 'quantumBooster' | 'accelerationAmulet'
+
 export type BattlePlayer = {
   address: string
   star: string

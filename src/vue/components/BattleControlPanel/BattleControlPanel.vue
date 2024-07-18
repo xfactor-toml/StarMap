@@ -1,6 +1,14 @@
 <template>
   <div class="BattleControlPanel">
     <div class="BattleControlPanel__row">
+      <EmptyControl
+        :disabled="true"
+      />
+      <EmptyControl
+        :disabled="true"
+      />
+    </div>
+    <div class="BattleControlPanel__row">
       <LevelControl
         :disabled="true"
         :level="level.current"
@@ -11,7 +19,9 @@
         :amount="gold"
       />
       <ShopControl
-        :disabled="true"
+        :active="true"
+        :disabled="false"
+        @click="call('satelliteFire')" 
       />
     </div>
     <div class="BattleControlPanel__row">
@@ -19,6 +29,7 @@
         :params="skills['satelliteFire']"
         :cooldown="cooldown['satelliteFire']"
         :disabled="isPendingSkill('satelliteFire')"
+        :active="true"
         @fire="call('satelliteFire')"
         @levelUp="levelUp('satelliteFire')"
       />
@@ -57,6 +68,10 @@ import {
 import { PropType } from 'vue';
 
 import {
+  EmptyControl
+} from './controls';
+
+import {
   GoldControl,
   LevelControl,
   ShopControl
@@ -72,6 +87,7 @@ import {
 export default {
   name: 'BattleControlPanel',
   components: {
+    EmptyControl,
     GoldControl,
     InvisibilitySkill,
     LevelControl,
@@ -102,15 +118,17 @@ export default {
       required: true
     }
   },
+
   emits: {
-    action: (payload: BattleActionPayload) => payload
-  },
+    action: (payload: BattleActionPayload) => payload,   
+},
   methods: {
     call(actionType: BattleActionType) {
       this.$emit('action', {
         action: actionType,
         type: 'call',
-      })
+      }),
+      console.log("123456")
     },
     levelUp(actionType: BattleActionType) {
       this.$emit('action', {

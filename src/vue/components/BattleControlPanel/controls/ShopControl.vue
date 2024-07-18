@@ -1,5 +1,6 @@
 <template>
-  <BaseControl
+ <BaseControl
+    :active="active"
     :disabled="disabled"
   >SHOP
   </BaseControl>
@@ -16,7 +17,11 @@ export default {
   props: {
     disabled: {
       type: Boolean,
+    },
+    active: {
+      type: Boolean,
     }
+
   }
 };
 </script>
