@@ -47,17 +47,20 @@
       </div>
     </div>
     <div v-if="showBattleControlPanel" class="BattleProcessMode__panel">
-      <!-- <BattleControlPanel
+      <BattleControlPanel
         :skills="battleStore.process.state.skills"
         :skillsPendingList="battleStore.process.skillsPendingList"
         :cooldown="battleStore.process.cooldown"
         :level="battleStore.process.state.level"
         :gold="battleStore.process.state.gold"
+        @setVisible = "setBattleControlPanelVisible"
         @action="$client.onBattleAction"
-        @openShop="toggleControlPanel"
-      /> -->
-      <BattleShop />
-      
+      /> 
+    </div>
+    <div v-if="!showBattleControlPanel" class="BattleShop__panel">
+      <BattleShop 
+        @setVisible = "setBattleControlPanelVisible"
+         />
     </div>
     <EmotionsSelect
       v-if="battleStore.emotions.selectorCoords"
@@ -114,9 +117,8 @@ export default {
       this.$client.onBattleExit()
       this.battleStore.process.reset()
     },
-    toggleControlPanel() {
+    setBattleControlPanelVisible() {
       this.showBattleControlPanel = !this.showBattleControlPanel;
-      console.log('1234',"=============")
     }
   }
 };

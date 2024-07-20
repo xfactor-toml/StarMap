@@ -21,6 +21,7 @@
       <ShopControl
         :active="true"
         :disabled="false"
+        @action = "setVisible"
       />
     </div>
     <div class="BattleControlPanel__row">
@@ -136,6 +137,9 @@ export default {
     },
     isPendingSkill(type: BattleActionType) {
       return this.skillsPendingList.includes(type);
+    },
+    setVisible() {
+      this.$emit('setVisible')
     }
   }
 };

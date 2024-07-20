@@ -2,15 +2,23 @@ import { Race } from "~/blockchainTotal/types";
 
 export type BattleActionType = 'satelliteFire' | 'rocketFire' | 'slowdown' | 'invisibility';
 
-export type BattleItemType = 'thunder' | 'velocityVector' | 'surgesSpire' | 'spiralSentinel' | 'nuclearOrb' | 'momentumMatrix' | 'quantumBooster' | 'accelerationAmulet'
+export type BattleItemNameType = 'thunder' | 'velocityVector' | 'surgesSpire' | 'spiralSentinel' | 'nuclearOrb' | 'momentumMatrix' | 'quantumBooster' | 'accelerationAmulet'
 
-export type BattleItem = {
-  name: BattleItemType
+export type BattleItemStatusType = {
+  name: BattleItemNameType
   hide: boolean
   detail: boolean
   id: number
   buy: boolean
 }
+
+export type BattleItemCardType = {
+  name: string,
+  price: number,
+  description: string,
+  src: string, 
+}
+
 export type BattlePlayer = {
   address: string
   star: string

@@ -9,7 +9,6 @@
       [name]: Boolean(name),
     }"
     :disabled="!active || disabled"
-    @click="$emit('click')"
   >
     <svg
       class="BaseControl__outline"
@@ -116,7 +115,6 @@ export default {
       default: false
     },
   },
-  emits: ['click'],
   computed: {
     hasCooldown() {
       return this.cooldown !== null

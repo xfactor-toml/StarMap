@@ -2,6 +2,7 @@
   display: flex;
   justify-content: center;
   flex-direction: column;
+  pointer-events: all;
 }
 
 .BattleShop__row {
@@ -29,5 +30,4 @@
   margin-bottom: 10px;
   opacity: 0.3;
   border: 1px solid #00FFFF;
-
 }

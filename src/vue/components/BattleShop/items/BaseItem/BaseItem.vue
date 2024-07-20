@@ -50,41 +50,23 @@
       </div>
     </button>
 
-    <transition name="detail">
-      <div v-if="detail">
-        <div v-if="id <= 1">
-            <div class="BaseItem__extend__left">
-              <svg class="BaseItem__outline" viewBox="0 0 560 214" fill="none">
-                <path
-                  d="M558.6 69.35V145.04C558.6 155.76 552.88 165.66 543.6 171.02L478.04 208.86C473.4 211.54 468.22 212.88 463.04 212.88H0.839844C6.01984 212.88 11.1998 211.54 15.8398 208.86L48.6198 189.94L81.3899 171.02C86.0299 168.34 89.7798 164.52 92.3698 160.04C94.9598 155.55 96.3899 150.4 96.3899 145.04V69.34C96.3899 63.99 94.9598 58.83 92.3698 54.35C89.7798 49.86 86.0299 46.04 81.3899 43.36L48.6198 24.4399L15.8398 5.52002C11.1998 2.84002 6.01984 1.5 0.839844 1.5H463.04C468.22 1.5 473.4 2.84002 478.04 5.52002L543.6 43.36C552.88 48.72 558.6 58.63 558.6 69.35Z"
-                  stroke="#00FFFF" stroke-width="2" stroke-miterlimit="10" />
-              </svg>
-            </div>
-            <div class="BaseItem__detailIcon__left" @click="handleItemViewCloseClick">
-              <DetailLeftIcon />
-            </div>
-            <div class="BaseItem__detailText__left">
-              People who live in urban areas are exposed to all kinds.
-            </div>
-        </div>
-
-        <div v-else>
-          <div class="BaseItem__extend__right">
-            <svg class="BaseItem__outline" viewBox="0 0 560 214" fill="none" transform="rotate(180 0 0)">
-              <path
-                d="M558.6 69.35V145.04C558.6 155.76 552.88 165.66 543.6 171.02L478.04 208.86C473.4 211.54 468.22 212.88 463.04 212.88H0.839844C6.01984 212.88 11.1998 211.54 15.8398 208.86L48.6198 189.94L81.3899 171.02C86.0299 168.34 89.7798 164.52 92.3698 160.04C94.9598 155.55 96.3899 150.4 96.3899 145.04V69.34C96.3899 63.99 94.9598 58.83 92.3698 54.35C89.7798 49.86 86.0299 46.04 81.3899 43.36L48.6198 24.4399L15.8398 5.52002C11.1998 2.84002 6.01984 1.5 0.839844 1.5H463.04C468.22 1.5 473.4 2.84002 478.04 5.52002L543.6 43.36C552.88 48.72 558.6 58.63 558.6 69.35Z"
-                stroke="#00FFFF" stroke-width="2" stroke-miterlimit="10" />
-            </svg>
-          </div>
-          <div class="BaseItem__detailIcon__right" @click="handleItemViewCloseClick">
-            <DetailRightIcon />
-          </div>
-          <div class="BaseItem__detailText__right">
-            People who live in urban areas are exposed to all kinds.
-          </div>
-        </div>
+    <transition name="fade">
+    <div v-if="detail">
+      <div :class="['BaseItem__extend', { 'BaseItem__extend--left': id <= 1, 'BaseItem__extend--right': id > 1 }]">
+        <svg class="BaseItem__outline" :viewBox="'0 0 560 214'" fill="none" :transform="id > 1 ? 'rotate(180 0 0)' : ''">
+          <path
+            d="M558.6 69.35V145.04C558.6 155.76 552.88 165.66 543.6 171.02L478.04 208.86C473.4 211.54 468.22 212.88 463.04 212.88H0.839844C6.01984 212.88 11.1998 211.54 15.8398 208.86L48.6198 189.94L81.3899 171.02C86.0299 168.34 89.7798 164.52 92.3698 160.04C94.9598 155.55 96.3899 150.4 96.3899 145.04V69.34C96.3899 63.99 94.9598 58.83 92.3698 54.35C89.7798 49.86 86.0299 46.04 81.3899 43.36L48.6198 24.4399L15.8398 5.52002C11.1998 2.84002 6.01984 1.5 0.839844 1.5H463.04C468.22 1.5 473.4 2.84002 478.04 5.52002L543.6 43.36C552.88 48.72 558.6 58.63 558.6 69.35Z"
+            stroke="#00FFFF" stroke-width="2" stroke-miterlimit="10" />
+        </svg>
       </div>
-    </transition>
+      <div :class="['BaseItem__detailIcon', { 'BaseItem__detailIcon--left': id <= 1, 'BaseItem__detailIcon--right': id > 1 }]" @click="handleItemViewCloseClick">
+        <component :is="id <= 1 ? 'DetailLeftIcon' : 'DetailRightIcon'" />
+      </div>
+      <div :class="['BaseItem__detailText', { 'BaseItem__detailText--left': id <= 1, 'BaseItem__detailText--right': id > 1 }]">
+        People who live in urban areas are exposed to all kinds.
+      </div>
+    </div>
+  </transition>
 
   </div>
 </template>
@@ -104,7 +86,7 @@ import {
   BackGroundIcon,
 } from './icons'
 import { DefineComponent, PropType } from 'vue';
-import { BattleItemType } from '@/types';
+import { BattleItemNameType } from '@/types';
 
 export default {
   name: 'BaseItem',
@@ -118,7 +100,7 @@ export default {
       type: Number,
     },
     name: {
-      type: String as PropType<BattleItemType>,
+      type: String as PropType<BattleItemNameType>,
     },
     detail: {
       type: Boolean,
@@ -152,7 +134,7 @@ export default {
   },
   computed: {
     icon() {
-      const icons: Record<BattleItemType, DefineComponent<{}, {}, any>> = {
+      const icons: Record<BattleItemNameType, DefineComponent<{}, {}, any>> = {
         thunder: ThunderIcon,
         velocityVector: VelocityVectorIcon,
         surgesSpire: SurgeSpiresIcon,

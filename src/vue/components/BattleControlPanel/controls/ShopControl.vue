@@ -12,7 +12,6 @@ import { BaseControl } from './BaseControl';
 
 export default {
   name: 'ShopControl',
-  emits: ['openShop'],
   components: {
     BaseControl,
   },
@@ -26,8 +25,7 @@ export default {
   }, 
   methods: {
     handleClick() {
-      this.$emit('openShop');
-      console.log("1233434")
+      this.$emit('action')
     }
   }
 };

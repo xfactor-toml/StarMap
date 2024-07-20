@@ -1,11 +1,12 @@
 <template>
     <div class="BattleShop">
+      
       <header>
         <GoldScore />
       </header>
       <div class="BattleShop__row">
         <div v-for="item in items" :key="item.id" :class="{ isHide: item.hide }">
-          <TradingItem>
+          <TradingItem :id="item.id" :detail="item.detail">
             <BaseItem 
               :name="item.name" 
               :hide="item.hide" 
@@ -34,7 +35,7 @@
   import { GoldScore } from './score/inex';
   import { BaseItem } from './items/BaseItem';
   import { TradingItem } from './tradings/TradingItem';
-  import { BattleItem } from '@/types';
+  import { BattleItemStatusType } from '@/types';
   import {
     AccelerationAmuletTrading,
     SurgeSpiresTrading,
@@ -60,7 +61,7 @@
           { name: 'velocityVector', hide: false, detail: false, buy: false, id: 1 },
           { name: 'surgesSpire', hide: false, detail: false, buy: false, id: 2 },
           { name: 'spiralSentinel', hide: false, detail: false, buy: false, id: 3 }
-        ] as BattleItem[]
+        ] as BattleItemStatusType[]
       };
     },
     methods: {
@@ -90,7 +91,6 @@
           item.detail = false;
         });
         this.items = [...this.items];
-        console.log("123133",id)
       }
     }
   });

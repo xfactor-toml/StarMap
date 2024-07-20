@@ -12,10 +12,10 @@
     background-color: transparent;
     border: none;
     color: #050A26;
-    cursor: pointer;
     transition: ease transform 200ms;
     will-change: transform;
 }
+
 .GoldScore__score {
     display: flex;
     align-items: center;
@@ -27,6 +27,10 @@
     left: 90px;
     font-size: 13px;
 
+}
+
+.GoldScore__score:hover {
+    cursor: pointer;
 }
 .GoldScore__text {
     padding: 3px;
