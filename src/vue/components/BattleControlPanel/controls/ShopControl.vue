@@ -2,6 +2,7 @@
  <BaseControl
     :active="active"
     :disabled="disabled"
+    @click="handleClick"
   >SHOP
   </BaseControl>
 </template>
@@ -11,6 +12,7 @@ import { BaseControl } from './BaseControl';
 
 export default {
   name: 'ShopControl',
+  emits: ['openShop'],
   components: {
     BaseControl,
   },
@@ -21,7 +23,12 @@ export default {
     active: {
       type: Boolean,
     }
-
+  }, 
+  methods: {
+    handleClick() {
+      this.$emit('openShop');
+      console.log("1233434")
+    }
   }
 };
 </script>

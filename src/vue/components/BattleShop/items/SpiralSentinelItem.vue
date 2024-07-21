@@ -2,7 +2,7 @@
     <BaseItem
       :name="'spiralSentinel'"
       :active="active"
-      :disabled="disabled"
+      :disabled="true"
       :cooldown="cooldown"
       :progress="progress"
     />

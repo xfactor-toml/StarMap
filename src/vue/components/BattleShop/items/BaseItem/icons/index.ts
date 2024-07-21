@@ -6,7 +6,9 @@ import NuclearOrbIcon from "./NuclearOrbIcon.vue";
 import MomentumMatrixIcon from "./MomentumMatrixIcon.vue";
 import QuantumBoosterIcon from "./QuantumBoosterIcon.vue";
 import AccelerationAmuletIcon from "./AccelerationAmuletIcon.vue";
-
+import DetailLeftIcon from "./DetailLeftIcon.vue";
+import DetailRightIcon from "./DetailRightIcon.vue";
+import BackGroundIcon from "./BackGroundIcon.vue";
 export {
     ThunderIcon,
     VelocityVectorIcon,
@@ -16,4 +18,7 @@ export {
     MomentumMatrixIcon,
     QuantumBoosterIcon,
     AccelerationAmuletIcon, 
+    DetailLeftIcon,
+    DetailRightIcon,
+    BackGroundIcon,
 };

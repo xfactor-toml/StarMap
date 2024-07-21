@@ -4,6 +4,13 @@ export type BattleActionType = 'satelliteFire' | 'rocketFire' | 'slowdown' | 'in
 
 export type BattleItemType = 'thunder' | 'velocityVector' | 'surgesSpire' | 'spiralSentinel' | 'nuclearOrb' | 'momentumMatrix' | 'quantumBooster' | 'accelerationAmulet'
 
+export type BattleItem = {
+  name: BattleItemType
+  hide: boolean
+  detail: boolean
+  id: number
+  buy: boolean
+}
 export type BattlePlayer = {
   address: string
   star: string

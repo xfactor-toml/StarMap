@@ -21,7 +21,6 @@
       <ShopControl
         :active="true"
         :disabled="false"
-        @click="call('satelliteFire')" 
       />
     </div>
     <div class="BattleControlPanel__row">
@@ -127,8 +126,7 @@ export default {
       this.$emit('action', {
         action: actionType,
         type: 'call',
-      }),
-      console.log("123456")
+      })
     },
     levelUp(actionType: BattleActionType) {
       this.$emit('action', {

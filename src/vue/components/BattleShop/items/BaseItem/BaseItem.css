@@ -1,4 +1,4 @@
-.BaseControl {
+.BaseItem {
     display: flex;
     justify-content: center;
     width: 64px;
@@ -11,54 +11,22 @@
     cursor: pointer;
     outline: none;
     user-select: none;
+    z-index: 10;
+  }
+
+  .isHide {
+    display: none;
+    visibility: hidden;
   }
   
   
-  .BaseControl__outline {
+  .BaseItem__outline {
     width: 100%;
     height: 100%;
   }
-  
-  .BaseControl[disabled],
-  .BaseControl.cooldown {
-    cursor: default;
-    pointer-events: none;
-  }
-  
-  
-  .BaseControl:not(.disabled, .active) svg {
-    opacity: 1;
-  }
-  
-  .BaseControl__fill {  
-    fill: rgba(0, 255, 247, 0.05); /* You can remove this if you want to replace it with the gradient */
-    filter: drop-shadow(0px 0px 30px rgba(0, 255, 246, 0.5));
-    /* background: linear-gradient(0deg, #00FFFF 0%, rgba(0, 255, 255, 0) 99.99%);
-    opacity: 0.3; */
-  }
-  
-  .BaseControl.active .BaseControl__fill {
-    fill: rgba(0, 255, 247, 0.3);
-  }
-  
-  .BaseControl.cooldown .BaseControl__fill {
-    fill: rgba(0, 255, 247, 0.05);
-  }
-  
-  .BaseControl.cooldown .BaseControl__icon {
-    opacity: 0.2;
-  }
-  
-  .BaseControl.invisibility .BaseControl__icon {
-    top: 10%;
-  }
-  
-  .BaseControl.invisibility .BaseControl__icon > svg {
-    height: 80%;
-  }
-  
-  .BaseControl__icon,
-  .BaseControl__content {
+
+  .BaseItem__icon,
+  .BaseItem__content {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -70,27 +38,138 @@
     transition: ease transform 200ms;
     will-change: transform;
   }
-  
-  .BaseControl__content {
-    width: 80%;
-    height: 80%;
-    left: 10%;
-    top: 10%;
-  }
-  
-  .BaseControl:not(.hasContent):hover .BaseControl__icon,
-  .BaseControl:hover .BaseControl__content {
-    transform: scale(1.075);
-  }
-  
-  .BaseControl:not(.hasContent):active .BaseControl__icon,
-  .BaseControl:active .BaseControl__content {
-    transform: scale(1);
-  }
-  
-  .BaseControl__icon > svg {
+   
+  .BaseItem__icon > svg {
     width: 90%;
     height: 90%;
   }
+
+  .BaseItem__row {
+    display: flex;
+    
+  }
+
+  .BaseItem__extend__right {
+    display: flex;
+    justify-content: center;
+    width: 180px;
+    height:72px;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    position: absolute;
+    right: 33px;
+    color: #00FFFF;
+    cursor: pointer;
+    outline: none;
+    user-select: none;
+    z-index: 2;
+    transition: .5s;
+  }
+
+  .BaseItem__detailIcon__right {
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    height: 66px;
+    right: 158px;
+    z-index: 3
+  }
+
+  .BaseItem__detailText__right {
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    width: 100px;
+    height: 52px;
+    margin-left: -174px;
+    top:10px;
+    font-family: 'Exo';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 13px;
+    color: #00FFFF;
+    overflow: auto;
+    z-index: 4;
+  }
+
+  .BaseItem__detailText__right::-webkit-scrollbar {
+    width: 1px; 
+  }
+  
+  .BaseItem__detailText__right::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+    border-radius: 10px; 
+  }
+  
+  .BaseItem__detailText__right::-webkit-scrollbar-thumb {
+    background: #00FFFF;
+    border-radius: 10px; 
+  }
+
+  .BaseItem__extend__left {
+    display: flex;
+    justify-content: center;
+    width: 180px;
+    height:72px;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    position: absolute;
+    left:33px;
+    color: #00FFFF;
+    cursor: pointer;
+    outline: none;
+    user-select: none;
+    z-index: 2;
+  }
+
+  .BaseItem__detailIcon__left {
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    width: 63px;
+    left: 160px;
+    z-index: 5;
+  }
+
+  .BaseItem__detailText__left {
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    width: 100px;
+    height: 52px;
+    margin-left: 10px;
+    top:10px;
+    font-family: 'Exo';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 13px;
+    color: #00FFFF;
+    overflow: auto;
+    z-index: 7;
+  }
+
+  .BaseItem__detailText__left::-webkit-scrollbar {
+    width: 1px; 
+  }
+  
+  .BaseItem__detailText__left::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+    border-radius: 10px; 
+  }
+  
+  .BaseItem__detailText__left::-webkit-scrollbar-thumb {
+    background: #00FFFF;
+    border-radius: 10px; 
+  }
   
 
+/* we will explain what these classes do next! */
+.detail-enter-active, .detail-leave-active {
+  transition: opacity 1s, transform 1s;
+}
+.detail-enter, .detail-leave-to {
+  opacity: 0;
+  transform: translateX(32px);
+}

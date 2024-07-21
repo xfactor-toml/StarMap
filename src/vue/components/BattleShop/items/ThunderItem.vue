@@ -2,7 +2,7 @@
     <BaseItem
       :name="'thunder'"
       :active="active"
-      :disabled="disabled"
+      :disabled="false"
       :cooldown="cooldown"
       :progress="progress"
     />

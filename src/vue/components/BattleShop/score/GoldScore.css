@@ -1,0 +1,34 @@
+.GoldScore__image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 370px;
+    height: 60px;
+    padding: 0;
+    position: absolute;
+    top: -34px;
+    left: -30px;
+    z-index: 1;
+    background-color: transparent;
+    border: none;
+    color: #050A26;
+    cursor: pointer;
+    transition: ease transform 200ms;
+    will-change: transform;
+}
+.GoldScore__score {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    z-index: 2;
+    position: absolute;
+    top: -30px;
+    left: 90px;
+    font-size: 13px;
+
+}
+.GoldScore__text {
+    padding: 3px;
+    font-weight: bold;
+}
