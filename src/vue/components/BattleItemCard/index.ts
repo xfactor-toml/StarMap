@@ -1,3 +1,3 @@
-import InventoryCardPopup from './InventoryCardPopup.vue';
+import BattleItemCard from "./BattleItemCard.vue";
 
-export { InventoryCardPopup };
+export { BattleItemCard };

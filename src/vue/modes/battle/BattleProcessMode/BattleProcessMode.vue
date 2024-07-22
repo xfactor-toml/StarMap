@@ -63,7 +63,7 @@
          />
     </div>
     <EmotionsSelect
-      v-if="battleStore.emotions.selectorCoords"
+      v-if="battleStore.emotions.selectorCoords"  
       :coords="battleStore.emotions.selectorCoords"
       @select="$client.onEmotionSelect"
       @close="battleStore.emotions.closeSelector"

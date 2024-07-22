@@ -18,7 +18,7 @@
 
         <div class="GoldScore__score">
             <span class="">SHOP | </span>
-            <span class="GoldScore__text">99 999 GOLD</span>
+            <span class="GoldScore__text">{{ score }} GOLD</span>
         </div>
 
     </div>
@@ -26,6 +26,12 @@
 <script lang="ts">
 export default {
     name: 'GoldScore',
+    props: {
+        score: {
+            type: Number,
+          
+        }
+    }
 }
 </script>
 

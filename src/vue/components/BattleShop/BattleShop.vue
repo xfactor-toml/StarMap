@@ -1,8 +1,7 @@
 <template>
-    <div class="BattleShop">
-      
+    <div class="BattleShop"> 
       <header>
-        <GoldScore />
+        <GoldScore :score="0" />
       </header>
       <div class="BattleShop__row">
         <div v-for="item in items" :key="item.id" :class="{ isHide: item.hide }">
@@ -28,20 +27,38 @@
         <QuantumBoosterTrading />
       </div>
     </div>
+    
+    <BattleItemCard
+      v-if="itemCardShow"
+      :title="this.BattleItemCards[this.id].name"
+      :description="this.BattleItemCards[this.id].description"
+      :image="this.BattleItemCards[this.id].src"
+      :price="this.BattleItemCards[this.id].price"
+      @close=""
+      @buy="buy"
+      @sell=""
+    />
+  <ConfirmPopup
+    v-if="confirmation"
+    :title="'Are you sure you want to make this purchase?'"
+    @close="confirmResolver(false)"
+    @confirm="confirmResolver(true)"
+  /> 
+
   </template>
   
   <script lang="ts">
   import { defineComponent } from 'vue';
   import { GoldScore } from './score/inex';
-  import { BaseItem } from './items/BaseItem';
-  import { TradingItem } from './tradings/TradingItem';
+  import { BaseItem } from './item';
+  import { TradingItem } from './trading';
   import { BattleItemStatusType } from '@/types';
-  import {
-    AccelerationAmuletTrading,
-    SurgeSpiresTrading,
-    MomentumMatrixTrading,
-    QuantumBoosterTrading
-  } from './tradings';
+  import { BattleItemCard } from '../BattleItemCard';
+  import { BattleItemCards } from '@/constants';
+  import { useBattleStore } from '@/stores';
+  import { mapStores } from 'pinia'; 
+  import ConfirmPopup from '../ConfirmPopup/ConfirmPopup.vue';
+
   
   export default defineComponent({
     name: 'BattleShop',
@@ -49,10 +66,9 @@
       BaseItem,
       TradingItem,
       GoldScore,
-      AccelerationAmuletTrading,
-      SurgeSpiresTrading,
-      MomentumMatrixTrading,
-      QuantumBoosterTrading
+      BattleItemCard,
+      ConfirmPopup,
+
     },
     data() {
       return {
@@ -61,9 +77,14 @@
           { name: 'velocityVector', hide: false, detail: false, buy: false, id: 1 },
           { name: 'surgesSpire', hide: false, detail: false, buy: false, id: 2 },
           { name: 'spiralSentinel', hide: false, detail: false, buy: false, id: 3 }
-        ] as BattleItemStatusType[]
+        ] as BattleItemStatusType[],
+        itemCardShow: false,
+        confirmation: false,
+        confirmResolver: null,
+        BattleItemCards
       };
     },
+    computed: mapStores(useBattleStore),
     methods: {
       handleItemDescription(id: number) {
         const hideMap = {
@@ -91,9 +112,29 @@
           item.detail = false;
         });
         this.items = [...this.items];
+      },
+      handleBuyClick() {
+      this.itemCardShow = true   
+    },
+    async buy() {
+      const confirmed = await this.confirm();
+
+      if(confirmed) {
+
       }
+    },
+    
+    async confirm() {
+        this.confirmation = true
+        const confirmed = await new Promise(resolve => {
+        this.confirmResolver = resolve
+      })
+      this.confirmation = false
+      return confirmed
     }
-  });
+  }
+    }
+  );
   </script>
   
   <style scoped src="./BattleShop.css"></style>
