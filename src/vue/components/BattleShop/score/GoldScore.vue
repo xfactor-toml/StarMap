@@ -16,7 +16,7 @@
 
         </div>
 
-        <div class="GoldScore__score">
+        <div class="GoldScore__score" @click="$emit('click')">
             <span class="">SHOP | </span>
             <span class="GoldScore__text">{{ score }} GOLD</span>
         </div>
@@ -28,10 +28,10 @@ export default {
     name: 'GoldScore',
     props: {
         score: {
-            type: Number,
-          
+            type: Number,       
         }
-    }
+    },
+    emits: ['click']
 }
 </script>
 

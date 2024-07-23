@@ -1,42 +1,55 @@
 <template>
     <div class="BattleShop"> 
       <header>
-        <GoldScore :score="0" />
+        <GoldScore :score="battleStore.process.state.gold" @click="scoreClose"/>
       </header>
       <div class="BattleShop__row">
-        <div v-for="item in items" :key="item.id" :class="{ isHide: item.hide }">
-          <TradingItem :id="item.id" :detail="item.detail">
-            <BaseItem 
-              :name="item.name" 
-              :hide="item.hide" 
-              :id="item.id" 
-              :detail="item.detail"
-              @itemDescription="handleItemDescription" 
-              @itemViewClose="handleItemViewClose"
-            />
-          </TradingItem>
+        <div  v-for="item in array1" :key="item.id" :class="{ isHide: item.hide }"> 
+          
+            <TradingItem :id="item.id" :detail="item.detail" :special="item.special" @itemShow="handleTradingShow" :tradingStatus="getTradingStatus(item.id)">
+                <BaseItem 
+                  :name="item.name" 
+                  :hide="item.hide" 
+                  :id="item.id" 
+                  :detail="item.detail"
+                  :tradingStatus="getTradingStatus(item.id)"
+                  @itemDescription="handleItemDescription" 
+                  @itemViewClose="handleItemViewClose"
+                />
+            </TradingItem>  
+                                   
         </div>
       </div>
   
       <hr class="BattleShop__interval">
-  
-      <div class="BattleShop__row">
-        <AccelerationAmuletTrading />
-        <SurgeSpiresTrading />
-        <MomentumMatrixTrading />
-        <QuantumBoosterTrading />
+      <div class="BattleShop__rowtwo">
+        <div  v-for="item in array2" :key="item.id" :class="{ isHide: item.hide }"> 
+       
+            <TradingItem :id="item.id" :detail="item.detail" :special="item.special" @itemShow="handleTradingShow" :tradingStatus="getTradingStatus(item.id)">
+                <BaseItem 
+                  :name="item.name" 
+                  :hide="item.hide" 
+                  :id="item.id" 
+                  :detail="item.detail"
+                  :tradingStatus="getTradingStatus(item.id)"
+                  @itemDescription="handleItemDescription" 
+                  @itemViewClose="handleItemViewClose"
+                />
+            </TradingItem>  
+                                  
+        </div>
       </div>
     </div>
-    
     <BattleItemCard
       v-if="itemCardShow"
-      :title="this.BattleItemCards[this.id].name"
-      :description="this.BattleItemCards[this.id].description"
-      :image="this.BattleItemCards[this.id].src"
-      :price="this.BattleItemCards[this.id].price"
-      @close=""
+      :title="this.BattleItemCards[selectedItemId].name"
+      :description="this.BattleItemCards[selectedItemId].description"
+      :image="this.BattleItemCards[selectedItemId].src" 
+      :price="this.BattleItemCards[selectedItemId].price"  
+      :tradingStatus="getTradingStatus(selectedItemId)"
+      @close="close"
       @buy="buy"
-      @sell=""
+      @sell="sell"
     />
   <ConfirmPopup
     v-if="confirmation"
@@ -73,31 +86,56 @@
     data() {
       return {
         items: [
-          { name: 'thunder', hide: false, detail: false, buy: false, id: 0 },
-          { name: 'velocityVector', hide: false, detail: false, buy: false, id: 1 },
-          { name: 'surgesSpire', hide: false, detail: false, buy: false, id: 2 },
-          { name: 'spiralSentinel', hide: false, detail: false, buy: false, id: 3 }
+          { name: 'thunder', hide: false, detail: false, special: false, id: 0 },
+          { name: 'velocityVector', hide: false, detail: false,  special: false, id: 1 },
+          { name: 'nuclearOrb', hide: false, detail: false, special: false, id: 2 },
+          { name: 'spiralSentinel', hide: false, detail: false, special: false, id: 3 },
+          { name: 'accelerationAmulet', hide: false, detail: false, special: false, id: 4 },
+          { name: 'surgesSpire', hide: false, detail: false, special: false, id: 5 },
+          { name: 'momentumMatrix', hide: false, detail: false, special: false, id: 6 },
+          { name: 'quantumBooster', hide: false, detail: false, special: false, id: 7 }
         ] as BattleItemStatusType[],
         itemCardShow: false,
         confirmation: false,
         confirmResolver: null,
+        selectedItemId: null,
         BattleItemCards
       };
     },
-    computed: mapStores(useBattleStore),
+    computed: {
+    array1() {
+      return this.items.filter(item => item.id < 4);
+    },
+    array2() {
+      return this.items.filter(item => item.id >= 4);
+    },
+    ...mapStores(useBattleStore)
+  },
+    emits: ['scoreClose'],
     methods: {
+      getTradingStatus(itemId) {
+      return this.battleStore.shop.state.items.some(status => status.id === itemId);
+    },
       handleItemDescription(id: number) {
         const hideMap = {
           0: [1, 2],
           1: [2, 3],
           2: [0, 1],
-          3: [1, 2]
+          3: [1, 2],
+          4: [5, 6],
+          5: [6, 7],
+          6: [4, 5],
+          7: [5, 6],
         };
         this.items.forEach((item) => {
           item.hide = false;
           item.detail = false;
+          item.special = false;
         });
         if (hideMap[id]) {
+          if( id == 2 || id == 6) {
+            this.items[id+1].special = true
+          }
           this.items[id].detail = true;
           hideMap[id].forEach((hideId) => {
             this.items[hideId].hide = true;
@@ -110,17 +148,47 @@
         this.items.forEach((item) => {
           item.hide = false;
           item.detail = false;
+          item.special = false;
         });
         this.items = [...this.items];
       },
-      handleBuyClick() {
-      this.itemCardShow = true   
+      
+    handleTradingShow(id) {
+      this.itemCardShow = true,
+      this.selectedItemId = id
     },
+
     async buy() {
+      this.battleStore.process.reset();
       const confirmed = await this.confirm();
-
       if(confirmed) {
+        if( this.battleStore.shop.state.items.length < 2) 
+          {
+            if(this.battleStore.process.state.gold > BattleItemCards[this.selectedItemId].price)
+              {
+                const gold =this.battleStore.process.state.gold - BattleItemCards[this.selectedItemId].price;
+                this.battleStore.shop.addItem(this.selectedItemId);
+                this.battleStore.process.setGold(gold);
+                console.log(this.battleStore.process.state, this.battleStore.shop.state.items, "-------123------")
+              }
+            else {
+               console.log('amount error')
+            }
 
+          }
+          else {
+              console.log('Size error')
+          }
+          
+      }
+    },
+
+    async sell() { 
+      const confirmed = await this.confirm();
+      if(confirmed) {
+        const gold =this.battleStore.process.state.gold + BattleItemCards[this.selectedItemId].price;
+        this.battleStore.shop.sellItem(this.selectedItemId);
+        this.battleStore.process.setGold(gold);
       }
     },
     
@@ -131,6 +199,16 @@
       })
       this.confirmation = false
       return confirmed
+    },
+
+    close() {
+      this.itemCardShow = false,
+      this.selectedItemId = null
+    },
+
+    scoreClose() {
+      console.log('12343333')
+      this.$emit('scoreClose')
     }
   }
     }

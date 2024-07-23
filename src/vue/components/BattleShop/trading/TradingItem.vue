@@ -2,12 +2,12 @@
   <div class="TradingItem" >
     <slot />
     <template v-if="true">
-      <button v-if="tradingStatus" class="TradingItem__trading" :class="{ isDirection: this.id > 1 && detail }" @click="">
+      <button v-if="!tradingStatus" class="TradingItem__trading" :class="{ isDirection: (id%4 > 1 && detail) || special }" @click="itemShow">
          <TradingBuyIcon />
         <span class="TradingItem__levelUpText">BUY</span>
       </button>
 
-      <button v-else class="TradingItem__trading" :class="{ isDirection: this.id > 1 && detail }" >
+      <button v-else class="TradingItem__trading" :class="{ isDirection: (id%4 > 1 && detail) ||special }" @click="itemShow" >
          <TradingSellIcon />
         <span class="TradingItem__tradingText">SELL</span>
       </button>
@@ -26,6 +26,7 @@ export default {
     TradingBuyIcon,
     TradingSellIcon,
   },
+  emits: ['itemShow'],
   props: {
     id: {
       type: Number,
@@ -36,10 +37,19 @@ export default {
     },
     tradingStatus: {
       type: Boolean,
-      default: true
+      required: true
+    },
+    special: {
+      type: Boolean,
     }
    
   }, 
+
+  methods: {
+    itemShow() {
+      this.$emit('itemShow', this.id);
+    }
+  }
 };
 </script>
 

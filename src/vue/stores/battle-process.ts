@@ -17,12 +17,12 @@ const getInitialState = () => ({
     connected: null,
     current: null,
   },
-  gold: 0,
   level: {
     current: 1,
     progress: 0
   },
-  skills: {}
+  skills: {},
+  gold: 1000,
 })
 
 const getInitialCooldown = () => ({

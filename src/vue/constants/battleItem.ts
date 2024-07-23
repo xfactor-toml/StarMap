@@ -15,10 +15,10 @@ export const BattleItemCards: BattleItemCardType[] = [
         src: "../assets/battleIcon/velocityVector.png",
     },
     {
-        name: "SurgesSpire",
-        price: 500,
+        name:"NuclearOrb",
+        price: 400,
         description: "The Thunder is a powerful, electrifying item that players can use to deal massive damage to their enemies.",
-        src: "../assets/battleIcon/surgesSpire.png",
+        src: "../assets/battleIcon/nuclearOrb.png",
     },
     {
         name: "SpiralSentinel",
@@ -26,5 +26,31 @@ export const BattleItemCards: BattleItemCardType[] = [
         description: "The Thunder is a powerful, electrifying item that players can use to deal massive damage to their enemies.",
         src: "../assets/battleIcon/spiralSentinel.png",
     },
+    {
+        name:"AccelerationAmulet",
+        price: 400,
+        description: "The Thunder is a powerful, electrifying item that players can use to deal massive damage to their enemies.",
+        src: "../assets/battleIcon/accelerationAmulet.png",
+    },
+    {
+        name: "SurgesSpire",
+        price: 500,
+        description: "The Thunder is a powerful, electrifying item that players can use to deal massive damage to their enemies.",
+        src: "../assets/battleIcon/surgesSpire.png",
+    },
+    {
+        name:"MomentumMatrix",
+        price: 300,
+        description: "The Thunder is a powerful, electrifying item that players can use to deal massive damage to their enemies.",
+        src: "../assets/battleIcon/momentumMatrix.png",
+    },
+    {
+        name:"QuantumBooster",
+        price: 600,
+        description: "The Thunder is a powerful, electrifying item that players can use to deal massive damage to their enemies.",
+        src: "../assets/battleIcon/quantumBooster.png",
+    },
+   
+
 
 ];

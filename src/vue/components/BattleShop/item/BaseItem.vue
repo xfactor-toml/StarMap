@@ -1,7 +1,7 @@
 <template>
   <div class="BaseItem__row" :class="{ isHide: hide }">
     <button class="BaseItem" @click="handleClick">
-      <div v-if="!buy">
+      <div v-if="!tradingStatus">
         <svg class="BaseItem__outline" viewBox="0 0 194 214" fill="none">
           <path
             d="M192.39 69.34V145.04C192.39 150.4 190.96 155.55 188.37 160.04C185.78 164.52 182.03 168.34 177.39 171.02L144.62 189.94L111.84 208.86C107.2 211.54 102.02 212.88 96.84 212.88C91.66 212.88 86.48 211.54 81.84 208.86L49.07 189.94L16.29 171.02C11.65 168.34 7.90004 164.52 5.31004 160.04C2.72004 155.55 1.29004 150.4 1.29004 145.04V69.34C1.29004 63.99 2.72004 58.83 5.31004 54.35C7.90004 49.86 11.65 46.04 16.29 43.36L49.07 24.4399L81.84 5.52002C86.48 2.84002 91.66 1.5 96.84 1.5C102.02 1.5 107.2 2.84002 111.84 5.52002L144.62 24.4399L177.39 43.36C182.03 46.04 185.78 49.86 188.37 54.35C190.96 58.83 192.39 63.99 192.39 69.34Z"
@@ -52,17 +52,17 @@
 
     <transition name="fade">
     <div v-if="detail">
-      <div :class="['BaseItem__extend', { 'BaseItem__extend--left': id <= 1, 'BaseItem__extend--right': id > 1 }]">
-        <svg class="BaseItem__outline" :viewBox="'0 0 560 214'" fill="none" :transform="id > 1 ? 'rotate(180 0 0)' : ''">
+      <div :class="['BaseItem__extend', { 'BaseItem__extend--left': id%4 <= 1, 'BaseItem__extend--right': id%4 > 1 }]">
+        <svg class="BaseItem__outline" :viewBox="'0 0 560 214'" fill="none" :transform=" id%4 > 1 ? 'rotate(180 0 0)' : ''">
           <path
             d="M558.6 69.35V145.04C558.6 155.76 552.88 165.66 543.6 171.02L478.04 208.86C473.4 211.54 468.22 212.88 463.04 212.88H0.839844C6.01984 212.88 11.1998 211.54 15.8398 208.86L48.6198 189.94L81.3899 171.02C86.0299 168.34 89.7798 164.52 92.3698 160.04C94.9598 155.55 96.3899 150.4 96.3899 145.04V69.34C96.3899 63.99 94.9598 58.83 92.3698 54.35C89.7798 49.86 86.0299 46.04 81.3899 43.36L48.6198 24.4399L15.8398 5.52002C11.1998 2.84002 6.01984 1.5 0.839844 1.5H463.04C468.22 1.5 473.4 2.84002 478.04 5.52002L543.6 43.36C552.88 48.72 558.6 58.63 558.6 69.35Z"
             stroke="#00FFFF" stroke-width="2" stroke-miterlimit="10" />
         </svg>
       </div>
-      <div :class="['BaseItem__detailIcon', { 'BaseItem__detailIcon--left': id <= 1, 'BaseItem__detailIcon--right': id > 1 }]" @click="handleItemViewCloseClick">
+      <div :class="['BaseItem__detailIcon', { 'BaseItem__detailIcon--left': id%4 <= 1, 'BaseItem__detailIcon--right': id%4  > 1 }]" @click="handleItemViewCloseClick">
         <component :is="id <= 1 ? 'DetailLeftIcon' : 'DetailRightIcon'" />
       </div>
-      <div :class="['BaseItem__detailText', { 'BaseItem__detailText--left': id <= 1, 'BaseItem__detailText--right': id > 1 }]">
+      <div :class="['BaseItem__detailText', { 'BaseItem__detailText--left': id%4 <= 1, 'BaseItem__detailText--right': id%4 > 1 }]">
         People who live in urban areas are exposed to all kinds.
       </div>
     </div>
@@ -114,7 +114,7 @@ export default {
       type: Boolean,
       default: false
     },
-    buy: {
+    tradingStatus: {
       type: Boolean,
       default: false
     },

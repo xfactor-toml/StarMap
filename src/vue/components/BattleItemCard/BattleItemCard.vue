@@ -13,8 +13,8 @@
 
       <div class="BattleItemCard__title">{{ title }}</div>
       <div class="BattleItemCard__text">{{ description }}</div>
-      <button v-if="status" class="BattleItemCard__buybutton" @click="$emit('buy')">Buy</button>
-      <button v-if="!status" class="BattleItemCard__sellbutton" @click="$emit('sell')">Sell</button>
+      <button v-if="!tradingStatus" class="BattleItemCard__buybutton" @click="$emit('buy')">Buy</button>
+      <button v-if="tradingStatus" class="BattleItemCard__sellbutton" @click="$emit('sell')">Sell</button>
     </div>
   </BasePopup>
 </template>
@@ -33,7 +33,7 @@ export default {
     description: String,
     image: String,
     price: Number,
-    status: Boolean,
+    tradingStatus: Boolean,
   }
 };
 </script>

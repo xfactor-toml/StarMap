@@ -7,6 +7,7 @@ export type BattleItemNameType = 'thunder' | 'velocityVector' | 'surgesSpire' | 
 export type BattleItemStatusType = {
   name: BattleItemNameType
   hide: boolean
+  special: boolean
   detail: boolean
   id: number
   buy: boolean
@@ -17,6 +18,11 @@ export type BattleItemCardType = {
   price: number,
   description: string,
   src: string, 
+}
+
+export type ItemTradingType =  {
+  id: number,
+  buy: boolean,
 }
 
 export type BattlePlayer = {

@@ -1,37 +1,18 @@
 <template>
   <div class="BattleProcessMode">
-    <button
-      class="BattleProcessMode__settingsButton"
-      :class="{ active: settingsPopupVisible }"
-      @mouseenter="$client.onHover()"
-      @click="toggleSettingsPopup"
-    />
-    <div
-      class="BattleProcessMode__settingsPopup"
-      v-if="settingsPopupVisible"
-      v-click-outside="hideSettingsPopup"
-    >
-      <SettingsPopup
-        :fullscreen="uiStore.fullscreen.active"
-        :musicVolume="settingsStore.volume.music"
-        :sfxVolume="settingsStore.volume.sfx"
-        :battle="true"
-        @click="$client.onClick()"
-        @hover="$client.onHover()"
-        @setMusicVolume="settingsStore.volume.changeMusicVolume"
-        @setSfxVolume="settingsStore.volume.changeSfxVolume"
-        @toggleFullscreen="$client.toggleFullscreen()"
-        @exitFromBattle="exitFromBattle"
-      />
+    <button class="BattleProcessMode__settingsButton" :class="{ active: settingsPopupVisible }"
+      @mouseenter="$client.onHover()" @click="toggleSettingsPopup" />
+    <div class="BattleProcessMode__settingsPopup" v-if="settingsPopupVisible" v-click-outside="hideSettingsPopup">
+      <SettingsPopup :fullscreen="uiStore.fullscreen.active" :musicVolume="settingsStore.volume.music"
+        :sfxVolume="settingsStore.volume.sfx" :battle="true" @click="$client.onClick()" @hover="$client.onHover()"
+        @setMusicVolume="settingsStore.volume.changeMusicVolume" @setSfxVolume="settingsStore.volume.changeSfxVolume"
+        @toggleFullscreen="$client.toggleFullscreen()" @exitFromBattle="exitFromBattle" />
     </div>
     <div class="BattleProcessMode__content">
-      <div
-        v-for="player in [
-          battleStore.process.players.connected,
-          battleStore.process.players.current
-        ]"
-        class="BattleProcessMode__section"
-      >
+      <div v-for="player in [
+        battleStore.process.players.connected,
+        battleStore.process.players.current
+      ]" class="BattleProcessMode__section">
         <template v-if="player" :key="player.address">
           <div class="BattleProcessMode__column">
             <div class="BattleProcessMode__caption">
@@ -46,34 +27,26 @@
         </template>
       </div>
     </div>
-    <div v-if="showBattleControlPanel" class="BattleProcessMode__panel">
-      <BattleControlPanel
-        :skills="battleStore.process.state.skills"
-        :skillsPendingList="battleStore.process.skillsPendingList"
-        :cooldown="battleStore.process.cooldown"
-        :level="battleStore.process.state.level"
-        :gold="battleStore.process.state.gold"
-        @setVisible = "setBattleControlPanelVisible"
-        @action="$client.onBattleAction"
-      /> 
-    </div>
-    <div v-if="!showBattleControlPanel" class="BattleShop__panel">
-      <BattleShop 
-        @setVisible = "setBattleControlPanelVisible"
-         />
-    </div>
-    <EmotionsSelect
-      v-if="battleStore.emotions.selectorCoords"  
-      :coords="battleStore.emotions.selectorCoords"
-      @select="$client.onEmotionSelect"
-      @close="battleStore.emotions.closeSelector"
-    />
-    <PlayerEmotion
-      v-if="battleStore.emotions.playerEmotion && !battleStore.emotions.selectorCoords"
-      :type="battleStore.emotions.playerEmotion.type"
-      :coords="battleStore.emotions.playerEmotion.coords"
-      @close="battleStore.emotions.removePlayerEmotion"
-    />
+    <transition name="fade">
+      <div v-if="showBattleControlPanel" class="BattleProcessMode__panel">
+        <BattleControlPanel :skills="battleStore.process.state.skills"
+          :skillsPendingList="battleStore.process.skillsPendingList" :cooldown="battleStore.process.cooldown"
+          :level="battleStore.process.state.level" :gold="battleStore.process.state.gold"
+          @setVisible="setBattleControlPanelVisible" @action="$client.onBattleAction" />
+      </div>
+    </transition>
+
+    <transition name="fade">
+      <div v-if="!showBattleControlPanel" class="BattleShop__panel">
+        <BattleShop @scoreClose="setBattleControlPanelShow" />
+      </div>
+    </transition>
+     
+    <EmotionsSelect v-if="battleStore.emotions.selectorCoords" :coords="battleStore.emotions.selectorCoords"
+      @select="$client.onEmotionSelect" @close="battleStore.emotions.closeSelector" />
+    <PlayerEmotion v-if="battleStore.emotions.playerEmotion && !battleStore.emotions.selectorCoords"
+      :type="battleStore.emotions.playerEmotion.type" :coords="battleStore.emotions.playerEmotion.coords"
+      @close="battleStore.emotions.removePlayerEmotion" />
   </div>
 </template>
 
@@ -82,7 +55,7 @@ import { useBattleStore, useSettingsStore, useUiStore } from '@/stores';
 import { BattleControlPanel, EmotionsSelect, PlayerEmotion, SettingsPopup } from '@/components';
 import BattleShop from '@/components/BattleShop/BattleShop.vue';
 import { getShortAddress } from '@/utils';
-import { mapStores } from 'pinia'; 
+import { mapStores } from 'pinia';
 import { default as vClickOutside } from 'click-outside-vue3';
 
 export default {
@@ -119,9 +92,12 @@ export default {
     },
     setBattleControlPanelVisible() {
       this.showBattleControlPanel = !this.showBattleControlPanel;
+    },
+    setBattleControlPanelShow() {
+      this.showBattleControlPanel = !this.showBattleControlPanel;
     }
   }
 };
 </script>
 
-<style scoped src="./BattleProcessMode.css"/>
+<style scoped src="./BattleProcessMode.css" />

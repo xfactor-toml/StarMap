@@ -21,7 +21,7 @@
       <ShopControl
         :active="true"
         :disabled="false"
-        @action = "setVisible"
+        @click = "setVisible"
       />
     </div>
     <div class="BattleControlPanel__row">
@@ -120,7 +120,7 @@ export default {
   },
 
   emits: {
-    action: (payload: BattleActionPayload) => payload,   
+    action: (payload: BattleActionPayload) => payload,  
 },
   methods: {
     call(actionType: BattleActionType) {

@@ -23,9 +23,10 @@ export default {
       type: Boolean,
     }
   }, 
+  emits: ['click'],
   methods: {
     handleClick() {
-      this.$emit('action')
+      this.$emit('click')
     }
   }
 };
