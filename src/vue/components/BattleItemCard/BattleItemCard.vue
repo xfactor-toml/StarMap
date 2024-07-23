@@ -8,7 +8,9 @@
         <div class="BattleItemCard__gold">
            Gold: {{ price }}
         </div>
+
       </div>
+
       <div class="BattleItemCard__title">{{ title }}</div>
       <div class="BattleItemCard__text">{{ description }}</div>
       <button v-if="!tradingStatus" class="BattleItemCard__buybutton" @click="$emit('buy')">Buy</button>

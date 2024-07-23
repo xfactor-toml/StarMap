@@ -4,70 +4,33 @@
       <GoldScore :score="battleStore.process.state.gold" @click="scoreClose" />
     </header>
     <div class="BattleShop__row">
-      <div v-for="item in items1" :key="item.id" :class="{ isHide: item.hide }">
-        <TradingItem 
-          :id="item.id" 
-          :detail="item.detail" 
-          :special="item.special" 
-          @itemShow="handleTradingShow"
-          :tradingStatus="getTradingStatus(item.id)"
-        >
-          <BaseItem 
-            :name="item.name" 
-            :hide="item.hide" 
-            :id="item.id" 
-            :detail="item.detail"
-            :tradingStatus="getTradingStatus(item.id)" 
-            :descriptionText="BattleItemCards[item.id].description"
-            @itemDescription="handleItemDescription" 
-            @itemViewClose="handleItemViewClose" 
-          />
+      <div v-for="item in array1" :key="item.id" :class="{ isHide: item.hide }">
+        <TradingItem :id="item.id" :detail="item.detail" :special="item.special" @itemShow="handleTradingShow"
+          :tradingStatus="getTradingStatus(item.id)">
+          <BaseItem :name="item.name" :hide="item.hide" :id="item.id" :detail="item.detail"
+            :tradingStatus="getTradingStatus(item.id)" :descriptionText="BattleItemCards[item.id].description"
+            @itemDescription="handleItemDescription" @itemViewClose="handleItemViewClose" />
         </TradingItem>
       </div>
     </div>
-    <hr class="BattleShop__interval" />
+    <hr class="BattleShop__interval">
     <div class="BattleShop__row">
-      <div v-for="item in items2" :key="item.id" :class="{ isHide: item.hide }">
-        <TradingItem 
-          :id="item.id" 
-          :detail="item.detail" 
-          :special="item.special" 
-          @itemShow="handleTradingShow"
-          :tradingStatus="getTradingStatus(item.id)"
-        >
-          <BaseItem 
-            :name="item.name" 
-            :hide="item.hide" 
-            :id="item.id" 
-            :detail="item.detail"
-            :tradingStatus="getTradingStatus(item.id)" 
-            :descriptionText="BattleItemCards[item.id].description"
-            @itemDescription="handleItemDescription" 
-            @itemViewClose="handleItemViewClose" 
-          />
+      <div v-for="item in array2" :key="item.id" :class="{ isHide: item.hide }">
+        <TradingItem :id="item.id" :detail="item.detail" :special="item.special" @itemShow="handleTradingShow"
+          :tradingStatus="getTradingStatus(item.id)">
+          <BaseItem :name="item.name" :hide="item.hide" :id="item.id" :detail="item.detail"
+            :tradingStatus="getTradingStatus(item.id)" :descriptionText="BattleItemCards[item.id].description"
+            @itemDescription="handleItemDescription" @itemViewClose="handleItemViewClose" />
         </TradingItem>
       </div>
     </div>
-    
-    <BattleItemCard 
-      v-if="itemCardShow" 
-      :title="BattleItemCards[selectedItemId].name"
-      :description="BattleItemCards[selectedItemId].description" 
-      :image="BattleItemCards[selectedItemId].src"
-      :price="BattleItemCards[selectedItemId].price" 
-      :tradingStatus="getTradingStatus(selectedItemId)" 
-      @close="close"
-      @buy="buy" 
-      @sell="sell" 
-    />
-    
-    <ConfirmPopup 
-      v-if="confirmation" 
-      :title="'Are you sure you want to make this purchase?'"
-      @close="confirmResolver(false)" 
-      @confirm="confirmResolver(true)" 
-    />
   </div>
+  <BattleItemCard v-if="itemCardShow" :title="this.BattleItemCards[selectedItemId].name"
+    :description="this.BattleItemCards[selectedItemId].description" :image="this.BattleItemCards[selectedItemId].src"
+    :price="this.BattleItemCards[selectedItemId].price" :tradingStatus="getTradingStatus(selectedItemId)" @close="close"
+    @buy="buy" @sell="sell" />
+  <ConfirmPopup v-if="confirmation" :title="'Are you sure you want to make this purchase?'"
+    @close="confirmResolver(false)" @confirm="confirmResolver(true)" />
 </template>
 
 <script lang="ts">
@@ -106,27 +69,27 @@ export default defineComponent({
       ] as BattleItemStatusType[],
       itemCardShow: false,
       confirmation: false,
-      confirmResolver: null as ((confirmed: boolean) => void) | null,
-      selectedItemId: null as number | null,
+      confirmResolver: null,
+      selectedItemId: null,
       BattleItemCards
     };
   },
   computed: {
-    items1() {
+    array1() {
       return this.items.filter(item => item.id < 4);
     },
-    items2() {
+    array2() {
       return this.items.filter(item => item.id >= 4);
     },
     ...mapStores(useBattleStore)
   },
   emits: ['scoreClose'],
   methods: {
-    getTradingStatus(itemId: number): boolean {
+    getTradingStatus(itemId) {
       return this.battleStore.shop.state.items.some(status => status.id === itemId);
     },
-    handleItemDescription(id: number): void {
-      const hideMap: { [key: number]: number[] } = {
+    handleItemDescription(id: number) {
+      const hideMap = {
         0: [1, 2],
         1: [2, 3],
         2: [0, 1],
@@ -136,27 +99,26 @@ export default defineComponent({
         6: [4, 5],
         7: [5, 6],
       };
-
-      this.items.forEach(item => {
+      this.items.forEach((item) => {
         item.hide = false;
         item.detail = false;
         item.special = false;
       });
-
       if (hideMap[id]) {
-        if (id === 2 || id === 6) {
-          this.items[id + 1].special = true;
+        if (id == 2 || id == 6) {
+          this.items[id + 1].special = true
         }
         this.items[id].detail = true;
-        hideMap[id].forEach(hideId => {
+        hideMap[id].forEach((hideId) => {
           this.items[hideId].hide = true;
         });
       }
       this.items = [...this.items];
+
     },
 
-    handleItemViewClose(): void {
-      this.items.forEach(item => {
+    handleItemViewClose(id: number) {
+      this.items.forEach((item) => {
         item.hide = false;
         item.detail = false;
         item.special = false;
@@ -164,34 +126,36 @@ export default defineComponent({
       this.items = [...this.items];
     },
 
-    handleTradingShow(id: number): void {
-      this.itemCardShow = true;
-      this.selectedItemId = id;
+    handleTradingShow(id) {
+      this.itemCardShow = true,
+        this.selectedItemId = id
     },
 
-    async buy(): Promise<void> {
+    async buy() {
       const confirmed = await this.confirm();
       if (confirmed) {
         if (this.battleStore.shop.state.items.length < 2) {
-          if (this.battleStore.process.state.gold >= BattleItemCards[this.selectedItemId!].price) {
-            const gold = this.battleStore.process.state.gold - BattleItemCards[this.selectedItemId!].price;
-            this.battleStore.shop.addItem(this.selectedItemId!);
+          if (this.battleStore.process.state.gold >= BattleItemCards[this.selectedItemId].price) {
+            const gold = this.battleStore.process.state.gold - BattleItemCards[this.selectedItemId].price;
+            this.battleStore.shop.addItem(this.selectedItemId);
             this.battleStore.process.setGold(gold);
             this.itemCardShow = false;
             toast('Buy successful!', {
               type: 'success',
               autoClose: 2000,
             });
-          } else {
+          }
+          else {
             this.itemCardShow = false;
             toast('Insufficient gold!', {
               type: 'error',
               autoClose: 2000,
             });
           }
-        } else {
+        }
+        else {
           this.itemCardShow = false;
-          toast('You cannot buy more than two items!', {
+          toast('You can not buy two more items!', {
             type: 'error',
             autoClose: 2000,
           });
@@ -199,11 +163,11 @@ export default defineComponent({
       }
     },
 
-    async sell(): Promise<void> {
+    async sell() {
       const confirmed = await this.confirm();
       if (confirmed) {
-        const gold = this.battleStore.process.state.gold + BattleItemCards[this.selectedItemId!].price;
-        this.battleStore.shop.sellItem(this.selectedItemId!);
+        const gold = this.battleStore.process.state.gold + BattleItemCards[this.selectedItemId].price;
+        this.battleStore.shop.sellItem(this.selectedItemId);
         this.battleStore.process.setGold(gold);
         this.itemCardShow = false;
         toast('Sell successful!', {
@@ -213,25 +177,26 @@ export default defineComponent({
       }
     },
 
-    async confirm(): Promise<boolean> {
-      this.confirmation = true;
-      const confirmed = await new Promise<boolean>(resolve => {
-        this.confirmResolver = resolve;
-      });
-      this.confirmation = false;
-      return confirmed;
+    async confirm() {
+      this.confirmation = true
+      const confirmed = await new Promise(resolve => {
+        this.confirmResolver = resolve
+      })
+      this.confirmation = false
+      return confirmed
     },
 
-    close(): void {
-      this.itemCardShow = false;
-      this.selectedItemId = null;
+    close() {
+      this.itemCardShow = false,
+        this.selectedItemId = null
     },
 
-    scoreClose(): void {
-      this.$emit('scoreClose');
+    scoreClose() {
+      this.$emit('scoreClose')
     }
   }
-});
+}
+);
 </script>
 
 <style scoped src="./BattleShop.css"></style>

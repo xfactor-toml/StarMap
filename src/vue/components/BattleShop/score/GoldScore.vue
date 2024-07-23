@@ -13,6 +13,7 @@
                     </linearGradient>
                 </defs>
             </svg>
+
         </div>
 
         <div class="GoldScore__score" @click="$emit('click')">
