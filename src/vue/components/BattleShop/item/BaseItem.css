@@ -1,25 +1,25 @@
-.BaseItem {
-    display: flex;
-    justify-content: center;
-    width: 64px;
-    height: 72px;
-    padding: 0;
-    border: none;
-    background-color: transparent;
-    position: relative;
-    color: #00FFFF;
-    cursor: pointer;
-    outline: none;
-    user-select: none;
-    z-index: 10;
+  .BaseItem {
+      display: flex;
+      justify-content: center;
+      width: 64px;
+      height: 72px;
+      padding: 0;
+      border: none;
+      background-color: transparent;
+      position: relative;
+      color: #00FFFF;
+      cursor: pointer;
+      outline: none;
+      user-select: none;
+      z-index: 10;
   }
 
   .isHide {
     display: none;
     visibility: hidden;
   }
-  
-  
+
+
   .BaseItem__outline {
     width: 100%;
     height: 100%;
@@ -38,7 +38,7 @@
     transition: ease transform 200ms;
     will-change: transform;
   }
-   
+    
   .BaseItem__icon > svg {
     width: 90%;
     height: 80%;
@@ -64,15 +64,15 @@
     z-index: 2;
     transition: .5s;
   }
-  
+
   .BaseItem__extend--left {
     left: 32px;
   }
-  
+
   .BaseItem__extend--right {
     right: 32px;
   }
-  
+
   .BaseItem__detailIcon {
     display: flex;
     justify-content: center;
@@ -80,19 +80,19 @@
     height: 66px;
     z-index: 3;
   }
-  
+
   .BaseItem__detailIcon--left {
     left: 160px;
   }
-  
+
   .BaseItem__detailIcon--right {
     right: 160px;
   }
-  
+
   .BaseItem__detailIcon:hover {
     cursor: pointer;
   }
-  
+
   .BaseItem__detailText {
     display: flex;
     justify-content: center;
@@ -108,24 +108,24 @@
     overflow: auto;
     z-index: 4;
   }
-  
+
   .BaseItem__detailText--left {
     margin-left: 10px;
   }
-  
+
   .BaseItem__detailText--right {
     margin-left: -174px;
   }
-  
+
   .BaseItem__detailText::-webkit-scrollbar {
     width: 1px;
   }
-  
+
   .BaseItem__detailText::-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 10px;
   }
-  
+
   .BaseItem__detailText::-webkit-scrollbar-thumb {
     background: #00FFFF;
     border-radius: 10px;
