@@ -25,6 +25,14 @@
   transform: translateX(-50%);
 }
 
+.BattleShop__panel {
+  position: fixed;
+  bottom: 18px;
+  left: 50%;
+  z-index: 0;
+  transform: translateX(-50%);
+}
+
 .BattleProcessMode__section {
   width: 100%;
   display: flex;
