@@ -1,17 +1,10 @@
 <template>
-  <transition
-    :css="false"
-    @enter="onEnter"
-    @leave="onLeave"
-    @after-leave="onAfterLeave"
-  >
+  <transition :css="false" @enter="onEnter" @leave="onLeave" @after-leave="onAfterLeave">
     <component :is="scenesStore.current.scene.getComponent()" />
   </transition>
   <div class="version">{{ version }}</div>
-  <WalletConnectPopup
-    v-if="walletStore.popup"
-    @close="walletStore.hidePopup"
-  />
+  <div class="version 2">{{ version }}</div>
+  <WalletConnectPopup v-if="walletStore.popup" @close="walletStore.hidePopup" />
 </template>
 
 <script lang="ts">
@@ -31,7 +24,7 @@ export default {
     WalletConnectPopup
   },
   data: () => ({
-    version: GlobalParams.version
+    version: GlobalParams.galaxyVersion
   }),
   computed: mapStores(
     useScenesStore,
@@ -66,7 +59,7 @@ export default {
   },
   created() {
     this.scenesStore.setScenes(SCENES, UISceneNames.Start)
-    
+
     this.$wallet.on('state', (state) => {
       this.walletStore.setState(state)
     })

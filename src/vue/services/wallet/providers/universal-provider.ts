@@ -72,7 +72,7 @@ export class UniversalProvider extends BaseProvider {
   }
 
   async getUserBoxesToOpen() {
-    return this.checkConnection(() => getUserBoxesToOpenWeb2(this.connectSubService.telegramAuthData.username || this.account.value) as any, []);
+    return this.checkConnection(() => getUserBoxesToOpenWeb2(String(this.connectSubService.telegramAuthData.id) || this.account.value) as any, []);
   }
 
 }

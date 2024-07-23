@@ -194,6 +194,7 @@ export default {
         const service = BlockchainConnectService.getInstance()
 
         await service.store.BuyItem({
+          telegramInitData: String(service.telegramInitData),
           telegramData: service.telegramAuthData,
           itemId: item.id,
           amount: 1
@@ -221,7 +222,7 @@ export default {
       ] = await Promise.all([
         this.$wallet.provider.getUserAssets(),
         service.store.GetStoreItems(),
-        service.store.GetUserItemBalanceAll(service.TelegramLogin())
+        service.store.GetUserItemBalanceAll(String(service.telegramAuthData.id))
       ])
 
       const balancesMap = Object.fromEntries(balances.map((item) => [item.itemId, item.balance]))
