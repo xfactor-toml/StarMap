@@ -50,7 +50,4 @@ export const BattleItemCards: BattleItemCardType[] = [
         description: "People who live in urban areas are exposed to all kinds.",
         src: "../assets/battleIcon/quantumBooster.png",
     },
-   
-
-
 ];
