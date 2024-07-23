@@ -32,6 +32,7 @@
         <BattleControlPanel :skills="battleStore.process.state.skills"
           :skillsPendingList="battleStore.process.skillsPendingList" :cooldown="battleStore.process.cooldown"
           :level="battleStore.process.state.level" :gold="battleStore.process.state.gold"
+          :items="battleStore.shop.state.items"
           @setVisible="setBattleControlPanelVisible" @action="$client.onBattleAction" />
       </div>
     </transition>
@@ -41,7 +42,7 @@
         <BattleShop @scoreClose="setBattleControlPanelShow" />
       </div>
     </transition>
-     
+    
     <EmotionsSelect v-if="battleStore.emotions.selectorCoords" :coords="battleStore.emotions.selectorCoords"
       @select="$client.onEmotionSelect" @close="battleStore.emotions.closeSelector" />
     <PlayerEmotion v-if="battleStore.emotions.playerEmotion && !battleStore.emotions.selectorCoords"

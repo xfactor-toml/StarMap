@@ -22,7 +22,7 @@ const getInitialState = () => ({
     progress: 0
   },
   skills: {},
-  gold: 1000,
+  gold: 0,
 })
 
 const getInitialCooldown = () => ({

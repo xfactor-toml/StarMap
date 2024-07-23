@@ -41,7 +41,7 @@
    
   .BaseItem__icon > svg {
     width: 90%;
-    height: 90%;
+    height: 80%;
   }
 
   .BaseItem__row {
@@ -97,7 +97,7 @@
     display: flex;
     justify-content: center;
     position: absolute;
-    width: 108px;
+    width: 112px;
     height: 52px;
     top: 10px;
     font-family: 'Exo';

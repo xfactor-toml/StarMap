@@ -6,6 +6,7 @@ import RocketFireControl from './RocketFireControl.vue';
 import SatelliteFireControl from './SatelliteFireControl.vue';
 import ShopControl from './ShopControl.vue';
 import SlowdownControl from './SlowdownControl.vue';
+import ShopItemControl from './ShopItemControl.vue';
 
 export {
   EmptyControl,
@@ -16,4 +17,5 @@ export {
   SatelliteFireControl,
   ShopControl,
   SlowdownControl,
+  ShopItemControl
 };

@@ -1,13 +1,8 @@
 <template>
   <div class="BattleControlPanel">
-    <div class="BattleControlPanel__row">
-      <EmptyControl
-        :disabled="true"
-      />
-      <EmptyControl
-        :disabled="true"
-      />
-    </div>
+  
+    <ShopItemControl :items="items"/>
+
     <div class="BattleControlPanel__row">
       <LevelControl
         :disabled="true"
@@ -63,13 +58,17 @@ import {
   BattleActionType,
   BattleCooldown,
   BattleData,
-  BattleActionPayload
+  BattleActionPayload,
+  ItemTradingType
 } from '@/types';
 import { PropType } from 'vue';
 
 import {
   EmptyControl
 } from './controls';
+
+import { BaseControl } from './controls/BaseControl';
+import { ShopItemControl } from './controls';
 
 import {
   GoldControl,
@@ -94,7 +93,14 @@ export default {
     RocketFireSkill,
     SatelliteFireSkill,
     ShopControl,
-    SlowdownSkill
+    SlowdownSkill,
+    BaseControl,
+    ShopItemControl
+  },
+  data() {
+    return {
+       itemName: ['thunder', 'velocityVector', 'surgesSpire', 'spiralSentinel', 'nuclearOrb', 'momentumMatrix',  'quantumBooster', 'accelerationAmulet' ],
+    }
   },
   props: {
     skills: {
@@ -116,6 +122,9 @@ export default {
     gold: {
       type: Number,
       required: true
+    },
+    items: {
+      type: Array as PropType<ItemTradingType[]>,
     }
   },
 

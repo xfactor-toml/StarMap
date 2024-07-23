@@ -88,6 +88,16 @@ import {
   SatelliteFireIcon,
   SlowdownIcon
 } from './icons';
+import { 
+  ThunderIcon,
+  VelocityVectorIcon,
+  SurgeSpiresIcon,
+  SpiralSentinelIcon,
+  NuclearOrbIcon,
+  MomentumMatrixIcon,
+  QuantumBoosterIcon,
+  AccelerationAmuletIcon,
+ } from '@/components/BattleShop/item/icons';
 import { DefineComponent, PropType } from 'vue';
 import { BattleActionType } from '@/types';
 import { MyMath } from '~/monax/MyMath';
@@ -104,7 +114,7 @@ export default {
       default: null
     },
     name: {
-      type: String as PropType<BattleActionType>,
+      type: String ,
     },
     active: {
       type: Boolean,
@@ -125,6 +135,14 @@ export default {
         satelliteFire: SatelliteFireIcon,
         rocketFire: RocketFireIcon,
         slowdown: SlowdownIcon,
+        thunder: ThunderIcon,
+        velocityVector: VelocityVectorIcon,
+        surgesSpire: SurgeSpiresIcon,
+        spiralSentinel: SpiralSentinelIcon,
+        nuclearOrb: NuclearOrbIcon,
+        momentumMatrix: MomentumMatrixIcon,
+        quantumBooster: QuantumBoosterIcon,
+        accelerationAmulet: AccelerationAmuletIcon,
       }
       
       return icons[this.name]
