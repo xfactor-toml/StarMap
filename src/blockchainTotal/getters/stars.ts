@@ -176,7 +176,7 @@ async function GetStarDataFromServer(): Promise<StarList> {
 
 export async function getWeb2StarDataFromServer(): Promise<StarList> {
     return new Promise(async (reslove, reject) => {
-        const url = fastDataServerUrl.concat('api/getserverstarlist');
+        const url = fastDataServerUrl.concat('api/getstarlist');
         try {
             const response = await fetch(url);
             const data: StarList = (await response.json()).map((item: StarTableRow) => {

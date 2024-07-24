@@ -61,8 +61,8 @@ export abstract class BaseProvider {
 
   async getStars(): Promise<StarList> {
     // return GetAllStarData();
-    // return GetStarDataFromServer();
-    return getWeb2StarDataFromServer();
+    return GetStarDataFromServer();
+    // return getWeb2StarDataFromServer();
   }
 
   async getStarById(starId: number): Promise<StarData> {
