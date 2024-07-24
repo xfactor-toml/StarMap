@@ -21,8 +21,8 @@ export class Star {
 
   constructor({ id, owner, params }: StarData) {
     this.id = id;
-    this.owner = owner.toLowerCase();
-    this.description = `${params.race}`.toUpperCase();
+    this.owner = owner?.toLowerCase() || "";
+    this.description = `${params?.race || ""}`?.toUpperCase() || "";
     this.params = params;
   }
 
