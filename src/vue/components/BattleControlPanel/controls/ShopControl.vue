@@ -1,6 +1,8 @@
 <template>
-  <BaseControl
+ <BaseControl
+    :active="active"
     :disabled="disabled"
+    @click="handleClick"
   >SHOP
   </BaseControl>
 </template>
@@ -16,6 +18,15 @@ export default {
   props: {
     disabled: {
       type: Boolean,
+    },
+    active: {
+      type: Boolean,
+    }
+  }, 
+  emits: ['click'],
+  methods: {
+    handleClick() {
+      this.$emit('click')
     }
   }
 };

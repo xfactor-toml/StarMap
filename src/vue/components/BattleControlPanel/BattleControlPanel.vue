@@ -1,5 +1,8 @@
 <template>
   <div class="BattleControlPanel">
+  
+    <ShopItemControl :items="items"/>
+
     <div class="BattleControlPanel__row">
       <LevelControl
         :disabled="true"
@@ -11,7 +14,9 @@
         :amount="gold"
       />
       <ShopControl
-        :disabled="true"
+        :active="true"
+        :disabled="false"
+        @click = "setVisible"
       />
     </div>
     <div class="BattleControlPanel__row">
@@ -19,6 +24,7 @@
         :params="skills['satelliteFire']"
         :cooldown="cooldown['satelliteFire']"
         :disabled="isPendingSkill('satelliteFire')"
+        :active="true"
         @fire="call('satelliteFire')"
         @levelUp="levelUp('satelliteFire')"
       />
@@ -52,9 +58,17 @@ import {
   BattleActionType,
   BattleCooldown,
   BattleData,
-  BattleActionPayload
+  BattleActionPayload,
+  ItemTradingType
 } from '@/types';
 import { PropType } from 'vue';
+
+import {
+  EmptyControl
+} from './controls';
+
+import { BaseControl } from './controls/BaseControl';
+import { ShopItemControl } from './controls';
 
 import {
   GoldControl,
@@ -72,13 +86,21 @@ import {
 export default {
   name: 'BattleControlPanel',
   components: {
+    EmptyControl,
     GoldControl,
     InvisibilitySkill,
     LevelControl,
     RocketFireSkill,
     SatelliteFireSkill,
     ShopControl,
-    SlowdownSkill
+    SlowdownSkill,
+    BaseControl,
+    ShopItemControl
+  },
+  data() {
+    return {
+       itemName: ['thunder', 'velocityVector', 'surgesSpire', 'spiralSentinel', 'nuclearOrb', 'momentumMatrix',  'quantumBooster', 'accelerationAmulet' ],
+    }
   },
   props: {
     skills: {
@@ -100,11 +122,15 @@ export default {
     gold: {
       type: Number,
       required: true
+    },
+    items: {
+      type: Array as PropType<ItemTradingType[]>,
     }
   },
+
   emits: {
-    action: (payload: BattleActionPayload) => payload
-  },
+    action: (payload: BattleActionPayload) => payload,  
+},
   methods: {
     call(actionType: BattleActionType) {
       this.$emit('action', {
@@ -120,6 +146,9 @@ export default {
     },
     isPendingSkill(type: BattleActionType) {
       return this.skillsPendingList.includes(type);
+    },
+    setVisible() {
+      this.$emit('setVisible')
     }
   }
 };
