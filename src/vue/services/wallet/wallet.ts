@@ -50,9 +50,9 @@ export class WalletService {
       throw new Error('provider not defined')
     }
 
-    /* useBattleStore().rewards.setBoxesIds(
+    useBattleStore().rewards.setBoxesIds(
       await this.provider.getUserBoxesToOpen()
-    ); */
+    );
 
     return this.updateState((await this.provider.connect()).value);
   }
