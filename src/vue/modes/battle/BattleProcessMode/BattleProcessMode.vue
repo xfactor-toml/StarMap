@@ -29,7 +29,8 @@
     </div>
     <transition name="fade">
       <div v-if="showBattleControlPanel" class="BattleProcessMode__panel">
-        <BattleControlPanel :skills="battleStore.process.state.skills"
+        <BattleControlPanel
+          :skills="battleStore.process.state.skills"
           :skillsPendingList="battleStore.process.skillsPendingList" :cooldown="battleStore.process.cooldown"
           :level="battleStore.process.state.level" :gold="battleStore.process.state.gold"
           :items="battleStore.shop.state.items"

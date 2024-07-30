@@ -9,6 +9,7 @@ import { toast } from 'vue3-toastify';
 import { useWallet } from '@/services/wallet';
 import { BlockchainConnectService } from '~/blockchainTotal';
 import { config } from '@/config';
+import { GlobalParams } from '~/game/data/GlobalParams';
 
 export class ClientEventsService {
   
@@ -166,7 +167,7 @@ export class ClientEventsService {
               isNick: clientEvent.playerData.isNick,
             },
           },
-          gold: 1000,
+          gold: 0,
           level: {
             current: 1,
             progress: 0
@@ -280,20 +281,24 @@ export class ClientEventsService {
       
       case GameEvent.BATTLE_EXP_DATA:
         LogMng.debug(`GUI: update level progress: ${clientEvent.levelExpPercent}`);
-        const actionTypes: BattleActionType[] = ['satelliteFire', 'rocketFire', 'slowdown', 'invisibility'];
         
         battleStore.process.setLevel({
           current: clientEvent.level,
           progress: clientEvent.levelExpPercent
         });
-
+        
         battleStore.process.setGold(clientEvent.gold);
-
-        LogMng.debug(`GUI: update skiils: ${clientEvent.skills}`);
-
+        
+        if (GlobalParams.isDebugMode) {
+          LogMng.debug(`GUI: update skiils:`, clientEvent.skills);
+        }
+        
+        const actionTypes: BattleActionType[] = ['satelliteFire', 'rocketFire', 'slowdown', 'invisibility'];
+        
         for (let i = 0; i < clientEvent.skills.length; i++) {
+          const at = actionTypes[i];
           const sd = clientEvent.skills[i];
-          battleStore.process.setSkill(actionTypes[i], {
+          battleStore.process.setSkill(at, {
             level: sd.level,
             levelUpAvailable: sd.levelUpAvailable,
             cooldown: {
