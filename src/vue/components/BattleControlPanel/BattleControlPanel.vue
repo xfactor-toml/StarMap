@@ -1,8 +1,6 @@
 <template>
   <div class="BattleControlPanel">
-  
     <ShopItemControl :items="items"/>
-
     <div class="BattleControlPanel__row">
       <LevelControl
         :disabled="true"
@@ -24,7 +22,6 @@
         :params="skills['satelliteFire']"
         :cooldown="cooldown['satelliteFire']"
         :disabled="isPendingSkill('satelliteFire')"
-        :active="true"
         @fire="call('satelliteFire')"
         @levelUp="levelUp('satelliteFire')"
       />
@@ -96,11 +93,6 @@ export default {
     SlowdownSkill,
     BaseControl,
     ShopItemControl
-  },
-  data() {
-    return {
-       itemName: ['thunder', 'velocityVector', 'surgesSpire', 'spiralSentinel', 'nuclearOrb', 'momentumMatrix',  'quantumBooster', 'accelerationAmulet' ],
-    }
   },
   props: {
     skills: {
