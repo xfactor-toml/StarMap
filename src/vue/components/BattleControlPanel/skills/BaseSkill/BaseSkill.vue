@@ -6,7 +6,7 @@
     }"
   >
     <slot/>
-    <template >
+    <template v-if="canLevelUp">
       <button
         class="BaseSkill__levelUp"
         :disabled="disabled"
