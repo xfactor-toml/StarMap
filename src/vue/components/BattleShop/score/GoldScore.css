@@ -29,7 +29,21 @@
 
 }
 
-.GoldScore__score:hover {
+.GoldScore_close {
+    background-color: transparent;
+    background-position: 50% 50%;
+    background-size: contain;
+    background-image: url(../gui/images/close.svg);
+    width: 10px;
+    height: 10px;
+    top: -29px;
+    right: -16px;
+    border: none;
+    position: absolute;
+    z-index: 3;
+}
+
+.GoldScore__close:hover {
     cursor: pointer;
 }
 .GoldScore__text {

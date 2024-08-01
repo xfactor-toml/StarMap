@@ -16,10 +16,13 @@
 
         </div>
 
-        <div class="GoldScore__score" @click="$emit('click')">
+        <div class="GoldScore__score" >
             <span class="">SHOP | </span>
             <span class="GoldScore__text">{{ score }} GOLD</span>
         </div>
+
+        <button class="GoldScore_close" @click="$emit('click')">
+        </button>
 
     </div>
 </template>
