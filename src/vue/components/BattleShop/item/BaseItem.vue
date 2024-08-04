@@ -1,5 +1,5 @@
 <template>
-  <div class="BaseItem__row" :class="{ isHide: hide }">
+  <div class="BaseItem__row">
     <button class="BaseItem" @click="handleClick">
       <div v-if="!tradingStatus">
         <svg class="BaseItem__outline" viewBox="0 0 194 214" fill="none">
@@ -55,7 +55,7 @@
         <div
           :class="['BaseItem__extend', { 'BaseItem__extend--left': id % 4 <= 1, 'BaseItem__extend--right': id % 4 > 1 }]">
           <svg class="BaseItem__outline" :viewBox="'0 0 560 214'" fill="none"
-            :transform="id % 4 > 1 ? 'rotate(180 0 0)' : ''">
+           :style="computedTransform">
             <path
               d="M558.6 69.35V145.04C558.6 155.76 552.88 165.66 543.6 171.02L478.04 208.86C473.4 211.54 468.22 212.88 463.04 212.88H0.839844C6.01984 212.88 11.1998 211.54 15.8398 208.86L48.6198 189.94L81.3899 171.02C86.0299 168.34 89.7798 164.52 92.3698 160.04C94.9598 155.55 96.3899 150.4 96.3899 145.04V69.34C96.3899 63.99 94.9598 58.83 92.3698 54.35C89.7798 49.86 86.0299 46.04 81.3899 43.36L48.6198 24.4399L15.8398 5.52002C11.1998 2.84002 6.01984 1.5 0.839844 1.5H463.04C468.22 1.5 473.4 2.84002 478.04 5.52002L543.6 43.36C552.88 48.72 558.6 58.63 558.6 69.35Z"
               stroke="#00FFFF" stroke-width="2" stroke-miterlimit="10" />
@@ -64,7 +64,7 @@
         <div
           :class="['BaseItem__detailIcon', { 'BaseItem__detailIcon--left': id % 4 <= 1, 'BaseItem__detailIcon--right': id % 4 > 1 }]"
           @click="handleItemViewCloseClick">
-          <component :is="id <= 1 ? 'DetailLeftIcon' : 'DetailRightIcon'" />
+          <component :is="computedIcon" />
         </div>
         <div
           :class="['BaseItem__detailText', { 'BaseItem__detailText--left': id % 4 <= 1, 'BaseItem__detailText--right': id % 4 > 1 }]">
@@ -72,6 +72,7 @@
         </div>
       </div>
     </transition>
+
 
   </div>
 </template>
@@ -118,10 +119,6 @@ export default {
       type: Boolean,
       default: false
     },
-    hide: {
-      type: Boolean,
-      default: false
-    },
     tradingStatus: {
       type: Boolean,
       default: false
@@ -150,6 +147,12 @@ export default {
       }
       return icons[this.name]
     },
+    computedTransform() {
+      return this.id % 4 > 1 ? { transform: 'rotate(180deg)' } : {};
+    },
+    computedIcon() {
+      return this.id % 4 <= 1 ? 'DetailLeftIcon' : 'DetailRightIcon';
+    }
   }
 };
 </script>

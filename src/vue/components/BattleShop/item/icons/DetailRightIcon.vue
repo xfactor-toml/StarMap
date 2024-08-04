@@ -1,5 +1,5 @@
 <template>
-    <svg viewBox="0 0 224 230" fill="none" transform="rotate(180 0 0)">
+    <svg viewBox="0 0 224 230" width="100" height="auto" fill="none" style="transform: rotate(180deg)">
         <g opacity="0.5">
             <rect x="27.9102" y="0.25" width="195.91" height="228.79" fill="url(#pattern0_1_4273)" />
             <path
@@ -54,6 +54,6 @@
 </template>
 <script lang="ts">
 export default {
-name: 'DetailReverseIcon',
+    name: 'DetailReverseIcon',
 }
 </script>
