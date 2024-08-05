@@ -137,12 +137,13 @@ export default {
         slowdown: SlowdownIcon,
         thunder: ThunderIcon,
         velocityVector: VelocityVectorIcon,
-        surgesSpire: SurgeSpiresIcon,
-        spiralSentinel: SpiralSentinelIcon,
         nuclearOrb: NuclearOrbIcon,
+        spiralSentinel: SpiralSentinelIcon,
+        accelerationAmulet: AccelerationAmuletIcon,
+        surgesSpire: SurgeSpiresIcon,
         momentumMatrix: MomentumMatrixIcon,
         quantumBooster: QuantumBoosterIcon,
-        accelerationAmulet: AccelerationAmuletIcon,
+        
       }
       
       return icons[this.name]

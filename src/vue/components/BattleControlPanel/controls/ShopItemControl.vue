@@ -31,7 +31,7 @@ export default {
     },
     data() {
         return {
-            itemName: ['thunder', 'velocityVector', 'surgesSpire', 'spiralSentinel', 'nuclearOrb', 'momentumMatrix', 'quantumBooster', 'accelerationAmulet'],
+            itemName: ['thunder', 'velocityVector','nuclearOrb' , 'spiralSentinel','accelerationAmulet' , 'surgesSpire' , 'momentumMatrix', 'quantumBooster'],
         }
     },
 }
