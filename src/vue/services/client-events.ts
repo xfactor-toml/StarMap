@@ -167,7 +167,7 @@ export class ClientEventsService {
               isNick: clientEvent.playerData.isNick,
             },
           },
-          gold: 1000,
+          gold: 0,
           level: {
             current: 1,
             progress: 0
