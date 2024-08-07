@@ -1,19 +1,16 @@
 <template>
-  <div class="TradingItem" >
+  <div class="TradingItem" :class="{ isHide: this.hide }">
     <slot />
     <template v-if="true">
-      <button v-if="!tradingStatus" class="TradingItem__trading" :class="{ isDirection: (id%4 > 1 && detail) || special }" @click="itemShow">
-         <TradingBuyIcon />
-        <span class="TradingItem__levelUpText">BUY</span>
+
+      <button class="TradingItem__trading" :class="{ isDirection: (id % 4 > 1 && detail) || special }"
+        @click="itemShow">
+        <component :is="tradingStatus ? 'TradingSellIcon' : 'TradingBuyIcon'" />
+        <span class="TradingItem__tradingText">{{ tradingStatus ? 'SELL' : 'BUY' }}</span>
       </button>
 
-      <button v-else class="TradingItem__trading" :class="{ isDirection: (id%4 > 1 && detail) ||special }" @click="itemShow" >
-         <TradingSellIcon />
-        <span class="TradingItem__tradingText">SELL</span>
-      </button>
     </template>
   </div>
- 
 </template>
 
 <script lang="ts">
@@ -37,14 +34,16 @@ export default {
     },
     tradingStatus: {
       type: Boolean,
-      required: true
+      default: true,
     },
     special: {
       type: Boolean,
+    },
+    hide: {
+      type: Boolean, 
     }
-   
-  }, 
 
+  },
   methods: {
     itemShow() {
       this.$emit('itemShow', this.id);

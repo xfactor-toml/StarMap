@@ -4,10 +4,10 @@
       <GoldScore :score="battleStore.process.state.gold" @click="scoreClose" />
     </header>
     <div class="BattleShop__row">
-      <div v-for="item in array1" :key="item.id" :class="{ isHide: item.hide }">
-        <TradingItem :id="item.id" :detail="item.detail" :special="item.special" @itemShow="handleTradingShow"
+      <div v-for="item in array1" :key="item.id">
+        <TradingItem :id="item.id" :detail="item.detail" :special="item.special" :hide="item.hide" @itemShow="handleTradingShow"
           :tradingStatus="getTradingStatus(item.id)">
-          <BaseItem :name="item.name" :hide="item.hide" :id="item.id" :detail="item.detail"
+          <BaseItem :name="item.name" :id="item.id" :detail="item.detail"
             :tradingStatus="getTradingStatus(item.id)" :descriptionText="BattleItemCards[item.id].description"
             @itemDescription="handleItemDescription" @itemViewClose="handleItemViewClose" />
         </TradingItem>
@@ -15,10 +15,10 @@
     </div>
     <hr class="BattleShop__interval">
     <div class="BattleShop__row">
-      <div v-for="item in array2" :key="item.id" :class="{ isHide: item.hide }">
-        <TradingItem :id="item.id" :detail="item.detail" :special="item.special" @itemShow="handleTradingShow"
+      <div v-for="item in array2" :key="item.id">
+        <TradingItem :id="item.id" :detail="item.detail" :special="item.special" :hide="item.hide" @itemShow="handleTradingShow"
           :tradingStatus="getTradingStatus(item.id)">
-          <BaseItem :name="item.name" :hide="item.hide" :id="item.id" :detail="item.detail"
+          <BaseItem :name="item.name" :id="item.id" :detail="item.detail"
             :tradingStatus="getTradingStatus(item.id)" :descriptionText="BattleItemCards[item.id].description"
             @itemDescription="handleItemDescription" @itemViewClose="handleItemViewClose" />
         </TradingItem>
