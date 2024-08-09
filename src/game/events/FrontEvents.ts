@@ -70,4 +70,13 @@ export const FrontEvents = {
 
     onBattleEmotion: new Signal(),
 
+    /**
+     * id: number - item id
+     */
+    onBattlePurchaseRequest: new Signal(),
+    /**
+     * id: number - item id
+     */
+    onBattleSellRequest: new Signal(),
+
 }

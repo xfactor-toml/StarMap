@@ -150,6 +150,9 @@ export class ClientEventsService {
       case GameEvent.BATTLE_PREROLL_SHOW:
         battleStore.connecting.setPlayerSearchingState(false);
         scenesStore.setScene(UISceneNames.Battle);
+
+        // TODO: apply shop init data from clientEvent.shopInitData
+
         battleStore.process.setState({
           players: {
             connected: {
@@ -319,6 +322,28 @@ export class ClientEventsService {
             clientEvent.emotion,
             clientEvent.position2d
           )
+        }
+        
+        break;
+      
+      case GameEvent.BATTLE_SHOP:
+
+        switch (clientEvent.action) {
+          case 'purchase':
+            
+            break;
+          case 'sale':
+
+            break;
+          case 'purchaseError':
+
+            break;
+          case 'saleError':
+
+            break;
+          default:
+            LogMng.error(`Unknown BATTLE_SHOP action:`, clientEvent);
+            break;
         }
         
         break;
