@@ -2,105 +2,95 @@
   <div class="UserInventoryPopup">
     <div class="UserInventoryPopup__overlay" @click="$emit('close')" />
     <div class="UserInventoryPopup__box">
-      <div class="UserInventoryPopup__head">
-        <div class="UserInventoryPopup__title">Inventory</div>
-      </div>
-      <div class="UserInventoryPopup__balance">Balance VRP: {{ balance }}</div>
       <div class="UserInventoryPopup__body">
-        <div class="UserInventoryPopup__tabs">
-          <button
-            v-for="tab in tabs"
-            :key="tab"
-            :class="['UserInventoryPopup__tab', tab, currentTab === tab ? 'active' : '']"
-            :data-count="userBoxes.length"
-            @click="selectTab(tab)"
-          />
-        </div>
-        <div :class="`UserInventoryPopup__content ${currentTab}`">
-          <template v-if="currentTab === 'inventory'">
-            <template v-if="walletStore.connected">
-              <div class="UserInventoryPopup__list">
-                <template v-for="item in assets" :key="item.name">
-                  <div class="UserInventoryPopup__card" :data-rare="item.rare">
-                    <div
-                      v-if="item.name === 'VRP' || item.name === 'Trends'"
-                      class="UserInventoryPopup__cardName"
-                    >{{ item.name }}
+        <div class="UserInventoryPopup__body-image">
+          <img src="/gui/images/user-inventory/background.png">
+          <div class="UserInventoryPopup__title">{{ title }}</div>
+          <div class="UserInventoryPopup__balance">BALANCE: {{ balance }} tVRP </div>
+          <div class="UserInventoryPopup__tabs">
+            <button v-for="tab in tabs" :key="tab"
+              :class="['UserInventoryPopup__tab', tab, currentTab === tab ? 'active' : '.', !tab ? 'empty-tab' : '']"
+              :data-count="userBoxes.length" :disabled="!tab" :assets-count="assets.length"
+              :events-count="events.length" @click="selectTab(tab)" />
+          </div>
+          <div :class="`UserInventoryPopup__content ${currentTab}`">
+            <template v-if="currentTab === 'inventory'">
+              <!-- <template v-if="walletStore.connected"> -->
+              <template v-if="true">
+                <div class="UserInventoryPopup__list">
+                  <template v-for="item in assets" :key="item.name">
+                    <div class="UserInventoryPopup__card">
+                      <img :src="`/gui/images/user-inventory/inventory/${item.rare}.svg`" />
+                      <div class="UserInventoryPopup__cardName">{{
+                        item.name }}
+                      </div>
+                      <div class="UserInventoryPopup__cardFigure">
+                        <img class="UserInventoryPopup__cardImage" :src="item.image" />
+                      </div>
+                      <div class="UserInventoryPopup__cardCaption"> {{ item.value }} VRP</div>
                     </div>
-                    <div class="UserInventoryPopup__cardFigure">
-                      <img class="UserInventoryPopup__cardImage" :src="item.image" />
+                  </template>
+                </div>
+              </template>
+              <template v-else>
+                <button class="UserInventoryPopup__connect" @click="walletStore.openPopup">Connect</button>
+              </template>
+            </template>
+            <template v-if="currentTab === 'events'">
+              <div v-if="loading || buying" class="UserInventoryPopup__loader in-store">
+                <Loader />
+              </div>
+              <div v-else class="UserInventoryPopup__list">
+                <template v-for="item in events" :key="item.id">
+                  <div class="UserInventoryPopup__card is-store" :data-rare="item.rareness.toLowerCase()"
+                    :data-amount="item.per_user">
+                    <img :src="`/gui/images/user-inventory/shop/${item.rareness.toLowerCase()}.svg`" />
+                    <div class="UserInventoryPopup__cardFigure" @click="selectCard(item)">
+                      <img class="UserInventoryPopup__cardImage" :src="item.img_preview" />
                     </div>
-                    <div class="UserInventoryPopup__cardCaption"> {{ item.value }}</div>
+                    <div v-if="item.per_user !== null" class="UserInventoryPopup__cardCount">Name... | {{ item.per_user
+                      }}
+                    </div>
+                    <div class="UserInventoryPopup__cardCaption" @click="buy(item)">{{ item.cost }} {{ item.currency }}
+                    </div>
                   </div>
                 </template>
               </div>
             </template>
-            <template v-else>
-              <button class="UserInventoryPopup__connect" @click="walletStore.openPopup">Connect</button>
-            </template>
-          </template>
-          <template v-if="currentTab === 'events'">
-            <div v-if="loading || buying" class="UserInventoryPopup__loader in-store">
-              <Loader />
-            </div>
-            <div v-else class="UserInventoryPopup__list">
-              <template v-for="item in events" :key="item.id">
-                <div
-                  class="UserInventoryPopup__card is-store"
-                  :data-rare="item.rareness.toLowerCase()"
-                  :data-amount="item.per_user"
-                >
-                  <div class="UserInventoryPopup__cardFigure" @click="selectCard(item)">
-                    <img class="UserInventoryPopup__cardImage" :src="item.img_preview" />
-                    <div
-                      v-if="item.per_user !== null"
-                      class="UserInventoryPopup__cardCount"
-                    >{{ item.per_user }}
+          </div>
+          <div class="UserInventoryPopup__content_openbox">
+            <template v-if="currentTab === 'unboxing'">
+              <template v-if="rewards.waitingBox">
+                <div class="UserInventoryPopup__loader">
+                  <Loader />
+                </div>
+              </template>
+              <template v-else>
+                <div class="UserInventoryPopup__open-box">
+                  <div class="UserInventoryPopup__count">
+                    <img src="/gui/images/user-inventory/open-box.svg">
+                    <div class="UserInventoryPopup__count-text">
+                      {{ userBoxes.length }}
                     </div>
                   </div>
-                  <div
-                    class="UserInventoryPopup__cardCaption"
-                    @click="buy(item)"
-                  >{{ item.cost }} {{ getCurrencyByField(item.currency) }}
+                  <div class="UserInventoryPopup__animation">
+                    <button class="UserInventoryPopup__button" @click="openBox">OPEN BOX</button>
+                    <div class="UserInventoryPopup__button-animation" v-for="(item, index) in 8" :key="index">
+                      <img src="/gui/images/user-inventory/open-box-border.svg" alt="logo">
+                    </div>
                   </div>
                 </div>
               </template>
-            </div>
-          </template>
-          <template v-if="currentTab === 'unboxing'">
-            <template v-if="rewards.waitingBox">
-              <div class="UserInventoryPopup__loader">
-                <Loader />
-              </div>
             </template>
-            <template v-else>
-              <div class="UserInventoryPopup__count">{{ userBoxes.length }}</div>
-              <button class="UserInventoryPopup__button" @click="openBox" />
-            </template>
-          </template>
+          </div>
         </div>
       </div>
     </div>
-    <InventoryCardPopup
-      v-if="selectedCard"
-      :title="selectedCard.item"
-      :description="selectedCard.description"
-      :image="selectedCard.img_full"
-      :type="selectedCard.type"
-      @buy="buy(selectedCard)"
-      @close="selectCard(null)"
-    />
-    <BoxContentPopup
-      v-if="boxContent.length > 0"
-      :list="boxContent"
-      @close="resetBoxes()"
-    />
-    <ConfirmPopup
-      v-if="confirmation"
-      :title="'Are you sure you want to make this purchase?'"
-      @close="confirmResolver(false)"
-      @confirm="confirmResolver(true)"
-    />
+    <InventoryCardPopup v-if="selectedCard" :title="selectedCard.item" :description="selectedCard.description"
+      :image="selectedCard.img_full" :type="selectedCard.type" @buy="buy(selectedCard)" @close="selectCard(null)" />
+    <BoxContentPopup v-if="boxContent.length > 0" :list="boxContent" @close="resetBoxes()" />
+    <ConfirmPopup v-if="confirmation" :title="'Are you sure you want to make this purchase?'"
+      @close="confirmResolver(false)" @confirm="confirmResolver(true)" />
   </div>
 </template>
 
@@ -111,7 +101,15 @@ import { mapAssets } from '@/utils';
 import { mapStores } from 'pinia';
 import { BlockchainConnectService } from '~/blockchainTotal';
 
-const baseTabs = ['inventory', 'events']
+const baseTabs = ['inventory', 'events', 'unboxing', '', '', '', '', '']
+const boxContentConst =[
+        { rare: 'legendary', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'rare', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'rare', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'rare', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'legendary', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'mythic', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+      ]
 
 export default {
   name: 'UserInventoryPopup',
@@ -123,7 +121,25 @@ export default {
   },
   data() {
     return {
-      events: [],
+      events:
+        [
+          { rareness: "rare", img_preview: "https://starmap.vorpal.finance/gui/images/store/red_laser.png", per_user: 999, cost: 1000, currency: 'VRP' },
+          { rareness: "legendary", img_preview: "https://starmap.vorpal.finance/gui/images/store/red_laser.png", per_user: 999, cost: 1000, currency: 'VRP' },
+          { rareness: "legendary", img_preview: "https://starmap.vorpal.finance/gui/images/store/red_laser.png", per_user: 999, cost: 1000, currency: 'VRP' },
+          { rareness: "mythic", img_preview: "https://starmap.vorpal.finance/gui/images/store/red_laser.png", per_user: 999, cost: 1000, currency: 'VRP' },
+          { rareness: "rare", img_preview: "https://starmap.vorpal.finance/gui/images/store/red_laser.png", per_user: 999, cost: 1000, currency: 'VRP' },
+          { rareness: "mythic", img_preview: "https://starmap.vorpal.finance/gui/images/store/red_laser.png", per_user: 999, cost: 1000, currency: 'VRP' },
+          { rareness: "rare", img_preview: "https://starmap.vorpal.finance/gui/images/store/red_laser.png", per_user: 999, cost: 1000, currency: 'VRP' },
+          { rareness: "rare", img_preview: "https://starmap.vorpal.finance/gui/images/store/red_laser.png", per_user: 999, cost: 1000, currency: 'VRP' },
+          { rareness: "legendary", img_preview: "https://starmap.vorpal.finance/gui/images/store/red_laser.png", per_user: 999, cost: 1000, currency: 'VRP' },
+          { rareness: "legendary", img_preview: "https://starmap.vorpal.finance/gui/images/store/red_laser.png", per_user: 999, cost: 1000, currency: 'VRP' },
+          { rareness: "rare", img_preview: "https://starmap.vorpal.finance/gui/images/store/red_laser.png", per_user: 999, cost: 1000, currency: 'VRP' },
+          { rareness: "rare", img_preview: "https://starmap.vorpal.finance/gui/images/store/red_laser.png", per_user: 999, cost: 1000, currency: 'VRP' },
+          { rareness: "rare", img_preview: "https://starmap.vorpal.finance/gui/images/store/red_laser.png", per_user: 999, cost: 1000, currency: 'VRP' },
+          { rareness: "rare", img_preview: "https://starmap.vorpal.finance/gui/images/store/red_laser.png", per_user: 999, cost: 1000, currency: 'VRP' },
+          { rareness: "rare", img_preview: "https://starmap.vorpal.finance/gui/images/store/red_laser.png", per_user: 999, cost: 1000, currency: 'VRP' },
+          { rareness: "rare", img_preview: "https://starmap.vorpal.finance/gui/images/store/red_laser.png", per_user: 999, cost: 1000, currency: 'VRP' },
+        ],
       loading: false,
       buying: false,
       confirmation: false,
@@ -132,7 +148,22 @@ export default {
       currentTab: 'inventory',
       selectedCard: null,
       boxContent: [],
-      assets: [],
+      assets: [
+        { rare: 'legendary', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'rare', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'rare', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'rare', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'legendary', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'mythic', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'mythic', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'rare', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'legendary', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'rare', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'rare', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'mythic', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'mythic', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+      ],
+      title: 'INVENTORY'
     }
   },
   computed: {
@@ -158,6 +189,12 @@ export default {
   methods: {
     selectTab(tab) {
       this.currentTab = tab
+      if (tab === 'inventory')
+        this.title = 'INVENTORY';
+      else if (tab === 'events')
+        this.title = 'GALAXY SHOP';
+      else
+        this.title = 'OPEN BOX';
     },
     selectCard(card) {
       this.selectedCard = card
@@ -207,7 +244,8 @@ export default {
 
     },
     async openBox() {
-      this.boxContent = await this.rewards.openBox()
+      // this.boxContent = await this.rewards.openBox()
+      this.boxContent = boxContentConst
       this.fetchAssets()
     },
     async fetchAssets() {
