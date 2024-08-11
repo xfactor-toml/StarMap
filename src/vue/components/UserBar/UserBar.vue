@@ -3,15 +3,10 @@
     class="UserBar"
     :class="{ connected: walletStore.connected }"
   >
-    <!-- <button
-      v-if="walletStore.connected"
-      class="UserBar__button is-mint"
-      @mouseenter="$client.onHover()"
-      @click="$emit('openPlasmaMintPopup')"
-    >Get plasma</button> -->
     <div class="UserBar__buttons">
       <button
         :class="`UserBar__button is-box ${userInventoryVisible && 'active'}`"
+        :data-count="userBoxes.length"
         @mouseenter="$client.onHover()"
         @click="openUserInventory"
       />
@@ -68,18 +63,83 @@
         @toggleFullscreen="$client.toggleFullscreen()"
       />
     </div>
+   
+  </div>
+  <transition name="fade">
+    <div class="bar-icon">
+      <button
+          :class="`UserBar__button is-box ${userInventoryVisible && 'active'}`"
+          :data-count="userBoxes.length"
+          @mouseenter="$client.onHover()"
+          @click="openUserInventory"/>
+      <div
+        v-if="walletStore.connected"
+        class="UserBar__account"
+        @click="showUserMenu"
+      >{{ walletStore.login }}
+      </div>
+      <button
+        v-else
+        class="UserBar__button menu-bar"
+        @mouseenter="$client.onHover()"
+        @click="showUserMenu"
+      />
+    </div>
+  </transition>
+
+  <transition name="fade">
+    <div class="UserMenu">
+      <div v-if="userMenuVisible" class="UserMenu__body">
+        <div class="UserMenu__content">
+          <img src="/gui/images/menu-border.svg">
+          <div class="UserMenu__icons">
+            <div v-for="item in items" :key="item" @click="selected(item)"
+            class="UserMenu__icon"
+            :class="[ currentTab === item ? 'active' : '.']"
+            >
+                <img :src="`/gui/images/${item}.svg`">
+            </div>
+          </div>
+          <div class="UserMenu__separate__line">
+              <img src="/gui/images/menu-bar-line.svg">
+          </div>
+        </div>
+        <SearchInput  
+        v-if="searchVisible"
+        v-click-outside="hideSearchField"
+        v-model="searchKey"
+        @close="closeSearchField" />
+
+        <SettingsPopup
+        v-if="settingsVisible"
+        v-click-outside="hideSettingsPopup"
+        :fullscreen="uiStore.fullscreen.active"
+        :musicVolume="settingsStore.volume.music"
+        :sfxVolume="settingsStore.volume.sfx"
+        @click="$client.onClick()"
+        @hover="$client.onHover()"
+        @setMusicVolume="settingsStore.volume.changeMusicVolume"
+        @setSfxVolume="settingsStore.volume.changeSfxVolume"
+        @toggleFullscreen="$client.toggleFullscreen()"
+      />
+      </div>
+    </div>
+  </transition>
+  <transition name="fade">
     <UserInventoryPopup
       v-if="userInventoryVisible"
       @close="hideUserInventory"
     />
-  </div>
+  </transition>
+  
+    
 </template>
 
 <script lang="ts">
 import { SettingsPopup } from '@/components/SettingsPopup';
 import { SearchInput } from '@/components/SearchInput';
 import { UserInventoryPopup } from '@/components/UserInventoryPopup';
-import { useSettingsStore, useUiStore, useWalletStore } from '@/stores';
+import { useSettingsStore, useUiStore, useWalletStore, useBattleStore } from '@/stores';
 import { default as vClickOutside } from 'click-outside-vue3';
 import { mapStores } from 'pinia';
 
@@ -97,7 +157,10 @@ export default {
     settingsVisible: false,
     searchVisible: false,
     userInventoryVisible: false,
+    userMenuVisible: false,
     searchKey: '',
+    items: ["search", "settings","wallet","log-out","close"],
+    currentTab: null,
   }),
   watch: {
     searchKey() {
@@ -108,8 +171,12 @@ export default {
     ...mapStores(
       useSettingsStore,
       useUiStore,
-      useWalletStore
+      useWalletStore,
+      useBattleStore
     ),
+    userBoxes() {
+      return this.battleStore.rewards.boxesIds
+    }
   },
   methods: {
     toggleSettings() {
@@ -140,7 +207,31 @@ export default {
     hideUserInventory() {
       this.userInventoryVisible = false
     },
+    selected(card) {
+      this.currentTab = card;
+      switch (card) {
+        case 'search':
+          return this.searchVisible = true;
+          break;
+        case 'settings':
+          return this.settingsVisible = true;
+          break;
+        case 'wallet':
+          return this.walletStore.openPopup();
+          break;
+        case 'log-out':
+          return this.walletStore.reset();
+          break;
+        case 'close':
+          return this.userMenuVisible = false;
+          break;
+      }    
+    },
+    showUserMenu() {
+       this.userMenuVisible = true;
+    }
   },
+
 };
 </script>
 

@@ -1,58 +1,128 @@
 .BoxContentPopup {
-  --base-popup-padding: 0;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  pointer-events: all;
+}
+
+.BoxContentPopup__box {
+  max-width: calc(100vw - 20px);
+  margin: auto;
+  margin-top: 80px;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+
+}
+
+.BoxContentPopup__body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 170px);
+  min-height: 280px;
 }
 
 .BoxContentPopup__content {
+  position: relative;
+  width: 100%;
+  max-width: 450px;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding-top: 24px;
-  padding-bottom: 12px;
-  color: #fff;
+  justify-content: center;
+  align-items: center;
+}
+
+.BoxContentPopup__content img {
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: contain;
 }
 
 .BoxContentPopup__title {
-  color: #F9EB21;
+  position: absolute;
+  top: 2%;
+  color: #112A5E;
   font-size: 22px;
   text-transform: uppercase;
   text-align: center;
 }
 
+.BoxContentPopup__close {
+  position: absolute;
+  top: 2.5%;
+  right: 13%;
+  color: #112A5E;
+  font-size: 22px;
+  text-transform: uppercase;
+  text-align: center;
+  background-image: url("../gui/images/user-inventory/inventory/close.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  width: 20px;
+  height: 20px;
+}
+
+.BoxContentPopup__close:hover {
+  cursor: pointer;
+}
+
 .BoxContentPopup__cards {
   display: grid;
+  position: absolute;
   grid-template-columns: repeat(3, 1fr);
   align-content: flex-start;
-  gap: 8px;
-  margin: 8px;
+  gap: 10px;
+  padding: 8px;
   margin-top: 16px;
   flex-grow: 1;
   overflow: auto;
+  max-height: 57%;
+  width: 83%;
+  top: 12%;
 }
 
-.BoxContentPopup__card {
-  --color: #00FFFF;
 
+.BoxContentPopup__card {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   width: 100%;
-  border: 3px solid var(--color);
-  border-radius: 6px;
-  background-color: #000;
-  cursor: pointer;
+  border: none;
+  position: relative;
 }
 
 .BoxContentPopup__card[data-rare="rare"] { --color: #123EAB; }
 .BoxContentPopup__card[data-rare="mithic"] { --color: #640CAB; }
 .BoxContentPopup__card[data-rare="legendary"] { --color: #FF6200; }
 
+.BoxContentPopup__cardName {
+  position: absolute;
+  left: 50%;
+  top: 1%;
+  font-style: normal;
+  font-size: 12px;
+  line-height: 14px;
+  text-align: center;
+  color: #FFFFFF;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+
 .BoxContentPopup__cardFigure {
+  position: absolute;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-grow: 1;
   width: 100%;
-  height: 100px;
-  margin: auto;
+  height: 54%;
+  margin-top: -8px;
+  z-index: 0;
 }
 
 .BoxContentPopup__cardImage {
@@ -63,12 +133,148 @@
 }
 
 .BoxContentPopup__cardCaption {
-  padding: 8px 4px 6px;
-  color: #000;
-  background-color: var(--color);
-  font-family: 'Exo 2';
-  font-size: 11px;
-  line-height: 1;
+  position: absolute;
+  bottom: 7%;
+  font-style: normal;
+  font-size: 14px;
+  line-height: 17px;
   text-align: center;
-  text-transform: uppercase;
+  color: #FFFFFF;
+}
+
+.BoxContentPopup__bottom {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  top: 80%;
+}
+
+.BoxContentPopup__button {
+  background: linear-gradient(360deg, #00C6FB 0%, #005BEA 100%);
+  box-shadow: 0px 0px 1020.6px #0169ED, 0px 0px 583.2px #0169ED, 0px 0px 340.2px #0169ED, 0px 0px 170.1px #0169ED, 0px 0px 48.6px #0169ED, 0px 0px 24.3px #0169ED;
+  height: 66.6%;
+  border: none;
+  border-radius: 104px;
+  width: 88.2%;
+  /* font-family: 'Jura'; */
+  font-style: normal;
+  font-size: 28px;
+  line-height: 38px;
+  color: #FFFFFF;
+}
+
+.BoxContentPopup__button:hover {
+  transform: scale(1.05);
+}
+
+.BoxContentPopup__animation {
+  width: 82.9%;
+  height: 18.75%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.BoxContentPopup__button-animation {
+  width: 88.2%;
+  height: 66.6%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  transform-origin: center;
+  opacity: 1;
+  z-index: 1;
+  /* overflow: hidden; */
+  animation: zoomOut 3.5s infinite forwards linear;
+  z-index: -1;
+}
+
+.BoxContentPopup__button-animation img {
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+@keyframes zoomOut {
+  from {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+  }
+
+  50% {
+      transform: translate(-50%, -50%) scale(1.1);
+      opacity: 0.8;
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.2);
+}
+}
+.BoxContentPopup__button-animation:nth-child(1) {
+  animation-delay: calc(500ms * -1);
+}
+
+.BoxContentPopup__button-animation:nth-child(2) {
+  animation-delay: calc(500ms * 0);
+}
+
+.BoxContentPopup__button-animation:nth-child(3) {
+  animation-delay: calc(500ms * 1);
+}
+
+.BoxContentPopup__button-animation:nth-child(4) {
+  animation-delay: calc(500ms * 2);
+}
+
+.BoxContentPopup__button-animation:nth-child(5) {
+  animation-delay: calc(500ms * 3);
+}
+
+.BoxContentPopup__button-animation:nth-child(6) {
+  animation-delay: calc(500ms * 4);
+}
+
+.BoxContentPopup__button-animation:nth-child(7) {
+  animation-delay: calc(500ms * 5);
+}
+
+.BoxContentPopup__button-animation:nth-child(8) {
+  animation-delay: calc(500ms * 6);
+}
+
+.BoxContentPopup__cards::-webkit-scrollbar {
+  width: 3px;
+  padding: 5px;
+}
+
+.BoxContentPopup__cards::-webkit-scrollbar-track {
+  background: rgba(217, 217, 217, 0.1);
+  opacity: 10%;
+}
+
+.BoxContentPopup__cards::-webkit-scrollbar-thumb {
+  background: #00FFFF;
+  border-radius: 10px;
+}
+
+.BoxContentPopup__cards::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+
+@media (max-width: 375px) {
+  .BoxContentPopup__cards {
+    width: 100%;
+  }
+  .BoxContentPopup__close {
+    top: 2%;
+  }
+  .BoxContentPopup__title {
+    font-size: 18px;
+  }
 }

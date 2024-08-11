@@ -6,7 +6,6 @@
       :value="modelValue"
       @input="handleValueChange"
     >
-    <button class="SearchInput__button" @click="$emit('close')"/>
   </div>
 </template>
 

@@ -1,33 +1,39 @@
 <template>
-  <BasePopup
-    class="BoxContentPopup"
-    @close="$emit('close')"
-  >
-    <div class="BoxContentPopup__content">
-      <div class="BoxContentPopup__title">Congratulations</div>
-      <div class="BoxContentPopup__cards">
-        <template
-          v-for="(item, index) in list"
-          :key="item.name + index"
-        >
-          <div
-            class="BoxContentPopup__card"
-            :data-rare="item.rare"
-          >
-            <div class="BoxContentPopup__cardFigure">
-              <img
-                class="BoxContentPopup__cardImage"
-                :src="item.image"
-              />
-            </div>
-            <div class="BoxContentPopup__cardCaption">
-              {{ item.name }} +{{ item.value }}
+  <div class="BoxContentPopup">
+    <div class="BoxContentPopup__box">
+      <div class="BoxContentPopup__body">
+        <div class="BoxContentPopup__content">
+          <img src="/gui/images/user-inventory/inventory/background.svg">
+          <div class="BoxContentPopup__title">Congratulations</div>
+          <div class="BoxContentPopup__close" @click="$emit('close')"></div>
+          <div class="BoxContentPopup__cards">
+            <template v-for="(item, index) in list" :key="item.name + index">
+              <div class="BoxContentPopup__card" :data-rare="item.rare">
+                <img :src="`/gui/images/user-inventory/inventory/${item.rare}.svg`" />
+                <div class="BoxContentPopup__cardName">{{ item.name }} </div>
+                <div class="BoxContentPopup__cardFigure">
+                  <img class="BoxContentPopup__cardImage" :src="item.image" />
+                </div>
+                <div class="BoxContentPopup__cardCaption">
+                  {{ item.value }} VRP
+                </div>
+              </div>
+            </template>
+          </div>
+          <div class="BoxContentPopup__bottom">
+            <div class="BoxContentPopup__animation">
+              <button class="BoxContentPopup__button">OK</button>
+              <div class="BoxContentPopup__button-animation" v-for="(item, index) in 8" :key="index">
+                <img src="/gui/images/user-inventory/open-box-border.svg" alt="logo">
+              </div>
             </div>
           </div>
-        </template>
+
+        </div>
       </div>
     </div>
-  </BasePopup>
+
+  </div>
 </template>
 
 <script lang="ts">

@@ -1,11 +1,12 @@
 <template>
   <div class="UserInventoryPopup">
     <div class="UserInventoryPopup__overlay" @click="$emit('close')" />
-    <div class="UserInventoryPopup__box">
+    <div v-if="!showBoxConent" class="UserInventoryPopup__box">
       <div class="UserInventoryPopup__body">
         <div class="UserInventoryPopup__body-image">
           <img src="/gui/images/user-inventory/background.png">
           <div class="UserInventoryPopup__title">{{ title }}</div>
+          <div class="UserInventoryPopup__close" @click="$emit('close')"></div>
           <div class="UserInventoryPopup__balance">BALANCE: {{ balance }} tVRP </div>
           <div class="UserInventoryPopup__tabs">
             <button v-for="tab in tabs" :key="tab"
@@ -88,7 +89,7 @@
     </div>
     <InventoryCardPopup v-if="selectedCard" :title="selectedCard.item" :description="selectedCard.description"
       :image="selectedCard.img_full" :type="selectedCard.type" @buy="buy(selectedCard)" @close="selectCard(null)" />
-    <BoxContentPopup v-if="boxContent.length > 0" :list="boxContent" @close="resetBoxes()" />
+    <BoxContentPopup v-if="boxContent.length > 0 && showBoxConent" :list="boxContent" @close="resetBoxes()" />
     <ConfirmPopup v-if="confirmation" :title="'Are you sure you want to make this purchase?'"
       @close="confirmResolver(false)" @confirm="confirmResolver(true)" />
   </div>
@@ -109,6 +110,9 @@ const boxContentConst =[
         { rare: 'rare', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
         { rare: 'legendary', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
         { rare: 'mythic', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'legendary', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'rare', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'rare', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
       ]
 
 export default {
@@ -148,6 +152,7 @@ export default {
       currentTab: 'inventory',
       selectedCard: null,
       boxContent: [],
+      showBoxConent: false,
       assets: [
         { rare: 'legendary', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
         { rare: 'rare', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
@@ -246,6 +251,7 @@ export default {
     async openBox() {
       // this.boxContent = await this.rewards.openBox()
       this.boxContent = boxContentConst
+      this.showBoxConent = true
       this.fetchAssets()
     },
     async fetchAssets() {
@@ -300,6 +306,7 @@ export default {
       return confirmed
     },
     resetBoxes() {
+      this.showBoxConent = false
       this.boxContent = []
     },
   },
