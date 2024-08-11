@@ -40,7 +40,7 @@ export async function OpenBoxWeb2 (_boxId: number, address?: string, telegramDat
         const url = fastDataServerUrl.concat('api/boxes/open');
         const connector = BlockchainConnectService.getInstance();
         const priority = connector.getDefaultAuthMethod();
-        connector.SetupAuthMethod(priority);
+        connector.setupAuthMethod(priority);
         const signature =  address ? await connector.getSignedAuthMessage() : "";
         const balancePrev = await GetGameAssetsWeb2 (String(telegramData.id) || address);
         const response = await fetch(url, {

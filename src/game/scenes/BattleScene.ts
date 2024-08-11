@@ -246,7 +246,7 @@ export class BattleScene extends BasicScene {
 
     private onGameCompletePack(aData: GameCompleteData) {
         const bcs = BlockchainConnectService.getInstance();
-        const ownerName = bcs.isTelegram() ? bcs.TelegramLogin() : bcs.walletAddress;
+        const ownerName = bcs.isTelegram() ? bcs.telegramLogin() : bcs.walletAddress;
 
         this._state = aData.status == 'win' ? BattleSceneState.win : BattleSceneState.loss;
 

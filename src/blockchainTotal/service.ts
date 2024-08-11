@@ -28,7 +28,7 @@ export class BlockchainConnectService {
   public telegramInitData: any;
 
 
-  public LoadTelegramData() {
+  public loadTelegramData() {
     const tg = this.TelegramInfo;
     if (tg && tg.WebApp && tg.WebApp.initData) {
       this.telegramInitData = tg.WebApp.initData;
@@ -185,7 +185,7 @@ export class BlockchainConnectService {
     if (this.authMethod === "Walletconnect") {
       InitWalletconnectModal();
     }
-    this.LoadTelegramData();
+    this.loadTelegramData();
     // TONPreconnect();
   }
 
@@ -196,7 +196,7 @@ export class BlockchainConnectService {
     return BlockchainConnectService.instance;
   }
 
-  public SetupAuthMethod(method: AuthMethod) {
+  public setupAuthMethod(method: AuthMethod) {
     this.authMethod = method;
   }
 
@@ -226,7 +226,7 @@ export class BlockchainConnectService {
     }
   }
 
-  public GetAuthMessageToSign(): string {
+  public getAuthMessageToSign(): string {
     const dt = new Date().getTime();
     const signMsg = "auth_" + String(dt - (dt % 600000));
     return signMsg;
@@ -260,7 +260,7 @@ export class BlockchainConnectService {
 
   public async getSignedAuthMessage(): Promise<string> {
     return new Promise(async (resolve, reject) => {
-      const signMsg = this.GetAuthMessageToSign();
+      const signMsg = this.getAuthMessageToSign();
       let signature = ""
       if (this.authMethod === "telegram" || this.authMethod === "Local" || this.authMethod === "TON") {
         let tempPK = localStorage.getItem(lsPrivateKey);
@@ -306,7 +306,7 @@ export class BlockchainConnectService {
     })
   }
 
-  public async GameAuth(): Promise<string> {
+  public async gameAuth(): Promise<string> {
     const funcName = 'newGameAuth()';
 
     return new Promise((resolve, reject) => {
@@ -327,7 +327,7 @@ export class BlockchainConnectService {
 
   }
 
-  public async OpenBoxByTg(_boxId: number) {
+  public async openBoxByTg(_boxId: number) {
     if (!this.telegramAuthData.hash) {
       Promise.reject("User not authorized");
       return;
@@ -340,11 +340,11 @@ export class BlockchainConnectService {
     return this.walletAddress;
   }
 
-  public TelegramLogin() {
+  public telegramLogin() {
     return this.telegramAuthData?.username || this.telegramAuthData?.first_name || "Anonimous";
   }
 
-  public TelegramId() {
+  public telegramId() {
     return this.telegramAuthData?.id || this.walletAddress;
   }
 
