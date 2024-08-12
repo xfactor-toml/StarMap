@@ -50,9 +50,9 @@ export class WalletService {
       throw new Error('provider not defined')
     }
 
-    /* useBattleStore().rewards.setBoxesIds(
+    useBattleStore().rewards.setBoxesIds(
       await this.provider.getUserBoxesToOpen()
-    ); */
+    );
 
     return this.updateState((await this.provider.connect()).value);
   }
@@ -70,7 +70,7 @@ export class WalletService {
 
     this.connected = true;
     this.account = account;
-    this.login = connectService.TelegramLogin() || getShortAddress(account);
+    this.login = connectService.telegramLogin() || getShortAddress(account);
     this.emmiter.emit('state', this.state)
 
     return true;

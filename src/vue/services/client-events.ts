@@ -9,6 +9,7 @@ import { toast } from 'vue3-toastify';
 import { useWallet } from '@/services/wallet';
 import { BlockchainConnectService } from '~/blockchainTotal';
 import { config } from '@/config';
+import { GlobalParams } from '~/game/data/GlobalParams';
 
 export class ClientEventsService {
   
@@ -28,9 +29,10 @@ export class ClientEventsService {
         break;
 
       case GameEvent.GAME_LOADED:
+
         await starsStore.fetchStars();
-        const client = useClient()
-        const wallet = useWallet()
+        const client = useClient();
+        const wallet = useWallet();
 
         if (BlockchainConnectService.getInstance().isTelegram()) {
           wallet.connect('telegram')
@@ -148,6 +150,9 @@ export class ClientEventsService {
       case GameEvent.BATTLE_PREROLL_SHOW:
         battleStore.connecting.setPlayerSearchingState(false);
         scenesStore.setScene(UISceneNames.Battle);
+
+        // TODO: apply shop init data from clientEvent.shopInitData
+
         battleStore.process.setState({
           players: {
             connected: {
@@ -279,20 +284,24 @@ export class ClientEventsService {
       
       case GameEvent.BATTLE_EXP_DATA:
         LogMng.debug(`GUI: update level progress: ${clientEvent.levelExpPercent}`);
-        const actionTypes: BattleActionType[] = ['satelliteFire', 'rocketFire', 'slowdown', 'invisibility'];
         
         battleStore.process.setLevel({
           current: clientEvent.level,
           progress: clientEvent.levelExpPercent
         });
-
+        
         battleStore.process.setGold(clientEvent.gold);
-
-        LogMng.debug(`GUI: update skiils: ${clientEvent.skills}`);
-
+        
+        if (GlobalParams.isDebugMode) {
+          LogMng.debug(`GUI: update skiils:`, clientEvent.skills);
+        }
+        
+        const actionTypes: BattleActionType[] = ['satelliteFire', 'rocketFire', 'slowdown', 'invisibility'];
+        
         for (let i = 0; i < clientEvent.skills.length; i++) {
+          const at = actionTypes[i];
           const sd = clientEvent.skills[i];
-          battleStore.process.setSkill(actionTypes[i], {
+          battleStore.process.setSkill(at, {
             level: sd.level,
             levelUpAvailable: sd.levelUpAvailable,
             cooldown: {
@@ -313,6 +322,28 @@ export class ClientEventsService {
             clientEvent.emotion,
             clientEvent.position2d
           )
+        }
+        
+        break;
+      
+      case GameEvent.BATTLE_SHOP:
+
+        switch (clientEvent.action) {
+          case 'purchase':
+            
+            break;
+          case 'sale':
+
+            break;
+          case 'purchaseError':
+
+            break;
+          case 'saleError':
+
+            break;
+          default:
+            LogMng.error(`Unknown BATTLE_SHOP action:`, clientEvent);
+            break;
         }
         
         break;

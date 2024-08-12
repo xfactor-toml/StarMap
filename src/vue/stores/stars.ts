@@ -4,6 +4,7 @@ import { useClient, useWallet } from '@/services';
 import { GuiLevel } from '@/types';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
+import { LogMng } from '~/monax/LogMng';
 
 export const useStarsStore = defineStore('stars', () => {
   const client = useClient()
@@ -18,7 +19,11 @@ export const useStarsStore = defineStore('stars', () => {
   })
 
   const fetchStars = async () => {
-    stars.value = (await wallet.provider.getStars()).map(star => new Star(star));
+    try {
+      stars.value = (await wallet.provider.getStars()).map(star => new Star(star));
+    } catch (error) {
+      LogMng.error(`fetchStars: stars loading via wallet.provider.getStars() error:`, error);
+    }
   }
 
   const addStar = (star: Star) => {

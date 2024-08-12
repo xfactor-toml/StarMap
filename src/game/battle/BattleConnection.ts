@@ -175,7 +175,7 @@ export class BattleConnection extends MyEventDispatcher {
                 if (!walletAddress) {
                     const authPriority = this._bcConnectService.getDefaultAuthMethod();
                     this.logDebug(`signProcessLocal: Priority`, authPriority);
-                    this._bcConnectService.SetupAuthMethod('Local');
+                    this._bcConnectService.setupAuthMethod('Local');
                     this._bcConnectService.getSignedAuthMessage().then((aSignature) => {
                         this.logDebug(`signProcessLocal: local wallet auth...`);
                         signData.signature = aSignature;

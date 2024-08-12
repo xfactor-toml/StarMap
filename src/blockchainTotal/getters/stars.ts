@@ -1,10 +1,30 @@
 import { network } from '../config';
 import { StarNFTABI } from '../config/jsonABI';
 import { decimals, env, fastDataServerUrl } from '../config/network';
-import { account, StarList, StarParams, StarData, GameStats } from '../types';
+import { account, StarList, StarParams, StarData, GameStats, Race } from '../types';
 import { ExtractRace } from '../utils/race';
 import { nftContracts } from './common';
 import { GetAllowance } from './tokens';
+
+
+interface StarTableRow {
+    id?: number;
+    owner?: string; 
+    name: string;
+    is_live: boolean;
+    creation: number;
+    updated?: number | null;
+    level: number;
+    fuel?: number;
+    level_up_fuel?: number;
+    fuel_spendings?: number;
+    habitable_zone_min?: number;
+    habitable_zone_max?: number;
+    planet_slots?: number;
+    mass?: number;
+    race: Race;
+    coords: number[]; 
+}
 
 
 async function RequiredPlasmaToApprove (owner : account, level : number = 1) : Promise<number> {
@@ -146,6 +166,44 @@ async function GetStarDataFromServer(): Promise<StarList> {
         try {
             const response = await fetch(url);
             const data: StarList = await response.json();
+            console.log("Received: ", data)
+            reslove(data);
+        }  catch (e) {
+            reject(e.message);
+        }
+    })
+}
+
+export async function getWeb2StarDataFromServer(): Promise<StarList> {
+    return new Promise(async (reslove, reject) => {
+        const url = fastDataServerUrl.concat('api/getstarlist');
+        try {
+            const response = await fetch(url);
+            const data: StarList = (await response.json()).map((item: StarTableRow) => {
+                return({
+                    id: item.id,
+                    owner: item.owner || "none",
+                    params: {
+                        creation: Math.round(new Date(item.creation).getTime() / 1000),
+                        isLive: item.is_live,
+                        updated: item.updated ? Math.round(new Date(item.updated).getTime() / 1000) : 0,
+                        level: item.level,
+                        levelUpFuel: item.level_up_fuel,
+                        fuel: item.fuel,
+                        fuelSpendings: item.fuel_spendings || 0,
+                        habitableZoneMin: item.habitable_zone_min,
+                        habitableZoneMax: item.habitable_zone_max,
+                        planetSlots: item.planet_slots,
+                        mass: item.mass,
+                        race: item.race,
+                        coords: {
+                            X: item.coords[0],
+                            Y: item.coords[1],
+                            Z: item.coords[2]
+                        }
+                    }})
+            });
+            console.log("Received: ", data)
             reslove(data);
         }  catch (e) {
             reject(e.message);

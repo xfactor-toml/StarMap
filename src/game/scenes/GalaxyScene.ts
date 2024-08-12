@@ -26,6 +26,8 @@ export class GalaxyScene extends BasicScene {
 
     private _isDuelSearching = false;
     private _timerDuelCheck = 0;
+    
+    bcs = BlockchainConnectService.getInstance();
 
     constructor() {
         super(SceneNames.GalaxyScene, {
@@ -128,7 +130,7 @@ export class GalaxyScene extends BasicScene {
             return;
         }
         this.logDebug(`checkDuel: isTelegram = ${isTG}`);
-        const userNick = String(bcs.TelegramId());
+        const userNick = String(bcs.telegramId());
         this.logDebug(`checkDuel: userNick = ${userNick}`);
         if (!userNick || userNick == '') {
             return;
@@ -201,7 +203,7 @@ export class GalaxyScene extends BasicScene {
         if (this._isDuelSearching) {
             if (confirm(`Are you sure you want to cancel the duel?`)) {
                 const bcs = BlockchainConnectService.getInstance();
-                con.sendDuelCancel(bcs.TelegramLogin());
+                con.sendDuelCancel(bcs.telegramLogin());
                 BattleConnection.getInstance().sendStopSearchingGame();
             }
             else {
@@ -263,8 +265,12 @@ export class GalaxyScene extends BasicScene {
             
             case 'found':
                 this._isDuelSearching = true;
+                const thisUserNick = String(this.bcs.telegramLogin()).replace('@', '').toLowerCase();
+                const enemyNick = String(aData.enemyNick).replace('@', '').toLowerCase();
+                const duelFoundNotifyText = enemyNick === thisUserNick ? 'Duel created!' : `Duel with ${aData.enemyNick} found!`;
+
                 if (aData.enemyNick?.length > 0) {
-                    GameEventDispatcher.showMessage(`Duel with ${aData.enemyNick} found!`);
+                    GameEventDispatcher.showMessage(duelFoundNotifyText);
                 }
                 else {
                     GameEventDispatcher.showMessage(`Duel found!`);

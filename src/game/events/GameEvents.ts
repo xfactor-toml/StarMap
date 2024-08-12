@@ -1,4 +1,4 @@
-import { AcceptScreenAction, AcceptScreenData, BoxOpenData, Emotion, ExpData, GameCompleteData, StartGameData } from "../battle/Types";
+import { AcceptScreenAction, AcceptScreenData, BattleShopAction, BoxOpenData, Emotion, ExpData, GameCompleteData, ShopItemData, StartGameData } from "../battle/Types";
 
 export type AcceptData = {
     eventName: GameEvent.BATTLE_ACCEPT_SCREEN,
@@ -76,6 +76,7 @@ export enum GameEvent {
     // battle process
     BATTLE_EXP_DATA = 'BATTLE_EXP_DATA',
     BATTLE_EMOTION = 'BATTLE_EMOTION',
+    BATTLE_SHOP = 'BATTLE_SHOP',
 
     BATTLE_EXPLOSION = 'BATTLE_EXPLOSION'
 
@@ -232,6 +233,19 @@ export class GameEventDispatcher {
         }));
     }
 
+    static battleShopEvent(aData: {
+        action: BattleShopAction,
+        itemId: number
+    }) {
+        window.dispatchEvent(new CustomEvent('gameEvent', {
+            detail: aData
+        }));
+    }
+
+    /**
+     * for test of GUI animation
+     * @param aPos2d 
+     */
     static explosion(aPos2d: { x: number, y: number }) {
         let data: ExplosionData = {
             eventName: GameEvent.BATTLE_EXPLOSION,

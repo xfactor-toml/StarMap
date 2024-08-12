@@ -1,0 +1,33 @@
+.BattleShop {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  pointer-events: all;
+}
+
+.BattleShop__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-right: 20px;
+  padding-left: 20px;
+  gap: 10px;
+}
+
+.isHide {
+  visibility: hidden;
+}
+.BattleShop__row+.BattleShop__row {
+  margin-top: -8px;
+}
+
+.BattleShop__row>* {
+  pointer-events: all;
+}
+
+.BattleShop__interval {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  opacity: 0.3;
+  border: 1px solid #00FFFF;
+}

@@ -2,7 +2,7 @@ import { Ref } from "vue";
 import { BlockchainConnectService } from "~/blockchainTotal";
 import { getLaserLevel } from "~/blockchainTotal/getters/boxes";
 import { getBoxDataWeb2, getUserBoxesToOpenWeb2 } from "~/blockchainTotal/getters/boxesWeb2";
-import { GetCreationCost, GetSingleStarData, GetStarDataFromServer, GetStarsCount, RequiredPlasmaToApprove } from "~/blockchainTotal/getters/stars";
+import { GetCreationCost, GetSingleStarData, GetStarDataFromServer, GetStarsCount, getWeb2StarDataFromServer, RequiredPlasmaToApprove } from "~/blockchainTotal/getters/stars";
 import { GetAllowance, GetBalance } from "~/blockchainTotal/getters/tokens";
 import { Coords, StarData, StarList, fuelTarget } from "~/blockchainTotal/types";
 
@@ -62,6 +62,7 @@ export abstract class BaseProvider {
   async getStars(): Promise<StarList> {
     // return GetAllStarData();
     return GetStarDataFromServer();
+    // return getWeb2StarDataFromServer();
   }
 
   async getStarById(starId: number): Promise<StarData> {

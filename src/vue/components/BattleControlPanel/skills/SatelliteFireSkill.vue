@@ -40,7 +40,7 @@ export default {
     },
     disabled: {
       type: Boolean,
-    }
+    },
   },
   emits: ['fire', 'levelUp'],
   computed: {

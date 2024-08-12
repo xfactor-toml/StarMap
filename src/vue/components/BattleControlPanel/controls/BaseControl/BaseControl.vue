@@ -9,7 +9,6 @@
       [name]: Boolean(name),
     }"
     :disabled="!active || disabled"
-    @click="$emit('click')"
   >
     <svg
       class="BaseControl__outline"
@@ -89,6 +88,16 @@ import {
   SatelliteFireIcon,
   SlowdownIcon
 } from './icons';
+import { 
+  ThunderIcon,
+  VelocityVectorIcon,
+  SurgeSpiresIcon,
+  SpiralSentinelIcon,
+  NuclearOrbIcon,
+  MomentumMatrixIcon,
+  QuantumBoosterIcon,
+  AccelerationAmuletIcon,
+ } from '@/components/BattleShop/item/icons';
 import { DefineComponent, PropType } from 'vue';
 import { BattleActionType } from '@/types';
 import { MyMath } from '~/monax/MyMath';
@@ -105,7 +114,7 @@ export default {
       default: null
     },
     name: {
-      type: String as PropType<BattleActionType>,
+      type: String ,
     },
     active: {
       type: Boolean,
@@ -116,7 +125,6 @@ export default {
       default: false
     },
   },
-  emits: ['click'],
   computed: {
     hasCooldown() {
       return this.cooldown !== null
@@ -127,6 +135,15 @@ export default {
         satelliteFire: SatelliteFireIcon,
         rocketFire: RocketFireIcon,
         slowdown: SlowdownIcon,
+        thunder: ThunderIcon,
+        velocityVector: VelocityVectorIcon,
+        nuclearOrb: NuclearOrbIcon,
+        spiralSentinel: SpiralSentinelIcon,
+        accelerationAmulet: AccelerationAmuletIcon,
+        surgesSpire: SurgeSpiresIcon,
+        momentumMatrix: MomentumMatrixIcon,
+        quantumBooster: QuantumBoosterIcon,
+        
       }
       
       return icons[this.name]

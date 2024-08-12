@@ -3,7 +3,7 @@
     <div class="UserInventoryPopup__overlay" @click="$emit('close')" />
     <div class="UserInventoryPopup__box">
       <div class="UserInventoryPopup__head">
-        <div class="UserInventoryPopup__title">Open box</div>
+        <div class="UserInventoryPopup__title">Inventory</div>
       </div>
       <div class="UserInventoryPopup__balance">Balance VRP: {{ balance }}</div>
       <div class="UserInventoryPopup__body">
