@@ -4,7 +4,7 @@ import { GlobalParams } from '../data/GlobalParams';
 import { BattleView } from '../battle/BattleView';
 import { FrontEvents } from '../events/FrontEvents';
 import { BattleConnection, ConnectionEvent } from '../battle/BattleConnection';
-import { ClaimRewardData, Emotion, EmotionData, ExpData, GameCompleteData, PackTitle } from '../battle/Types';
+import { ClaimRewardData, Emotion, EmotionData, ExpData, GameCompleteData, PackTitle, ShopData } from '../battle/Types';
 import { GameEvent, GameEventDispatcher } from '../events/GameEvents';
 import { DebugGui } from '../debug/DebugGui';
 import { BasicScene } from '../core/scene/BasicScene';
@@ -101,6 +101,9 @@ export class BattleScene extends BasicScene {
     this._connection.socket.on(PackTitle.exp, (aData: ExpData) => {
       this.onExpUpdatePack(aData);
     });
+    this._connection.socket.on(PackTitle.shop, (aData: ShopData) => {
+      this.onServerShop(aData);
+    });
     this._connection.socket.on(PackTitle.emotion, (aData: EmotionData) => {
       this.onServerEmotion(aData);
     });
@@ -120,6 +123,7 @@ export class BattleScene extends BasicScene {
     this._connection.remove(PackTitle.gameComplete, this.onGameCompletePack);
     this._connection.remove(ConnectionEvent.disconnect, this.onSocketDisconnect);
     this._connection.socket.removeListener(PackTitle.exp);
+    this._connection.socket.removeListener(PackTitle.shop);
     this._connection.socket.removeListener(PackTitle.emotion);
     // front
     FrontEvents.onBattleExit.remove(this.onFrontExitBattle, this);
@@ -142,6 +146,7 @@ export class BattleScene extends BasicScene {
   }
 
   private initSocketDebugGui(aFolder: GUI) {
+
     const DATA = {
       exitgame: () => {
         this._connection.sendExitGame();
@@ -152,6 +157,12 @@ export class BattleScene extends BasicScene {
       testBattleLoss: () => {
         this._connection.sendTestLossBattle();
       },
+      testBuy: () => {
+        this._connection.sendBattleShopPurchaseRequest(0);
+      },
+      testSell: () => {
+        this._connection.sendBattleShopSellRequest(0);
+      }
 
     }
 
@@ -159,6 +170,8 @@ export class BattleScene extends BasicScene {
     f.add(DATA, 'exitgame').name('Exit Game');
     f.add(DATA, 'testBattleWin').name('Test Battle Win');
     f.add(DATA, 'testBattleLoss').name('Test Battle Loss');
+    f.add(DATA, 'testBuy').name('Test Shop Buy');
+    f.add(DATA, 'testSell').name('Test Shop Sell');
 
   }
 
@@ -292,6 +305,10 @@ export class BattleScene extends BasicScene {
 
   private onExpUpdatePack(aExpData: ExpData) {
     GameEventDispatcher.battleExpUpdate(aExpData);
+  }
+
+  private onServerShop(aData: ShopData) {
+    GameEventDispatcher.battleShopEvent(aData);
   }
 
   private onServerEmotion(aData: EmotionData) {

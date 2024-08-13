@@ -329,6 +329,14 @@ export class BattleConnection extends MyEventDispatcher {
     this._socket.emit(PackTitle.shop, data);
   }
 
+  sendBattleShopSellRequest(itemId: number) {
+    let data: ShopData = {
+      action: 'sale',
+      itemId: itemId
+    }
+    this._socket.emit(PackTitle.shop, data);
+  }
+
   sendDuelCheck(aUserNick: string) {
     let data: DuelInfo = {
       cmd: 'check',

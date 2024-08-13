@@ -1,4 +1,4 @@
-import { AcceptScreenAction, BattleShopAction, BoxOpenData, ExpData, GameCompleteData, StartGameData } from '~/game/battle/Types';
+import { AcceptScreenAction, BattleShopAction, BoxOpenData, ExpData, GameCompleteData, ShopData, StartGameData } from '~/game/battle/Types';
 import { ServerStarData } from '~/game/data/Types';
 import { FrontEvents } from '~/game/events/FrontEvents';
 import { AcceptData, EmotionData, ExplosionData, GameEvent } from '~/game/events/GameEvents';
@@ -122,8 +122,7 @@ export interface BattleExplosion extends BaseEvent, ExplosionData {
 
 export interface BattleShopEvent extends BaseEvent {
   eventName: GameEvent.BATTLE_SHOP;
-  action: BattleShopAction;
-  itemId?: number;
+  data: ShopData;
 }
 
 export type ClientEvent =

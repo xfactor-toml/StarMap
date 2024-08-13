@@ -1,4 +1,4 @@
-import { AcceptScreenAction, AcceptScreenData, BattleShopAction, BoxOpenData, Emotion, ExpData, GameCompleteData, ShopItemData, StartGameData } from "../battle/Types";
+import { AcceptScreenAction, AcceptScreenData, BattleShopAction, BoxOpenData, Emotion, ExpData, GameCompleteData, ShopData, ShopItemData, StartGameData } from "../battle/Types";
 
 export type AcceptData = {
     eventName: GameEvent.BATTLE_ACCEPT_SCREEN,
@@ -17,6 +17,11 @@ export type EmotionData = {
     type: 'showSelection' | 'show' | 'selected',
     emotion?: Emotion,
     position2d?: { x: number, y: number }
+}
+
+export type ShopEventData = {
+    eventName: GameEvent.BATTLE_SHOP,
+    data: ShopData
 }
 
 export type ExplosionData = {
@@ -233,12 +238,13 @@ export class GameEventDispatcher {
         }));
     }
 
-    static battleShopEvent(aData: {
-        action: BattleShopAction,
-        itemId: number
-    }) {
+    static battleShopEvent(aData: ShopData) {
+        let data: ShopEventData = {
+            eventName: GameEvent.BATTLE_SHOP,
+            data: aData
+        };
         window.dispatchEvent(new CustomEvent('gameEvent', {
-            detail: aData
+            detail: data
         }));
     }
 
