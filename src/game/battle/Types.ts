@@ -131,7 +131,8 @@ export type BattleShopAction = 'purchase' | 'sale' | 'purchaseError' | 'saleErro
 
 export type ShopData = {
   action: BattleShopAction,
-  itemId?: number
+  itemId?: number,
+  msg?: string
 }
 
 export type StartGameData = {

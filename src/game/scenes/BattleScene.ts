@@ -140,6 +140,7 @@ export class BattleScene extends BasicScene {
     if (GlobalParams.isDebugMode) {
       let f = DebugGui.getInstance().createFolder('Battle');
       this.initSocketDebugGui(f);
+      this.initShopDebugGui(f);
       this._view.initDebugGui(f);
       // this.initEmotionsDebugGui(f);
     }
@@ -156,23 +157,40 @@ export class BattleScene extends BasicScene {
       },
       testBattleLoss: () => {
         this._connection.sendTestLossBattle();
-      },
-      testBuy: () => {
-        this._connection.sendBattleShopPurchaseRequest(0);
-      },
-      testSell: () => {
-        this._connection.sendBattleShopSellRequest(0);
       }
-
     }
 
     const f = aFolder;
     f.add(DATA, 'exitgame').name('Exit Game');
     f.add(DATA, 'testBattleWin').name('Test Battle Win');
     f.add(DATA, 'testBattleLoss').name('Test Battle Loss');
-    f.add(DATA, 'testBuy').name('Test Shop Buy');
-    f.add(DATA, 'testSell').name('Test Shop Sell');
 
+  }
+
+  private initShopDebugGui(aFolder: GUI) {
+
+    const DATA = {
+      buy0: () => {
+        this._connection.sendBattleShopPurchaseRequest(0);
+      },
+      buy1: () => {
+        this._connection.sendBattleShopPurchaseRequest(1);
+      },
+      buy2: () => {
+        this._connection.sendBattleShopPurchaseRequest(2);
+      },
+      buy3: () => {
+        this._connection.sendBattleShopPurchaseRequest(3);
+      }
+
+    }
+
+    const f = aFolder.addFolder('Shop');
+    f.add(DATA, 'buy0').name('Buy Recovery Towers');
+    f.add(DATA, 'buy1').name('Buy Recovery Star');
+    f.add(DATA, 'buy2').name('Buy Fighter');
+    f.add(DATA, 'buy3').name('Buy Linkor');
+    
   }
 
   private initEmotionsDebugGui(aFolder: GUI) {
