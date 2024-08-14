@@ -170,6 +170,9 @@ export class BattleScene extends BasicScene {
   private initShopDebugGui(aFolder: GUI) {
 
     const DATA = {
+      add1k: () => {
+        this._connection.sendDebugAdd1kGold();
+      },
       buy0: () => {
         this._connection.sendBattleShopPurchaseRequest(0);
       },
@@ -186,11 +189,12 @@ export class BattleScene extends BasicScene {
     }
 
     const f = aFolder.addFolder('Shop');
+    f.add(DATA, 'add1k').name('Add 1k Gold');
     f.add(DATA, 'buy0').name('Buy Recovery Towers');
     f.add(DATA, 'buy1').name('Buy Recovery Star');
     f.add(DATA, 'buy2').name('Buy Fighter');
     f.add(DATA, 'buy3').name('Buy Linkor');
-    
+
   }
 
   private initEmotionsDebugGui(aFolder: GUI) {

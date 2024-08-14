@@ -353,4 +353,11 @@ export class BattleConnection extends MyEventDispatcher {
     this._socket.emit(PackTitle.duel, data);
   }
 
+  sendDebugAdd1kGold() {
+    let data: DebugTestData = {
+      action: 'addGold1k'
+    }
+    this._socket.emit(PackTitle.debugTest, data);
+  }
+
 }
