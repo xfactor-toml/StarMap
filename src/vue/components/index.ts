@@ -32,3 +32,9 @@ export * from './UserInventoryPopup';
 export * from './ViewsPanel';
 export * from './VolumeControl';
 export * from './WalletConnectPopup';
+export * from './MainMenu';
+export * from './DuelMenu';
+export * from './StarDefenderButton'
+export * from './AudioMenu'
+export * from './SearchingMenu'
+export * from './StarDefenderProcess'

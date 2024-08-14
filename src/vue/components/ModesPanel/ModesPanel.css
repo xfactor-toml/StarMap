@@ -9,16 +9,18 @@
   cursor: default;
   user-select: none;
   transition: ease-in-out transform 300ms;
+  position: relative;
 }
 
 .ModesPanel.is-hidden {
-  transform: translateY(100%);
+  /* transform: translateY(100%); */
 }
 
 .ModesPanel__toggle {
-  width: 38px;
-  height: 10px;
-  position: relative;
+  width: 0px;
+  height: 0px;
+  position: absolute;
+  bottom: 6%;
   border: none;
   background-color: transparent;
   background-repeat: no-repeat;
@@ -29,6 +31,8 @@
   outline: none;
   opacity: 0.8;
   transition: ease opacity 200ms, ease transform 200ms;
+  z-index: 2;
+
 }
 
 .ModesPanel__toggle::before {
@@ -47,7 +51,34 @@
 }
 
 .ModesPanel__toggle:hover {
+  cursor: pointer;
   opacity: 1;
+}
+
+.ModesPanel__body {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.ModesPanel__body-text {
+  position: absolute;
+  top: 3%;
+  font-size: 22px;
+  line-height: 29px;
+  text-align: center;
+  text-transform: uppercase;
+  color: #FFFFFF;
+}
+
+.ModesPanel__body-content {
+  position: absolute;
+  top: 3%;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .ModesPanel__group {
@@ -59,6 +90,13 @@
   width: 100%;
   padding-top: 24px;
   transition: ease opacity 200ms, ease visibility 200ms;
+}
+
+.ModesPanel  img {
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: contain;
 }
 
 .ModesPanel.is-hidden .ModesPanel__group {
@@ -77,7 +115,7 @@
   background-repeat: no-repeat;
   background-position: 50% 50%;
   background-size: contain;
-  background-image: url(../gui/images/modes/mode-panel-outline.svg);
+  /* background-image: url(../gui/images/modes/mode-panel-outline.svg); */
 }
 
 .ModesPanel__button {
@@ -108,8 +146,8 @@
 }
 
 .ModesPanel__button::after {
-  width: 50px; /* 27px; */
-  height: 27px; /* 7px; */
+  width: 50px; 
+  height: 27px; 
   margin-top: -2px;
   margin-bottom: 0;
   opacity: 0;
@@ -150,13 +188,83 @@
   opacity: 1;
 }
 
+.ModesPanel__start {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 92%;
+  max-width: 540px;
+  pointer-events: all;
+  cursor: default;
+  user-select: none;
+  transition: ease-in-out transform 300ms;
+  position: relative;
+}
+
+.ModesPanel__start-text {
+  position: absolute;
+  font-size: 22px;
+  line-height: 29px;
+  text-align: center;
+  text-transform: uppercase;
+  color: #FFFFFF;
+}
+
+.ModesPanel__start-icon {
+  position: absolute;
+  right: 8%;
+  top: 22%;
+}
+
+.ModesPanel__start-icon:hover {
+  cursor: pointer;
+}
+
+.ModesPanel__start img {
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.ModesPanel__pc {
+  display: flex;
+  justify-content: center;
+}
+
+.ModesPanel__mobile {
+  display: none;
+}
+
+
 @media (max-width: 980px) {
-  .ModesPanel {
-    max-width: calc(100% - 40px);
-    padding: 10px 0;
-    border-top: 1px solid rgba(0, 255, 255, 0.3);
+  .ModesPanel__pc {
+    display: none;
   }
 
+  .ModesPanel__mobile {
+    display: flex;
+    justify-content: center;
+  }
+
+  .ModesPanel {
+    max-width: calc(100% - 40px);
+    /* border-top: 1px solid rgba(0, 255, 255, 0.3); */
+  }
+
+  .ModesPanel__button::after {
+    width: 0px; 
+    height: 0px; 
+    margin-top: -2px;
+    margin-bottom: 0;
+    opacity: 0;
+    background-image: url('');
+  }
+
+  .ModesPanel__toggle {
+    width: 38px;
+    height: 10px;
+  }
   .ModesPanel.is-hidden {
     transition: none;
     transform: none;

@@ -212,7 +212,8 @@
   cursor: pointer;
   z-index: 15;
   position: relative;
-  transition: box-shadow 0.3s ease;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;;
+  
   box-shadow: 0 0 30px 10px rgba(2, 86, 197, 1.7);
 }
 
@@ -226,8 +227,7 @@
 }
 
 .WelcomeScene__start-button:hover {
-  opacity: 0.98;
-  transform: scale(1.05);
+   transform: scale(1.05);
 }
 
 .WelcomeScene__start-button-title {

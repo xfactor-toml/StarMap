@@ -89,6 +89,7 @@
 
   <transition name="fade">
     <div class="UserMenu">
+      <div>
       <div v-if="userMenuVisible" class="UserMenu__body">
         <div class="UserMenu__content">
           <img src="/gui/images/menu-border.svg">
@@ -124,9 +125,12 @@
       />
       </div>
     </div>
+    </div>
+    
   </transition>
   <transition name="fade">
     <UserInventoryPopup
+      v-click-outside="hideUserInventory"
       v-if="userInventoryVisible"
       @close="hideUserInventory"
     />

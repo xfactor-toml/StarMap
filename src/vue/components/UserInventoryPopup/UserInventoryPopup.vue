@@ -76,7 +76,7 @@
                   </div>
                   <div class="UserInventoryPopup__animation">
                     <button class="UserInventoryPopup__button" @click="openBox">OPEN BOX</button>
-                    <div class="UserInventoryPopup__button-animation" v-for="(item, index) in 8" :key="index">
+                    <div class="UserInventoryPopup__button-animation" v-for="(item, index) in 30" :key="index">
                       <img src="/gui/images/user-inventory/open-box-border.svg" alt="logo">
                     </div>
                   </div>
@@ -307,6 +307,7 @@ export default {
     },
     resetBoxes() {
       this.showBoxConent = false
+      this.$emit('close')
       this.boxContent = []
     },
   },

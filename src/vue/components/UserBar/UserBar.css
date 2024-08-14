@@ -234,11 +234,16 @@
  
 }
 
+.UserMenu > div {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  height: 100%;
+}
+
 .UserMenu__body {
   position: absolute;
-  top: 23%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 19%;
   pointer-events: all;
   display: flex;
   flex-direction: column;
