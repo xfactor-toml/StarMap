@@ -1,16 +1,12 @@
 <template>
-  <BattleConnectBase>
-    <BattleAcceptButton
-      :progress="battleStore.connecting.acceptTimeProgress"
-      @click="$client.onBattleAccept"
-    />
-  </BattleConnectBase>
+  <BattleReadyProgress @click="$client.onBattleAccept"/>
 </template>
 
 <script lang="ts">
 import { useBattleStore } from '@/stores';
 import { BattleAcceptButton } from '@/components/';
 import { BattleConnectBase } from '../BattleConnectBase';
+import { BattleReadyProgress } from '@/components/';
 import { mapStores } from 'pinia';
 
 export default {
@@ -18,7 +14,8 @@ export default {
   computed: mapStores(useBattleStore),
   components: {
     BattleAcceptButton,
-    BattleConnectBase
+    BattleConnectBase,
+    BattleReadyProgress
   },
 };
 </script>

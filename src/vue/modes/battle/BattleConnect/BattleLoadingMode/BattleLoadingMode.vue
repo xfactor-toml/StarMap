@@ -1,26 +1,17 @@
 <template>
-  <BattleConnectBase>
-    <BattleConnectIndicator
-      :progress="battleStore.connecting.loadingProgress"
-      :type="'loading'"
-      :mode="'loading'"
-    >Loading
-    </BattleConnectIndicator>
-  </BattleConnectBase>
+    <BattleLoadingProgress />      
 </template>
 
 <script lang="ts">
-import { useBattleStore } from '@/stores';
-import { BattleConnectIndicator } from '@/components';
-import { BattleConnectBase } from '../BattleConnectBase';
-import { mapStores } from 'pinia';
+
+import { BattleLoadingProgress } from '@/components';
+
 
 export default {
   name: 'BattleLoadingMode',
-  computed: mapStores(useBattleStore),
+
   components: {
-    BattleConnectBase,
-    BattleConnectIndicator
+    BattleLoadingProgress
   },
 };
 </script>

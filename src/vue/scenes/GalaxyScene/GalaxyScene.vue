@@ -106,6 +106,7 @@
         </template>
       </div>
     </transition>
+
       <!-- <PlasmaMintPopup
       v-if="showPlasmaMintPopup"
       v-click-outside="closePlasmaMintPopup"
@@ -131,7 +132,7 @@ import {
   DuelMenu,
   AudioMenu,
   SearchingMenu,
-  StarDefenderProcess
+  StarDefenderProcess,
 } from '@/components';
 
 import {
@@ -161,7 +162,7 @@ export default {
     DuelMenu,
     AudioMenu,
     SearchingMenu,
-    StarDefenderProcess
+    StarDefenderProcess,
   },
   data: () => {
     return {

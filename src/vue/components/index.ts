@@ -34,7 +34,12 @@ export * from './VolumeControl';
 export * from './WalletConnectPopup';
 export * from './MainMenu';
 export * from './DuelMenu';
-export * from './StarDefenderButton'
-export * from './AudioMenu'
-export * from './SearchingMenu'
-export * from './StarDefenderProcess'
+export * from './StarDefenderButton';
+export * from './AudioMenu';
+export * from './SearchingMenu';
+export * from './StarDefenderProcess';
+export * from './BattleAcceptProgress';
+export * from './BattleReadyProgress';
+export * from './BattleWaitProgress';
+export * from './BattleTutorial';
+export * from './BattleLoadingProgress';

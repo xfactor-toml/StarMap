@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&family=Jura:wght@300..700&display=swap');
+
 * {
   margin: 0;
   padding: 0;
@@ -18,9 +20,38 @@ body {
   height: 100%;
   width: 100%;
   background-color: #000;
-  font-family: 'Inter', sans-serif;
   -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
   overflow: auto;
+  font-family: "Jura", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.exo2-font {
+  font-family: "Exo 2", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.--light {
+  font-weight: 300;
+}
+.--regular {
+  font-weight: 400;
+}
+
+.--medium {
+  font-weight: 500;
+}
+
+.--semi-bold {
+  font-weight: 600;
+}
+
+.--bold {
+  font-weight: 700;
 }
 
 button {
@@ -112,9 +143,17 @@ select {
 }
 
 @keyframes pulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.5; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
 
 .Toastify__toast-container {

@@ -1,0 +1,159 @@
+.BattleReadyProgress {
+    position: absolute;
+    top:0%;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+}
+
+.BattleReadyProgress__title {
+    font-size: 36px;
+    line-height: 43px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.BattleReadyProgress__time {
+    font-size: 160px;
+    color: #E2FCFF;
+    text-shadow: 0px 0px 76.104px #0866EB, 0px 0px 43.488px #0866EB, 0px 0px 25.368px #0866EB, 0px 0px 12.684px #E2FCFF, 0px 0px 3.624px #E2FCFF, 0px 0px 1.812px #E2FCFF;
+}
+
+.BattleReadyProgress__buton {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0px 0px 885.6px #006AEC, 0px 0px 516.6px #006AEC, 0px 0px 258.3px #006AEC, 0px 0px 73.8px #006AEC, 0px 0px 36.9px #006AEC; 
+    border-radius:37px;
+    transition: all 0.3s linear;
+}
+
+.BattleReadyProgress__buton:hover {
+    transform: scale(1.05);
+}
+
+.BattleReadyProgress__buton:active {
+    transform: scale(0.95);
+}
+
+.BattleReadyProgress__buton img {
+    width: 100%;
+    height: 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.BattleReadyProgress__buton-name {
+    position: absolute;
+    top: 34%;
+    text-align: center;
+    font-family:'jura';
+    font-size: 36px;
+    color: white;
+  
+}
+
+.BattleReadyProgress__acceptprogress {
+    position: absolute;
+    top: 10%;
+    width: 85%;
+}
+
+.BattleReadyProgress__content {
+    background-color: rgba(7, 16, 50, 0.5);
+    padding: 17px;
+    border-radius: 20px;
+    position: relative;
+    
+}
+
+.BattleReadyProgress__content-name {
+    font-size: 20px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.5) 6%, rgba(0, 0, 0, 0.5) 100%), #FFFFFF;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.BattleReadyProgress__content-description {
+    font-size: 16px;
+    color: white;
+    margin-top: 40px;
+    margin-bottom: 60px;
+}
+
+.BattleReadyProgress__bottom {
+    margin-top: 23px;
+    font-size: 14px;
+    text-align: center;
+    color: #FF0000;
+    text-shadow: 0px 0px 423.36px #FF0000, 0px 0px 241.92px #FF0000, 0px 0px 141.12px #FF0000, 0px 0px 70.56px #FF0000, 0px 0px 20.16px #FF0000, 0px 0px 10.08px #FF0000;
+}
+
+
+@media (max-width: 375px) {
+    
+    .BattleReadyProgress__title {
+        font-size: 32px;
+    
+    }
+    
+    .BattleReadyProgress__time {
+        font-size: 120px;
+    }
+    
+    .BattleReadyProgress__buton-name {
+        font-size: 32px;
+    
+    }
+    
+    .BattleReadyProgress__acceptprogress {
+        position: absolute;
+        top: 10%;
+        width: 85%;
+    }
+    
+    .BattleReadyProgress__content {
+        background-color: rgba(7, 16, 50, 0.5);
+        padding: 17px;
+        border-radius: 20px;
+        position: relative;
+        
+    }
+    
+    .BattleReadyProgress__content-name {
+        font-size: 20px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.5) 6%, rgba(0, 0, 0, 0.5) 100%), #FFFFFF;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .BattleReadyProgress__content-description {
+        font-size: 16px;
+        color: white;
+        margin-top: 30px;
+        margin-bottom: 40px;
+    }
+    
+    .BattleReadyProgress__bottom {
+        margin-top: 23px;
+        font-size: 14px;
+        text-align: center;
+        color: #FF0000;
+        text-shadow: 0px 0px 423.36px #FF0000, 0px 0px 241.92px #FF0000, 0px 0px 141.12px #FF0000, 0px 0px 70.56px #FF0000, 0px 0px 20.16px #FF0000, 0px 0px 10.08px #FF0000;
+    }
+    
+  }
+

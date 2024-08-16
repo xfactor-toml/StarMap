@@ -6,8 +6,8 @@ import { UISceneNames } from '@/types';
 
 export const playersConnectMock = async () => {
   // seconds
-  const ACCEPT_TIME = 6
-  const LOADING_TIME = 4
+  const ACCEPT_TIME = 150
+  const LOADING_TIME = 2
 
   const scenes = useScenesStore()
   const battle = useBattleStore()

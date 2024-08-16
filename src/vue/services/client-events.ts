@@ -99,7 +99,7 @@ export class ClientEventsService {
           case 'start':
             // playersConnectMock();
             // seconds
-            const ACCEPT_TIME = clientEvent.time?.acceptTimeSec || 15
+            const ACCEPT_TIME = clientEvent.time?.acceptTimeSec || 50
             // const LOADING_TIME = 4
             
             scenesStore.setScene(UISceneNames.Battle)
