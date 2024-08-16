@@ -16,6 +16,7 @@ import { BattleInitMode, BattleProcessMode } from '@/modes';
 import { default as anime } from 'animejs';
 import { useBattleStore } from '@/stores';
 
+
 export const SCENES: GuiScenes = {
   start: {
     name: UISceneNames.Start,
@@ -84,51 +85,51 @@ export const SCENES: GuiScenes = {
       {
         name: 'init',
         getComponent: () => BattleInitMode,
-        onEnter: async (el) => {
-          const top = el.querySelector('.BattleInitMode__top')
-          const bottom = el.querySelector('.BattleInitMode__bottom')
-          const vs = el.querySelector('.BattleInitMode__vs')
+        // onEnter: async (el) => {
+        //   const top = el.querySelector('.BattleInitMode__top')
+        //   const bottom = el.querySelector('.BattleInitMode__bottom')
+        //   const vs = el.querySelector('.BattleInitMode__vs')
 
-          const timeline = anime.timeline({
-            easing: 'easeInOutQuart',
-            duration: 800,
-            delay: 100,
-          });
+        //   const timeline = anime.timeline({
+        //     easing: 'easeInOutQuart',
+        //     duration: 800,
+        //     delay: 100,
+        //   });
 
-          await timeline.add({
-            targets: vs,
-            opacity: [0, 1],
-            scale: [0.5, 1],
-          }).add({
-            targets: top,
-            translateY: ['-100%', 0],
-          }, 0).add({
-            targets: bottom,
-            translateY: ['100%', 0],
-          }, 0).finished
-        },
-        beforeLeave: async (el) => {
-          const top = el.querySelector('.BattleInitMode__top')
-          const bottom = el.querySelector('.BattleInitMode__bottom')
-          const vs = el.querySelector('.BattleInitMode__vs')
+        //   await timeline.add({
+        //     targets: vs,
+        //     opacity: [0, 1],
+        //     scale: [0.5, 1],
+        //   }).add({
+        //     targets: top,
+        //     translateY: ['-100%', 0],
+        //   }, 0).add({
+        //     targets: bottom,
+        //     translateY: ['100%', 0],
+        //   }, 0).finished
+        // },
+        // beforeLeave: async (el) => {
+        //   const top = el.querySelector('.BattleInitMode__top')
+        //   const bottom = el.querySelector('.BattleInitMode__bottom')
+        //   const vs = el.querySelector('.BattleInitMode__vs')
 
-          const timeline = anime.timeline({
-            easing: 'easeInCubic',
-            duration: 600,
-          });
+        //   const timeline = anime.timeline({
+        //     easing: 'easeInCubic',
+        //     duration: 600,
+        //   });
 
-          await timeline.add({
-            targets: vs,
-            opacity: [1, 0],
-            scale: [1, 0.5],
-          }).add({
-            targets: top,
-            translateY: [0, '-100%'],
-          }, 0).add({
-            targets: bottom,
-            translateY: [0, '100%'],
-          }, 0).finished
-        },
+        //   await timeline.add({
+        //     targets: vs,
+        //     opacity: [1, 0],
+        //     scale: [1, 0.5],
+        //   }).add({
+        //     targets: top,
+        //     translateY: [0, '-100%'],
+        //   }, 0).add({
+        //     targets: bottom,
+        //     translateY: [0, '100%'],
+        //   }, 0).finished
+        // },
       },
       {
         name: 'accept',

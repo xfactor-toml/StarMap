@@ -1,5 +1,5 @@
 <template>
-    <transition name="fade">
+   
         <div class="BattleTutorial">
             <div class="BattleTutorial__container">
                 <div class="BattleTutorial__title">
@@ -34,7 +34,7 @@
             </div>
 
         </div>
-    </transition>
+    
 </template>
 
 <script lang="ts">
@@ -66,6 +66,9 @@ export default {
             else if(text == 'NEXT') {
                 if(this.currentIndex < 2)
                     this.currentIndex++
+            }
+            else if(text == 'SKIP'){
+                this.$emit('skip');
             }
         }
     }

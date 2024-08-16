@@ -236,6 +236,7 @@ export class GalaxyScene extends BasicScene {
                 AudioMng.getInstance().playSfx({ alias: AudioAlias.battleStartGates });
 
                 GameEventDispatcher.battlePrerollShow(aData);
+                console.log(aData,"-________121212121____________")
 
                 setTimeout(() => {
                     //this._battleScene.show();

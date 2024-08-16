@@ -3,7 +3,7 @@
         <BattleAcceptProgress 
           :increase="true"
           :totalTime="0"
-          :maxTime="2"
+          :maxTime="1"
         />
         <h3 class="BattleLoadingProgress__title --bold dots">LOADING</h3>
     </div>

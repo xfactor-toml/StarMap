@@ -48,6 +48,9 @@
     methods: {
         updateTime(time: Number) {
             this.time = time
+            if(this.time == 0) {
+                this.$client.onBattleConnectExit()
+            }
         }
     }, 
     

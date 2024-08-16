@@ -204,9 +204,9 @@ export class ClientEventsService {
           }
         });
 
-        await wait(3000);
+        // await wait(3000);
 
-        scenesStore.setSceneMode('process');
+        // scenesStore.setSceneMode('process');
 
         break;
 

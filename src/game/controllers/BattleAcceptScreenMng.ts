@@ -64,7 +64,7 @@ export class BattleAcceptScreenMng extends MyEventDispatcher {
         switch (aData.action) {
             case 'start': // show screen
                 GameEventDispatcher.battleAcceptScreenShow(aData.timer);
-                this.initDeadlineTimer(aData.timer);
+                // this.initDeadlineTimer(aData.timer);
                 break;
             case 'update': // update screen
                 GameEventDispatcher.battleAcceptScreenUpdate(aData);

@@ -16,7 +16,8 @@
 
 .dots::after {
     content: '';
-    animation: dots 2.5s linear infinite;
+    animation: dots 1.5s linear infinite;
+    transition: all 0.5s linear;
   }
 
   @keyframes dots {

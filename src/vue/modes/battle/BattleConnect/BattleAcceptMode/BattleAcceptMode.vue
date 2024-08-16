@@ -1,21 +1,15 @@
 <template>
-  <BattleReadyProgress @click="$client.onBattleAccept"/>
+  <BattleTutorialProgress />
 </template>
 
 <script lang="ts">
-import { useBattleStore } from '@/stores';
-import { BattleAcceptButton } from '@/components/';
-import { BattleConnectBase } from '../BattleConnectBase';
-import { BattleReadyProgress } from '@/components/';
-import { mapStores } from 'pinia';
+import { BattleTutorialProgress } from '@/components/BattleTutorialProgress';
 
 export default {
   name: 'BattleAcceptMode',
-  computed: mapStores(useBattleStore),
   components: {
-    BattleAcceptButton,
-    BattleConnectBase,
-    BattleReadyProgress
-  },
-};
+    BattleTutorialProgress
+  }
+}
+
 </script>
