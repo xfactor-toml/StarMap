@@ -20,7 +20,7 @@ export class BattlePlanet extends BattleObject {
         this._setteliteOrbitRadius = this.radius * 2;
         this._setteliteRadius = this.radius / 2;
 
-        this._localRotateSpd = MyMath.randomInRange(-2, 4);
+        this._localRotateSpd = MyMath.randomSign() * MyMath.randomInRange(1, 2);
 
         this.initPlanet();
         this.initSetteliteOrbitLine(this, this._setteliteOrbitRadius, 1, 0x00ffff);
@@ -33,7 +33,8 @@ export class BattlePlanet extends BattleObject {
         let g = new THREE.SphereGeometry(this.radius);
         let t = ThreeLoader.getInstance().getTexture(TextureAlias.planet0_256);
         let m = new THREE.MeshStandardMaterial({
-            map: t
+            map: t,
+            color: 0xffffff
         });
         this._mesh = new THREE.Mesh(g, m);
         this.add(this._mesh);

@@ -15,7 +15,8 @@ export class ShipEnergyBar extends MyObject3D {
         let w = aParams?.w || 2;
         let g = new THREE.BoxGeometry(w, .2, .2);
         let m = new THREE.MeshBasicMaterial({
-            color: aParams.color || 0xff0000
+            // color: aParams.color || 0xff0000
+            color: aParams.color || 0x00ff00
         });
         this._mesh = new THREE.Mesh(g, m);
         this.add(this._mesh);

@@ -10,7 +10,7 @@ import { MyMath } from '@/utils';
 type BattleStarParams = BattleObjectData & {
     camera: THREE.Camera,
     planetOrbitRadius: number,
-    light: {
+    light?: {
         parent: THREE.Object3D,
         height?: number,
         dist?: number,
@@ -38,15 +38,18 @@ export class BattleStar extends BattleObject {
         super(aParams, 'BattleStar');
         this._starParams = aParams;
         this._prevHp = this.hp;
-        this._lightParent = aParams.light.parent;
-        this._lightHeight = aParams.light.height || 0;
-
+        
         this.initStar();
         this.initClickZone();
         this.initHpBgLine();
         this.initHpBar();
         this.initPlanetOrbit();
-        this.initPointLight(aParams.light);
+
+        if (aParams.light) {
+            this._lightParent = aParams.light.parent;
+            this._lightHeight = aParams.light.height || 0;
+            this.initPointLight(aParams.light);
+        }
 
     }
     

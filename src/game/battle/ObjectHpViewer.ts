@@ -39,11 +39,12 @@ export class ObjectHpViewer implements ILogger, IUpdatable {
         this._isTopViewPosition = value;
     }
 
-    addBar(aObject: BattleObject) {
+    addBar(aObject: BattleObject, isEnemy: boolean) {
         this._objects.set(aObject.objId, aObject);
 
         let hpBar = new ShipEnergyBar({
-            w: aObject.radius * 2
+            w: aObject.radius * 2,
+            color: isEnemy ? 0xff0000 : 0x00ff00
         });
         this._hpBars.set(aObject.objId, hpBar);
         this._parent.add(hpBar);

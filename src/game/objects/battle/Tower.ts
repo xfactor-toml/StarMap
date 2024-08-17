@@ -16,7 +16,7 @@ type LightParams = {
 }
 
 type TowerParams = BattleObjectData & {
-    light: LightParams
+    light?: LightParams
 }
 
 export class Tower extends BattleObject {
@@ -32,11 +32,15 @@ export class Tower extends BattleObject {
     constructor(aParams: TowerParams) {
         super(aParams, 'Tower');
         this._currGunNumber = MyMath.randomIntInRange(1, 2);
-        this._lightParent = aParams.light.parent;
-        this._lightHeight = aParams.light.height || 0;
+        // model
         // this.initSimpleModel();
         this.initModel();
-        this.initPointLight(aParams.light);
+        // light
+        if (aParams.light) {
+            this._lightParent = aParams.light.parent;
+            this._lightHeight = aParams.light.height || 0;
+            this.initPointLight(aParams.light);
+        }
     }
 
     private initSimpleModel() {
@@ -64,10 +68,11 @@ export class Tower extends BattleObject {
         this._model = ThreeLoader.getInstance().getModel(modelAlias);
         let tMap = ThreeLoader.getInstance().getTexture(textureAlias);
 
-        // let m = new THREE.MeshPhongMaterial({
+        // let m = new THREE.MeshLambertMaterial({
         let m = new THREE.MeshBasicMaterial({
             map: tMap,
             color: 0xaaaaaa,
+            // color: 0xffffff,
             side: THREE.DoubleSide
         });
 
@@ -75,6 +80,7 @@ export class Tower extends BattleObject {
             if (aObj.type == 'Mesh') {
                 let mesh = aObj as THREE.Mesh;
                 mesh.material = m;
+                mesh.geometry.computeVertexNormals();
             }
         });
 
