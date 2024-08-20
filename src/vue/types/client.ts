@@ -5,6 +5,7 @@ import { AcceptData, EmotionData, ExplosionData, GameEvent } from '~/game/events
 
 interface BaseEvent {
   eventName: GameEvent;
+  msg: string
 }
 
 export interface MessageEvent extends BaseEvent {
@@ -147,6 +148,7 @@ export type ClientEvent =
   | BattleExpData
   | BattleEmotion
   | BattleExplosion;
+
 
 export type GuiLevel = {
   value: number;

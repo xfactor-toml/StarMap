@@ -83,7 +83,7 @@ export type DuelInfo = {
     duelId?: string
 }
 
-export type AcceptScreenAction = 'start' | 'update' | 'accept' | 'connect' | 'loading' | 'cancel' | 'closeClick';
+export type AcceptScreenAction = 'start' | 'update' | 'accept' | 'connect' | 'loading' | 'cancel' | 'closeClick' | 'playerPick';
 
 /**
  * Send to server after accept screen due loading screen

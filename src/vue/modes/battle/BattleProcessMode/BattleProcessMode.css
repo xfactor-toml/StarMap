@@ -19,6 +19,10 @@
 
 .BattleProcessMode__panel {
   position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(100% - 30px);
   bottom: 18px;
   left: 50%;
   z-index: 0;

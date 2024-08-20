@@ -1,11 +1,16 @@
 <template>
+  <transition name="fade">
   <div class="BattleProcessMode">
-    <button class="BattleProcessMode__settingsButton" :class="{ active: settingsPopupVisible }"
+    <button class="BattleProcessMode__settingsButton" 
+      :class="{ active: settingsPopupVisible }"
       @mouseenter="$client.onHover()" @click="toggleSettingsPopup" />
     <div class="BattleProcessMode__settingsPopup" v-if="settingsPopupVisible" v-click-outside="hideSettingsPopup">
       <SettingsPopup :fullscreen="uiStore.fullscreen.active" :musicVolume="settingsStore.volume.music"
-        :sfxVolume="settingsStore.volume.sfx" :battle="true" @click="$client.onClick()" @hover="$client.onHover()"
-        @setMusicVolume="settingsStore.volume.changeMusicVolume" @setSfxVolume="settingsStore.volume.changeSfxVolume"
+        :sfxVolume="settingsStore.volume.sfx" :battle="true" 
+        @click="$client.onClick()" 
+        @hover="$client.onHover()"
+        @setMusicVolume="settingsStore.volume.changeMusicVolume" 
+        @setSfxVolume="settingsStore.volume.changeSfxVolume"
         @toggleFullscreen="$client.toggleFullscreen()" @exitFromBattle="exitFromBattle" />
     </div>
     <div class="BattleProcessMode__content">
@@ -28,7 +33,7 @@
       </div>
     </div>
     <transition name="fade">
-      <div v-if="showBattleControlPanel" class="BattleProcessMode__panel">
+      <div  class="BattleProcessMode__panel">
         <BattleControlPanel
           :skills="battleStore.process.state.skills"
           :skillsPendingList="battleStore.process.skillsPendingList"
@@ -36,23 +41,35 @@
           :level="battleStore.process.state.level"
           :gold="battleStore.process.state.gold"
           :items="battleStore.shop.state.items"
-          @setVisible="setBattleControlPanelVisible"
-          @action="$client.onBattleAction" />
+          @action="$client.onBattleAction" 
+          @showShopMenu="showShopMenu"
+          />
       </div>
     </transition>
 
-    <transition name="fade">
+    <!-- <transition name="fade">
       <div v-if="!showBattleControlPanel" class="BattleShop__panel">
         <BattleShop @scoreClose="setBattleControlPanelShow" />
       </div>
+    </transition> -->
+
+    <transition name="fade">
+        <ShopMenu 
+          v-if="shopMenuVisible"
+          @closeShopMenu="closeShopMenu"
+         />
     </transition>
-    
-    <EmotionsSelect v-if="battleStore.emotions.selectorCoords" :coords="battleStore.emotions.selectorCoords"
-      @select="$client.onEmotionSelect" @close="battleStore.emotions.closeSelector" />
-    <PlayerEmotion v-if="battleStore.emotions.playerEmotion && !battleStore.emotions.selectorCoords"
+
+    <EmotionsSelect 
+      v-if="battleStore.emotions.selectorCoords" :coords="battleStore.emotions.selectorCoords"
+      @select="$client.onEmotionSelect" 
+      @close="battleStore.emotions.closeSelector" />
+    <PlayerEmotion 
+      v-if="battleStore.emotions.playerEmotion && !battleStore.emotions.selectorCoords"
       :type="battleStore.emotions.playerEmotion.type" :coords="battleStore.emotions.playerEmotion.coords"
       @close="battleStore.emotions.removePlayerEmotion" />
   </div>
+</transition>
 </template>
 
 <script lang="ts">
@@ -62,6 +79,7 @@ import BattleShop from '@/components/BattleShop/BattleShop.vue';
 import { getShortAddress } from '@/utils';
 import { mapStores } from 'pinia';
 import { default as vClickOutside } from 'click-outside-vue3';
+import { ShopMenu } from '@/components';
 
 export default {
   name: 'BattleProcessMode',
@@ -71,6 +89,7 @@ export default {
     PlayerEmotion,
     SettingsPopup,
     BattleShop,
+    ShopMenu
   },
   directives: {
     clickOutside: vClickOutside.directive
@@ -78,7 +97,7 @@ export default {
   data() {
     return {
       settingsPopupVisible: false,
-      showBattleControlPanel: true,
+      shopMenuVisible: false,
     }
   },
   computed: mapStores(useBattleStore, useSettingsStore, useUiStore),
@@ -95,11 +114,12 @@ export default {
       this.$client.onBattleExit()
       this.battleStore.process.reset()
     },
-    setBattleControlPanelVisible() {
-      this.showBattleControlPanel = !this.showBattleControlPanel;
+
+    closeShopMenu() {
+      this.shopMenuVisible = false
     },
-    setBattleControlPanelShow() {
-      this.showBattleControlPanel = !this.showBattleControlPanel;
+    showShopMenu() {
+      this.shopMenuVisible = true
     }
   }
 };

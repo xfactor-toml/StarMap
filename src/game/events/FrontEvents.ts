@@ -59,6 +59,8 @@ export const FrontEvents = {
     // battle accept screen
     onBattleAcceptClick: new Signal(),
     onBattleAcceptCloseClick: new Signal(),
+    // playerPick
+    onPlayerPickClick: new Signal(),
 
     onBattleExit: new Signal(),
     onBattleAbilityClick: new Signal(),

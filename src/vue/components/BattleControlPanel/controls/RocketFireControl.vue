@@ -5,6 +5,7 @@
     :disabled="disabled"
     :cooldown="cooldown"
     :progress="progress"
+    :showEmotion="true"
   />
 </template>
 

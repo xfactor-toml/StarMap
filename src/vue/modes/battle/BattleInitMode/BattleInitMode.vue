@@ -1,46 +1,88 @@
 <template>
-  <div class="BattleInitMode">
-    <template v-if="players.current && players.connected">
-      <div class="BattleInitMode__top">
-        <BattleInitMember
-          :name="players.connected.name"
-          :address="players.connected.address"
-          :race="players.connected.race"
-          :star="players.connected.star"
-          :isNick="players.connected.isNick"
+   <div class="BattleInitMode">
+       <BattleChoosePlayer 
+         v-if="showChoose"
+         @player-selected="showInfo"
+         @timeReached="timeReached"
+       />
+        <PlayerPick 
+          v-if="showPick"
+          :player="player"
+          @cancelPick="cancelPick"
+          @pickHero="pickHero"
+          @timeReached="timeReached"
         />
-      </div>
-      <div class="BattleInitMode__vs">VS</div>
-      <div class="BattleInitMode__bottom">
-        <BattleInitMember
-          :name="players.current.name"
-          :address="players.current.address"
-          :race="players.current.race"
-          :star="players.current.star"
-          :isNick="players.current.isNick"
-          :reflected="true"
+    <transition name="fade">
+      <PreGameCountdown 
+          v-if="showPreGame"
         />
-      </div>
-    </template>
-  </div>
+    </transition>
+      
+   </div>
 </template>
 
 <script lang="ts">
 import { useBattleStore, useScenesStore } from '@/stores';
-import { BattleInitMember } from '@/components';
+import { BattleChoosePlayer, PlayerPick, PreGameCountdown} from '@/components';
 import { mapStores } from 'pinia';
-
+import { PlayerType } from '@/types';
+import { Players } from '@/constants';
+import { SceneNames } from '~/game/scenes/SceneNames';
 export default {
   name: 'BattleInitMode',
+
   components: {
-    BattleInitMember,
+    BattleChoosePlayer,
+    PlayerPick,
+    PreGameCountdown
   },
+
   computed: {
     ...mapStores(useBattleStore, useScenesStore),
     players() {
       return this.battleStore.process.players
     }
   },
+
+  data() {
+    return {
+      player: Players[0],
+      showPick: false,
+      showChoose: true,
+      showPreGame: false,
+    }
+  },
+  watch: {
+    player(newVal) {
+        console.log('Player updated:', newVal);
+    }
+},
+
+  methods: {
+    showInfo(choose: PlayerType) {   
+      this.player = choose;
+      this.showChoose = false;
+      this.showPick = true;  
+    },
+
+    timeReached() {
+      this.$client.onPlayerPick()
+      this.showChoose = false;
+      this.showPick = false;  
+      this.showPreGame = true;
+    },
+
+    cancelPick() {
+      this.showChoose = true;
+      this.showPick = false;
+    },
+
+    pickHero() {
+      this.$client.onPlayerPick();
+      this.showPick = false;
+      this.showPreGame = true;
+    }
+  }
 };
 </script>
 

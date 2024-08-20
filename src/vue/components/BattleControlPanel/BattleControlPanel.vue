@@ -1,7 +1,16 @@
 <template>
   <div class="BattleControlPanel">
-    <ShopItemControl :items="items"/>
-    <div class="BattleControlPanel__row">
+    <div class="BattleControlPanel__addItem">
+      <div class="BattleControlPanel__shopItems">
+        <ShopItemControl :items="items"/>
+      </div>
+      <div class="BattleControlPanel__score orbitron-font --semibold">
+          <p>GOLD:</p>
+          <p>{{ gold }}</p>
+      </div>
+    </div>
+   
+    <!-- <div class="BattleControlPanel__row">
       <LevelControl
         :disabled="true"
         :level="level.current"
@@ -16,7 +25,7 @@
         :disabled="false"
         @click = "setVisible"
       />
-    </div>
+    </div> -->
     <div class="BattleControlPanel__row">
       <SatelliteFireSkill
         :params="skills['satelliteFire']"
@@ -31,6 +40,10 @@
         :disabled="isPendingSkill('rocketFire')"
         @fire="call('rocketFire')"
         @levelUp="levelUp('rocketFire')"
+      />
+     <ModelControl 
+      :level="level.current"
+      @click="showShopMenu"
       />
       <SlowdownSkill
         :params="skills['slowdown']"
@@ -47,6 +60,8 @@
         @levelUp="levelUp('invisibility')"
       />
     </div>
+
+
   </div>
 </template>
 
@@ -65,8 +80,8 @@ import {
 } from './controls';
 
 import { BaseControl } from './controls/BaseControl';
+import { ModelControl } from './controls/ModelControl';
 import { ShopItemControl } from './controls';
-
 import {
   GoldControl,
   LevelControl,
@@ -92,7 +107,8 @@ export default {
     ShopControl,
     SlowdownSkill,
     BaseControl,
-    ShopItemControl
+    ShopItemControl,
+    ModelControl,
   },
   props: {
     skills: {
@@ -141,8 +157,12 @@ export default {
     },
     setVisible() {
       this.$emit('setVisible')
+    },
+    showShopMenu() {
+      this.$emit('showShopMenu')
     }
-  }
+  },
+
 };
 </script>
 
