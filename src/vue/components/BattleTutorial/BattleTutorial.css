@@ -2,7 +2,7 @@
     position: relative;
     width: 100%;
     height: 100%;
-    max-width: 580px;
+    max-width: 430px;
     pointer-events: all;
 }
 
@@ -79,6 +79,12 @@
     gap:20px;
     align-items: center;
     justify-content: space-between;
+}
+
+@media (max-width: 375px) {
+    .Battle__Tutorial-flow {
+        margin-bottom: 10.3%;
+    }
 }
 
 

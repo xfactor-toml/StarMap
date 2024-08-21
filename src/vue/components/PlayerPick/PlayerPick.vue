@@ -1,5 +1,6 @@
 <template>
     <div class="PlayerPick">
+      <div class="PlayerPick__container">
         <h1 class="PlayerPick__name orbitron-font --semi-bold">
             <span>{{ player.name }}</span>
             <span>{{ player.category }}</span>
@@ -41,6 +42,7 @@
             <img src="/gui/images/battle-player-list/pick-button.svg"/>
             <div class="PlayerPick__button-name">PICK THIS HERO</div>      
         </button>
+      </div>
     </div>
 </template>
 

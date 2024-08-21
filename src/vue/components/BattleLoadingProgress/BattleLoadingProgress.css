@@ -37,4 +37,10 @@
       content: '...';
     }
   }
+
+  @media (max-width: 375px) {
+    .BattleLoadingProgress__title {
+      font-size: 30px;
+    }
+  }
               

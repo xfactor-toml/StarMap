@@ -7,24 +7,6 @@
       <div class="GalaxyScene__headerColumn">
         <Logo />
       </div>
-      <!-- <div class="GalaxyScene__headerColumn is-center">
-        <SearchingIndicator v-if="battleStore.connecting.playerSearching" @click="$client.onSearchingClick" />
-        <template v-else>
-          <StartGameButton
-            @click="$client.onGameStart"
-          >Start<br>game
-          </StartGameButton>
-          <StartGameButton
-            @click="$client.onGameStartDuel"
-          >DUEL
-          </StartGameButton>
-          <StartGameButton
-            class="GalaxyScene__playButton"
-            @click="$client.onGameStartWithBot"
-          >Play<br>With Bot
-          </StartGameButton>
-        </template>
-</div> -->
       <div class="GalaxyScene__headerColumn is-right">
         <div class="GalaxyScene__userbar">
           <UserBar @openPlasmaMintPopup="openPlasmaMintPopup" />
@@ -107,13 +89,7 @@
       </div>
     </transition>
 
-      <!-- <PlasmaMintPopup
-      v-if="showPlasmaMintPopup"
-      v-click-outside="closePlasmaMintPopup"
-      @close="closePlasmaMintPopup"
-    /> -->
   </div>
- 
 
 </template>
 
@@ -133,6 +109,7 @@ import {
   AudioMenu,
   SearchingMenu,
   StarDefenderProcess,
+  
 } from '@/components';
 
 import {

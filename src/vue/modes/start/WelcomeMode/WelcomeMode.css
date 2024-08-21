@@ -231,18 +231,15 @@
 }
 
 .WelcomeScene__start-button-title {
-  font-style: normal;
-  font-weight: 700;
   font-size: 48px;
-  line-height: 57px;
-  text-align: center;
-  text-transform: uppercase;
+  font-family: 'jura';
   color: #FFFFFF;
 }
 
 .WelcomeScene__start-button-description {
   font-style: normal;
   font-weight: 700;
+  font-family: 'jura';
   font-size: 10px;
   line-height: 12px;
   text-align: center;

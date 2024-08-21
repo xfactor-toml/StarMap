@@ -1,24 +1,31 @@
 <template>
-   <div class="BattleInitMode">
-       <BattleChoosePlayer 
-         v-if="showChoose"
-         @player-selected="showInfo"
-         @timeReached="timeReached"
-       />
-        <PlayerPick 
-          v-if="showPick"
-          :player="player"
-          @cancelPick="cancelPick"
-          @pickHero="pickHero"
-          @timeReached="timeReached"
-        />
-    <transition name="fade">
-      <PreGameCountdown 
-          v-if="showPreGame"
-        />
-    </transition>
-      
-   </div>
+   <transition name="fade">
+      <div class="BattleInitMode">
+          <transition name="fade">
+              <BattleChoosePlayer 
+                v-if="showChoose"
+                @player-selected="showInfo"
+                @timeReached="timeReached"
+              />
+            </transition>
+
+            <transition name="fade">
+              <PlayerPick 
+                v-if="showPick"
+                :player="player"
+                @cancelPick="cancelPick"
+                @pickHero="pickHero"
+                @timeReached="timeReached"
+              />
+            </transition>
+            
+            <transition name="fade">
+              <PreGameCountdown 
+                  v-if="showPreGame"
+                />
+            </transition>
+      </div>
+  </transition>
 </template>
 
 <script lang="ts">

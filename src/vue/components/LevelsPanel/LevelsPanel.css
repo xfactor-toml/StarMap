@@ -249,3 +249,13 @@
     height: 60px;
   }
 }
+
+@media (max-width: 375px) {
+  .LevelsPanel__group {
+    gap: 12px;
+  }
+
+  .LevelsPanel__button::before {
+    margin-bottom: -4px;
+  }
+}

@@ -1,5 +1,7 @@
 .PlayerPick {
-    position: relative;
+    position: absolute;
+    top: 0;
+    left: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -7,7 +9,18 @@
     width: 100%;
     height: 100%;
     padding: 10px;
-    
+      
+}
+
+.PlayerPick__container {
+    max-width: 430px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
 }
 
 .PlayerPick__name {

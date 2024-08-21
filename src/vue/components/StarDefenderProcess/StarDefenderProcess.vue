@@ -1,32 +1,34 @@
 <template>
-    <div class="StarDefenderProcess">
-        <div class="StarDefenderProcess__content">
-            <div class="StarDefenderProcess__content-box">
-                <img src="/gui/images/star-defender/star-defender-bg.svg">
-                <div class="StarDefenderProcess__content-box-name"
-                    @click="$emit('click')">
-                    STAR DEFENDER
-                </div>
-                <div class="StarDefenderProcess__content-search">
-                    <span class="StarDefenderProcess__label">{{ displayText }}</span>
-                    <div class="StarDefenderProcess__loading">
-                        <div v-for="dot in dotsAmount" class="StarDefenderProcess__dot" :class="{
-                            'is-active': dot === activeDot,
-                            'is-disabled': interval === null,
-                        }" />
+    <transition name="fade">
+        <div class="StarDefenderProcess">
+            <div class="StarDefenderProcess__content">
+                <div class="StarDefenderProcess__content-box">
+                    <img src="/gui/images/star-defender/star-defender-bg.svg">
+                    <div class="StarDefenderProcess__content-box-name"
+                        @click="$emit('click')">
+                        STAR DEFENDER
                     </div>
-                </div>
-
-
-                <div class="StarDefenderProcess__content-box-online">
-                    onlineL4000469
-                </div>
-                <div class="StarDefenderProcess__content-connect-line">
-                    <img src="/gui/images/star-defender/star-defender-connectline.svg">
+                    <div class="StarDefenderProcess__content-search">
+                        <span class="StarDefenderProcess__label">{{ displayText }}</span>
+                        <div class="StarDefenderProcess__loading">
+                            <div v-for="dot in dotsAmount" class="StarDefenderProcess__dot" :class="{
+                                'is-active': dot === activeDot,
+                                'is-disabled': interval === null,
+                            }" />
+                        </div>
+                    </div>
+    
+    
+                    <div class="StarDefenderProcess__content-box-online">
+                        onlineL4000469
+                    </div>
+                    <div class="StarDefenderProcess__content-connect-line">
+                        <img src="/gui/images/star-defender/star-defender-connectline.svg">
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </transition>
 </template>
 
 <script lang="ts">

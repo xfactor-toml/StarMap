@@ -1,14 +1,67 @@
 .BattleRewardsMode {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   width: 100%;
   height: 100%;
   position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   left: 0;
   top: 0;
   color: #00FFFF;
   font-family: "Exo 2";
+  padding: 10px;
+  pointer-events: all;
+}
+
+.BattleRewardsMode__container {
+  max-width: 430px;
+  position: relative
+  
+  /* background-image: url(../gui/images/battle-results/reward-bg.svg); */
+
+}
+
+.BattleRewardsMode__container-content {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  left: 0;
+  top: 0;
+  padding: 10px;
+}
+
+.BattleRewardsMode__header {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 2px solid  #751577;
+}
+
+.BattleRewardsMode__closebtn {
+  position: absolute;
+  top:3%;
+  right: 6%;
+
+}
+
+.BattleRewardsMode__closebtn:hover {
+  cursor: pointer;
+}
+
+.BattleRewardsMode__img {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.BattleRewardsMode__title {
+  font-size: 24px;
+  color: white;
 }
 
 .BattleRewardsMode > * {
@@ -74,14 +127,15 @@
 }
 
 .BattleRewardsMode__rewards {
-  display: flex;
-  flex-flow: row wrap;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr) ;
+  /* flex-flow: row wrap; */
   gap: 12px;
   justify-content: center;
   max-width: 380px;
   width: 100%;
+  height: 100%;
   padding-top: 12px;
-  border-top: 1px solid rgba(0, 255, 255, 0.3);
   font-size: 12px;
   text-align: center;
 }
@@ -89,16 +143,28 @@
 .BattleRewardsMode__reward {
   display: flex;
   flex-direction: column;
-  gap: 8px;
   align-items: center;
+  justify-content: center;
+  background-image: url(../gui/images/battle-results/reward-item-bg.svg);
+  background-position: 50%;
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 100%;
+  height: 100%;
+  position: relative;
 }
 
 .BattleRewardsMode__rewardTile {
-  width: 80px;
-  height: 80px;
-  padding: 16px;
-  border-radius: 8px;
-  background-color: rgba(0, 255, 255, 0.15);
+  position: absolute;
+  top: 15%;
+  width: 100%;
+  height: 40%;
+ 
+}
+
+.BattleRewardsMode__caption {
+  position: absolute;
+  bottom: 12%;
 }
 
 .BattleRewardsMode__rewardImage {
@@ -114,11 +180,14 @@
 }
 
 .BattleRewardsMode__footer {
-  margin-top: 36px;
+  margin-top: 25px;
   padding-bottom: 56px;
   display: flex;
   flex-direction: column;
   gap: 16px;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
 }
 
 .BattleRewardsMode__close {
@@ -131,4 +200,32 @@
   font-size: 16px;
   font-weight: 600;
   text-transform: uppercase;
+}
+
+.BattleResultsMode__button {
+  position: relative;
+  font-size: 24px;
+  color: white;
+  width: 80%;
+  transition: all 0.3s ease;
+}
+
+.BattleResultsMode__button:hover {
+  cursor: pointer;
+  transform: scale(1.05);
+}
+
+.BattleResultsMode__button:active {
+  transform: scale(0.95);
+}
+
+
+.BattleResultsMode__button > div {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

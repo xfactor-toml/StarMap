@@ -90,41 +90,44 @@
   <transition name="fade">
     <div class="UserMenu">
       <div>
-      <div v-if="userMenuVisible" class="UserMenu__body">
-        <div class="UserMenu__content">
-          <img src="/gui/images/menu-border.svg">
-          <div class="UserMenu__icons">
-            <div v-for="item in items" :key="item" @click="selected(item)"
-            class="UserMenu__icon"
-            :class="[ currentTab === item ? 'active' : '.']"
-            >
-                <img :src="`/gui/images/${item}.svg`">
-            </div>
-          </div>
-          <div class="UserMenu__separate__line">
-              <img src="/gui/images/menu-bar-line.svg">
-          </div>
-        </div>
-        <SearchInput  
-        v-if="searchVisible"
-        v-click-outside="hideSearchField"
-        v-model="searchKey"
-        @close="closeSearchField" />
+          <div v-if="userMenuVisible" class="UserMenu__body">
+            <transition name="fade">     
+              <div class="UserMenu__content">
+                  <img src="/gui/images/menu-border.svg">
+                  <div class="UserMenu__icons">
+                    <div v-for="item in items" :key="item" @click="selected(item)"
+                    class="UserMenu__icon"
+                    :class="[ currentTab === item ? 'active' : '.']"
+                    >
+                        <img :src="`/gui/images/${item}.svg`">
+                    </div>
+                  </div>
+                  <div class="UserMenu__separate__line">
+                      <img src="/gui/images/menu-bar-line.svg">
+                  </div>
+              </div>          
+             </transition>
+           
+              <SearchInput  
+              v-if="searchVisible"
+              v-click-outside="hideSearchField"
+              v-model="searchKey"
+              @close="closeSearchField" />
 
-        <SettingsPopup
-        v-if="settingsVisible"
-        v-click-outside="hideSettingsPopup"
-        :fullscreen="uiStore.fullscreen.active"
-        :musicVolume="settingsStore.volume.music"
-        :sfxVolume="settingsStore.volume.sfx"
-        @click="$client.onClick()"
-        @hover="$client.onHover()"
-        @setMusicVolume="settingsStore.volume.changeMusicVolume"
-        @setSfxVolume="settingsStore.volume.changeSfxVolume"
-        @toggleFullscreen="$client.toggleFullscreen()"
-      />
-      </div>
-    </div>
+              <SettingsPopup
+              v-if="settingsVisible"
+              v-click-outside="hideSettingsPopup"
+              :fullscreen="uiStore.fullscreen.active"
+              :musicVolume="settingsStore.volume.music"
+              :sfxVolume="settingsStore.volume.sfx"
+              @click="$client.onClick()"
+              @hover="$client.onHover()"
+              @setMusicVolume="settingsStore.volume.changeMusicVolume"
+              @setSfxVolume="settingsStore.volume.changeSfxVolume"
+              @toggleFullscreen="$client.toggleFullscreen()"
+            />
+          </div>
+       </div>
     </div>
     
   </transition>

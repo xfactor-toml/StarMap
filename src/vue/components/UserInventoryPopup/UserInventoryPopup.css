@@ -7,7 +7,7 @@
   top: 0;
   pointer-events: all;
   z-index: 1;
-  background-color: rgba(0, 0, 0, 0.9);
+  background-color: rgba(0, 0, 0, 0.7);
 }
 
 .UserInventoryPopup__overlay {
@@ -403,25 +403,34 @@
 }
 
 .UserInventoryPopup__animation {
-  width: 78.5%;
-  height: 18.4%;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
+  width: 100%;
+  height: 14%;
 }
 
 .UserInventoryPopup__button {
-  background: linear-gradient(360deg, #00C6FB 0%, #005BEA 100%);
-  box-shadow: 0px 0px 1020.6px #0169ED, 0px 0px 583.2px #0169ED, 0px 0px 340.2px #0169ED, 0px 0px 170.1px #0169ED, 0px 0px 48.6px #0169ED, 0px 0px 24.3px #0169ED;
-  height: 78.7%;
+  position: relative;
+  box-shadow: 0px 0px 583.2px #0169ED, 0px 0px 340.2px #0169ED, 0px 0px 170.1px #0169ED, 0px 0px 48.6px #0169ED, 0px 0px 24.3px #0169ED;
+  background-color: transparent;
   border: none;
-  border-radius: 27px;
-  width: 93%;
-  font-style: normal;
-  font-size: 28px;
-  line-height: 38px;
+  border-radius: 42px;
+  height: 100%;
   color: #FFFFFF;
+}
+
+.UserInventoryPopup__button > div {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 32px;
+  color: white;
 }
 
 .UserInventoryPopup__button:hover {
@@ -429,8 +438,7 @@
 }
 
 .UserInventoryPopup__button-animation {
-  height: 78.7%;
-  width: 93%;
+  width: 70%;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -439,7 +447,8 @@
   opacity: 1;
   z-index: 1;
   /* overflow: hidden; */
-  animation: zoomOut 6s infinite forwards linear;
+  /* animation: zoomOut 4s infinite forwards linear; */
+  transition: all 4s linear;
   z-index: -1;
   display: flex;
   justify-content: center;
@@ -455,49 +464,49 @@
 
 @keyframes zoomOut {
   from {
-      opacity: 1;
+      opacity: 0.4;
       transform: translate(-50%, -50%) scale(1,1);
   }
 
   to {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(1.2, 1.28);
+    transform: translate(-50%, -50%) scale(1.07, 1.28);
 }
 }
 
 .UserInventoryPopup__button-animation:nth-child(1) {
-  animation-delay: calc(400ms * -10);
+  animation-delay: calc(1000ms * -1);
 }
 
 .UserInventoryPopup__button-animation:nth-child(2) {
-  animation-delay: calc(400ms * -9);
+  animation-delay: calc(1000ms * 0);
 }
 
 .UserInventoryPopup__button-animation:nth-child(3) {
-  animation-delay: calc(400ms * -8);
+  animation-delay: calc(1000ms * 1);
 }
 
 .UserInventoryPopup__button-animation:nth-child(4) {
-  animation-delay: calc(400ms * -7);
+  animation-delay: calc(1000ms * 2);
 }
 
 .UserInventoryPopup__button-animation:nth-child(5) {
-  animation-delay: calc(400ms * -6);
+  animation-delay: calc(1000ms * 3);
 }
 
 .UserInventoryPopup__button-animation:nth-child(6) {
-  animation-delay: calc(400ms * -5);
+  animation-delay: calc(1000ms * 4);
 }
 
 .UserInventoryPopup__button-animation:nth-child(7) {
-  animation-delay: calc(400ms * -4);
+  animation-delay: calc(1000ms * 5);
 }
 
 .UserInventoryPopup__button-animation:nth-child(8) {
-  animation-delay: calc(400ms * -3);
+  animation-delay: calc(1000ms * 6);
 }
 
-.UserInventoryPopup__button-animation:nth-child(9) {
+/* .UserInventoryPopup__button-animation:nth-child(9) {
   animation-delay: calc(400ms * -2);
 }
 
@@ -583,7 +592,7 @@
 
 .UserInventoryPopup__button-animation:nth-child(30) {
   animation-delay: calc(400ms * 19);
-}
+} */
 
 .UserInventoryPopup__connect {
   margin: auto;
@@ -695,5 +704,13 @@
 
   .UserInventoryPopup__close {
     top: 2%;
+  }
+
+  
+}
+
+@media (max-width: 375px) {
+  .UserInventoryPopup__button > div {
+    font-size: 28px;
   }
 }

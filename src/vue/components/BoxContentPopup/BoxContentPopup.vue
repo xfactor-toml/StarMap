@@ -22,11 +22,16 @@
           </div>
           <div class="BoxContentPopup__bottom">
             <div class="BoxContentPopup__animation">
-              <button class="BoxContentPopup__button">OK</button>
-              <div class="BoxContentPopup__button-animation" v-for="(item, index) in 8" :key="index">
-                <img src="/gui/images/user-inventory/open-box-border.svg" alt="logo">
-              </div>
-            </div>
+                    <div class="BoxContentPopup__button" @click="$emit('sendLink')">
+                        <img src="/gui/images/duel-box.svg">
+                        <div class="BoxContentPopup__button-text">
+                            OK
+                        </div>
+                    </div>
+                    <div class="BoxContentPopup__button-animation" v-for="(item, index) in 30" :key="index">
+                        <img src="/gui/images/user-inventory/open-box-border.svg" alt="logo">
+                    </div>
+                </div>
           </div>
 
         </div>

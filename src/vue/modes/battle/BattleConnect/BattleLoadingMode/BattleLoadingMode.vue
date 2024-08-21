@@ -1,5 +1,7 @@
 <template>
-    <BattleLoadingProgress />      
+   <transition name="fade">
+     <BattleLoadingProgress />      
+   </transition>
 </template>
 
 <script lang="ts">

@@ -5,37 +5,63 @@
   justify-content: center;
   width: 100%;
   height: 100%;
-  padding: 20px;
   position: absolute;
   left: 0;
   top: 0;
   color: #00FFFF;
-  font-family: "Exo 2";
+  padding: 10px;
+  pointer-events: all;
 }
 
-.BattleResultsMode > * {
-  pointer-events: all;
+.BattleResultMode__container {
+  max-width: 430px;
+  position: relative;
+}
+
+.BattleResultMode__container-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+}
+
+.BattleRewardsMode__closebtn {
+  position: absolute;
+  top: 3%;
+  right: 6%;
+  z-index: 2;
+}
+
+.BattleRewardsMode__closebtn:hover {
+   cursor: pointer;
+}
+.BattleResultMode__container[data-type=defeat] {
+  /* background-image: url(../gui/images/battle-results/defeat-bg.svg); */
 }
 
 .BattleResultsMode__header {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex-grow: 1;
+
 }
 
-.BattleResultsMode__status {
-  width: 280px;
-  height: 90px;
-  background-image: url(../gui/images/battle-results/victory.svg);
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: 50%;
+.BattleResultsMode__title {
+  font-size: 40px;
+  color: #F9EB21;
 }
 
-.BattleResultsMode__status[data-type=defeat] {
-  background-image: url(../gui/images/battle-results/defeat.svg);
+.BattleResultsMode__title[data-type=defeat] {
+  color: #F90E1B;
 }
+
 
 .BattleResultsMode__body {
   display: flex;
@@ -45,14 +71,46 @@
   max-width: 380px;
 }
 
+.BattleResultsMode__vs {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border-top: 1px solid rgba(0, 255, 255, 0.3);
+  border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+
+}
+
+.BattleResultsMode__vs-player {
+  display: flex;
+  gap: 5px;
+}
+
+.BattleResultsMode__vs-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.BattleResultsMode__vs-info {
+   font-size: 13px;
+}
+
+.BattleResultsMode__vs-info-level {
+   font-size: 13px;
+   color: #F9EB20;
+}
+
+.BattleResultsMode__vs-title {
+  font-size: 32px;
+}
+
 .BattleResultsMode__player {
-  padding: 8px 18px;
-  color: #000;
-  background-color: #00FFFF;
-  font-size: 18px;
-  font-weight: 600;
-  text-transform: uppercase;
-  text-align: center;
+  padding-top: 8px;
+  padding-bottom: 18px;
+  color: white;
+  font-size: 20px;
 }
 
 .BattleResultsMode__owner {
@@ -66,12 +124,13 @@
 
 .BattleResultsMode__rows {
   width: 100%;
-  margin-top: 24px;
+  width: 100%;
 }
 
 .BattleResultsMode__row {
+  width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: baseline;
   gap: 6px;
   padding: 12px;
@@ -81,8 +140,8 @@
   text-transform: uppercase;
 }
 
-.BattleResultsMode__value:not(.is-rating) {
-  color: #F9EB21;
+.BattleResultsMode__value {
+  color: white;
 }
 
 .BattleResultsMode__ratingChange {
@@ -121,16 +180,65 @@
   padding-bottom: 36px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 
 .BattleResultsMode__button {
-  padding: 12px 24px;
-  border: none;
-  background-color: #00FFFF;
-  color: #000;
-  font-family: inherit;
-  font-size: 16px;
-  font-weight: 600;
-  text-transform: uppercase;
+  font-size: 24px;
+  color: #112A5E;
+  width: 80%;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.BattleResultsMode__button:hover {
+   cursor: pointer;
+   transform: scale(1.05);
+}
+
+.BattleResultsMode__button:active {
+  transform: scale(0.95);
+}
+
+.BattleResultsMode__button.white {
+  color: white
+}
+
+.BattleResultsMode__button > div {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+@media (max-width: 375px) {
+  .BattleResultsMode__footer {
+    margin-top: 10px;
+    padding-bottom: 10px;
+  }
+  @media (max-width: 320px) {
+    .BattleResultsMode__title {
+      font-size: 30px;
+      color: #F9EB21;
+    }
+    .BattleResultsMode__button {
+      font-size: 20px;
+      color: #112A5E;
+      width: 80%;
+      position: relative;
+    }
+    .BattleResultsMode__vs-info {
+      font-size: 10px;
+   }
+   .BattleResultsMode__vs-title {
+    font-size: 26px;
+  }
+  }
+  
 }

@@ -75,10 +75,15 @@
                     </div>
                   </div>
                   <div class="UserInventoryPopup__animation">
-                    <button class="UserInventoryPopup__button" @click="openBox">OPEN BOX</button>
-                    <div class="UserInventoryPopup__button-animation" v-for="(item, index) in 30" :key="index">
-                      <img src="/gui/images/user-inventory/open-box-border.svg" alt="logo">
+                    <div class="UserInventoryPopup__button" @click="openBox">
+                      <img src="/gui/images/user-inventory/inventory/open-box.svg"> 
+                      <div>
+                        OPEN BOX
+                      </div>
                     </div>
+                    <!-- <div class="UserInventoryPopup__button-animation" v-for="(item, index) in 8" :key="index">
+                      <img src="/gui/images/user-inventory/open-box-border.svg" alt="logo">
+                    </div> -->
                   </div>
                 </div>
               </template>
@@ -89,7 +94,13 @@
     </div>
     <InventoryCardPopup v-if="selectedCard" :title="selectedCard.item" :description="selectedCard.description"
       :image="selectedCard.img_full" :type="selectedCard.type" @buy="buy(selectedCard)" @close="selectCard(null)" />
-    <BoxContentPopup v-if="boxContent.length > 0 && showBoxConent" :list="boxContent" @close="resetBoxes()" />
+    <transition name="fade">
+      <BoxContentPopup 
+        v-if="boxContent.length > 0 && showBoxConent" 
+        :list="boxContent" 
+        @close="resetBoxes()" 
+      />
+    </transition>
     <ConfirmPopup v-if="confirmation" :title="'Are you sure you want to make this purchase?'"
       @close="confirmResolver(false)" @confirm="confirmResolver(true)" />
   </div>

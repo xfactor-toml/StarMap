@@ -10,6 +10,14 @@
     padding: 10px;
 }
 
+.BattleReadyProgress__container {
+    max-width: 430px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
 .BattleReadyProgress__title {
     font-size: 36px;
     line-height: 43px;
@@ -143,8 +151,8 @@
     .BattleReadyProgress__content-description {
         font-size: 16px;
         color: white;
-        margin-top: 30px;
-        margin-bottom: 40px;
+        margin-top: 20px;
+        margin-bottom: 20px;
     }
     
     .BattleReadyProgress__bottom {

@@ -1,6 +1,7 @@
 <template>
     <div class="BattleReadyProgress">
-        <h1 class="BattleReadyProgress__title jura-font --bold">
+        <div class="BattleReadyProgress__container">
+            <h1 class="BattleReadyProgress__title jura-font --bold">
             <span >Your GAME</span>
             <span >IS READY</span>
         </h1>
@@ -29,6 +30,7 @@
             </p>
         </div>
         <p class="BattleReadyProgress__bottom --bold"> decline match </p>
+        </div>
     </div>
 </template>
 

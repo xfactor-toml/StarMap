@@ -1,8 +1,10 @@
 <template>
-  <BattleWaitProgress 
-    :curren-user="connectedUsers.current"
-    :max-users="connectedUsers.max"
-    />
+  <transition name="fade">
+    <BattleWaitProgress 
+      :curren-user="connectedUsers.current"
+      :max-users="connectedUsers.max"
+      />
+  </transition>
 </template>
 
 <script lang="ts">

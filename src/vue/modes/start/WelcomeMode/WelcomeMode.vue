@@ -29,7 +29,7 @@
           @click="handleRunClick(false)">
             <img src="/gui/images/preloader/start-button.svg" alt="button">
             <div>
-              <p class="WelcomeScene__start-button-title">START</p>
+              <p class="WelcomeScene__start-button-title --bold">START</p>
               <p class="WelcomeScene__start-button-description">Audio on = Awesom experiens</p>
             </div>
           </button>

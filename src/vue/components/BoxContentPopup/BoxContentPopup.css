@@ -154,14 +154,33 @@
   position: absolute;
   display: flex;
   justify-content: center;
-  width: 100%;
-  height: 100%;
-  top: 80%;
+  width: 79%;
+  height: 31%;
+  top: 73%;
 }
 
+
+@keyframes zoomOut {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.95, 0.95);
+  }
+
+  50% {
+    transform: translate(-50%, -50%) scale(1.1, 1.3);
+    opacity: 0.5;
+  }
+
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.2, 1.6);
+  }
+}
+
+
 .BoxContentPopup__animation {
-  width: 82.9%;
-  height: 18.75%;
+  width: 100%;
+  height: 74%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -169,40 +188,53 @@
 }
 
 .BoxContentPopup__button {
-  background: linear-gradient(360deg, #00C6FB 0%, #005BEA 100%);
-  box-shadow: 0px 0px 1020.6px #0169ED, 0px 0px 583.2px #0169ED, 0px 0px 340.2px #0169ED, 0px 0px 170.1px #0169ED, 0px 0px 48.6px #0169ED, 0px 0px 24.3px #0169ED;
-  height: 70.6%;
-  border: none;
-  border-radius: 104px;
-  width: 85.2%;
-  /* font-family: 'Jura'; */
-  font-style: normal;
-  font-size: 28px;
-  line-height: 38px;
-  color: #FFFFFF;
+  /* background: linear-gradient(360deg, #00C6FB 0%, #005BEA 100%);  */
+  box-shadow: 
+  0px 0px 13.5px rgba(0, 94, 234, 1), 
+  0px 0px 27px rgba(0, 94, 234, 1),  
+  0px 0px 94.5px rgba(0, 94, 234, 1),
+  0px 0px 189px rgba(0, 94, 234, 1), 
+  0px 0px 324px rgba(0, 94, 234, 1), 
+  0px 0px 567px rgba(0, 94, 234, 1);
+  text-align: center;
+  background-color: transparent;
+  width: 86%;
+  z-index: 3;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+  border-radius: 50px;
   transition: transform 0.3s ease;
 }
 
 .BoxContentPopup__button:hover {
+  cursor: pointer;
   transform: scale(1.05);
+}
+
+.BoxContentPopup__button-text {
+  font-style: normal;
+  font-size: 32px;
+  color: white;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  text-transform: uppercase;
+  position: absolute;
 }
 
 .BoxContentPopup__button-animation {
   width: 88.2%;
-  height: 66.6%;
+  height: 49.6%;
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%) scale(1, 1);
+  transform: translate(-50%, -50%) scale(1,1);
   transform-origin: center;
   opacity: 1;
   z-index: 1;
-  /* overflow: hidden; */
-  animation: zoomOut 3.1s infinite forwards linear;
-  z-index: -1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  animation: zoomOut 6s infinite forwards linear;
 }
 
 .BoxContentPopup__button-animation img {
@@ -214,140 +246,139 @@
 
 @keyframes zoomOut {
   from {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1, 1);
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1,1);
   }
 
   50% {
-    transform: translate(-50%, -50%) scale(1.1, 1.2);
-    opacity: 0.8;
+      transform: translate(-50%, -50%) scale(1.1,1.2);
+      opacity: 0.5;
   }
-
   to {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(1.2, 1.4);
-  }
+    transform: translate(-50%, -50%) scale(1.2,1.4);
 }
-
+}
 .BoxContentPopup__button-animation:nth-child(1) {
-  animation-delay: calc(400ms * -10);
+  animation-delay: calc(1000ms * -10);
 }
 
 .BoxContentPopup__button-animation:nth-child(2) {
-  animation-delay: calc(400ms * -9);
+  animation-delay: calc(1000ms * -9);
 }
 
 .BoxContentPopup__button-animation:nth-child(3) {
-  animation-delay: calc(400ms * -8);
+  animation-delay: calc(1000ms * -8);
 }
 
 .BoxContentPopup__button-animation:nth-child(4) {
-  animation-delay: calc(400ms * -7);
+  animation-delay: calc(1000ms * -7);
 }
 
 .BoxContentPopup__button-animation:nth-child(5) {
-  animation-delay: calc(400ms * -6);
+  animation-delay: calc(1000ms * -6);
 }
 
 .BoxContentPopup__button-animation:nth-child(6) {
-  animation-delay: calc(400ms * -5);
+  animation-delay: calc(1000ms * -5);
 }
 
 .BoxContentPopup__button-animation:nth-child(7) {
-  animation-delay: calc(400ms * -4);
+  animation-delay: calc(1000ms * -4);
 }
 
 .BoxContentPopup__button-animation:nth-child(8) {
-  animation-delay: calc(400ms * -3);
+  animation-delay: calc(1000ms * -3);
 }
 
 .BoxContentPopup__button-animation:nth-child(9) {
-  animation-delay: calc(400ms * -2);
+  animation-delay: calc(1000ms * -2);
 }
 
 .BoxContentPopup__button-animation:nth-child(10) {
-  animation-delay: calc(400ms * -1);
+  animation-delay: calc(1000ms * -1);
 }
 
 .BoxContentPopup__button-animation:nth-child(11) {
-  animation-delay: calc(400ms * 0);
+  animation-delay: calc(1000ms * 0);
 }
 
 .BoxContentPopup__button-animation:nth-child(12) {
-  animation-delay: calc(400ms * 1);
+  animation-delay: calc(1000ms * 1);
 }
 
 .BoxContentPopup__button-animation:nth-child(13) {
-  animation-delay: calc(400ms * 2);
+  animation-delay: calc(1000ms * 2);
 }
 
 .BoxContentPopup__button-animation:nth-child(14) {
-  animation-delay: calc(400ms * 3);
+  animation-delay: calc(1000ms * 3);
 }
 
 .BoxContentPopup__button-animation:nth-child(15) {
-  animation-delay: calc(400ms * 4);
+  animation-delay: calc(1000ms * 4);
 }
 
 .BoxContentPopup__button-animation:nth-child(16) {
-  animation-delay: calc(400ms * 5);
+  animation-delay: calc(1000ms * 5);
 }
 
 .BoxContentPopup__button-animation:nth-child(17) {
-  animation-delay: calc(400ms * 6);
+  animation-delay: calc(1000ms * 6);
 }
 
 .BoxContentPopup__button-animation:nth-child(18) {
-  animation-delay: calc(400ms * 7);
+  animation-delay: calc(1000ms * 7);
 }
 
 .BoxContentPopup__button-animation:nth-child(19) {
-  animation-delay: calc(400ms * 8);
+  animation-delay: calc(1000ms * 8);
 }
 
 .BoxContentPopup__button-animation:nth-child(20) {
-  animation-delay: calc(400ms * 9);
+  animation-delay: calc(1000ms * 9);
 }
 
 .BoxContentPopup__button-animation:nth-child(21) {
-  animation-delay: calc(400ms * 10);
+  animation-delay: calc(1000ms * 10);
 }
 
 .BoxContentPopup__button-animation:nth-child(22) {
-  animation-delay: calc(400ms * 11);
+  animation-delay: calc(1000ms * 11);
 }
 
 .BoxContentPopup__button-animation:nth-child(23) {
-  animation-delay: calc(400ms * 12);
+  animation-delay: calc(1000ms * 12);
 }
 
 .BoxContentPopup__button-animation:nth-child(24) {
-  animation-delay: calc(400ms * 13);
+  animation-delay: calc(1000ms * 13);
 }
 
 .BoxContentPopup__button-animation:nth-child(25) {
-  animation-delay: calc(400ms * 14);
+  animation-delay: calc(1000ms * 14);
 }
 
 .BoxContentPopup__button-animation:nth-child(26) {
-  animation-delay: calc(400ms * 15);
+  animation-delay: calc(1000ms * 15);
 }
 
 .BoxContentPopup__button-animation:nth-child(27) {
-  animation-delay: calc(400ms * 16);
+  animation-delay: calc(1000ms * 16);
 }
 
 .BoxContentPopup__button-animation:nth-child(28) {
-  animation-delay: calc(400ms * 17);
+  animation-delay: calc(1000ms * 17);
 }
 
 .BoxContentPopup__button-animation:nth-child(29) {
-  animation-delay: calc(400ms * 18);
+  animation-delay: calc(1000ms * 18);
 }
 
 .BoxContentPopup__button-animation:nth-child(30) {
-  animation-delay: calc(400ms * 19);
+  animation-delay: calc(1000ms * 19);
 }
+
 
 @media (max-width: 375px) {
   .BoxContentPopup__cards {
