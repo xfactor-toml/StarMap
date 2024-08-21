@@ -328,18 +328,18 @@ export class ClientEventsService {
       
       case GameEvent.BATTLE_SHOP:
 
-        switch (clientEvent.action) {
+        switch (clientEvent.data.action) {
           case 'purchase':
-            
+            LogMng.debug(`BATTLE_SHOP purchase:`, clientEvent.data);
             break;
           case 'sale':
-
+            LogMng.debug(`BATTLE_SHOP sale:`, clientEvent.data);
             break;
           case 'purchaseError':
-
+            LogMng.error(`BATTLE_SHOP purchaseError:`, clientEvent.data);
             break;
           case 'saleError':
-
+            LogMng.error(`BATTLE_SHOP saleError:`, clientEvent.data);
             break;
           default:
             LogMng.error(`Unknown BATTLE_SHOP action:`, clientEvent);
@@ -349,7 +349,7 @@ export class ClientEventsService {
         break;
 
       default:
-        LogMng.error(`Unknown game event:`, clientEvent);
+        LogMng.error(`client-events: unknown game event:`, clientEvent);
         break;
     }
   }

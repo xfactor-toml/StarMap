@@ -32,6 +32,8 @@ export enum PackTitle {
   sniper = 'sniper',
   explosion = 'explosion',
 
+  shop = 'shop',
+  
   emotion = 'emotion',
 
   claimReward = 'claimReward',
@@ -121,10 +123,16 @@ export type ShopItemData = {
   price: number
 }
 
-export type BattleShopAction = 'purchase' | 'sale' | 'purchaseError' | 'saleError';
-
 export type ShopInitData = {
   items: ShopItemData[]
+}
+
+export type BattleShopAction = 'purchase' | 'sale' | 'purchaseError' | 'saleError';
+
+export type ShopData = {
+  action: BattleShopAction,
+  itemId?: number,
+  msg?: string
 }
 
 export type StartGameData = {
@@ -266,7 +274,7 @@ export type ClaimRewardData = {
 }
 
 export type DebugTestData = {
-  action: 'win' | 'loss'
+  action: 'win' | 'loss' | 'addGold1k'
 }
 
 export type ExplosionData = {

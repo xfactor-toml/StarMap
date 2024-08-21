@@ -61,13 +61,26 @@ const SETTINGS = {
         }
     },
 
+    sunLights: true,
+    
+    dirLights: false,
+    directionLight: {
+        color: 0xffffff,
+        intens: 1,
+        pos: {
+            x: -100,
+            y: 100,
+            z: 0
+        }
+    },
+
     // stars params
     stars: {
         light: {
             height: 6,
-            intens: 1,
-            dist: 50,
-            decay: .2
+            intens: 1.,
+            dist: 60,
+            decay: .1
         }
     },
 
@@ -153,10 +166,21 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             camera: this._camera
         });
 
+        this.initDirectionLight();
         this.initConnectionListeners();
         this.initRaycaster();
         this.initInput();
         
+    }
+
+    private initDirectionLight() {
+        if (!SETTINGS.dirLights) return;
+        const set = SETTINGS.directionLight;
+        let dir = new THREE.DirectionalLight(set.color, set.intens);
+        dir.position.set(set.pos.x, set.pos.y, set.pos.z);
+        let amb = new THREE.AmbientLight(0x0, 0.5);
+        this._scene.add(dir);
+        this._scene.add(amb);
     }
 
     private initRaycaster() {
@@ -458,10 +482,10 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
                     ...{
                         camera: this._camera,
                         planetOrbitRadius: 15,
-                        light: {
+                        light: SETTINGS.sunLights ? {
                             parent: this._dummyMain,
                             ...SETTINGS.stars.light
-                        }
+                        } : null
                     }
                 });
                 if (aData.pos) obj.position.copy(this.getPositionByServer({ x: aData.pos.x, y: aData.pos.z }));
@@ -630,11 +654,11 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
             ...aData,
             ...{
                 race: this.getRaceForWalletAddr(aData.owner),
-                light: {
-                    parent: this._dummyMain,
-                    ...SETTINGS.towers.light,
-                    color: this.isCurrentOwner(aData.owner) ? SETTINGS.towers.light.ownerColor : SETTINGS.towers.light.enemyColor
-                },
+                // light: {
+                //     parent: this._dummyMain,
+                //     ...SETTINGS.towers.light,
+                //     color: this.isCurrentOwner(aData.owner) ? SETTINGS.towers.light.ownerColor : SETTINGS.towers.light.enemyColor
+                // },
                 showRadius: DEBUG_GUI.showObjectRadius,
                 showAttackRadius: DEBUG_GUI.showObjectAttackRadius
             }
@@ -651,7 +675,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         }
 
         // hp bar
-        this._objectHpViewer.addBar(obj);
+        this._objectHpViewer.addBar(obj, !this.isCurrentOwner(aData.owner));
 
         this._dummyMain.add(obj);
         this._objects.set(aData.id, obj);
@@ -693,7 +717,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         if (aData.lookDir) obj.lookByDir(aData.lookDir);
 
         // hp bar
-        this._objectHpViewer.addBar(obj);
+        this._objectHpViewer.addBar(obj, !this.isCurrentOwner(aData.owner));
         
         // sfx
         AudioMng.getInstance().playSfx({ alias: AudioAlias.battleCreepSpawn, volume: .15 });
@@ -731,7 +755,7 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         if (aData.lookDir) obj.lookByDir(aData.lookDir);
 
         // add hp bar
-        this._objectHpViewer.addBar(obj);
+        this._objectHpViewer.addBar(obj, !this.isCurrentOwner(aData.owner));
 
         AudioMng.getInstance().playSfx({ alias: AudioAlias.battleCreepSpawn, volume: .3 });
 
