@@ -7,20 +7,16 @@
         <div class="ModelControl__level orbitron-font --semi-bold">
             {{ level }}
         </div>
-
         <div class="ModelControl__shop" @click="$emit('click')">
             <img src="/gui/images/pre-game-countdown/shop.svg" />
             <div class="ModelControl__shop-name orbitron-font --semi-bold">
                 SHOP
             </div>
         </div>
-
     </button>
 </template>
 
 <script lang="ts">
-
-
 export default {
     name: 'ModelControl',
     props :{

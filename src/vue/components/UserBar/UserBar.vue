@@ -83,7 +83,7 @@
         class="UserBar__button menu-bar"
         @mouseenter="$client.onHover()"
         @click="showUserMenu"
-      />
+      >  </button>
     </div>
   </transition>
 

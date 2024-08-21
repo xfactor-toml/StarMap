@@ -31,7 +31,7 @@ const radius = 60
 const offset = 30
 
 const getRadians = (index: number) => {
-  const degree = 360 / emotions.length * index + offset
+  const degree = 120 / emotions.length * index + offset
   const radians = degree / 180 * Math.PI
 
   return radians

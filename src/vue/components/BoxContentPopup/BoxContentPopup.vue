@@ -28,9 +28,9 @@
                             OK
                         </div>
                     </div>
-                    <div class="BoxContentPopup__button-animation" v-for="(item, index) in 30" :key="index">
+                    <!-- <div class="BoxContentPopup__button-animation" v-for="(item, index) in 30" :key="index">
                         <img src="/gui/images/user-inventory/open-box-border.svg" alt="logo">
-                    </div>
+                    </div> -->
                 </div>
           </div>
 

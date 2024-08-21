@@ -92,7 +92,6 @@
 }
 
 .BaseControl__content {
-  overflow: hidden;
   padding-bottom: 2%;
   color: #00FFFF;
   font-family: "Exo 2";
@@ -151,7 +150,7 @@
     transform-origin:center;
     z-index: -1;
     overflow: hidden;
-    animation: zoomOut 2s infinite forwards linear;
+    animation: zoomOut 4s infinite forwards linear;
   
 }
 
@@ -163,7 +162,7 @@
 
   50% {
       transform: translate(-50%, -60%) scale(1,1);
-      opacity: 1;
+      opacity: 0.5;
   }
   to {
     opacity: 0;

@@ -16,6 +16,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    padding-bottom: 20px;
+    overflow-y: auto;
 }
 
 .BattleReadyProgress__title {
@@ -164,4 +166,12 @@
     }
     
   }
+
+  @media (max-height: 620px) {
+    .BattleReadyProgress__container {
+        justify-content: start;
+        max-height: calc(100vh - 20px);
+        pointer-events: all;
+    }
+}
 

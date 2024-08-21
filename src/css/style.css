@@ -113,6 +113,10 @@ select {
   overflow: hidden;
   pointer-events: none;
   touch-action: manipulation;
+  /* background-image: url(../gui/images/background.png);
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: cover; */
 }
 
 #game>canvas {

@@ -49,7 +49,7 @@
                     <div class="UserInventoryPopup__cardFigure" @click="selectCard(item)">
                       <img class="UserInventoryPopup__cardImage" :src="item.img_preview" />
                     </div>
-                    <div v-if="item.per_user !== null" class="UserInventoryPopup__cardCount">Name... | {{ item.per_user
+                    <div v-if="item.per_user !== null" class="UserInventoryPopup__cardCount">Name | {{ item.per_user
                       }}
                     </div>
                     <div class="UserInventoryPopup__cardCaption" @click="buy(item)">{{ item.cost }} {{ item.currency }}
@@ -115,15 +115,15 @@ import { BlockchainConnectService } from '~/blockchainTotal';
 
 const baseTabs = ['inventory', 'events', 'unboxing', '', '', '', '', '']
 const boxContentConst =[
-        { rare: 'legendary', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'rare', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'rare', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'rare', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'legendary', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'mythic', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'legendary', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'rare', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'rare', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'legendary', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'rare', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'rare', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'rare', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'legendary', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'mythic', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'legendary', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'rare', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'rare', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
       ]
 
 export default {
@@ -165,19 +165,19 @@ export default {
       boxContent: [],
       showBoxConent: false,
       assets: [
-        { rare: 'legendary', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'rare', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'rare', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'rare', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'legendary', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'mythic', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'mythic', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'rare', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'legendary', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'rare', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'rare', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'mythic', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'mythic', name: 'Name...', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'legendary', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'rare', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'rare', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'rare', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'legendary', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'mythic', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'mythic', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'rare', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'legendary', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'rare', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'rare', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'mythic', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
+        { rare: 'mythic', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
       ],
       title: 'INVENTORY'
     }

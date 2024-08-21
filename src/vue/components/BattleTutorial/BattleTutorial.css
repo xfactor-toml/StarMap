@@ -22,6 +22,7 @@
     justify-content: center;
     flex-direction: column;
     padding: 30px 10px 30px 10px;
+    overflow-y: auto;
 }
 
 .BattleTutorial__title {
@@ -84,6 +85,12 @@
 @media (max-width: 375px) {
     .Battle__Tutorial-flow {
         margin-bottom: 10.3%;
+    }
+}
+
+@media (max-height: 568px) {
+    .BattleTutorial__container {
+        justify-content: start;
     }
 }
 
