@@ -30,7 +30,7 @@ export type GalaxyData = {
  */
 export class GlobalParams {
 
-    static galaxyVersion = 'v0.3.509';
+    static galaxyVersion = 'v0.3.510';
     static starDefenderVersion = 'v0.2.0';
     static isDebugMode = false; // TODO: move to env parameters
     static isFPSShow = false; // TODO: move to env parameters

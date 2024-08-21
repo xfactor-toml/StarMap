@@ -160,6 +160,7 @@ export class BlockchainConnectService {
       this.displayLogin = tgId;
       return "telegram"
     }
+    return "Local";
 
     if (network.env && network.env.request) {
       return "WindowEth"
