@@ -3,7 +3,8 @@ import { computed, ref } from 'vue';
 import { ItemTradingType } from "@/types";
 
 const getInitialState = () => ( {
-    items: [] as ItemTradingType[]
+    items: [] as ItemTradingType[],
+    loading: false as Boolean,
 })
 
 export const useBattleShopStore = defineStore('battleShopStore', () => {
@@ -18,6 +19,10 @@ export const useBattleShopStore = defineStore('battleShopStore', () => {
         state.value.items = state.value.items.filter(item => item.id !== itemId);    
     };
 
+    const setLoading = (status:boolean) => {
+        state.value.loading = status;
+    }
+
     const reset = () => {
         state.value = getInitialState()
     }
@@ -27,7 +32,8 @@ export const useBattleShopStore = defineStore('battleShopStore', () => {
         items,
         addItem,
         sellItem,
-        reset
+        reset,
+        setLoading
     };
 });
 

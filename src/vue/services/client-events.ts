@@ -337,6 +337,11 @@ export class ClientEventsService {
             break;
           case 'purchaseError':
             LogMng.error(`BATTLE_SHOP purchaseError:`, clientEvent.data);
+            battleStore.shop.setLoading(false);
+            scenesStore.setSceneMode('process');
+            toast(clientEvent.data.msg, {
+                   type: 'error',
+                     autoClose: 2000,});
             break;
           case 'saleError':
             LogMng.error(`BATTLE_SHOP saleError:`, clientEvent.data);
