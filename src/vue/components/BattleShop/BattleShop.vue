@@ -1,5 +1,5 @@
 <template>
-  <div class="BattleShop">
+  <div v-if="!loadingStatus" class="BattleShop">
     <header>
       <GoldScore :score="battleStore.process.state.gold" @click="scoreClose" />
     </header>
@@ -31,6 +31,10 @@
     @buy="buy" @sell="sell" />
   <ConfirmPopup v-if="confirmation" :title="'Are you sure you want to make this purchase?'"
     @close="confirmResolver(false)" @confirm="confirmResolver(true)" />
+  
+  <div class="BattleShop__loading">
+    <Loader v-if="loadingStatus"/>
+  </div>
 </template>
 
 <script lang="ts">
@@ -45,6 +49,7 @@ import { useBattleStore } from '@/stores';
 import { mapStores } from 'pinia';
 import ConfirmPopup from '../ConfirmPopup/ConfirmPopup.vue';
 import { toast } from 'vue3-toastify';
+import { Loader } from '../Loader';
 
 export default defineComponent({
   name: 'BattleShop',
@@ -54,6 +59,7 @@ export default defineComponent({
     GoldScore,
     BattleItemCard,
     ConfirmPopup,
+    Loader
   },
   data() {
     return {
@@ -71,7 +77,8 @@ export default defineComponent({
       confirmation: false,
       confirmResolver: null,
       selectedItemId: null,
-      BattleItemCards
+      BattleItemCards,
+      loading: false,
     };
   },
   computed: {
@@ -80,6 +87,10 @@ export default defineComponent({
     },
     array2() {
       return this.items.filter(item => item.id >= 4);
+    },
+
+    loadingStatus() {
+      return this.battleStore.shop.state.loading
     },
     ...mapStores(useBattleStore)
   },
@@ -134,32 +145,36 @@ export default defineComponent({
     async buy() {
       const confirmed = await this.confirm();
       if (confirmed) {
-        if (this.battleStore.shop.state.items.length < 2) {
-          if (this.battleStore.process.state.gold >= BattleItemCards[this.selectedItemId].price) {
-            const gold = this.battleStore.process.state.gold - BattleItemCards[this.selectedItemId].price;
-            this.battleStore.shop.addItem(this.selectedItemId);
-            this.battleStore.process.setGold(gold);
-            this.itemCardShow = false;
-            toast('Buy successful!', {
-              type: 'success',
-              autoClose: 2000,
-            });
-          }
-          else {
-            this.itemCardShow = false;
-            toast('Insufficient gold!', {
-              type: 'error',
-              autoClose: 2000,
-            });
-          }
-        }
-        else {
-          this.itemCardShow = false;
-          toast('You can not buy two more items!', {
-            type: 'error',
-            autoClose: 2000,
-          });
-        }
+        this.battleStore.shop.setLoading(true);
+        this.itemCardShow = false;
+        this.$client.onBuyBattleItemClick(this.selectedItemId)
+       
+        // if (this.battleStore.shop.state.items.length < 2) {
+        //   if (this.battleStore.process.state.gold >= BattleItemCards[this.selectedItemId].price) {
+        //     const gold = this.battleStore.process.state.gold - BattleItemCards[this.selectedItemId].price;
+        //     this.battleStore.shop.addItem(this.selectedItemId);
+        //     this.battleStore.process.setGold(gold);
+        //     this.itemCardShow = false;
+        //     toast('Buy successful!', {
+        //       type: 'success',
+        //       autoClose: 2000,
+        //     });
+        //   }
+        //   else {
+        //     this.itemCardShow = false;
+        //     toast('Insufficient gold!', {
+        //       type: 'error',
+        //       autoClose: 2000,
+        //     });
+        //   }
+        // }
+        // else {
+        //   this.itemCardShow = false;
+        //   toast('You can not buy two more items!', {
+        //     type: 'error',
+        //     autoClose: 2000,
+        //   });
+        // }
       }
     },
 
@@ -181,6 +196,7 @@ export default defineComponent({
       this.confirmation = true
       const confirmed = await new Promise(resolve => {
         this.confirmResolver = resolve
+        
       })
       this.confirmation = false
       return confirmed

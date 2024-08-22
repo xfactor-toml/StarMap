@@ -201,6 +201,14 @@ export class ClientService {
     FrontEvents.onBattleEmotion.dispatch(aEmotion);
   }
 
+  onBuyBattleItemClick(id: Number) {
+    FrontEvents.onBattlePurchaseRequest.dispatch(id);
+  }
+
+  onSellBattleItemClick(id: Number) {
+    FrontEvents.onBattleSellRequest.dispatch(id);
+  }
+
   static VuePlugin = {
     install: app => {
       app.config.globalProperties.$client = markRaw(new ClientService(FrontEvents));
