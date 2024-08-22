@@ -121,7 +121,7 @@
     0px 0px 324px rgba(0, 94, 234, 1), 
     0px 0px 567px rgba(0, 94, 234, 1);
     text-align: center;
-    background-color: transparent;
+    background-color: rgba(0, 94, 234, 0.8);
     width: 86%;
     height: 50%;
     z-index: 3;
