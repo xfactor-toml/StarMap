@@ -35,7 +35,7 @@
           :cooldown="battleStore.process.cooldown"
           :level="battleStore.process.state.level"
           :gold="battleStore.process.state.gold"
-          :items="battleStore.shop.state.items"
+          :items="battleStore.shop.items"
           @setVisible="setBattleControlPanelVisible"
           @action="$client.onBattleAction" />
       </div>

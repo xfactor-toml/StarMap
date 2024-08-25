@@ -8,13 +8,22 @@
         <div class="BattleItemCard__gold">
            Gold: {{ price }}
         </div>
-
       </div>
-
       <div class="BattleItemCard__title">{{ title }}</div>
       <div class="BattleItemCard__text">{{ description }}</div>
-      <button v-if="!tradingStatus" class="BattleItemCard__buybutton" @click="$emit('buy')">Buy</button>
-      <button v-if="tradingStatus" class="BattleItemCard__sellbutton" @click="$emit('sell')">Sell</button>
+      <button
+        v-if="!tradingStatus"
+        :disabled="!canBuy"
+        class="BattleItemCard__buybutton"
+        @click="canBuy && $emit('buy')"
+      >Buy
+      </button>
+      <button
+        v-if="tradingStatus"
+        class="BattleItemCard__sellbutton"
+        @click="$emit('sell')"
+      >Sell
+      </button>
     </div>
   </BasePopup>
 </template>
@@ -31,9 +40,15 @@ export default {
   props: {
     title: String,
     description: String,
-    image: String,
+    icon: String,
     price: Number,
+    canBuy: Boolean,
     tradingStatus: Boolean,
+  },
+  computed: {
+    image() {
+      return '../assets/battleIcon/thunder.png'
+    }
   }
 };
 </script>

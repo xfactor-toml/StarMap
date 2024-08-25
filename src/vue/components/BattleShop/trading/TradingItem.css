@@ -6,6 +6,14 @@
   user-select: none;
 }
 
+.TradingItem__loader {
+  width: 36px;
+  height: 36px;
+  position: absolute;
+  top: calc(100% - 9px);
+  left: -12px;
+}
+
 .TradingItem__trading {
   display: flex;
   align-items: center;
@@ -58,4 +66,8 @@
   font-weight: 600;
   font-size: 12px;
   line-height: 1;
+}
+
+.TradingItem:not(.canBuy) .TradingItem__content {
+  opacity: 0.5;
 }

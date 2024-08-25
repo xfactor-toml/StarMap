@@ -49,7 +49,6 @@
         <component :is="icon" />
       </div>
     </button>
-
     <transition name="fade">
       <div v-if="detail">
         <div
@@ -72,8 +71,6 @@
         </div>
       </div>
     </transition>
-
-
   </div>
 </template>
 
@@ -145,7 +142,8 @@ export default {
         quantumBooster: QuantumBoosterIcon,
         accelerationAmulet: AccelerationAmuletIcon,
       }
-      return icons[this.name]
+      // return icons[this.name]
+      return icons['thunder'] // tmp
     },
     computedTransform() {
       return this.id % 4 > 1 ? { transform: 'rotate(180deg)' } : {};

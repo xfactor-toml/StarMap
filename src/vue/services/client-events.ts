@@ -150,8 +150,7 @@ export class ClientEventsService {
       case GameEvent.BATTLE_PREROLL_SHOW:
         battleStore.connecting.setPlayerSearchingState(false);
         scenesStore.setScene(UISceneNames.Battle);
-
-        // TODO: apply shop init data from clientEvent.shopInitData
+        battleStore.shop.setItems(clientEvent.shopInitData.items);
 
         battleStore.process.setState({
           players: {
@@ -232,7 +231,7 @@ export class ClientEventsService {
           type: typeByStatus[clientEvent.status],
           player: clientEvent.ownerName,
           owner: clientEvent.ownerName,
-          demage: clientEvent.params.damageDone,
+          damage: clientEvent.params.damageDone,
           gold: clientEvent.params.goldEarned,
           exp: clientEvent.params.expReceived,
           rating: {
@@ -327,21 +326,21 @@ export class ClientEventsService {
         break;
       
       case GameEvent.BATTLE_SHOP:
-
         switch (clientEvent.data.action) {
           case 'purchase':
             LogMng.debug(`BATTLE_SHOP purchase:`, clientEvent.data);
+            battleStore.shop.removeFromPendingList(clientEvent.data.itemId);
             break;
           case 'sale':
             LogMng.debug(`BATTLE_SHOP sale:`, clientEvent.data);
             break;
           case 'purchaseError':
             LogMng.error(`BATTLE_SHOP purchaseError:`, clientEvent.data);
-            battleStore.shop.setLoading(false);
-            scenesStore.setSceneMode('process');
+            battleStore.shop.clearPendingList();
             toast(clientEvent.data.msg, {
-                   type: 'error',
-                     autoClose: 2000,});
+              type: 'error',
+              autoClose: 2000
+            });
             break;
           case 'saleError':
             LogMng.error(`BATTLE_SHOP saleError:`, clientEvent.data);

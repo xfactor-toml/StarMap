@@ -56,7 +56,6 @@ import {
   BattleCooldown,
   BattleData,
   BattleActionPayload,
-  ItemTradingType
 } from '@/types';
 import { PropType } from 'vue';
 
@@ -79,6 +78,7 @@ import {
   SatelliteFireSkill,
   SlowdownSkill
 } from './skills';
+import { ShopItemData } from '~/game/battle/Types';
 
 export default {
   name: 'BattleControlPanel',
@@ -116,7 +116,7 @@ export default {
       required: true
     },
     items: {
-      type: Array as PropType<ItemTradingType[]>,
+      type: Array as PropType<ShopItemData[]>,
     }
   },
 
