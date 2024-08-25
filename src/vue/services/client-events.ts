@@ -336,7 +336,7 @@ export class ClientEventsService {
             break;
           case 'purchaseError':
             LogMng.error(`BATTLE_SHOP purchaseError:`, clientEvent.data);
-            battleStore.shop.clearPendingList();
+            battleStore.shop.removeFromPendingList(clientEvent.data.itemId);
             toast(clientEvent.data.msg, {
               type: 'error',
               autoClose: 2000
