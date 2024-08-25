@@ -1,39 +1,44 @@
 import { defineStore } from "pinia";
-import { computed, ref } from 'vue';
-import { ItemTradingType } from "@/types";
-
-const getInitialState = () => ( {
-    items: [] as ItemTradingType[],
-    loading: false as Boolean,
-})
+import { ref } from 'vue';
+import { ShopItemData } from "~/game/battle/Types";
 
 export const useBattleShopStore = defineStore('battleShopStore', () => {
-    const state = ref(getInitialState());
-    const items = computed(() => state.value.items);
+    const items = ref<ShopItemData[]>([]);
+    const pendingList = ref<Set<number>>(new Set())
 
-    const addItem = (itemId: number) => {
-        state.value.items.push({ id: itemId, buy: true });
-    };
+    const setItems = (value: ShopItemData[]) => {
+        items.value = value
+    }
 
     const sellItem = (itemId: number) => {
-        state.value.items = state.value.items.filter(item => item.id !== itemId);    
+        items.value = items.value.filter(item => item.id !== itemId);    
     };
 
-    const setLoading = (status:boolean) => {
-        state.value.loading = status;
+    const addToPendingList = (itemId: number) => {
+        pendingList.value.add(itemId)
+    }
+
+    const removeFromPendingList = (itemId: number) => {
+        pendingList.value.delete(itemId)
+    }
+
+    const clearPendingList = () => {
+        pendingList.value.clear()
     }
 
     const reset = () => {
-        state.value = getInitialState()
+        items.value = []
     }
 
     return {
-        state,
         items,
-        addItem,
+        pendingList,
         sellItem,
+        setItems,
+        addToPendingList,
+        removeFromPendingList,
+        clearPendingList,
         reset,
-        setLoading
     };
 });
 

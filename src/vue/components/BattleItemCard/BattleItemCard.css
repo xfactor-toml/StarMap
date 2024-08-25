@@ -82,6 +82,12 @@
   will-change: transform;
 }
 
+.BattleItemCard__buybutton[disabled] {
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.5;
+}
+
 .BattleItemCard__buybutton:hover {
   transform: scale(1.04);
 }

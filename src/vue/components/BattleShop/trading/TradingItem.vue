@@ -1,25 +1,39 @@
 <template>
-  <div class="TradingItem" :class="{ isHide: this.hide }">
-    <slot />
-    <template v-if="true">
-
-      <button class="TradingItem__trading" :class="{ isDirection: (id % 4 > 1 && detail) || special }"
-        @click="itemShow">
-        <component :is="tradingStatus ? 'TradingSellIcon' : 'TradingBuyIcon'" />
-        <span class="TradingItem__tradingText">{{ tradingStatus ? 'SELL' : 'BUY' }}</span>
-      </button>
-
-    </template>
+  <div
+    class="TradingItem"
+    :class="{
+      isHide: this.hide,
+      canBuy: this.canBuy
+    }">
+    <div class="TradingItem__content">
+      <slot />
+    </div>
+    <Loader
+      v-if="loading"
+      class="TradingItem__loader"
+    />
+    <button
+      v-else
+      class="TradingItem__trading"
+      :class="{
+        isDirection: (id % 4 > 1 && detail) || special
+      }"
+      @click="itemShow"
+    >
+      <component :is="tradingStatus ? 'TradingSellIcon' : 'TradingBuyIcon'" />
+      <span class="TradingItem__tradingText">{{ tradingStatus ? 'SELL' : 'BUY' }}</span>
+    </button>
   </div>
 </template>
 
 <script lang="ts">
-
 import { TradingBuyIcon, TradingSellIcon } from './icons';
+import { Loader } from '../../Loader';
 
 export default {
   name: 'TradingItem',
   components: {
+    Loader,
     TradingBuyIcon,
     TradingSellIcon,
   },
@@ -27,6 +41,14 @@ export default {
   props: {
     id: {
       type: Number,
+    },
+    loading: {
+      type: Boolean,
+      default: false
+    },
+    canBuy: {
+      type: Boolean,
+      default: false
     },
     detail: {
       type: Boolean,
@@ -42,7 +64,6 @@ export default {
     hide: {
       type: Boolean, 
     }
-
   },
   methods: {
     itemShow() {

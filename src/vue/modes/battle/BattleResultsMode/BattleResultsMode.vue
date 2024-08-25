@@ -86,7 +86,7 @@ export default {
         {
           key: 'damage',
           label: 'Damage done',
-          value: formatNumber(this.results.demage)
+          value: formatNumber(this.results.damage)
         },
         {
           key: 'gold',

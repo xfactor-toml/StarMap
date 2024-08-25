@@ -5,11 +5,10 @@ export type BattleActionType = 'satelliteFire' | 'rocketFire' | 'slowdown' | 'in
 export type BattleItemNameType = 'thunder' | 'velocityVector' | 'surgesSpire' | 'spiralSentinel' | 'nuclearOrb' | 'momentumMatrix' | 'quantumBooster' | 'accelerationAmulet'
 
 export type BattleItemStatusType = {
-  name: BattleItemNameType
+  id: number
   hide: boolean
   special: boolean
   detail: boolean
-  id: number
   buy: boolean
 }
 
@@ -65,7 +64,7 @@ export type BattleResults = {
   type: 'victory' | 'defeat'
   player: string
   owner: string
-  demage: number
+  damage: number
   gold: number
   exp: number
   rating: {

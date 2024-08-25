@@ -16,9 +16,9 @@
 </template>
 
 <script lang="ts">
-import { ItemTradingType } from '@/types';
 import { BaseControl } from './BaseControl';
 import { PropType } from 'vue';
+import { ShopItemData } from '~/game/battle/Types';
 export default {
     name: 'shopItemControl',
     components: {
@@ -26,7 +26,7 @@ export default {
     },
     props: {
         items: {
-            type: Array as PropType<ItemTradingType[]>,
+            type: Array as PropType<ShopItemData[]>,
         },
     },
     data() {
