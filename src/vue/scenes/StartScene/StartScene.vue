@@ -40,7 +40,7 @@ export default {
   },
   computed: mapStores(useScenesStore),
   mounted() {
-    document.body.addEventListener('click', this.handleClick)
+    // document.body.addEventListener('click', this.handleClick);
   }
 };
 </script>
