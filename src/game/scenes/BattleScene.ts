@@ -461,6 +461,7 @@ export class BattleScene extends BasicScene {
   }
 
   update(dt: number) {
+    if (dt > 0.1) return;
     this._view.update(dt);
   }
 
