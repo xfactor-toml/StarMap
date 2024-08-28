@@ -40,7 +40,7 @@
     transform: translate(-50%, -50%) scale(1,1);
     transform-origin: center;
     opacity: 1;
-    z-index: 1;
+    z-index: -1;
     overflow: hidden;
     animation: zoomOut 4s infinite forwards linear;
 }
@@ -48,7 +48,7 @@
 @keyframes zoomOut {
     from {
         opacity: 1;
-        transform: translate(-50%, -50%) scale(1,1);
+        transform: translate(-50%, -50%) scale(0.9,0.9);
     }
   
     50% {

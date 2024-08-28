@@ -94,6 +94,12 @@
     }
 }
 
+@media (min-width: 780px) {
+    .BattleTutorial__title {
+        margin-bottom: 90px;
+    }
+}
+
 
 
 

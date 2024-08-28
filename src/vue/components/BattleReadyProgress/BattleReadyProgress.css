@@ -88,6 +88,7 @@
     background-color: rgba(7, 16, 50, 0.5);
     padding: 17px;
     border-radius: 20px;
+    max-width: 430px;
     position: relative;
     
 }
@@ -178,4 +179,11 @@
         pointer-events: all;
     }
 }
+
+@media (min-width: 768px) {
+    .BattleReadyProgress__buton{
+        margin-top: 60px;
+        margin-bottom: 60px;
+     }
+  }
 

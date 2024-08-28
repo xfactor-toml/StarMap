@@ -9,7 +9,7 @@
         <BaseControl :disabled="true" />
     </div>
 
-    <div v-if="items?.length == 0" class="ShopItemControl__row">
+    <div v-else class="ShopItemControl__row">
         <BaseControl :disabled="true" />
         <BaseControl :disabled="true" />
     </div>
