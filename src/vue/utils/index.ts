@@ -1,3 +1,4 @@
+import { timerStore } from './timeStore';
 export * from './cancel-animation';
 export * from './format-duration';
 export * from './format-number';
@@ -11,3 +12,4 @@ export * from './to-milliseconds';
 export * from './to-seconds';
 export * from './wait';
 export * from '~/monax/MyMath';
+export * from  './timeStore';

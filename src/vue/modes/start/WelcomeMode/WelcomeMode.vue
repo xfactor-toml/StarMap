@@ -12,40 +12,38 @@
         or write to us on
         <a target="_blank" href="https://discord.gg/epUsWEPaDA">discord</a>.
       </p>
-      <button
-        class="WelcomeScene__button active"
-        @mouseenter="$client.onHover()"
-        @click="handleAgreementRunClick"
-      >
+      <button class="WelcomeScene__button active" @mouseenter="$client.onHover()" @click="handleAgreementRunClick">
         Run
       </button>
       <label class="WelcomeScene__checkbox" @mouseenter="$client.onHover()">
-        <input
-          type="checkbox"
-          class="WelcomeScene__checkbox-field"
-          :value="settingsStore.agreement.accepted"
-          @change="handleAgreementClick"
-        />
+        <input type="checkbox" class="WelcomeScene__checkbox-field" :value="settingsStore.agreement.accepted"
+          @change="handleAgreementClick" />
         <span class="WelcomeScene__checkbox-label">don’t show me again</span>
       </label>
     </template>
     <template v-else>
-      <div class="WelcomeScene__logo" />
-      <div class="WelcomeScene__logo-text" />
-      <!-- <button
-        class="WelcomeScene__button active"
-        @mouseenter="$client.onHover()"
-        @click="handleRunClick(true)"
-      >
-        Run fullscreen
-      </button> -->
-      <button
-        class="WelcomeScene__button active"
-        @mouseenter="$client.onHover()"
-        @click="handleRunClick(false)"
-      >
-        Play
-      </button>
+      <div class="WelcomeScene__logo">
+        <img src="/gui/images/preloader/logo.svg" alt="logo">
+        <div class="WelcomeScene__animation">
+          <button class="WelcomeScene__start-button" @mouseenter="$client.onHover()"
+          @click="handleRunClick(false)">
+            <img src="/gui/images/preloader/start-button.svg" alt="button">
+            <div>
+              <p class="WelcomeScene__start-button-title --bold">START</p>
+              <p class="WelcomeScene__start-button-description">Audio on = Awesom experiens</p>
+            </div>
+          </button>
+          <div class="WelcomeScene__button-animation" v-for="(item, index) in 30" :key="index">
+            <img src="/gui/images/preloader/start-button-animation/Vector.svg" alt="logo">
+          </div>
+        </div>
+        <div class="WelcomeScene__caution">
+          <p>This site is protected by reCAPTCHA</p>
+          <p>and the Google <a>Privacy Policy</a></p>
+          <p>and <a>Terms of Service</a> apply.</p>
+        </div>
+      </div>
+
     </template>
   </div>
 </template>

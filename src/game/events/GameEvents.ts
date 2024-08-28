@@ -29,6 +29,7 @@ export type ExplosionData = {
     position2d: { x: number, y: number }
 }
 
+
 export enum GameEvent {
 
     MESSAGE = 'MESSAGE',
@@ -195,6 +196,17 @@ export class GameEventDispatcher {
             detail: data
         }));
     }
+
+    static playerPickScreenClose() {
+        let data: AcceptData = {
+            eventName: GameEvent.BATTLE_ACCEPT_SCREEN,
+            action: 'playerPick'
+        };
+        window.dispatchEvent(new CustomEvent('gameEvent', {
+            detail: data
+        }));
+    }
+    
 
     static showEmotionSelection(aPos2d: {x, y}) {
         let data: EmotionData = {

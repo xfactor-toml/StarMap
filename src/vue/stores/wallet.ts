@@ -39,6 +39,13 @@ export const useWalletStore = defineStore('wallet', () => {
     popup.value = false
   }
 
+  const reset = () => {
+    account.value = ''
+    login.value = ''
+    installed.value = false
+    connected.value = false
+  }
+
   return {
     account,
     login,
@@ -50,5 +57,6 @@ export const useWalletStore = defineStore('wallet', () => {
     setState,
     openPopup,
     hidePopup,
+    reset
   }
 });

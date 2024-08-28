@@ -1,19 +1,35 @@
 .BattleControlPanel {
   display: flex;
   flex-direction: column;
+  gap: 12px;
+}
+
+.BattleControlPanel__addItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.BattleControlPanel__shopItems {
+ max-width: 32px;
+}
+
+.BattleControlPanel__score {
+  font-size: 14px;
+  color: #F9EB21;
 }
 
 .BattleControlPanel__row {
+  position: relative;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   gap: 10px;
+  max-width: 430px;
 }
 
 .BattleControlPanel__row + .BattleControlPanel__row {
   margin-top: -8px;
 }
 
-.BattleControlPanel__row > * {
-  pointer-events: all;
-}
+

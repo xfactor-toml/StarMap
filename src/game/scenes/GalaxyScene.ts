@@ -94,6 +94,7 @@ export class GalaxyScene extends BasicScene {
         FrontEvents.onBattleSearch.add(this.onFrontStartBattleSearch, this);
         FrontEvents.onBattleSearchBot.add(this.onFrontStartBattleBotSearch, this);
         FrontEvents.onBattleStopSearch.add(this.onFrontStopBattleSearch, this);
+        FrontEvents.onPlayerPickClick.add(this.onFrontPlayerPickClick, this);
         // battle server events
         let bc = BattleConnection.getInstance();
         bc.on(PackTitle.gameSearching, this.onGameSearchPack, this);
@@ -186,6 +187,15 @@ export class GalaxyScene extends BasicScene {
         this._isBattleSearching = true;
     }
 
+     private onFrontPlayerPickClick() {
+        GameEventDispatcher.playerPickScreenClose();
+        setTimeout(() => {
+            // this._battleScene.show();
+            this.startScene(SceneNames.BattleScene);
+        }, 3000);
+               
+     }
+
     // private onFrontChallengeClick() {
     //     let con = BattleConnection.getInstance();
     //     if (!con.connected) {
@@ -239,11 +249,11 @@ export class GalaxyScene extends BasicScene {
 
                 GameEventDispatcher.battlePrerollShow(aData);
 
-                setTimeout(() => {
+                // setTimeout(() => {
                     //this._battleScene.show();
-                    this.startScene(SceneNames.BattleScene);
-                }, 1000);
-                break;
+                //     this.startScene(SceneNames.BattleScene);
+                // }, 1000);
+                // break;
             default:
                 this.logDebug(`onBattleStartPackage(): unknown cmd:`, aData);
                 break;

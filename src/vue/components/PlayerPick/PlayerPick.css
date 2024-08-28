@@ -1,0 +1,194 @@
+.PlayerPick {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+      
+}
+
+.PlayerPick__container {
+    max-width: 430px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.PlayerPick__name {
+    margin-bottom: 30px;
+    font-size: 24px;
+    display: flex;
+    flex-direction: column;
+}
+
+.PlayerPick__name span:nth-child(2) {
+    color: #00C6FB;
+    text-align: center;
+}
+
+.PlayerPick__name span:nth-child(1) {
+    color: white;
+    text-align: center;
+}
+
+
+.PlayerPick__item {
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 23%;
+   
+}
+
+.PlayerPick__item-name {
+    font-size: 16px;
+
+}
+
+.PlayerPick__item-name span:nth-child(1) {
+    color: white;
+    padding-right: 10px;
+}
+
+.PlayerPick__item-name span:nth-child(2) {
+    color: #00C6FB;
+    padding-right: 10px;
+}
+
+.PlayerPick__time {
+    display: flex;
+    width: 100%;
+    justify-content:space-between;
+    align-items: center;
+    margin-top: 32px;
+  
+}
+
+.PlayerPick__time hr {
+    border: 1px solid #751577;
+    width: calc(50% - 30px); 
+}
+
+.PlayerPick__time>p {
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 24px;
+    background: linear-gradient(0deg, #0250C5 0%, #D43F8D 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.PlayerPick h4 {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(0, 0, 0, 0.5) 100%), #FFFFFF;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.PlayerPick__title {
+    padding-left: 17px;
+    padding-right: 17px;
+}
+
+.PlayerPick p {
+    padding-top: 5px;
+    color: white;
+}
+
+.PlayerPick__title-line {
+    border: 1px solid #751577;
+    width: 100%
+}
+    
+.PlayerPick__ability {
+    display: flex;
+    gap:10px;
+    justify-content: flex-start;
+    width: 100%;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+.PlayerPick__ability-content {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+}
+
+.PlayerPick__ability-img {
+    height:100%;
+    width: 40%;
+}
+
+.PlayerPick img {
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.PlayerPick__button {
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-size: 20px;
+    background-color: transparent;
+    border: none;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.PlayerPick__button-name {
+    position: absolute;
+}
+
+.PlayerPick__title {
+    margin-bottom: 15px;
+}
+
+
+@media (max-width: 425px)  {  
+    .PlayerPick__title {
+        margin-bottom: 20px;
+
+    }
+  }
+
+  @media (max-width:375px)  {  
+    .PlayerPick__name{
+        margin-bottom: 15px;
+    }
+
+    .PlayerPick__time {
+        margin-top: 5px;
+    }
+    .PlayerPick__ability {
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+
+  }
+
+  @media (max-height: 620px) {
+    .PlayerPick__container {
+        justify-content: start;
+        pointer-events: all;
+    }
+}
+
+

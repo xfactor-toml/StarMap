@@ -1,0 +1,126 @@
+.StarDefenderProcess {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+}
+
+.StarDefenderProcess__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.StarDefenderProcess__content-box {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.StarDefenderProcess__content-box-title {
+    position: absolute;
+    top: 5%;
+    font-style: normal;
+    font-size: 15px;
+    line-height: 18px;
+    text-align: center;
+    color: #000000;
+}
+
+.StarDefenderProcess__content-box-name {   
+    position: absolute;
+    top: 5%;
+    font-style: normal;
+    font-size: 15px;
+    line-height: 19px;
+    text-align: center;
+    color: black;  
+}
+
+.StarDefenderProcess__content-search {
+    position: absolute;
+    gap:5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.StarDefenderProcess__content-box-online {
+    position: absolute;
+    font-style: normal;
+    font-size: 12px;
+    line-height: 14px;
+    text-align: center;
+    color: #FFFFFF;
+    bottom: 4%;
+}
+
+.StarDefenderProcess__content-box-name:hover {
+    cursor: pointer;
+    opacity: 0.9;
+
+}
+
+.StarDefenderProcess__content-connect-line {
+    position: absolute;
+    top: 102%;
+    left: 50%;
+}
+
+.StarDefenderProcess__label {
+    /* font-weight: 600; */
+    font-size: 16px;
+    line-height: 1.1;
+    color: #00FFFF;
+    text-transform: uppercase;
+  }
+  
+  .StarDefenderProcess__loading {
+    display: flex;
+    gap: 4px;
+  }
+  
+  .StarDefenderProcess__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    position: relative;
+    transition: ease opacity 200ms;
+    background-color: #00FFFF;
+    opacity: 0.5;
+    /* box-shadow: inset 0px 0px 7px #00FFFF; */
+
+  }
+  
+  .StarDefenderProcess__dot::after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: currentColor;
+    box-shadow: 0 0 6px currentColor;
+    opacity: 0;
+    transition: ease opacity 200ms;
+  }
+  
+  .StarDefenderProcess__dot.is-active {
+    opacity: 1;
+    box-shadow: 0px 0px 10px #00FFFF;
+
+  }
+  
+  .StarDefenderProcess__dot.is-disabled {
+    opacity: 0.5;
+  }
+  
+  .StarDefenderProcess__dot.is-disabled::after {
+    opacity: 0;
+  }

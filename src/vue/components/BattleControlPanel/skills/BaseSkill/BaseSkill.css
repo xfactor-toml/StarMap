@@ -1,7 +1,7 @@
 .BaseSkill {
   position: relative;
   z-index: 0;
-  margin-bottom: 20px;
+  width: 19%;
   outline: none;
   user-select: none;
 }
@@ -46,6 +46,7 @@
 
 .BaseSkill__levelUp svg {
   width: 100%;
+  max-width: 64px;
   height: 100%;
   position: absolute;
   left: 0;
@@ -68,16 +69,28 @@
   gap: 2px;
   position: absolute;
   right: 0;
-  top: calc(100% - 7px);
+  top: calc(100% - 5px);
   transform: rotate(-32deg);
 }
 
 .BaseSkill__level {
   width: 5px;
   height: 5px;
-  background-color: rgba(0, 255, 255, 0.3);
+  background-color: rgba(0, 94, 234, 0.3);
 }
 
 .BaseSkill__level.active {
-  background-color: #00FFFF;
+  background-color: #005EEA;
+}
+
+@media (max-width: 375px) {
+  
+  .BaseSkill__levelBar {
+    top: calc(100% - 0px);
+}
+
+  .BaseSkill__level {
+    width: 4px;
+    height: 4px;
+  }
 }

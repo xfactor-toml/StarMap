@@ -125,11 +125,16 @@ export class ClientService {
     FrontEvents.onBattleStopSearch.dispatch();
   }
 
+  onPlayerPick() {
+    FrontEvents.onPlayerPickClick.dispatch();
+  }
+
   onBattleAccept() {
     // mock
     // useScenesStore().setScene(UISceneNames.Galaxy);
     FrontEvents.onBattleAcceptClick.dispatch();
   }
+
 
   onBattleConnectExit() {
     // mock
@@ -171,6 +176,7 @@ export class ClientService {
     logger.log('battle exit');
     FrontEvents.onBattleExit.dispatch();
   }
+
 
   onClaim() {
     logger.log('claim');

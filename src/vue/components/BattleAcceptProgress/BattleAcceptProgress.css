@@ -1,0 +1,43 @@
+.container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.BattleAcceptProgress {
+    width: 100%;
+    height: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    border-radius: 20px;
+    padding: 2.5px;
+    background-color: black;   
+}
+
+.BattleAcceptProgress__bar {
+    height: 6px;
+    width: 100%;
+    min-width: 6px;
+    display: flex;
+    justify-content: flex-end;
+    border-radius: 5px;
+    background: linear-gradient(90deg, #4FACFE 0%, #00F2FE 100%);
+    box-shadow: 0px 0px 623.677px #01C0FB, 0px 0px 356.387px #01C0FB, 0px 0px 207.892px #01C0FB, 0px 0px 103.946px #01C0FB, 0px 0px 29.6989px #01C0FB, 0px 0px 14.8495px #01C0FB;
+    transition: all 1s linear;
+    flex-shrink: 0;
+}   
+
+.BattleAcceptProgress__bar-tab {
+    width:5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #00FFFF;
+    box-shadow: 0px 0px 18.9001px #00FFFF, 0px 0px 10.8px #00FFFF, 0px 0px 6.30002px #00FFFF, 0px 0px 3.15001px #00FFFF, 0px 0px 0.900003px #00FFFF, 0px 0px 0.450001px #00FFFF;
+
+}
+
+

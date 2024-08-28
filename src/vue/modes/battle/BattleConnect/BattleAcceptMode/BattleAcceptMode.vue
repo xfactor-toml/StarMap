@@ -1,24 +1,17 @@
 <template>
-  <BattleConnectBase>
-    <BattleAcceptButton
-      :progress="battleStore.connecting.acceptTimeProgress"
-      @click="$client.onBattleAccept"
-    />
-  </BattleConnectBase>
+  <transition name="fade">
+    <BattleTutorialProgress />
+  </transition>
 </template>
 
 <script lang="ts">
-import { useBattleStore } from '@/stores';
-import { BattleAcceptButton } from '@/components/';
-import { BattleConnectBase } from '../BattleConnectBase';
-import { mapStores } from 'pinia';
+import { BattleTutorialProgress } from '@/components/BattleTutorialProgress';
 
 export default {
   name: 'BattleAcceptMode',
-  computed: mapStores(useBattleStore),
   components: {
-    BattleAcceptButton,
-    BattleConnectBase
-  },
-};
+    BattleTutorialProgress
+  }
+}
+
 </script>

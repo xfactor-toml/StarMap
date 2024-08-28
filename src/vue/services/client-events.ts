@@ -99,7 +99,7 @@ export class ClientEventsService {
           case 'start':
             // playersConnectMock();
             // seconds
-            const ACCEPT_TIME = clientEvent.time?.acceptTimeSec || 15
+            const ACCEPT_TIME = clientEvent.time?.acceptTimeSec || 50
             // const LOADING_TIME = 4
             
             scenesStore.setScene(UISceneNames.Battle)
@@ -126,6 +126,12 @@ export class ClientEventsService {
           case 'cancel':
             scenesStore.setScene(UISceneNames.Galaxy);
             break;
+          
+          case 'playerPick': 
+             await wait(4000);
+
+             scenesStore.setSceneMode('process');
+
           
           default:
             LogMng.warn(`vue(ClientEventsService): BATTLE_ACCEPT_SCREEN: unknown clientEvent.action=${clientEvent.action}`);
@@ -206,17 +212,15 @@ export class ClientEventsService {
           }
         });
 
-        await wait(3000);
+        // await wait(3000);
 
-        scenesStore.setSceneMode('process');
+        // scenesStore.setSceneMode('process');
 
         break;
+      
+      // case GameEvent.BATTLE_PLAYER_PICK: 
+      //   await wait(3000);
 
-      // case GameEvent.BATTLE_SHOW_START:
-      //   scenesStore.setSceneMode('process');
-      //   break;
-
-      // case 'GAME_BATTLE_ACTION_COOLDOWN':
       //   scenesStore.setSceneMode('process');
       //   break;
 

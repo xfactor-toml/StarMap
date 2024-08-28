@@ -1,0 +1,56 @@
+.ModelControl {
+    display: flex;
+    width: 23%;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    background-color: transparent;
+    position: relative;
+    color: #005EEA;
+    outline: none;
+    user-select: none;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .ModelControl__img {
+    position: absolute;
+    width: 82%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    z-index: -1;
+  }
+
+  .ModelControl__level {
+    position: absolute;
+    top: 70%;
+    color: #112A5E;
+    font-size: 11px;
+  }
+
+  .ModelControl__shop {
+    pointer-events: all;
+    position: absolute;
+    width: 100%;
+    top: -43%;
+    text-align: center;
+    z-index: 2;
+  }
+
+  .ModelControl__shop-name {
+    position: absolute;
+    top: 30%;
+    font-size: 14px;
+    color: #F9EB20;
+    text-align: center;
+    width: 100%;
+  }
+
+  @media (max-width:375px) {
+    .ModelControl__shop-name {
+        font-size: 12px;
+    }
+  }
+  
+  

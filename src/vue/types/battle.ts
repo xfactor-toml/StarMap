@@ -12,6 +12,12 @@ export type BattleItemStatusType = {
   buy: boolean
 }
 
+export type BattleTutorialContentType = {
+  step: string,
+  description: string,
+  imagePath: string
+}
+
 export type BattleItemCardType = {
   name: string,
   price: number,

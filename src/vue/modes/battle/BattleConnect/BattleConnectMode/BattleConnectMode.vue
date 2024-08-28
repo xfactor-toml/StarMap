@@ -1,11 +1,10 @@
 <template>
-  <BattleConnectBase>
-    <BattleConnectIndicator
-      :progress="progress"
-      :type="'connect'"
-    >{{ connectedUsers.current }}/{{ connectedUsers.max }}
-    </BattleConnectIndicator>
-  </BattleConnectBase>
+  <transition name="fade">
+    <BattleWaitProgress 
+      :curren-user="connectedUsers.current"
+      :max-users="connectedUsers.max"
+      />
+  </transition>
 </template>
 
 <script lang="ts">
@@ -13,6 +12,7 @@ import { useBattleStore } from '@/stores';
 import { BattleConnectIndicator } from '@/components';
 import { BattleConnectBase } from '../BattleConnectBase';
 import { mapStores } from 'pinia';
+import { BattleWaitProgress } from '@/components';
 
 export default {
   name: 'BattleConnectMode',
@@ -26,6 +26,7 @@ export default {
     }
   },
   components: {
+    BattleWaitProgress,
     BattleConnectBase,
     BattleConnectIndicator
   }

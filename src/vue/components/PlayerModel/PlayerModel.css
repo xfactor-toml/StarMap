@@ -1,0 +1,40 @@
+.PlayerModel {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 190px;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.PlayerModel  img {
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-size: contain;
+    object-fit: contain;
+
+}
+
+.PlayerModel__pic {
+    position: absolute;
+    height: 84%;
+    max-width: 170px;
+    top: 5%;
+    z-index: -1;
+   
+}
+
+.PlayerModel__info {
+    pointer-events: all;
+    position: absolute;
+    z-index: 2;
+    height: 26.8%;
+    top: 67%;
+}
+
+.PlayerModel__info:hover {
+    cursor: pointer;
+}

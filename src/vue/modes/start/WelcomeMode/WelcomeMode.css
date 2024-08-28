@@ -5,200 +5,312 @@
   flex-direction: column;
   width: 100%;
   height: 100%;
-  padding: 20px;
   position: absolute;
   left: 0;
   top: 0;
   overflow: auto;
   z-index: 2;
   background-color: #040310;
-  background-image: url(../gui/images/background.jpg);
+  background-image: url(../gui/images/background.png);
   background-position: 50% 50%;
   background-repeat: no-repeat;
   background-size: cover;
 }
 
 .WelcomeScene__logo {
-  width: calc(100vw - 40px);
-  max-width: 440px;
-  min-width: 260px;
-  aspect-ratio: 1.375;
-  background-image: url(../gui/images/preloader/logo.svg);
-  background-position: 50% 50%;
-  background-repeat: no-repeat;
-  background-size: contain;
-}
-
-.WelcomeScene__logo-text {
-  width: 284px;
-  aspect-ratio: 3.19;
-  flex-shrink: 0;
-  margin-top: 48px;
-  background-image: url(../gui/images/preloader/logo-text.svg);
-  background-position: 50% 50%;
-  background-repeat: no-repeat;
-  background-size: contain;
-}
-
-.WelcomeScene__text {
-  max-width: 640px;
-  margin: 48px 0;
-  color: #00f0ff;
-  font-family: 'Inter';
-  font-weight: 300;
-  font-size: 18px;
-  text-align: center;
-  text-shadow: 0px 0px 20px #000000;
-  line-height: 1.38;
-  pointer-events: all;
-}
-
-.WelcomeScene__text a {
-  max-width: 640px;
-  margin: 48px 0;
-  color: #00f0ff;
-  font-family: 'Inter';
-  font-weight: 300;
-  font-size: 18px;
-  text-align: center;
-  text-shadow: 0px 0px 20px #000000;
-  line-height: 1.38;
-  pointer-events: all;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.WelcomeScene__button {
-  margin-top: 26px;
-  padding: 4px 0 2px;
+  display: flex;
+  width: calc(100% - 20px);
+  height: calc(100% - 40px);
+  max-height: 700px;
+  align-items: center;
+  justify-content: center;
+  max-width: 430px;
   position: relative;
-  z-index: 0;
-  background-color: transparent;
-  border: none;
-  color: #00f0ff;
-  font-family: 'Inter';
-  font-weight: 600;
-  font-size: 18px;
-  text-align: center;
-  text-transform: uppercase;
-  text-shadow: 0px 0px 20px #000000;
-  line-height: 1.12;
-  pointer-events: all;
-  cursor: pointer;
-  transition: ease 200ms transform;
-  will-change: transform;
+  overflow: hidden;
+  background-color: rgba(27, 47, 192, 0.3);
+  border-radius: 50px;
+  box-shadow: 
+  0px 0px 166px rgba(27, 47, 192, 0.8) 
 }
 
-.WelcomeScene__button.active {
-  padding-left: 48px;
-  padding-right: 48px;
-  background-image: linear-gradient(90deg, #000000 0%, rgba(0, 0, 0, 0) 50%, #000000 100%);
-  font-size: 24px;
-}
-
-.WelcomeScene__button.active::before,
-.WelcomeScene__button.active::after {
-  content: '';
-  display: block;
-  width: 80px;
-  height: 194%;
-  position: absolute;
-  left: -28px;
-  top: 50%;
-  background-image: url(../gui/images/preloader/button-edge.svg);
-  background-position: 50% 50%;
+.WelcomeScene__logo > img {
+  width: 100%;
+  height: 100%;
   background-repeat: no-repeat;
-  background-size: contain;
-  transform: translateY(-50%);
+  object-fit: contain;
+  z-index: 5;
 }
 
-.WelcomeScene__button.active::after {
-  left: auto;
-  right: -28px;
-  transform: translateY(-50%) scaleX(-1);
-}
-
-.WelcomeScene__button + .WelcomeScene__button {
-  margin-top: 16px;
-}
-
-.WelcomeScene__button:hover {
-  transform: scale(1.05);
-}
-
-.WelcomeScene__button:active {
-  transform: scale(1);
-}
-
-.WelcomeScene__checkbox {
+.WelcomeScene__animation {
   display: flex;
   align-items: center;
-  margin-top: 32px;
+  justify-content: center;
+  width:70%;
+  height: 56%;
+  position: absolute;
+  overflow: hidden;
+}
+
+.WelcomeScene__button-animation {
+  width: 90%;
+  height: 90%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(.7);
+  transform-origin: center;
+  opacity: 1;
+  z-index: -1;
+  overflow: hidden;
+  animation: zoomOut 6s infinite forwards linear;
+  will-change: transform, opacity;
+  
+}
+
+.WelcomeScene__button-animation img {
+   width: 100%;
+   height: 100%;
+}
+
+
+@keyframes zoomOut {
+  from {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(0.7) ;
+  }
+
+  50% {
+      transform: translate(-50%, -50%) scale(1.2) ;
+      opacity: 0;
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.3) ;
+  
+}
+}
+.WelcomeScene__button-animation:nth-child(1) {
+  animation-delay: calc(400ms * -1);
+}
+
+.WelcomeScene__button-animation:nth-child(2) {
+  animation-delay: calc(400ms * 0);
+}
+
+.WelcomeScene__button-animation:nth-child(3) {
+  animation-delay: calc(400ms * 1);
+}
+
+.WelcomeScene__button-animation:nth-child(4) {
+  animation-delay: calc(400ms * 2);
+}
+
+.WelcomeScene__button-animation:nth-child(5) {
+  animation-delay: calc(400ms * 3);
+}
+
+.WelcomeScene__button-animation:nth-child(6) {
+  animation-delay: calc(400ms * 4);
+}
+
+.WelcomeScene__button-animation:nth-child(7) {
+  animation-delay: calc(400ms * 5);
+}
+
+.WelcomeScene__button-animation:nth-child(8) {
+  animation-delay: calc(400ms * 6);
+}
+
+.WelcomeScene__button-animation:nth-child(9) {
+  animation-delay: calc(400ms * 7);
+}
+
+.WelcomeScene__button-animation:nth-child(10) {
+  animation-delay: calc(400ms * 8);
+}
+
+.WelcomeScene__button-animation:nth-child(11) {
+  animation-delay: calc(400ms * 9);
+}
+
+.WelcomeScene__button-animation:nth-child(12) {
+  animation-delay: calc(400ms * 10);
+}
+
+.WelcomeScene__button-animation:nth-child(13) {
+  animation-delay: calc(400ms * 11);
+}
+
+.WelcomeScene__button-animation:nth-child(14) {
+  animation-delay: calc(400ms * 12);
+}
+
+.WelcomeScene__button-animation:nth-child(15) {
+  animation-delay: calc(400ms * 13);
+}
+
+.WelcomeScene__button-animation:nth-child(16) {
+  animation-delay: calc(400ms * 14);
+}
+
+.WelcomeScene__button-animation:nth-child(17) {
+  animation-delay: calc(400ms * 15);
+}
+
+.WelcomeScene__button-animation:nth-child(18) {
+  animation-delay: calc(400ms * 16);
+}
+
+.WelcomeScene__button-animation:nth-child(19) {
+  animation-delay: calc(400ms * 17);
+}
+
+.WelcomeScene__button-animation:nth-child(20) {
+  animation-delay: calc(400ms * 18);
+}
+
+.WelcomeScene__button-animation:nth-child(21) {
+  animation-delay: calc(400ms * 19);
+}
+
+.WelcomeScene__button-animation:nth-child(22) {
+  animation-delay: calc(400ms * 20);
+}
+
+.WelcomeScene__button-animation:nth-child(23) {
+  animation-delay: calc(400ms * 21);
+}
+
+.WelcomeScene__button-animation:nth-child(24) {
+  animation-delay: calc(400ms * 22);
+}
+
+.WelcomeScene__button-animation:nth-child(25) {
+  animation-delay: calc(400ms * 23);
+}
+
+.WelcomeScene__button-animation:nth-child(26) {
+  animation-delay: calc(400ms * 24);
+}
+
+.WelcomeScene__button-animation:nth-child(27) {
+  animation-delay: calc(400ms * 25);
+}
+
+.WelcomeScene__button-animation:nth-child(28) {
+  animation-delay: calc(400ms * 26);
+}
+
+.WelcomeScene__button-animation:nth-child(29) {
+  animation-delay: calc(400ms * 27);
+}
+
+.WelcomeScene__button-animation:nth-child(30) {
+  animation-delay: calc(400ms * 28);
+}
+  
+.WelcomeScene__start-button {
+  width: 70%;
+  background-color: rgba(2, 86, 197, 0.5);
+  border-radius: 50px;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 15;
   position: relative;
-  z-index: 0;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;;
+  
+  box-shadow: 0 0 30px 10px rgba(2, 86, 197, 1.7);
+}
+
+.WelcomeScene__start-button > div {
+  position:absolute;
+}
+
+.WelcomeScene__start-button > img {
+  width: 100%;
+
+}
+
+.WelcomeScene__start-button:hover {
+   transform: scale(1.05);
+}
+
+.WelcomeScene__start-button-title {
+  font-size: 48px;
+  font-family: 'jura';
+  color: #FFFFFF;
+}
+
+.WelcomeScene__start-button-description {
+  font-style: normal;
+  font-weight: 700;
+  font-family: 'jura';
+  font-size: 10px;
+  line-height: 12px;
+  text-align: center;
+  text-transform: uppercase;
+  color: #00FFFF;
+}
+
+.WelcomeScene__caution {
+  position: absolute;
+  top: 74%;
+  z-index: -1;
+}
+
+.WelcomeScene__caution p {
+  font-style: normal;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 21px;
+  text-align: center;
+  color: #FFFFFF;
+}
+
+.WelcomeScene__caution a {
   color: #00f0ff;
   font-family: 'Inter';
-  font-weight: 500;
-  font-size: 22px;
-  line-height: 1.21;
+  font-weight: 300;
+  font-size: 18px;
+  text-align: center;
   text-shadow: 0px 0px 20px #000000;
+  line-height: 1.38;
   pointer-events: all;
+  text-decoration: none;
   cursor: pointer;
 }
 
-.WelcomeScene__checkbox-field {
-  width: 26px;
-  height: 26px;
-  opacity: 0;
-  margin-right: 12px;
-}
-
-.WelcomeScene__checkbox-label::before {
-  content: '';
-  display: inline-block;
-  width: 26px;
-  height: 26px;
-  position: absolute;
-  left: 0;
-  top: 2px;
-  background-color: #352f44;
-  border: 2px solid #00f0ff;
-  border-radius: 10px;
-}
-
-.WelcomeScene__checkbox-label::after {
-  content: '';
-  display: inline-block;
-  width: 18px;
-  height: 18px;
-  position: absolute;
-  left: 4px;
-  top: 6px;
-  background-image: url(../gui/images/check.svg);
-  background-repeat: no-repeat;
-  background-position: 50% 50%;
-  background-size: contain;
-  transform: scale(0);
-  transition: ease 200ms opacity;
-}
-
-.WelcomeScene__checkbox-field:checked + .WelcomeScene__checkbox-label::after {
-  transform: scale(1);
-}
-
-@media (max-width: 420px), (max-height: 420px) {
-  .WelcomeScene__logo-text {
-    width: 200px;
-    margin-top: 28px;
+@media (max-width: 375px)
+{
+  .WelcomeScene__start-button-title {
+    font-size: 38px;   
   }
 
-  .WelcomeScene__button {
-    margin-top: 12px;
+  .WelcomeScene__caution p {
     font-size: 14px;
   }
 
-  .WelcomeScene__button.active {
-    margin-top: 16px;
-    font-size: 18px;
+  .WelcomeScene__caution a {
+    font-size: 14px;
+  }
+
+}
+@media (max-height: 580px) 
+{
+  .WelcomeScene__start-button-title {
+    font-size: 28px;   
+  }
+
+  .WelcomeScene__caution p {
+    font-size: 14px;
+  }
+
+  .WelcomeScene__caution a {
+    font-size: 14px;
   }
 }
+
+

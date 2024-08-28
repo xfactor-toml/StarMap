@@ -40,8 +40,9 @@ export default {
 <style>
 .ShopItemControl__row {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    gap: 10px;
+    gap: 5px;
 }
 </style>
