@@ -10,7 +10,6 @@
                     SHOP
                 </h3>
                 <input class="ShopMenu__filter" placeholder="FILTER">
-                </input>
                 <div class="ShopMenu__items">
                     <div
                         v-for="(item, index) in 30"
