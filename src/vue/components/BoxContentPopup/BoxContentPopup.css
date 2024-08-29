@@ -27,7 +27,6 @@
 
 .BoxContentPopup__content {
   position: relative;
-  width: 100%;
   max-width: 450px;
   display: flex;
   justify-content: center;
@@ -394,4 +393,24 @@
     height: 100%;
   }
 
+}
+
+.BoxContentPopup__cards::-webkit-scrollbar {
+  width: 3px;
+  padding: 5px;
+}
+
+.BoxContentPopup__cards::-webkit-scrollbar-track {
+  background: rgba(217, 217, 217, 0.1);
+  opacity: 10%;
+}
+
+.BoxContentPopup__cards::-webkit-scrollbar-thumb {
+  background: #00FFFF;
+  height: 10%;
+  border-radius: 10px;
+}
+
+.BoxContentPopup__cards::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
