@@ -75,14 +75,14 @@
                             INFO
                         </h3>
                          <h4 class="ShopInfo__subtitle orbitron-font --semmi-bold">
-                            TITLE
+                            {{ items[this.selectedItem]?.name }}
                         </h4>
-                         <p class="ShopInfo__description"> 
+                         <p class="ShopInfo__description exo2-font"> 
                             {{ items[this.selectedItem]?.description }}
                         </p>
                          <div class="ShopInfo__button">
                             <img src="/gui/images/shop-menu/shopInfo-btn.svg">
-                            <div class="ShopInfo__button-name orbitron-font --semmi-bold">
+                            <div class="ShopInfo__button-name orbitron-font --semi-bold">
                                 {{ items[this.selectedItem]?.price }} GOLD
                             </div>
                          </div>
