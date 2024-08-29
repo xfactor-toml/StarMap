@@ -334,13 +334,24 @@ export class ClientEventsService {
           case 'purchase':
             LogMng.debug(`BATTLE_SHOP purchase:`, clientEvent.data);
             battleStore.shop.removeFromPendingList(clientEvent.data.itemId);
+            battleStore.shop.addToPurchasedList(clientEvent.data.itemId);
+            toast(clientEvent.data.msg, {
+              type: 'success',
+              autoClose: 2000
+            });
             break;
           case 'sale':
             LogMng.debug(`BATTLE_SHOP sale:`, clientEvent.data);
+            battleStore.shop.removeFromPendingList(clientEvent.data.itemId);
+            battleStore.shop.removeFromPurchasedList(clientEvent.data.itemId);
+            toast(clientEvent.data.msg, {
+              type: 'success',
+              autoClose: 2000
+            });
             break;
           case 'purchaseError':
             LogMng.error(`BATTLE_SHOP purchaseError:`, clientEvent.data);
-            battleStore.shop.removeFromPendingList(clientEvent.data.itemId);
+            battleStore.shop.removeFromPendingList(0);
             toast(clientEvent.data.msg, {
               type: 'error',
               autoClose: 2000
@@ -348,6 +359,11 @@ export class ClientEventsService {
             break;
           case 'saleError':
             LogMng.error(`BATTLE_SHOP saleError:`, clientEvent.data);
+            battleStore.shop.removeFromPendingList(clientEvent.data.itemId);
+            toast(clientEvent.data.msg, {
+              type: 'error',
+              autoClose: 2000
+            });
             break;
           default:
             LogMng.error(`Unknown BATTLE_SHOP action:`, clientEvent);

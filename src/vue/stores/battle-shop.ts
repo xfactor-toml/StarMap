@@ -5,21 +5,30 @@ import { ShopItemData } from "~/game/battle/Types";
 export const useBattleShopStore = defineStore('battleShopStore', () => {
     const items = ref<ShopItemData[]>([]);
     const pendingList = ref<Set<number>>(new Set())
+    const purchasedList = ref<Set<number>>(new Set())
 
     const setItems = (value: ShopItemData[]) => {
         items.value = value
     }
 
-    const sellItem = (itemId: number) => {
-        items.value = items.value.filter(item => item.id !== itemId);    
-    };
+    const removeFromPurchasedList = (itemId: number) => {
+        purchasedList.value.delete(itemId) 
+    }
 
     const addToPendingList = (itemId: number) => {
         pendingList.value.add(itemId)
     }
 
     const removeFromPendingList = (itemId: number) => {
-        pendingList.value.delete(itemId)
+        pendingList.value.delete(itemId)     
+    }
+
+    const addToPurchasedList = (itemId: number) => {
+        purchasedList.value.add(itemId)
+    }
+
+    const purchasedItemsArray = () => {
+        return Array.from(purchasedList.value);
     }
 
     const clearPendingList = () => {
@@ -33,12 +42,15 @@ export const useBattleShopStore = defineStore('battleShopStore', () => {
     return {
         items,
         pendingList,
-        sellItem,
+        purchasedList,
+        purchasedItemsArray,
         setItems,
         addToPendingList,
         removeFromPendingList,
+        removeFromPurchasedList,
         clearPendingList,
-        reset,
+        addToPurchasedList,
+        reset,   
     };
 });
 
