@@ -9,7 +9,7 @@ import { ThreeLoader } from '../utils/threejs/ThreeLoader';
 import { SimpleRenderer } from '../core/renderers/SimpleRenderer';
 import { BattleConnection, ConnectionEvent } from '../battle/BattleConnection';
 import { DuelInfo, PackTitle, StartGameData } from '../battle/Types';
-import { GameEvent, GameEventDispatcher } from '../events/GameEvents';
+import { GameEventDispatcher } from '../events/GameEvents';
 import { DebugGui } from '../debug/DebugGui';
 import { useWallet } from '@/services';
 import { AudioMng } from '../audio/AudioMng';
@@ -18,6 +18,7 @@ import { BattleAcceptScreenMng, BattleAcceptScreenMngEvent } from '../controller
 import { MyUtils } from '../utils/MyUtils';
 import { BlockchainConnectService } from '~/blockchainTotal';
 import sizeof from 'object-sizeof';
+import { GameEvent } from '../events/Types';
 
 export class GalaxyScene extends BasicScene {
     private _galaxy: GalaxyMng;
@@ -336,6 +337,7 @@ export class GalaxyScene extends BasicScene {
     private initGalaxy() {
 
         this._galaxy = new GalaxyMng({
+            renderer: this._render.renderer,
             parent: this._scene,
             camera: this._camera as THREE.PerspectiveCamera
         });

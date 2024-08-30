@@ -10,8 +10,9 @@ import { SMAAPass } from "three/examples/jsm/postprocessing/SMAAPass";
 import { LogMng } from "../../monax/LogMng";
 import { GlobalParams } from "../data/GlobalParams";
 import { FrontEvents } from "../events/FrontEvents";
-import { GameEvent, GameEventDispatcher } from "../events/GameEvents";
+import { GameEventDispatcher } from "../events/GameEvents";
 import { GameUtils } from "../math/GameUtils";
+import { GameEvent } from "../events/Types";
 
 
 export class GameRenderer {
@@ -68,6 +69,7 @@ export class GameRenderer {
             document.body.requestFullscreen();
         }
 
+        // TODO: redo to new renders
         FrontEvents.toggleFullscreen.add(() => {
             if (!document.fullscreenElement) {
                 document.body.requestFullscreen();

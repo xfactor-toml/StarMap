@@ -5,7 +5,7 @@ import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js';
 
 export class ThreeUtils {
 
-    public static toScreenPosition(renderer, obj, camera, devicePixelRatio: number) {
+    public static toScreenPosition(renderer: THREE.WebGLRenderer, obj: THREE.Object3D, camera: THREE.Camera, devicePixelRatio: number) {
         let vector = new THREE.Vector3();
 
         const widthHalf = 0.5 * renderer.getContext().canvas.width;
@@ -24,7 +24,7 @@ export class ThreeUtils {
         };
     }
 
-    public static vectorToScreenPosition(renderer, vector: THREE.Vector3, camera: THREE.Camera, devicePixelRatio: number) {
+    public static vectorToScreenPosition(renderer: THREE.WebGLRenderer, vector: THREE.Vector3, camera: THREE.Camera, devicePixelRatio: number) {
         const widthHalf = 0.5 * renderer.getContext().canvas.width;
         const heightHalf = 0.5 * renderer.getContext().canvas.height;
 

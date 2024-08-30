@@ -1,92 +1,5 @@
-import { AcceptScreenAction, AcceptScreenData, BattleShopAction, BoxOpenData, Emotion, ExpData, GameCompleteData, ShopData, ShopItemData, StartGameData } from "../battle/Types";
-
-export type AcceptData = {
-    eventName: GameEvent.BATTLE_ACCEPT_SCREEN,
-    action: AcceptScreenAction,
-    time?: {
-        acceptTimeSec: number
-    },
-    state?: {
-        current: number,
-        max: number
-    }
-}
-
-export type EmotionData = {
-    eventName: GameEvent.BATTLE_EMOTION,
-    type: 'showSelection' | 'show' | 'selected',
-    emotion?: Emotion,
-    position2d?: { x: number, y: number }
-}
-
-export type ShopEventData = {
-    eventName: GameEvent.BATTLE_SHOP,
-    data: ShopData
-}
-
-export type ExplosionData = {
-    eventName: GameEvent.BATTLE_EXPLOSION,
-    position2d: { x: number, y: number }
-}
-
-
-export enum GameEvent {
-
-    MESSAGE = 'MESSAGE',
-
-    GAME_LOADING = 'GAME_LOADING',
-    GAME_LOADED = 'GAME_LOADED',
-    GAME_CREATED = 'GAME_CREATED',
-    GAME_FULLSCREEN = 'GAME_FULLSCREEN',
-
-    /**
-     * starData: ServerStarData
-     * pos2d: { x, y }
-     */
-    SHOW_STAR_PREVIEW = 'SHOW_STAR_PREVIEW',
-    HIDE_STAR_PREVIEW = 'HIDE_STAR_PREVIEW',
-
-    /**
-     * pos3d: {x, y, z}
-     * pos2d: { x, y }
-     */
-    PHANTOM_STAR_PREVIEW = 'PHANTOM_STAR_PREVIEW',
-
-    /**
-     * starData: ServerStarData
-     * scale
-     */
-    SHOW_STAR_GUI = 'SHOW_STAR_GUI',
-    HIDE_STAR_GUI = 'HIDE_STAR_GUI',
-
-    GALAXY_MODE = 'GALAXY_MODE',
-    STAR_MODE = 'STAR_MODE',
-
-    SHOW_REAL_MODE = 'SHOW_REAL_MODE',
-    SHOW_PHANTOM_MODE = 'SHOW_PHANTOM_MODE',
-
-    // BATTLE
-    BATTLE_ACCEPT_SCREEN = 'BATTLE_ACCEPT_SCREEN',
-    BATTLE_SEARCHING_START = 'BATTLE_SEARCHING_START',
-    BATTLE_SEARCHING_STOP = 'BATTLE_SEARCHING_STOP',
-    /**
-     * reason: string
-    */
-    BATTLE_SEARCHING_ERROR = 'BATTLE_SEARCHING_ERROR',
-    BATTLE_PREROLL_SHOW = 'BATTLE_PREROLL_SHOW',
-    // battle results
-    BATTLE_COMPLETE_SHOW = 'BATTLE_COMPLETE_SHOW',
-    BATTLE_COMPLETE_HIDE = 'BATTLE_COMPLETE_HIDE',
-    SHOW_TOKEN_REWARD = 'SHOW_TOKEN_REWARD',
-    SHOW_BOX_OPEN = 'SHOW_BOX_OPEN',
-    // battle process
-    BATTLE_EXP_DATA = 'BATTLE_EXP_DATA',
-    BATTLE_EMOTION = 'BATTLE_EMOTION',
-    BATTLE_SHOP = 'BATTLE_SHOP',
-
-    BATTLE_EXPLOSION = 'BATTLE_EXPLOSION'
-
-}
+import { AcceptScreenData, BoxOpenData, Emotion, ExpData, GameCompleteData, ShopData, StartGameData } from "../battle/Types";
+import { AcceptEventData, EmotionEventData, ExplosionEventData, GameEvent, ShopEventData, StarGameEventData, StarGameInitData, StarGameUpdateData } from "./Types";
 
 export class GameEventDispatcher {
     
@@ -154,7 +67,7 @@ export class GameEventDispatcher {
     }
 
     static battleAcceptScreenShow(aAcceptTime: number) {
-        let data: AcceptData = {
+        let data: AcceptEventData = {
             eventName: GameEvent.BATTLE_ACCEPT_SCREEN,
             action: 'start',
             time: {
@@ -167,7 +80,7 @@ export class GameEventDispatcher {
     }
 
     static battleAcceptScreenUpdate(aData: AcceptScreenData) {
-        let data: AcceptData = {
+        let data: AcceptEventData = {
             eventName: GameEvent.BATTLE_ACCEPT_SCREEN,
             action: aData.action,
             state: aData.state
@@ -178,7 +91,7 @@ export class GameEventDispatcher {
     }
 
     static battleAcceptScreenLoading(aData: AcceptScreenData) {
-        let data: AcceptData = {
+        let data: AcceptEventData = {
             eventName: GameEvent.BATTLE_ACCEPT_SCREEN,
             action: aData.action
         };
@@ -188,7 +101,7 @@ export class GameEventDispatcher {
     }
 
     static battleAcceptScreenClose() {
-        let data: AcceptData = {
+        let data: AcceptEventData = {
             eventName: GameEvent.BATTLE_ACCEPT_SCREEN,
             action: 'cancel'
         };
@@ -198,7 +111,7 @@ export class GameEventDispatcher {
     }
 
     static playerPickScreenClose() {
-        let data: AcceptData = {
+        let data: AcceptEventData = {
             eventName: GameEvent.BATTLE_ACCEPT_SCREEN,
             action: 'playerPick'
         };
@@ -209,7 +122,7 @@ export class GameEventDispatcher {
     
 
     static showEmotionSelection(aPos2d: {x, y}) {
-        let data: EmotionData = {
+        let data: EmotionEventData = {
             eventName: GameEvent.BATTLE_EMOTION,
             type: 'showSelection',
             position2d: aPos2d
@@ -220,7 +133,7 @@ export class GameEventDispatcher {
     }
 
     static showEmotion(aEmotion: Emotion, aPos2d: { x, y }) {
-        let data: EmotionData = {
+        let data: EmotionEventData = {
             eventName: GameEvent.BATTLE_EMOTION,
             type: 'show',
             emotion: aEmotion,
@@ -239,7 +152,7 @@ export class GameEventDispatcher {
 
     static showRandomEmotion(aPos2d: { x, y }) {
         let emotion: Emotion = this.getRandomEmotion();
-        let data: EmotionData = {
+        let data: EmotionEventData = {
             eventName: GameEvent.BATTLE_EMOTION,
             type: 'show',
             emotion: emotion,
@@ -265,7 +178,7 @@ export class GameEventDispatcher {
      * @param aPos2d 
      */
     static explosion(aPos2d: { x: number, y: number }) {
-        let data: ExplosionData = {
+        let data: ExplosionEventData = {
             eventName: GameEvent.BATTLE_EXPLOSION,
             position2d: aPos2d
         };
@@ -273,5 +186,39 @@ export class GameEventDispatcher {
             detail: data
         }));
     }
+
+    static initStarGames(list: StarGameInitData[]) {
+        let data: StarGameEventData = {
+            eventName: GameEvent.STAR_GAME,
+            action: 'init',
+            initList: list
+        };
+        window.dispatchEvent(new CustomEvent('gameEvent', {
+            detail: data
+        }));
+    }
+
+    static updateStarGamePosition(updData: StarGameUpdateData) {
+        let data: StarGameEventData = {
+            eventName: GameEvent.STAR_GAME,
+            action: 'update',
+            updateData: updData
+        };
+        window.dispatchEvent(new CustomEvent('gameEvent', {
+            detail: data
+        }));
+    }
+
+    static setStarGamesVisible(visible: boolean) {
+        let data: StarGameEventData = {
+            eventName: GameEvent.STAR_GAME,
+            action: 'visible',
+            visible: visible
+        };
+        window.dispatchEvent(new CustomEvent('gameEvent', {
+            detail: data
+        }));
+    }
+
 
 }

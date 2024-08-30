@@ -1,7 +1,7 @@
 import { AcceptScreenAction, BattleShopAction, BoxOpenData, ExpData, GameCompleteData, ShopData, StartGameData } from '~/game/battle/Types';
 import { ServerStarData } from '~/game/data/Types';
 import { FrontEvents } from '~/game/events/FrontEvents';
-import { AcceptData, EmotionData, ExplosionData, GameEvent } from '~/game/events/GameEvents';
+import { EmotionEventData, ExplosionEventData, GameEvent, StarGameEventData } from '~/game/events/Types';
 
 interface BaseEvent {
   eventName: GameEvent;
@@ -114,16 +114,20 @@ export interface BattleShowBoxOpen extends BaseEvent, BoxOpenData {
 export interface BattleExpData extends BaseEvent, ExpData {
   eventName: GameEvent.BATTLE_EXP_DATA;
 }
-export interface BattleEmotion extends BaseEvent, EmotionData {
+export interface BattleEmotion extends BaseEvent, EmotionEventData {
   eventName: GameEvent.BATTLE_EMOTION;
 }
-export interface BattleExplosion extends BaseEvent, ExplosionData {
+export interface BattleExplosion extends BaseEvent, ExplosionEventData {
   eventName: GameEvent.BATTLE_EXPLOSION;
 }
 
 export interface BattleShopEvent extends BaseEvent {
   eventName: GameEvent.BATTLE_SHOP;
   data: ShopData;
+}
+
+export interface StarGameEvent extends BaseEvent, StarGameEventData {
+  eventName: GameEvent.STAR_GAME;
 }
 
 export type ClientEvent =
@@ -153,7 +157,8 @@ export type ClientEvent =
   | BattleExpData
   | BattleEmotion
   | BattleExplosion
-  | BattleShopEvent;
+  | BattleShopEvent
+  | StarGameEvent;
 
 
 export type GuiLevel = {

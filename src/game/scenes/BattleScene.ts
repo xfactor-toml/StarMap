@@ -5,7 +5,7 @@ import { BattleView } from '../battle/BattleView';
 import { FrontEvents } from '../events/FrontEvents';
 import { BattleConnection, ConnectionEvent } from '../battle/BattleConnection';
 import { ClaimRewardData, Emotion, EmotionData, ExpData, GameCompleteData, PackTitle, ShopData } from '../battle/Types';
-import { GameEvent, GameEventDispatcher } from '../events/GameEvents';
+import { GameEventDispatcher } from '../events/GameEvents';
 import { DebugGui } from '../debug/DebugGui';
 import { BasicScene } from '../core/scene/BasicScene';
 import { SceneNames } from './SceneNames';

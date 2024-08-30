@@ -1,6 +1,6 @@
 import { GlobalParams } from '../data/GlobalParams';
 import { AudioMng } from '../audio/AudioMng';
-import { GameEvent, GameEventDispatcher } from '../events/GameEvents';
+import { GameEventDispatcher } from '../events/GameEvents';
 import { FrontEvents } from '../events/FrontEvents';
 import { AudioAlias, MusicLoadList, SoundLoadList } from '../audio/AudioData';
 import { MODEL_LOAD_LIST } from '../data/ModelData';
@@ -10,6 +10,7 @@ import { BasicScene } from '../core/scene/BasicScene';
 import { SceneNames } from './SceneNames';
 import { ServerStarData } from '../data/Types';
 import { DB } from '../data/DB';
+import { GameEvent } from '../events/Types';
 
 export class PreloaderScene extends BasicScene {
     private _loader: ThreeLoader;

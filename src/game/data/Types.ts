@@ -1,5 +1,31 @@
 import { Race } from "~/blockchainTotal/types";
 
+export type GalaxyData = {
+    starsCount: number;
+    blinkStarsCount: number;
+    blinkDurMin: number;
+    blinkDurMax: number;
+    startAngle: number;
+    endAngle: number;
+    startOffsetXY: number;
+    endOffsetXY: number;
+    startOffsetH: number;
+    endOffsetH: number;
+    k: number;
+    alphaMin: number;
+    alphaMax: number;
+    scaleMin: number;
+    scaleMax: number;
+    starAlphaFactor: number;
+    cameraDistAlpha: {
+        min: number;
+        max: number;
+        factor: number;
+    },
+    camDistMin: number;
+    camDistMax: number;
+}
+
 export type GalaxyParams = {
     starsCount: number;
     startAngle?: number;

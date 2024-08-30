@@ -3,13 +3,13 @@ import { useClient } from '@/services/client';
 import { useBattleStore, useScenesStore, useStarsStore, useUiStore } from '@/stores';
 import { BattleActionType, ClientEvent, UISceneNames } from '@/types';
 import { wait } from '@/utils';
-import { GameEvent } from '~/game/events/GameEvents';
 import { LogMng } from '~/monax/LogMng';
 import { toast } from 'vue3-toastify';
 import { useWallet } from '@/services/wallet';
 import { BlockchainConnectService } from '~/blockchainTotal';
 import { config } from '@/config';
 import { GlobalParams } from '~/game/data/GlobalParams';
+import { GameEvent } from '~/game/events/Types';
 
 export class ClientEventsService {
   
@@ -23,6 +23,26 @@ export class ClientEventsService {
 
       case GameEvent.MESSAGE:
         toast(clientEvent.msg)
+        break;
+      
+      case GameEvent.STAR_GAME:
+        switch (clientEvent.action) {
+          case 'init':
+            LogMng.debug(`GameEvent.STAR_GAME init:`, clientEvent.initList);
+            // TODO: init star games            
+            // use clientEvent.initList
+            break;
+          case 'update':
+            // LogMng.debug(`GameEvent.STAR_GAME update:`, clientEvent.updateData);
+            // TODO: update star game
+            // use clientEvent.updateData
+            break;
+          case 'visible':
+            LogMng.debug(`GameEvent.STAR_GAME visible update:`, clientEvent.visible ? 'true' : 'false');
+            // TODO: update star games visible
+            // use clientEvent.visible
+            break;
+        }
         break;
       
       case GameEvent.GAME_LOADING:
