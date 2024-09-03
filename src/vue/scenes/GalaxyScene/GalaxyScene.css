@@ -97,9 +97,7 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    /* padding-bottom: 10px; */
-    padding-bottom: 12.5%;
-    gap: 5px;
+    padding-bottom: 10px;
   }
 
   .GalaxyScene__views {
@@ -127,8 +125,8 @@
   .GalaxyScene__header {
     left: 12px;
     right: 12px;
-    /* top: 12px; */
-    top: 12.5%;
+    top: 40px;
+    /* top: 12.5%; */
   }
 
   .GalaxyScene__headerColumn.is-center {

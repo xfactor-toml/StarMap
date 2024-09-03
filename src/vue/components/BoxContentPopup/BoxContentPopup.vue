@@ -3,8 +3,8 @@
     <div class="BoxContentPopup__box">
       <div class="BoxContentPopup__body">
         <div class="BoxContentPopup__content">
-          <img src="/gui/images/user-inventory/inventory/background.svg">
-          <div class="BoxContentPopup__title">Congratulations</div>
+          <img src="/gui/images/user-inventory/inventory/background.png">
+          <div class="BoxContentPopup__title --bold">Congratulations</div>
           <div class="BoxContentPopup__close" @click="$emit('close')"></div>
           <div class="BoxContentPopup__cards">
             <template v-for="(item, index) in list" :key="item.name + index">
@@ -21,17 +21,17 @@
             </template>
           </div>
           <div class="BoxContentPopup__bottom">
-            <div class="BoxContentPopup__animation">
+              <div class="BoxContentPopup__animation">
                     <div class="BoxContentPopup__button" @click="$emit('sendLink')">
                         <img src="/gui/images/duel-box.svg">
                         <div class="BoxContentPopup__button-text">
                             OK
                         </div>
                     </div>
-                    <!-- <div class="BoxContentPopup__button-animation" v-for="(item, index) in 30" :key="index">
+                    <div class="BoxContentPopup__button-animation" v-for="(item, index) in 20" :key="index">
                         <img src="/gui/images/user-inventory/open-box-border.svg" alt="logo">
-                    </div> -->
-                </div>
+                    </div>
+              </div>
           </div>
 
         </div>

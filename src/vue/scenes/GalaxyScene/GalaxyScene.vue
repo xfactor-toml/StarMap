@@ -18,22 +18,22 @@
         v-if="selectedMenu == 'MAIN MENU'" 
         @close="closeMainMenu" 
         @selectItem="handleMenuSelection"
-        :selectedItem="this.previousSelectedMenu" 
+        :selectedItem="previousSelectedMenu" 
       />  
     </transition>
 
-    <transition name="fade">
+    <!-- <transition name="fade">
       <StarDefenderButton
         v-if="!selectedMenu"
         @click="showMainMenu"
       />
-    </transition>
+    </transition> -->
      
    
     <transition name="fade">
         <StarDefenderProcess
         v-if="selectedMenu == 'SEARCH GAME' || selectedMenu == 'PLAY WITH A BOT' || selectedMenu == 'DUEL WAITING'"
-        :selectedMenu=this.selectedMenu
+        :selectedMenu="selectedMenu"
       />
     </transition>
 

@@ -135,7 +135,7 @@
 }
 
 .UserBar__button.menu-bar {
-  width: 28.5px;
+  width: 34px;
   height: 25px;
   background-image: url(../gui/images/menu-bar.svg);
 }
@@ -213,12 +213,12 @@
 
 @media (max-width: 375px) {
   .UserBar__button {
-    width: 25px;
+    width: 32px;
     height: 30px
   }
 
   .UserBar__button.menu-bar {
-    width: 20px;
+    width: 24px;
     height: 25px;
 
   }
@@ -243,7 +243,7 @@
 
 .UserMenu__body {
   position: absolute;
-  top: 19%;
+  top: 100px;
   pointer-events: all;
   display: flex;
   flex-direction: column;

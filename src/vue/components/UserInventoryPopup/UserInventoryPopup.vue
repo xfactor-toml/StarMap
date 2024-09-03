@@ -1,13 +1,16 @@
 <template>
   <div class="UserInventoryPopup">
-    <div class="UserInventoryPopup__overlay" @click="$emit('close')" />
     <div v-if="!showBoxConent" class="UserInventoryPopup__box">
       <div class="UserInventoryPopup__body">
         <div class="UserInventoryPopup__body-image">
           <img src="/gui/images/user-inventory/background.png">
-          <div class="UserInventoryPopup__title">{{ title }}</div>
-          <div class="UserInventoryPopup__close" @click="$emit('close')"></div>
-          <div class="UserInventoryPopup__balance">BALANCE: {{ balance }} tVRP </div>
+          <div class="UserInventoryPopup__title --bold">
+            {{ title }}
+          </div>
+          <div class="UserInventoryPopup__close" @click="$emit('close')" />
+          <div class="UserInventoryPopup__balance">
+            BALANCE: {{ balance }} tVRP 
+          </div>
           <div class="UserInventoryPopup__tabs">
             <button v-for="tab in tabs" :key="tab"
               :class="['UserInventoryPopup__tab', tab, currentTab === tab ? 'active' : '.', !tab ? 'empty-tab' : '']"
@@ -16,43 +19,53 @@
           </div>
           <div :class="`UserInventoryPopup__content ${currentTab}`">
             <template v-if="currentTab === 'inventory'">
-              <!-- <template v-if="walletStore.connected"> -->
               <template v-if="true">
                 <div class="UserInventoryPopup__list">
                   <template v-for="item in assets" :key="item.name">
                     <div class="UserInventoryPopup__card">
                       <img :src="`/gui/images/user-inventory/inventory/${item.rare}.svg`" />
-                      <div class="UserInventoryPopup__cardName">{{
-                        item.name }}
+                      <div class="UserInventoryPopup__cardName">
+                        {{item.name }}
                       </div>
                       <div class="UserInventoryPopup__cardFigure">
                         <img class="UserInventoryPopup__cardImage" :src="item.image" />
                       </div>
-                      <div class="UserInventoryPopup__cardCaption"> {{ item.value }} VRP</div>
+                      <div class="UserInventoryPopup__cardCaption"> 
+                        {{ item.value }} VRP
+                      </div>
                     </div>
                   </template>
                 </div>
               </template>
               <template v-else>
-                <button class="UserInventoryPopup__connect" @click="walletStore.openPopup">Connect</button>
+                <button class="UserInventoryPopup__connect" @click="walletStore.openPopup">
+                  Connect
+                </button>
               </template>
             </template>
             <template v-if="currentTab === 'events'">
-              <div v-if="loading || buying" class="UserInventoryPopup__loader in-store">
+              <div 
+                v-if="loading || buying" 
+                class="UserInventoryPopup__loader in-store"
+              >
                 <Loader />
               </div>
               <div v-else class="UserInventoryPopup__list">
                 <template v-for="item in events" :key="item.id">
-                  <div class="UserInventoryPopup__card is-store" :data-rare="item.rareness.toLowerCase()"
+                  <div class="UserInventoryPopup__card is-store" 
+                    :data-rare="item.rareness.toLowerCase()"
                     :data-amount="item.per_user">
                     <img :src="`/gui/images/user-inventory/shop/${item.rareness.toLowerCase()}.svg`" />
                     <div class="UserInventoryPopup__cardFigure" @click="selectCard(item)">
                       <img class="UserInventoryPopup__cardImage" :src="item.img_preview" />
                     </div>
-                    <div v-if="item.per_user !== null" class="UserInventoryPopup__cardCount">Name | {{ item.per_user
-                      }}
+                    <div v-if="item.per_user !== null" class="UserInventoryPopup__cardCount">
+                      Name | {{ item.per_user}}
                     </div>
-                    <div class="UserInventoryPopup__cardCaption" @click="buy(item)">{{ item.cost }} {{ item.currency }}
+                    <div class="UserInventoryPopup__cardCaption" @click="buy(item)">
+                        <div  class="UserInventoryPopup__cardCaption-button">
+                          {{ item.cost }} {{ item.currency }}
+                        </div>               
                     </div>
                   </div>
                 </template>
@@ -77,13 +90,13 @@
                   <div class="UserInventoryPopup__animation">
                     <div class="UserInventoryPopup__button" @click="openBox">
                       <img src="/gui/images/user-inventory/inventory/open-box.svg"> 
-                      <div>
+                      <div class="UserInventoryPopup__button-text">
                         OPEN BOX
                       </div>
+                      <div v-for="(item , indes) in 8" class="UserInventoryPopup__button-animation">
+                        <img src="/gui/images/user-inventory/open-box-animation.svg"> 
+                      </div>
                     </div>
-                    <!-- <div class="UserInventoryPopup__button-animation" v-for="(item, index) in 8" :key="index">
-                      <img src="/gui/images/user-inventory/open-box-border.svg" alt="logo">
-                    </div> -->
                   </div>
                 </div>
               </template>

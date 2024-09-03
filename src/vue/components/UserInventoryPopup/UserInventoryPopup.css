@@ -6,28 +6,37 @@
   left: 0;
   top: 0;
   pointer-events: all;
-  z-index: 1;
-  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 3;
+  /* background-color: rgba(0, 0, 0, 0.7); */
 }
 
-.UserInventoryPopup__overlay {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 0;
-}
 
 .UserInventoryPopup__box {
   width: 100%;
   height: 100%;
-  z-index: 1;
+  margin-top: 100px;
 }
 
-.UserInventoryPopup__head {
+.UserInventoryPopup__body {
   display: flex;
   justify-content: center;
+  padding: 0px 10px 0px 10px;
+  width: 100%;
+  max-height: calc(100% - 308px);
+}
+
+.UserInventoryPopup__body-image {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  max-width: 450px;
+  width: max-content;
+}
+
+.UserInventoryPopup__body-image>img {
+  height: 100%;
+  object-fit: contain;
+  max-height: calc(100vh - 140px);
 }
 
 .UserInventoryPopup__title {
@@ -74,42 +83,16 @@
   color: #00FFFF;
 }
 
-.UserInventoryPopup__body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px 10px 20px 10px;
-  width: 100%;
-  height: 100%;
-}
-
-.UserInventoryPopup__body-image {
-  position: relative;
- 
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  max-width: 450px;
-}
-
-.UserInventoryPopup__body-image>img {
-  width: 100%;
-  height: 100%;
-  background-repeat: no-repeat;
-  background-size: contain;
-  object-fit: contain;
-}
-
 .UserInventoryPopup__tabs {
   position: absolute;
   height: 76.6%;
   overflow-y: auto;
   display: flex;
-  left: 9px;
+  left: 0px;
   top: 11.4%;
   flex-direction: column;
   gap: 10px;
-  width: 42px;
+  /* width: 42px; */
   margin-top: 8px;
   flex-shrink: 0;
   padding-right: 5px;
@@ -118,17 +101,21 @@
 
 .UserInventoryPopup__tab {
   display: flex;
-  width: 100%;
   min-height: 53px;
   position: relative;
   background-color: transparent;
-  border: 2px solid #00FFFF;
+  border: 2px solid #21D7FB;
   border-left: none;
   border-radius: 0 6px 6px 0;
   color: #00FFFF;
   cursor: pointer;
   transition: ease background-color 200ms;
   will-change: background-color;
+  background-color: transparent;
+  margin-left: 7px;
+  padding-right: 3px;
+  padding-left: 3px;
+  transition: all 0.2s ease;
 }
 
 .UserInventoryPopup__tab.empty-tab {
@@ -167,7 +154,8 @@
 }
 
 .UserInventoryPopup__tab.active {
-  background-color: #00FFFF;
+  background-color: #21D7FB;
+  margin-left: 4px;
   color: #000;
 }
 
@@ -229,6 +217,7 @@
 .UserInventoryPopup__content {
   position: absolute;
   height: 76.6%;
+  width: calc(100% - 64px);
   overflow-y: auto;
   left: 55px;
   top: 11.4%;
@@ -248,6 +237,7 @@
   align-items: center;
   height: 76%;
   width: 100%;
+  top: 12%;
 }
 
 .UserInventoryPopup__list {
@@ -359,7 +349,9 @@
 
 .UserInventoryPopup__cardCaption {
   position: absolute;
-  bottom: 7%;
+  bottom: 4%;
+  width: 97%;
+  height: 21%;
   font-style: normal;
   font-size: 14px;
   line-height: 17px;
@@ -379,7 +371,6 @@
 .UserInventoryPopup__count {
   display: flex;
   align-items: center;
-  margin-top: 10px;
   justify-content: center;
   position: relative;
   width: 51%;
@@ -407,12 +398,13 @@
   position: relative;
   width: 100%;
   height: 14%;
+  z-index: 4;
 }
 
 .UserInventoryPopup__button {
   position: relative;
-  box-shadow: 0px 0px 583.2px #0169ED, 0px 0px 340.2px #0169ED, 0px 0px 170.1px #0169ED, 0px 0px 48.6px #0169ED, 0px 0px 24.3px #0169ED;
-  background-color: rgb(1, 105, 237, 0.8);
+  box-shadow: 0px 0px 583.2px #FFAC0F, 0px 0px 340.2px #FFAC0F, 0px 0px 170.1px #FFAC0F, 0px 0px 48.6px #FFAC0F, 0px 0px 24.3px #FFAC0F;
+  background-color: rgb(255, 172, 15, 0.8);
   border: none;
   border-radius: 42px;
   width: 70%;
@@ -421,7 +413,7 @@
   transition: all 0.3s ease;
 }
 
-.UserInventoryPopup__button > div {
+.UserInventoryPopup__button-text {
   position: absolute;
   top: 0;
   width: 100%;
@@ -433,44 +425,83 @@
   color: white;
 }
 
+.UserInventoryPopup__cardCaption-button {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, #00C6FB, #005BEA);
+  border: none;
+  box-shadow: 
+    0px 1px 0.5px rgba(0, 0, 0, 0.98),
+    0px 3px 1.5px rgba(0, 0, 0, 0.85),
+    0px 6px 2px rgba(0, 0, 0, 0.5),
+    0px 11px 2px rgba(0, 0, 0, 0.15),
+    0px 16px 2.5px rgba(0, 0, 0, 0.02);
+  color: white;
+  font-size: 16px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.UserInventoryPopup__cardCaption-button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 105%;
+  height: 110%;
+  background: linear-gradient(to top, #00C6FB, #005BEA);
+  border-radius: inherit;
+  z-index: -1;
+  transform: translate(-50%, -50%);
+}
+
+.UserInventoryPopup__cardCaption-button:hover {
+   cursor: pointer;
+   opacity: 0.8;
+}
+
 .UserInventoryPopup__button:hover {
   transform: scale(1.05);
 }
 
 .UserInventoryPopup__button-animation {
-  width: 70%;
+  width:  100%;
+  height: 100%;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) scale(1,1);
   transform-origin: center;
-  opacity: 1;
+  opacity: 0;
   z-index: 1;
   /* overflow: hidden; */
-  /* animation: zoomOut 4s infinite forwards linear; */
-  transition: all 4s linear;
-  z-index: -1;
+  animation: zoomOut 4s infinite forwards linear;
+  /* transition: all 4s linear;
+  z-index: -1; */
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.UserInventoryPopup__button-animation img {
-  width: 100%;
-  height: 100%;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
+
 
 @keyframes zoomOut {
-  from {
+  0% {
       opacity: 0.4;
       transform: translate(-50%, -50%) scale(1,1);
   }
-
-  to {
+  
+  50% {
+    opacity: 0.2;
+    transform: translate(-50%, -50%) scale(1.1,1.2);
+  } 
+  100% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(1.07, 1.28);
+    transform: translate(-50%, -50%) scale(1.17, 1.38);
 }
 }
 
@@ -568,7 +599,11 @@
   background: #555;
 }
 
-
+@media (max-width: 980px) {
+  .UserInventoryPopup__body {
+    max-height: calc(100% - 140px);
+  }
+}
 
 @media (max-width: 425px) {
   .UserInventoryPopup__balance {
@@ -577,7 +612,7 @@
   }
 
   .UserInventoryPopup__title {
-    font-size: 21px;
+    font-size: 24px;
   }
 
   .UserInventoryPopup__button {
@@ -589,7 +624,7 @@
 @media (max-width: 375px) {
   .UserInventoryPopup__cardCaption {
     font-size: 12px;
-    bottom: 6%;
+    bottom: 4%;
   }
 
   .UserInventoryPopup__cardCount {
@@ -618,19 +653,3 @@
   }
 }
 
-@media(max-height: 500px) {
-  .UserInventoryPopup__body-image {
-    height: 100%;
-  }
-
-  .UserInventoryPopup__body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    /* padding: 20px 30px 20px 30px; */
-    width: 100%;
-    height: 100%;
-  }
-
-
-}
