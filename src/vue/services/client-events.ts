@@ -29,18 +29,17 @@ export class ClientEventsService {
         switch (clientEvent.action) {
           case 'init':
             LogMng.debug(`GameEvent.STAR_GAME init:`, clientEvent.initList);
-            // TODO: init star games            
-            // use clientEvent.initList
+            uiStore.star.setStarGameInitList(clientEvent.initList);
+            
             break;
           case 'update':
-            // LogMng.debug(`GameEvent.STAR_GAME update:`, clientEvent.updateData);
-            // TODO: update star game
-            // use clientEvent.updateData
+            LogMng.debug(`GameEvent.STAR_GAME update:`, clientEvent.updateData);
+            uiStore.star.updateStarGameList(clientEvent.updateData);
+      
             break;
           case 'visible':
             LogMng.debug(`GameEvent.STAR_GAME visible update:`, clientEvent.visible ? 'true' : 'false');
-            // TODO: update star games visible
-            // use clientEvent.visible
+            uiStore.star.visibleStarGame(clientEvent.visible ? true : false);
             break;
         }
         break;

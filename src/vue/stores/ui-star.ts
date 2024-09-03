@@ -3,8 +3,12 @@ import {
   PhantomStarPreviewEvent,
   ShowStarGuiEvent,
   ShowStarPreviewEvent,
-  StarBoostPanelType
+  StarBoostPanelType,
 } from '@/types';
+import { 
+  StarGameInitData, 
+  StarGameUpdateData 
+} from '~/game/events/Types';
 import { Star, StarPosition, StarScreenPosition } from '@/models';
 import { useStarsStore } from '@/stores/stars';
 import { ref } from 'vue';
@@ -13,6 +17,7 @@ import { useUiOverlayStore } from '@/stores/ui-overlay';
 import { useUiViewportStore } from '@/stores/ui-viewport';
 import { useUiPanelsStore } from '@/stores/ui-panels';
 import { useScenesStore } from '@/stores/scenes';
+
 
 type StarBoostPanel = {
   starId: number;
@@ -30,6 +35,7 @@ type StarTooltip = {
   position: StarScreenPosition;
 }
 
+
 export const useUiStarStore = defineStore('uiStar', () => {
   const client = useClient()
   const screens = useScenesStore()
@@ -40,6 +46,29 @@ export const useUiStarStore = defineStore('uiStar', () => {
   const starBoostPanel = ref<StarBoostPanel | null>(null)
   const starPanel = ref<StarPanel | null>(null)
   const starTooltip = ref<StarTooltip | null>(null)
+  const starGameInitList = ref<StarGameInitData[] | null>(null)
+  const starGameVisible  = ref<Boolean>(true)
+
+  const setStarGameInitList = ( initData: StarGameInitData[]) => {
+    starGameInitList.value =  initData;
+  }
+
+  const updateStarGameList = (updateData: StarGameUpdateData) => {
+    if (starGameInitList.value) {
+      const index = starGameInitList.value.findIndex(item => item.id === updateData.id);
+      if (index !== -1) {
+        starGameInitList.value[index].position2d = updateData.position2d;
+      } else {
+        console.warn(`Star with id ${updateData.id} not found`);
+      }
+    } else {
+      console.warn('Star game list is not initialized');
+    }
+  }
+
+  const visibleStarGame = (visible: boolean) => {
+    starGameVisible.value = visible ;
+  }
 
   const hideStarTooltip = () => {
     newStarPosition.value = null;
@@ -123,6 +152,11 @@ export const useUiStarStore = defineStore('uiStar', () => {
     starBoostPanel,
     starPanel,
     starTooltip,
+    starGameInitList,
+    starGameVisible,
+    setStarGameInitList,
+    updateStarGameList,
+    visibleStarGame,
     hideStarBoostPanel,
     hideStarPanel,
     hideStarTooltip,
@@ -132,5 +166,6 @@ export const useUiStarStore = defineStore('uiStar', () => {
     showStarBoostPanel,
     diveIn,
     returnToGalaxy,
+
   }
 });

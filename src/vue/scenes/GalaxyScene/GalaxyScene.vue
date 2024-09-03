@@ -15,21 +15,13 @@
     </div>
     <transition name="fade">
       <MainMenu 
-        v-if="selectedMenu == 'MAIN MENU'" 
+        v-if="stardefender == 'MAIN MENU'" 
         @close="closeMainMenu" 
         @selectItem="handleMenuSelection"
         :selectedItem="previousSelectedMenu" 
       />  
     </transition>
 
-    <!-- <transition name="fade">
-      <StarDefenderButton
-        v-if="!selectedMenu"
-        @click="showMainMenu"
-      />
-    </transition> -->
-     
-   
     <transition name="fade">
         <StarDefenderProcess
         v-if="selectedMenu == 'SEARCH GAME' || selectedMenu == 'PLAY WITH A BOT' || selectedMenu == 'DUEL WAITING'"
@@ -65,7 +57,7 @@
     </transition>
    
     <transition name="fade">
-      <div v-if="!selectedMenu" class="GalaxyScene__panels">
+      <div class="GalaxyScene__panels">
         <template v-if="scenesStore.current.mode?.clientScenes?.length">
           <div class="GalaxyScene__views">
             <ViewsPanel />
@@ -104,7 +96,6 @@ import {
   UserBar,
   ViewsPanel,
   MainMenu,
-  StarDefenderButton,
   DuelMenu,
   AudioMenu,
   SearchingMenu,
@@ -134,7 +125,6 @@ export default {
     StartGameButton,
     UserBar,
     ViewsPanel,
-    StarDefenderButton,
     MainMenu,
     DuelMenu,
     AudioMenu,
@@ -152,13 +142,19 @@ export default {
   directives: {
     clickOutside: vClickOutside.directive
   },
-  computed: mapStores(
+  computed: {
+    ... mapStores(
     useBattleStore,
     useScenesStore,
     useSettingsStore,
     useUiStore,
     useWalletStore,
   ),
+    
+   stardefender() {
+     return  this.uiStore.stardefender.starDefenderMenu
+   }
+  },
   watch: {
     ['scenesStore.current.clientScene']: {
       handler() {
@@ -193,13 +189,14 @@ export default {
     },
     closeMenu() {
       this.selectedMenu = 'MAIN MENU'
+      this.previousSelectedMenu = null
     },
     handlePrevious(item: string) {
       this.selectedMenu = 'MAIN MENU'
       this.previousSelectedMenu = item
     },
     closeMainMenu() {
-      this.selectedMenu = null
+      this.uiStore.stardefender.setStarDefenderMenu(null);
     },
     cancelOperation() {
       this.selectedMenu = 'MAIN MENU'

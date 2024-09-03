@@ -3,9 +3,9 @@
     display: flex;
     justify-content: center;
     left: 0;
-    bottom: 7%;
+    bottom: 2%;
     width: 100%;
-    z-index: 5;
+    z-index: 2;
     pointer-events: all;
   }
   

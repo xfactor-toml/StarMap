@@ -137,7 +137,7 @@
   margin: 0;
   font-size: 14px;
   font-weight: 400;
-  line-height: 1.36;
+  line-height: 1.36; 
   text-overflow: ellipsis;
   white-space: nowrap;
 }

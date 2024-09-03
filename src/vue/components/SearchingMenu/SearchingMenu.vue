@@ -4,7 +4,7 @@
       <div class="SearchingMenu__previous" @click="changeStatus">
         <img src="/gui/images/duel-previous.svg">
       </div>
-      <div class="SearchingMenu__title"> {{ setTitle }} </div>
+      <div class="SearchingMenu__title --bold"> {{ setTitle }} </div>
       <div class="SearchingMenu__close" @click="close"></div>
       <img src="/gui/images/main-menu/main-menu-background.png">
       <div class="SearchingMenu__items">

@@ -27,6 +27,17 @@
         />
       </template>
     </transition>
+
+    <template v-for="starGame in uiStore.star.starGameInitList">
+      <StarDefenderButton
+        v-if="uiStore.star.starGameVisible"
+        :title="starGame.gameTitle"
+        :name="starGame.starName"
+        :position="starGame.position2d"
+        @click="showStarDefender"
+      />
+    </template>
+
     <transition name="fade">
       <template v-if="uiStore.star.starBoostPanel !== null">
         <StarBoostPanel
@@ -42,21 +53,24 @@
 
 <script lang="ts">
 import { useUiStore } from '@/stores';
-import { StarBoostPanel, StarPanel, StarTooltipV2 } from '@/components';
+import { StarBoostPanel, StarPanel, StarTooltipV2, StarDefenderButton } from '@/components';
 import { mapStores } from 'pinia';
+
 
 export default {
   name: 'RealMode',
   components: {
     StarBoostPanel,
     StarPanel,
-    StarTooltipV2
+    StarTooltipV2,
+    StarDefenderButton
   },
   computed: {
     ...mapStores(useUiStore)
   },
   methods: {
     hideAllPanels() {
+      
       if (!this.uiStore.overlay.active) return;
       this.uiStore.star.hideStarBoostPanel();
       this.uiStore.star.hideStarTooltip();
@@ -64,13 +78,17 @@ export default {
     goToGalaxy() {
       this.uiStore.star.hideStarPanel();
       this.$client.onLeftPanelGalaxyClick();
-    }
+    },
+    showStarDefender() {
+    this.uiStore.stardefender.setStarDefenderMenu('MAIN MENU');
   },
   unmounted() {
     this.uiStore.star.hideStarPanel();
     this.hideAllPanels();
-  }
-};
+  },
+ 
+}
+}
 </script>
 
 <style scoped src="./RealMode.css"></style>
