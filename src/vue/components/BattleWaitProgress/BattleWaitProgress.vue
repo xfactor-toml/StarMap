@@ -18,7 +18,7 @@
                   />
             </div>
             <div class="BattleWaitProgress__buton-name --bold">
-                {{ this.currenUser }} / {{ this.maxUsers }}
+                {{ currenUser }} / {{ maxUsers }}
             </div> 
         </button>
         <div class="BattleWaitProgress__content">

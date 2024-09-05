@@ -31,12 +31,12 @@
 }
 
 .BaseControl__fill {
-  fill: rgba(0, 94, 234, 0.05);
+  fill: rgba(0, 94, 234, 0.15);
   filter: drop-shadow(0px 0px 30px rgba(0, 94, 234, 0.5));
 }
 
 .BaseControl.active .BaseControl__fill {
-  fill: rgba(0, 94, 234, 0.4);
+  fill: rgba(0, 150, 255, 0.4);
 }
 
 .BaseControl.cooldown .BaseControl__fill {

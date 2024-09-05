@@ -6,6 +6,7 @@
                 v-if="showChoose"
                 @player-selected="showInfo"
                 @timeReached="timeReached"
+                @picked="picked"
               />
             </transition>
 
@@ -87,6 +88,13 @@ export default {
     pickHero() {
       this.$client.onPlayerPick();
       this.showPick = false;
+      this.showPreGame = true;
+    },
+
+    picked(player) {
+      this.$client.onPlayerPick();
+      this.showPick = false;
+      this.showChoose = false;
       this.showPreGame = true;
     }
   }

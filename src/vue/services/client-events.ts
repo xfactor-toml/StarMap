@@ -176,7 +176,7 @@ export class ClientEventsService {
         battleStore.connecting.setPlayerSearchingState(false);
         scenesStore.setScene(UISceneNames.Battle);
         battleStore.shop.setItems(clientEvent.shopInitData.items);
-
+        console.log('shopInitItem', clientEvent.shopInitData.items)
         battleStore.process.setState({
           players: {
             connected: {

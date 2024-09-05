@@ -12,7 +12,7 @@
                 <input class="ShopMenu__filter" placeholder="FILTER">
                 <div class="ShopMenu__items">
                     <div
-                        v-for="(item, index) in this.items"
+                        v-for="(item, index) in items"
                         @click="handleItemClick(index)"
                         :key="index"
                         class="ShopMenu__item"     
@@ -22,7 +22,7 @@
                             <img :src="ImagePath[index]"/>
                         </div>
                         <div 
-                            v-if="this.selectedItem == index && !pendingList.has(index)" 
+                            v-if="selectedItem == index && !pendingList.has(index)" 
                             class="ShopMenu__item-trading"
                         >
                             <div
@@ -31,7 +31,7 @@
                                 :class="['ShopMenu__item-buy orbitron-font --semi-bold', { 'disabled': !canBuy(items[index]) }]"
                             >
                                 BUY
-                            </div>
+                              </div>
 
                             <div
                                 v-else
@@ -66,7 +66,7 @@
                 class="ShopInfo__container"
             >
                 <div class="ShopInfo">
-                    <img src="/gui/images/shop-menu/background.svg"/>
+                    <!-- <img src="/gui/images/shop-menu/background.svg"/> -->
                     <div class="ShopInfo__close" @click="closeShopInfo">
                         <img src="/gui/images/shop-menu/close.svg" />
                     </div>
@@ -75,15 +75,15 @@
                             INFO
                         </h3>
                          <h4 class="ShopInfo__subtitle orbitron-font --semmi-bold">
-                            {{ items[this.selectedItem]?.name }}
+                            {{ items[selectedItem]?.name }}
                         </h4>
                          <p class="ShopInfo__description exo2-font"> 
-                            {{ items[this.selectedItem]?.description }}
+                            {{ items[selectedItem]?.description }}
                         </p>
-                         <div class="ShopInfo__button">
+                         <div :class="['ShopInfo__button', { 'disabled': !canBuy(items[selectedItem]) }]"  @click="handleShopInfoBtn" >
                             <img src="/gui/images/shop-menu/shopInfo-btn.svg">
                             <div class="ShopInfo__button-name orbitron-font --semi-bold">
-                                {{ items[this.selectedItem]?.price }} GOLD
+                                {{ items[selectedItem]?.price }} GOLD
                             </div>
                          </div>
                      </div>
@@ -123,10 +123,10 @@ export default {
             confirmation: false,
             confirmResolver: null,
             ImagePath: [
-                "/assets/battleIcon/thunder.png",
-                "/assets/battleIcon/velocityVector.png",
-                "/assets/battleIcon/nuclearOrb.png",
-                "/assets/battleIcon/spiralSentinel.png"
+                "/assets/battleIcon/TOWER.svg",
+                "/assets/battleIcon/STAR.svg",
+                "/assets/battleIcon/SHIP_SM.svg",
+                "/assets/battleIcon/SHIP_BIG.svg"
             ]
         };
     },
@@ -191,7 +191,17 @@ export default {
             this.confirmation = false
             return confirmed
         },
+
+        handleShopInfoBtn() {
+           if(!this.purchasedList.has(this.selectedItem))  {
+              this.buy(this.selectedItem)
+           }
+           else
+              this.sell(this.selectedItem)
+        }
     },
+
+   
 
 }
 

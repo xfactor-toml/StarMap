@@ -10,11 +10,13 @@
         />
       </template>
     </transition>
+
     <transition name="fade">
       <template v-if="uiStore.overlay.visible">
         <div class="gui-overlay" @click="hideAllPanels" />
       </template>
     </transition>
+
     <transition name="fade">
       <template v-if="uiStore.star.starTooltip !== null">
         <StarTooltipV2
@@ -29,8 +31,13 @@
     </transition>
 
     <template v-for="starGame in uiStore.star.starGameInitList">
+      <StarDefenderProcess 
+        v-if="stardefender == 'SEARCH GAME' || stardefender == 'PLAY WITH A BOT' || stardefender == 'DUEL WAITING'"
+        :position="uiStore.star.starGameInitList[0].position2d"
+        />   
+
       <StarDefenderButton
-        v-if="uiStore.star.starGameVisible"
+        v-else="uiStore.star.starGameVisible "
         :title="starGame.gameTitle"
         :name="starGame.starName"
         :position="starGame.position2d"
@@ -53,7 +60,7 @@
 
 <script lang="ts">
 import { useUiStore } from '@/stores';
-import { StarBoostPanel, StarPanel, StarTooltipV2, StarDefenderButton } from '@/components';
+import { StarBoostPanel, StarPanel, StarTooltipV2, StarDefenderButton, StarDefenderProcess } from '@/components';
 import { mapStores } from 'pinia';
 
 
@@ -63,10 +70,14 @@ export default {
     StarBoostPanel,
     StarPanel,
     StarTooltipV2,
-    StarDefenderButton
+    StarDefenderButton,
+    StarDefenderProcess
   },
   computed: {
-    ...mapStores(useUiStore)
+    ...mapStores(useUiStore),
+    stardefender() {
+     return  this.uiStore.stardefender.starDefenderMenu
+   }
   },
   methods: {
     hideAllPanels() {
@@ -75,17 +86,20 @@ export default {
       this.uiStore.star.hideStarBoostPanel();
       this.uiStore.star.hideStarTooltip();
     },
+
     goToGalaxy() {
       this.uiStore.star.hideStarPanel();
       this.$client.onLeftPanelGalaxyClick();
     },
+
     showStarDefender() {
     this.uiStore.stardefender.setStarDefenderMenu('MAIN MENU');
-  },
-  unmounted() {
-    this.uiStore.star.hideStarPanel();
-    this.hideAllPanels();
-  },
+    },
+    
+    unmounted() {
+      this.uiStore.star.hideStarPanel();
+      this.hideAllPanels();
+    },
  
 }
 }

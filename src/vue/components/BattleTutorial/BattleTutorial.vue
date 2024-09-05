@@ -52,7 +52,7 @@ export default {
                 {text:"SKIP",imagePath: '/gui/images/battle-tutorial/skip.svg', animationIamgePath: '/gui/images/battle-tutorial/skip-border.svg'},
                 {text:"NEXT",imagePath: '/gui/images/battle-tutorial/next.svg', animationIamgePath: '/gui/images/battle-tutorial/next-border.svg'}
             ],
-            currentIndex: 1,
+            currentIndex: 0,
             BattleTutorialContent
         }
     },

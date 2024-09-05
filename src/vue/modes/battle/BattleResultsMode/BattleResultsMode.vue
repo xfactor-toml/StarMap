@@ -1,6 +1,5 @@
 <template>
   <transition name="fade">
-
     <div class="BattleResultsMode">
       <template v-if="results">
         <div class="BattleResultMode__container" :data-type="results.type">
@@ -28,7 +27,6 @@
                 </div>
                 <h4 class="BattleResultsMode__vs-title">VS</h4>
                 <div class="BattleResultsMode__vs-player">
-  
                   <div class="BattleResultsMode__vs-info">
                     <p class="BattleResultsMode__vs-info-owner --bold">LomaiPaletz</p>
                     <p class="BattleResultsMode__vs-info-level">1 LVL</p>
@@ -53,26 +51,43 @@
                 </div>
               </div>
             </div>
+
+            <div class="BattleResultsMode__time orbitron-font --semi-bold">
+                <hr :class="['BattleResultsMode__timehr', { 'timelimited-hr': timelimited }]"/>
+                  <p :class="['BattleResultsMode__timeText', { 'timelimited-color': timelimited }]"> 00:{{ currentTime }}</p>
+                <hr :class="['BattleResultsMode__timehr', { 'timelimited-hr': timelimited }]"/>
+            </div>
+
             <div class="BattleResultsMode__footer">
               <Loader v-if="loading" />
               <template v-else>
-                <div class="BattleResultsMode__button white orbitron-font --semi-bold" @click="openBox">
+                <div :class="['BattleResultsMode__button white orbitron-font --semi-bold', {'disabled': timelimited}]" @click="">
                   <img src="/gui/images/battle-results/play-again.svg">
-                  <div class="orbitron-font --semi-bold">PLAY AGAIN</div>
+                  <div class="BattleResultsMode__playagain orbitron-font --semi-bold">PLAY AGAIN</div>
+                  <div class="BattleResultsMode__status">
+                      <div class="BattleResultsMode__playerstatus">
+                          <p>PLAYER 1</p>
+                          <input type="checkbox" :class="{'disabled': timelimited}" v-model="player1Checked" @change="handleCheckboxChange('Player 1', player1Checked)">
+                      </div>
+                      <div class="BattleResultsMode__playerstatus">
+                          <p>PLAYER 2</p>
+                          <input type="checkbox" class="disabled" v-model="player2Checked" @change="handleCheckboxChange('Player 2', player2Checked)">
+                      </div>
+                  </div>
                 </div>
-                <div v-if="results.box.show" class="BattleResultsMode__button orbitron-font --semi-bold">
+                <!-- <div v-if="results.box.show" class="BattleResultsMode__button orbitron-font --semi-bold" @click="close">
                   <img src="/gui/images/battle-results/open-box.svg">
-                  <div class="orbitron-font --semi-bold">OPEN BOX</div>
-                </div>
+                  <div class="BattleResultsMode__button-text orbitron-font --semi-bold">OPEN BOX</div>
+                </div> -->
                 <!-- <button v-if="results.claim.show" class="BattleResultsMode__button" @click="claim">Claim rewards
-              </button> -->
-                <!-- <div v-if="!results.box.show && !results.claim.show" class="BattleResultsMode__button"
+              </button>
+                <div v-if="!results.box.show && !results.claim.show" class="BattleResultsMode__button"
                 @click="close">Close
             </div> -->
-                <button v-if="!results.box.show" class="BattleResultsMode__button white orbitron-font --semi-bold"
+                <button :class="['BattleResultsMode__button white orbitron-font --semi-bold']"
                   @click="close">
                   <img src="/gui/images/battle-results/play-again.svg">
-                  <div class="orbitron-font --semi-bold">EXIT</div>
+                  <div class="BattleResultsMode__button-text orbitron-font --semi-bold">EXIT</div>
                 </button>
               </template>
             </div>
@@ -87,28 +102,75 @@
 <script lang="ts">
 import { useBattleStore, useUiStore, useScenesStore } from '@/stores';
 import { getShortAddress, formatNumber } from '@/utils';
+import { timerStore } from '@/utils';
 import { mapStores } from 'pinia';
 import { Loader } from '@/components';
 import { UISceneNames } from '@/types';
 import { BattleResults } from '@/types';
-
+import { computed, watch, ref } from 'vue';
 export default {
   name: 'BattleResultsMode',
+
   components: {
     Loader
   },
+
   data: () => ({
-    loading: false
+    loading: false,
+    timelimited: false,
+    player1Checked: false,
+    player2Checked: true,
+    value: {
+      type: 'victory',
+      player: 'cool',
+      owner: 'good',
+      damage: 123,
+      gold: 123,
+      exp: 123,
+      rating: {
+        previous: 12,
+        current: 23,
+      },
+      box: {
+        show: true,
+        level: 12
+      },
+      claim: {
+        show: true
+      }
+    }
   }),
+
+  setup(_, { emit }) {
+      const timelimited = ref(false);       
+      const currentTime = computed(() => {
+        const time = timerStore.time;
+        return time < 10 ? `0${time}` : time;
+      });
+
+      watch(currentTime, (newTime) => {
+        if (newTime === "00") {
+          timelimited.value = true;  
+          emit('timeReached');
+        }
+      });
+
+      return {
+        currentTime,
+        timelimited, 
+      };
+  },
+
   computed: {
     ...mapStores(useBattleStore, useUiStore, useScenesStore),
+
     results() {
+      // this.battleStore.results.setResults(this.value)
       return this.battleStore.results.state
     },
     getImagePath() {
       if (this.battleStore.results.type == 'victory')
-        return " /gui/images/battle-results/victory-bg.svg"
-       
+        return " /gui/images/battle-results/victory-bg.svg"    
       else 
         return " /gui/images/battle-results/defeat-bg.svg"
     },
@@ -145,6 +207,7 @@ export default {
         return 'DEFEAT'
     }
   },
+
   methods: {
     getShortAddress,
     formatNumber,
@@ -158,9 +221,14 @@ export default {
     },
     close() {
       this.$client.onCloseBox()
+    },
+    handleCheckboxChange(player, checked) {
+      this.$client.onGameStartWithBot()
+      console.log(`${player} checked status: ${checked}`);
     }
   },
   mounted() {
+    timerStore.startTimer(); 
     // this.uiStore.blur.enable()
   },
   beforeUnmount() {

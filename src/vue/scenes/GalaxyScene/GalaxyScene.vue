@@ -3,6 +3,7 @@
     <div v-if="scenesStore.current.mode" class="GalaxyScene__content">
       <component :is="scenesStore.current.mode.getComponent()" />
     </div>
+
     <div class="GalaxyScene__header">
       <div class="GalaxyScene__headerColumn">
         <Logo />
@@ -13,6 +14,7 @@
         </div>
       </div>
     </div>
+
     <transition name="fade">
       <MainMenu 
         v-if="stardefender == 'MAIN MENU'" 
@@ -23,25 +25,18 @@
     </transition>
 
     <transition name="fade">
-        <StarDefenderProcess
-        v-if="selectedMenu == 'SEARCH GAME' || selectedMenu == 'PLAY WITH A BOT' || selectedMenu == 'DUEL WAITING'"
-        :selectedMenu="selectedMenu"
-      />
-    </transition>
-
-    <transition name="fade">
       <SearchingMenu 
-        v-if="selectedMenu == 'SEARCH GAME' || selectedMenu == 'PLAY WITH A BOT' || selectedMenu == 'DUEL WAITING'" 
+        v-if="stardefender == 'SEARCH GAME' || stardefender == 'PLAY WITH A BOT' || stardefender == 'DUEL WAITING'" 
         @close="closeMenu" 
         @previous="handlePrevious" 
         @cancel="cancelOperation"
-        :currentMenu="selectedMenu"
+        :currentMenu="stardefender"
       />
     </transition>
 
     <transition name="fade">
       <DuelMenu 
-        v-if="selectedMenu == 'DUEL'" 
+        v-if="stardefender == 'DUEL'" 
         @close="closeMenu" 
         @previous="handlePrevious" 
         @sendLink="sendLink"
@@ -50,7 +45,7 @@
     
     <transition name="fade">
       <AudioMenu 
-        v-if="selectedMenu == 'SETTINGS'" 
+        v-if="stardefender == 'SETTINGS'" 
         @close="closeMenu" 
         @previous="handlePrevious" 
       />
@@ -99,8 +94,7 @@ import {
   DuelMenu,
   AudioMenu,
   SearchingMenu,
-  StarDefenderProcess,
-  
+  StarDefenderProcess,  
 } from '@/components';
 
 import {
@@ -175,34 +169,42 @@ export default {
     openPlasmaMintPopup() {
       this.showPlasmaMintPopup = true
     },
+
     closePlasmaMintPopup() {
       this.showPlasmaMintPopup = false
     },
+
     showMainMenu() {
-      this.selectedMenu = 'MAIN MENU'
+      this.uiStore.stardefender.setStarDefenderMenu ('MAIN MENU')
     },
+
     handleMenuSelection(item: string) {
-      this.selectedMenu = item;
+      this.uiStore.stardefender.setStarDefenderMenu(item);
       if (item == 'PLAY WITH A BOT') {
         this.$client.onGameStartWithBot();
       }
     },
+
     closeMenu() {
-      this.selectedMenu = 'MAIN MENU'
+      this.uiStore.stardefender.setStarDefenderMenu ('MAIN MENU')
       this.previousSelectedMenu = null
     },
+
     handlePrevious(item: string) {
-      this.selectedMenu = 'MAIN MENU'
+      this.uiStore.stardefender.setStarDefenderMenu('MAIN MENU')
       this.previousSelectedMenu = item
     },
+
     closeMainMenu() {
       this.uiStore.stardefender.setStarDefenderMenu(null);
     },
+
     cancelOperation() {
-      this.selectedMenu = 'MAIN MENU'
+      this.uiStore.stardefender.setStarDefenderMenu('MAIN MENU')
     },
+
     sendLink() {
-      this.selectedMenu = 'DUEL WAITING'
+      this.uiStore.stardefender.setStarDefenderMenu('DUEL WAITING')
     }
 
   },

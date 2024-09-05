@@ -9,23 +9,7 @@
           <p>{{ gold }}</p>
       </div>
     </div>
-   
-    <!-- <div class="BattleControlPanel__row">
-      <LevelControl
-        :disabled="true"
-        :level="level.current"
-        :progress="level.progress"
-      />
-      <GoldControl
-        :disabled="true"
-        :amount="gold"
-      />
-      <ShopControl
-        :active="true"
-        :disabled="false"
-        @click = "setVisible"
-      />
-    </div> -->
+    
     <div class="BattleControlPanel__row">
       <SatelliteFireSkill
         :params="skills['satelliteFire']"

@@ -11,6 +11,10 @@
     height: 100%;
     padding: 20px;
     pointer-events: none;
+    background-image: url(../gui/images/background.png);
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .PreGameCountdown img {
