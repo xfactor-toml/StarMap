@@ -10,19 +10,17 @@
 }
 
 .BoxContentPopup__box {
-  position: relative;
-  z-index: 1;
   width: 100%;
   height: 100%;
+  margin-top: 100px;
 }
 
 .BoxContentPopup__body {
   display: flex;
   justify-content: center;
-  align-items: center;
+  padding: 0px 10px 0px 10px;
   width: 100%;
-  height: 100%;
-  padding: 10px;
+  max-height: calc(100% - 308px);
 }
 
 .BoxContentPopup__content {
@@ -30,14 +28,13 @@
   max-width: 450px;
   display: flex;
   justify-content: center;
-  align-items: center;
+  width: max-content;
 }
 
-.BoxContentPopup__content img {
-  width: 100%;
+.BoxContentPopup__content > img {
   height: 100%;
-  background-repeat: no-repeat;
-  background-size: contain;
+  object-fit: contain;
+  max-height: calc(100vh - 140px);
 }
 
 .BoxContentPopup__title {
@@ -152,8 +149,7 @@
   display: flex;
   justify-content: center;
   width: 79%;
-  height: 31%;
-  top: 73%;
+  top: 78%;
 }
 
 
@@ -177,7 +173,6 @@
 
 .BoxContentPopup__animation {
   width: 100%;
-  height: 74%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -222,8 +217,7 @@
 }
 
 .BoxContentPopup__button-animation {
-  width: 88.2%;
-  height: 49.6%;
+  width: 84%;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -376,6 +370,12 @@
   animation-delay: calc(1000ms * 19);
 }
 
+@media (max-width: 980px) {
+  .BoxContentPopup__body {
+    max-height: calc(100% - 140px);
+  }
+}
+
 
 @media (max-width: 375px) {
 
@@ -388,12 +388,6 @@
   }
 }
 
-@media (max-height: 545px) {
-  .BoxContentPopup__content {
-    height: 100%;
-  }
-
-}
 
 .BoxContentPopup__cards::-webkit-scrollbar {
   width: 3px;

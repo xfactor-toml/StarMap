@@ -2,8 +2,15 @@
     position: relative;
     width: 100%;
     height: 100%;
-    max-width: 430px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     pointer-events: all;
+    background-image: url(../gui/images/background.png);
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    object-fit: contain;
 }
 
 .BattleTutorial img {
@@ -17,12 +24,13 @@
     position: absolute;
     top:0%;
     height: 100%;
+    max-width: 430px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     padding: 30px 10px 30px 10px;
-    overflow-y: auto;
+    /* overflow-y: auto; */
 }
 
 .BattleTutorial__title {
@@ -34,7 +42,7 @@
 .BattleTutorial__content {
     padding: 17px;
     margin-top: 17x;
-    background-color: rgba(7, 16, 50, 0.5);
+    background-color: rgba(7, 16, 50);
     border-radius: 20px;
 }
 

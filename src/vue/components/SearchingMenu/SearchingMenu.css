@@ -3,9 +3,9 @@
     display: flex;
     justify-content: center;
     left: 0;
-    bottom: 7%;
+    bottom: 2%;
     width: 100%;
-    z-index: 5;
+    z-index: 2;
     pointer-events: all;
   }
   
@@ -73,19 +73,17 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    
   }
 
   .SearchingMenu__link {
     display: flex;
     align-items: center;
     flex-direction: column;
+    gap: 2px;
     border: none;
     text-align: center;
     width: 100%;
-    padding: 5px;
     border-radius: 10px;
-    /* height: 26%; */
   }
   
   .SearchingMenu__link-text {
@@ -118,15 +116,7 @@
     position: absolute;
   }
    
-  .SearchingMenu__button-animation img {
-    width: 94%;
-    height: 100%;
-    background-repeat: no-repeat;
-    background-size: contain;
-  }
-
   .SearchingMenu__label {
-    /* font-weight: 600; */
     font-size: 24px;
     line-height: 1.1;
     color: #00FFFF;
@@ -185,7 +175,8 @@
 
   .SearchingMenu__animation {
     width: 100%;
-    height: 74%;
+    /* height: 74%; */
+    margin-top: 4%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -231,7 +222,6 @@
     transform-origin: center;
     opacity: 1;
     z-index: 1;
-    overflow: hidden;
     animation: zoomOut 6s infinite forwards linear;
   }
   
@@ -240,14 +230,9 @@
         opacity: 1;
         transform: translate(-50%, -50%) scale(1,1);
     }
-  
-    50% {
-        transform: translate(-50%, -50%) scale(1.1, 1.2);
-        opacity: 0.8;
-    }
     to {
       opacity: 0;
-      transform: translate(-50%, -50%) scale(1.2, 1.4);
+      transform: translate(-50%, -50%) scale(1.112,1.4);
   }
   }
   .SearchingMenu__button-animation:nth-child(1) {
@@ -299,75 +284,75 @@
   }
   
   .SearchingMenu__button-animation:nth-child(13) {
-    animation-delay: calc(1000ms * 2);
+    animation-delay: calc(1000ms * 1);
   }
   
   .SearchingMenu__button-animation:nth-child(14) {
-    animation-delay: calc(1000ms * 3);
+    animation-delay: calc(1000ms * 2);
   }
   
   .SearchingMenu__button-animation:nth-child(15) {
-    animation-delay: calc(1000ms * 4);
+    animation-delay: calc(1000ms * 3);
   }
   
   .SearchingMenu__button-animation:nth-child(16) {
-    animation-delay: calc(1000ms * 5);
+    animation-delay: calc(1000ms * 4);
   }
 
   .SearchingMenu__button-animation:nth-child(17) {
-    animation-delay: calc(1000ms * 6);
+    animation-delay: calc(1000ms * 5);
   }
   
   .SearchingMenu__button-animation:nth-child(18) {
-    animation-delay: calc(1000ms * 7);
+    animation-delay: calc(1000ms * 6);
   }
   
   .SearchingMenu__button-animation:nth-child(19) {
-    animation-delay: calc(1000ms * 8);
+    animation-delay: calc(1000ms * 7);
   }
   
   .SearchingMenu__button-animation:nth-child(20) {
-    animation-delay: calc(1000ms * 9);
+    animation-delay: calc(1000ms * 8);
   }
   
   .SearchingMenu__button-animation:nth-child(21) {
-    animation-delay: calc(1000ms * 10);
+    animation-delay: calc(1000ms * 9);
   }
   
   .SearchingMenu__button-animation:nth-child(22) {
-    animation-delay: calc(1000ms * 11);
+    animation-delay: calc(1000ms * 10);
   }
   
   .SearchingMenu__button-animation:nth-child(23) {
-    animation-delay: calc(1000ms * 12);
+    animation-delay: calc(1000ms * 11);
   }
   
   .SearchingMenu__button-animation:nth-child(24) {
-    animation-delay: calc(1000ms * 13);
+    animation-delay: calc(1000ms * 12);
   }
 
   .SearchingMenu__button-animation:nth-child(25) {
-    animation-delay: calc(1000ms * 14);
+    animation-delay: calc(1000ms * 13);
   }
   
   .SearchingMenu__button-animation:nth-child(26) {
-    animation-delay: calc(1000ms * 15);
+    animation-delay: calc(1000ms * 14);
   }
   
   .SearchingMenu__button-animation:nth-child(27) {
-    animation-delay: calc(1000ms * 16);
+    animation-delay: calc(1000ms * 15);
   }
   
   .SearchingMenu__button-animation:nth-child(28) {
-    animation-delay: calc(1000ms * 17);
+    animation-delay: calc(1000ms * 16);
   }
   
   .SearchingMenu__button-animation:nth-child(29) {
-    animation-delay: calc(1000ms * 18);
+    animation-delay: calc(1000ms * 17);
   }
   
   .SearchingMenu__button-animation:nth-child(30) {
-    animation-delay: calc(1000ms * 19);
+    animation-delay: calc(1000ms * 18);
   }
   
   

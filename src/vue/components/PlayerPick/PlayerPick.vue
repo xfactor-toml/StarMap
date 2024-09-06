@@ -15,7 +15,7 @@
         </div>
         <div class="PlayerPick__time orbitron-font --semi-bold">
             <hr />
-            <p>{{ currentTime }}s</p>
+               <p> 00:{{ currentTime }}</p>
             <hr />
         </div>
 
@@ -73,12 +73,17 @@ export default {
         };
     },
     setup(_, { emit }) {
-        const currentTime = computed(() => timerStore.time);
-        watch(currentTime, (newTime) => {
-        if (newTime === 0) {
-            emit('timeReached');
-        }
+        const currentTime = computed(() => {
+            const time = timerStore.time;
+            return time < 10 ? `0${time}` : time;
         });
+
+        watch(currentTime, (newTime) => {
+            if (newTime === "00") {
+            emit('timeReached');
+            }
+        });
+
         return {
             currentTime,
         };

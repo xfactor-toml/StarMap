@@ -1,64 +1,24 @@
 <template>
-  <div class="ModesPanel__mobile">
-    <div v-if="uiStore.panels.visibility.modes" class="ModesPanel">
-      <div class="ModesPanel__body">
-        <div class="ModesPanel__body-text">
-          HEADING
-        </div>
-        <img src="/gui/images/modes/modes-active-background.png">
-        <div class="ModesPanel__body-content">
-          <div class="ModesPanel__group">
-            <template v-for="mode in modes">
-              <button class="ModesPanel__button" :class="[
-                `is-${mode.name}`,
-                {
-                  'is-active': mode.name === scenesStore.current.mode?.name,
-                  'is-disabled': isDisabled(mode)
-                }
-              ]" @click="changeMode(mode.name)">
-                {{ mode.label }}
-              </button>
-            </template>
-          </div>
-        </div>
-        <button class="ModesPanel__toggle" @click="uiStore.panels.togglePanel('modes')" />
-
-      </div>
-
-    </div>
-
-  
-    <div v-if="!uiStore.panels.visibility.modes" class="ModesPanel__start">
-      <img src="/gui/images/modes/modes-start-background.svg">
-      <div class="ModesPanel__start-text">
-        HEADING
-      </div>
-      <div class="ModesPanel__start-icon" @click="uiStore.panels.togglePanel('modes')">
-        <img src="/gui/images/modes/modes-toggle-button-revert.svg">
-      </div>
-    </div>
-  </div>
-
-  <div class="ModesPanel__pc">
-    <div class="ModesPanel" :class="{ 'is-hidden': !uiStore.panels.visibility.modes }">
-      <div class="ModesPanel__group">
-        <template v-for="mode in modes">
-          <button class="ModesPanel__button" :class="[
+  <div class="ModesPanel" :class="{ 'is-hidden': !uiStore.panels.visibility.modes }">
+    <button class="ModesPanel__toggle" @click="uiStore.panels.togglePanel('modes')" />
+    <div class="ModesPanel__group">
+      <template v-for="mode in modes">
+        <button
+          class="ModesPanel__button"
+          :class="[
             `is-${mode.name}`,
             {
               'is-active': mode.name === scenesStore.current.mode?.name,
               'is-disabled': isDisabled(mode)
             }
-          ]" @click="changeMode(mode.name)">
-            {{ mode.label }}
-          </button>
-        </template>
-      </div>
-      <button class="ModesPanel__toggle" @click="uiStore.panels.togglePanel('modes')" />
+          ]"
+          @click="changeMode(mode.name)"
+        >
+          {{ mode.label }}
+        </button>
+      </template>
     </div>
   </div>
-
-
 </template>
 
 <script lang="ts">
@@ -74,9 +34,7 @@ export default {
       return this.scenesStore.current.scene.modes || []
     }
   },
-
   methods: {
-
     isDisabled(mode: GuiMode) {
       if (mode.name !== 'real' && this.scenesStore.current.clientScene?.name === 'star') {
         return true;

@@ -1,95 +1,84 @@
 .StarDefenderProcess {
-    position: fixed;
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    left: 0;
-    top: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  
+}
+
+.StarDefenderProcess__container {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.StarDefenderProcess__connectLine {
+  width: 38px;
+  height: 48px;
+  position: relative;
 }
 
 .StarDefenderProcess__content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -100%);
+  width: 200px;
 }
 
-.StarDefenderProcess__content-box {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.StarDefenderProcess__bg {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 5;
+  pointer-events: all;
 }
 
-.StarDefenderProcess__content-box-title {
-    position: absolute;
-    top: 5%;
-    font-style: normal;
-    font-size: 15px;
-    line-height: 18px;
-    text-align: center;
-    color: #000000;
+.StarDefenderProcess__name {
+  position: absolute;
+  top: 4%;
+  font-size: 15px;
+  color: black;
 }
 
-.StarDefenderProcess__content-box-name {   
-    position: absolute;
-    top: 5%;
-    font-style: normal;
-    font-size: 15px;
-    line-height: 19px;
-    text-align: center;
-    color: black;  
+.StarDefenderProcess__search {
+   display: flex;
+   flex-direction: column;
+   gap: 4px;
+   justify-content: center;
+   position: absolute;
 }
 
-.StarDefenderProcess__content-search {
-    position: absolute;
-    gap:5px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+.StarDefenderProcess__title {
+  font-size: 16px;
+  color: #00FFFF;
+  text-shadow: 0px 0px 483.84px #00FFFF, 0px 0px 276.48px #00FFFF, 0px 0px 161.28px #00FFFF, 0px 0px 80.64px #00FFFF, 0px 0px 23.04px #00FFFF, 0px 0px 11.52px #00FFFF;
 }
 
-.StarDefenderProcess__content-box-online {
-    position: absolute;
-    font-style: normal;
-    font-size: 12px;
-    line-height: 14px;
-    text-align: center;
-    color: #FFFFFF;
-    bottom: 4%;
+.StarDefenderProcess__title:hover {
+  cursor: pointer;
 }
 
-.StarDefenderProcess__content-box-name:hover {
-    cursor: pointer;
-    opacity: 0.9;
-
+.StarDefenderProcess__online {
+  position: absolute;
+  bottom: 3%;
+  font-size: 12px;
+  color: white;
 }
-
-.StarDefenderProcess__content-connect-line {
-    position: absolute;
-    top: 102%;
-    left: 50%;
-}
-
-.StarDefenderProcess__label {
-    /* font-weight: 600; */
-    font-size: 16px;
-    line-height: 1.1;
-    color: #00FFFF;
-    text-transform: uppercase;
-  }
   
   .StarDefenderProcess__loading {
     display: flex;
-    gap: 4px;
+    padding-right: 3px;
+    padding-left: 3px;
+    justify-content: space-between;
   }
   
   .StarDefenderProcess__dot {
-    width: 7px;
-    height: 7px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     position: relative;
     transition: ease opacity 200ms;

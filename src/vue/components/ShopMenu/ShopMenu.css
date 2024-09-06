@@ -85,8 +85,8 @@
 .ShopMenu__item-img {
     position: absolute;
     top: 6%;
-    left: 26%;
-    width: 46%;
+    left: 21%;
+    width: 60%;
     height: 60%;
    
 }
@@ -97,16 +97,18 @@
 
 .ShopMenu__item-trading {
     position: absolute;
-    width:80%;
-    height: 60%;
-    top:10%;
+    width:100%;
+    height: 70%;
+    top:0%;
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 2px;
+    padding: 5px;
     z-index: 2;
 }
 
 .ShopMenu__item-buy {
+    height: 50%;
     background: linear-gradient(0deg, #0250C5 0%, #D43F8D 100%);
     border-top-right-radius: 4px;
     border-top-left-radius: 4px;
@@ -114,6 +116,7 @@
     font-size: 14px;
     padding: 2px;
     color: #F9EB20
+    
 }
 
 .ShopMenu__item-buy:hover {
@@ -121,6 +124,7 @@
 }
 
 .ShopMenu__item-info {
+    height: 50%;
     background: linear-gradient(0deg, #0250C5 0%, #D43F8D 100%);
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
@@ -146,7 +150,7 @@
     padding-left: 5px;
     padding-right: 5px;
     gap: 5px;
-    top: 67%;
+    top: 70%;
     font-size: 12px;
     color: white;
 }
@@ -155,16 +159,17 @@
     position: absolute;
     top: 20%;
     width: 94%;
+    height: 65%;
     z-index: 3;
 }
 
 .ShopInfo {
+    width: 100%;
+    height: 100%;
     display: flex;
     position: relative;
-    align-items: center;
     justify-content: center;
     background-color: #112A5E;
-    opacity: 0.9;
     border-radius: 18px;   
 }
 
@@ -172,6 +177,7 @@
     width: 20px;
     height: 20px;
     position: absolute;
+    z-index: 2;
     top: 3%;
     right: 3%;
 }
@@ -207,6 +213,17 @@
 
 .ShopInfo__button {
     position: relative;
+    transition: all 0.2s ease;
+}
+
+
+.ShopInfo__button :hover {
+    cursor: pointer;
+    transform: scale(1.05);
+}
+
+.ShopInfo__button:active {
+    transform: scale(0.95);
 }
 
 .ShopInfo__button:hover {

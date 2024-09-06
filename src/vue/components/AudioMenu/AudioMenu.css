@@ -3,9 +3,9 @@
     display: flex;
     justify-content: center;
     left: 0;
-    bottom: 7%;
+    bottom: 2%;
     width: 100%;
-    z-index: 5;
+    z-index: 2;
     pointer-events: all;
   }
   
@@ -100,6 +100,10 @@
     height: 100%;
     padding:1px;
     position: relative;
+  }
+
+  .AudioMenu__icon-item-img:hover {
+    cursor: pointer;
   }
 
   .AudioMenu__icon-item-icon {
