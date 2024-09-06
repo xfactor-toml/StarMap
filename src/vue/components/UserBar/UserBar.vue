@@ -1,19 +1,17 @@
 <template>
-  <div
-    class="UserBar"
-    :class="{ connected: walletStore.connected }"
-  >
+  <div class="UserBar" :class="{ connected: walletStore.connected }">
     <div class="UserBar__buttons">
       <button
-        :class="`UserBar__button is-box ${userInventoryVisible && 'active'}`"
+        v-if="walletStore.connected"
+        :class="['UserBar__button', 'is-box', { active: userInventoryVisible }]"
         :data-count="userBoxes.length"
         @mouseenter="$client.onHover()"
         @click="openUserInventory"
       />
       <div class="UserBar__search">
         <div
-          class="UserBar__search-field"
           v-if="searchVisible"
+          class="UserBar__search-field"
           v-click-outside="hideSearchField"
         >
           <SearchInput
@@ -35,10 +33,8 @@
         @click="toggleSettings"
       />
     </div>
-    <div
-      v-if="walletStore.connected"
-      class="UserBar__account"
-    >{{ walletStore.login }}
+    <div v-if="walletStore.connected" class="UserBar__account">
+      {{ walletStore.login }}
     </div>
     <button
       v-else
@@ -48,8 +44,8 @@
       @click="walletStore.openPopup"
     />
     <div
-      class="UserBar__popup"
       v-if="settingsVisible"
+      class="UserBar__popup"
       v-click-outside="hideSettingsPopup"
     >
       <SettingsPopup
@@ -63,58 +59,67 @@
         @toggleFullscreen="$client.toggleFullscreen()"
       />
     </div>
-   
   </div>
+
   <transition name="fade">
     <div class="bar-icon">
       <button
-          :class="`UserBar__button is-box ${userInventoryVisible && 'active'}`"
-          :data-count="userBoxes.length"
-          @mouseenter="$client.onHover()"
-          @click="openUserInventory"/>
+      v-if="walletStore.connected"
+      :class="['UserBar__button', 'is-box', { active: userInventoryVisible }]"
+      :data-count="userBoxes.length"
+      @mouseenter="$client.onHover()"
+      @click="openUserInventory"
+      />
       <div
         v-if="walletStore.connected"
         class="UserBar__account"
         @click="showUserMenu"
-      >{{ walletStore.login }}
+      >
+        {{ walletStore.login }}
       </div>
       <button
         v-else
         class="UserBar__button menu-bar"
         @mouseenter="$client.onHover()"
         @click="showUserMenu"
-      >  </button>
+      />
     </div>
   </transition>
 
   <transition name="fade">
     <div class="UserMenu">
-      <div>
-          <div v-if="userMenuVisible" class="UserMenu__body">
-            <transition name="fade">     
-              <div class="UserMenu__content">
-                  <img src="/gui/images/menu-border.svg">
-                  <div class="UserMenu__icons">
-                    <div v-for="item in items" :key="item" @click="selected(item)"
-                    class="UserMenu__icon"
-                    :class="[ currentTab === item ? 'active' : '.']"
-                    >
-                        <img :src="`/gui/images/${item}.svg`">
-                    </div>
-                  </div>
-                  <div class="UserMenu__separate__line">
-                      <img src="/gui/images/menu-bar-line.svg">
-                  </div>
-              </div>          
-             </transition>
-           
-              <SearchInput  
+      <transition name="fade">
+        <div v-if="userMenuVisible" class="UserMenu__body">
+          <div class="UserMenu__content">
+            <img src="/gui/images/menu-border.svg" alt="Menu Border">
+            <div class="UserMenu__icons">
+              <div
+                v-for="item in items"
+                :key="item"
+                @click="selected(item)"
+                :class="['UserMenu__icon', { active: currentTab === item }]"
+              >
+                <img :src="`/gui/images/${item}.svg`" :alt="item">
+              </div>
+            </div>
+            <div class="UserMenu__separate__line">
+              <img src="/gui/images/menu-bar-line.svg" alt="Menu Bar Line">
+            </div>
+          </div>
+          <div class="UserMenu__search">
+            <div
               v-if="searchVisible"
+              class="UserMenu__search-field"
               v-click-outside="hideSearchField"
-              v-model="searchKey"
-              @close="closeSearchField" />
-
-              <SettingsPopup
+            >
+              <SearchInput
+                v-model="searchKey"
+                @close="closeSearchField"
+              />
+            </div>
+          </div>
+          
+            <SettingsPopup
               v-if="settingsVisible"
               v-click-outside="hideSettingsPopup"
               :fullscreen="uiStore.fullscreen.active"
@@ -126,31 +131,31 @@
               @setSfxVolume="settingsStore.volume.changeSfxVolume"
               @toggleFullscreen="$client.toggleFullscreen()"
             />
-          </div>
-       </div>
+          
+        </div>
+      </transition>
     </div>
-    
   </transition>
+
   <transition name="fade">
     <UserInventoryPopup
-      v-click-outside="hideUserInventory"
       v-if="userInventoryVisible"
+      v-click-outside="hideUserInventory"
       @close="hideUserInventory"
     />
   </transition>
-  
-    
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue';
+import { mapStores } from 'pinia';
+import { default as vClickOutside } from 'click-outside-vue3';
 import { SettingsPopup } from '@/components/SettingsPopup';
 import { SearchInput } from '@/components/SearchInput';
 import { UserInventoryPopup } from '@/components/UserInventoryPopup';
 import { useSettingsStore, useUiStore, useWalletStore, useBattleStore } from '@/stores';
-import { default as vClickOutside } from 'click-outside-vue3';
-import { mapStores } from 'pinia';
 
-export default {
+export default defineComponent({
   name: 'UserBar',
   components: {
     SearchInput,
@@ -160,29 +165,26 @@ export default {
   directives: {
     clickOutside: vClickOutside.directive
   },
-  data: () => ({
-    settingsVisible: false,
-    searchVisible: false,
-    userInventoryVisible: false,
-    userMenuVisible: false,
-    searchKey: '',
-    items: ["search", "settings","wallet","log-out","close"],
-    currentTab: null,
-  }),
+  data() {
+    return {
+      settingsVisible: false,
+      searchVisible: false,
+      userInventoryVisible: false,
+      userMenuVisible: false,
+      searchKey: '',
+      items: ["search", "settings", "wallet", "log-out", "close"],
+      currentTab: null,
+    };
+  },
+  computed: {
+    ...mapStores(useSettingsStore, useUiStore, useWalletStore, useBattleStore),
+    userBoxes() {
+      return this.battleStore.rewards.boxesIds;
+    }
+  },
   watch: {
     searchKey() {
       this.$client.search(this.searchKey);
-    }
-  },
-  computed: {
-    ...mapStores(
-      useSettingsStore,
-      useUiStore,
-      useWalletStore,
-      useBattleStore
-    ),
-    userBoxes() {
-      return this.battleStore.rewards.boxesIds
     }
   },
   methods: {
@@ -201,45 +203,45 @@ export default {
     },
     hideSearchField() {
       if (!this.searchKey) {
-        this.closeSearchField()
+        this.closeSearchField();
       }
     },
     closeSearchField() {
       this.searchVisible = false;
-      this.searchKey = ''
+      this.searchKey = '';
     },
     openUserInventory() {
-      this.userInventoryVisible = true
+      this.userInventoryVisible = true;
     },
     hideUserInventory() {
-      this.userInventoryVisible = false
+      this.userInventoryVisible = false;
     },
     selected(card) {
       this.currentTab = card;
       switch (card) {
         case 'search':
-          return this.searchVisible = true;
+          this.searchVisible = true;
           break;
         case 'settings':
-          return this.settingsVisible = true;
+          this.settingsVisible = true;
           break;
         case 'wallet':
-          return this.walletStore.openPopup();
+          this.walletStore.openPopup();
           break;
         case 'log-out':
-          return this.walletStore.reset();
+          this.walletStore.reset();
+          this.userMenuVisible = false;
           break;
         case 'close':
-          return this.userMenuVisible = false;
+          this.userMenuVisible = false;
           break;
-      }    
+      }
     },
     showUserMenu() {
-       this.userMenuVisible = true;
+      this.userMenuVisible = true;
     }
   },
-
-};
+});
 </script>
 
 <style scoped src="./UserBar.css"></style>

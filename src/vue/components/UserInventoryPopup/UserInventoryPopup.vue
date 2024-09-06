@@ -12,14 +12,16 @@
             BALANCE: {{ balance }} tVRP 
           </div>
           <div class="UserInventoryPopup__tabs">
-            <button v-for="tab in tabs" :key="tab"
+            <button v-for="tab in tabs" 
+              :key="tab"
               :class="['UserInventoryPopup__tab', tab, currentTab === tab ? 'active' : '.', !tab ? 'empty-tab' : '']"
               :data-count="userBoxes.length" :disabled="!tab" :assets-count="assets.length"
-              :events-count="events.length" @click="selectTab(tab)" />
+              :events-count="events.length" 
+              @click="selectTab(tab)" />
           </div>
           <div :class="`UserInventoryPopup__content ${currentTab}`">
             <template v-if="currentTab === 'inventory'">
-              <template v-if="true">
+              <template v-if="walletStore.connected">
                 <div class="UserInventoryPopup__list">
                   <template v-for="item in assets" :key="item.name">
                     <div class="UserInventoryPopup__card">
@@ -52,7 +54,8 @@
               </div>
               <div v-else class="UserInventoryPopup__list">
                 <template v-for="item in events" :key="item.id">
-                  <div class="UserInventoryPopup__card is-store" 
+                  <div 
+                    class="UserInventoryPopup__card is-store" 
                     :data-rare="item.rareness.toLowerCase()"
                     :data-amount="item.per_user">
                     <img :src="`/gui/images/user-inventory/shop/${item.rareness.toLowerCase()}.svg`" />
@@ -105,8 +108,13 @@
         </div>
       </div>
     </div>
-    <InventoryCardPopup v-if="selectedCard" :title="selectedCard.item" :description="selectedCard.description"
-      :image="selectedCard.img_full" :type="selectedCard.type" @buy="buy(selectedCard)" @close="selectCard(null)" />
+    <InventoryCardPopup 
+      v-if="selectedCard" 
+      :title="selectedCard.item" 
+      :description="selectedCard.description"
+      :image="selectedCard.img_full" 
+      :type="selectedCard.type" @buy="buy(selectedCard)" 
+      @close="selectCard(null)" />
     <transition name="fade">
       <BoxContentPopup 
         v-if="boxContent.length > 0 && showBoxConent" 
@@ -114,8 +122,12 @@
         @close="resetBoxes()" 
       />
     </transition>
-    <ConfirmPopup v-if="confirmation" :title="'Are you sure you want to make this purchase?'"
-      @close="confirmResolver(false)" @confirm="confirmResolver(true)" />
+    <ConfirmPopup 
+      v-if="confirmation" 
+      :title="'Are you sure you want to make this purchase?'"
+      @close="confirmResolver(false)" 
+      @confirm="confirmResolver(true)" 
+    />
   </div>
 </template>
 
@@ -126,19 +138,7 @@ import { mapAssets } from '@/utils';
 import { mapStores } from 'pinia';
 import { BlockchainConnectService } from '~/blockchainTotal';
 
-const baseTabs = ['inventory', 'events', 'unboxing', '', '', '', '', '']
-const boxContentConst =[
-        { rare: 'legendary', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'rare', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'rare', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'rare', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'legendary', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'mythic', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'legendary', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'rare', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'rare', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-      ]
-
+const baseTabs = ['inventory', 'events']
 export default {
   name: 'UserInventoryPopup',
   components: {
@@ -149,25 +149,7 @@ export default {
   },
   data() {
     return {
-      events:
-        [
-          { rareness: "rare", img_preview: "https://starmap.vorpal.finance/gui/images/store/red_laser.png", per_user: 999, cost: 1000, currency: 'VRP' },
-          { rareness: "legendary", img_preview: "https://starmap.vorpal.finance/gui/images/store/red_laser.png", per_user: 999, cost: 1000, currency: 'VRP' },
-          { rareness: "legendary", img_preview: "https://starmap.vorpal.finance/gui/images/store/red_laser.png", per_user: 999, cost: 1000, currency: 'VRP' },
-          { rareness: "mythic", img_preview: "https://starmap.vorpal.finance/gui/images/store/red_laser.png", per_user: 999, cost: 1000, currency: 'VRP' },
-          { rareness: "rare", img_preview: "https://starmap.vorpal.finance/gui/images/store/red_laser.png", per_user: 999, cost: 1000, currency: 'VRP' },
-          { rareness: "mythic", img_preview: "https://starmap.vorpal.finance/gui/images/store/red_laser.png", per_user: 999, cost: 1000, currency: 'VRP' },
-          { rareness: "rare", img_preview: "https://starmap.vorpal.finance/gui/images/store/red_laser.png", per_user: 999, cost: 1000, currency: 'VRP' },
-          { rareness: "rare", img_preview: "https://starmap.vorpal.finance/gui/images/store/red_laser.png", per_user: 999, cost: 1000, currency: 'VRP' },
-          { rareness: "legendary", img_preview: "https://starmap.vorpal.finance/gui/images/store/red_laser.png", per_user: 999, cost: 1000, currency: 'VRP' },
-          { rareness: "legendary", img_preview: "https://starmap.vorpal.finance/gui/images/store/red_laser.png", per_user: 999, cost: 1000, currency: 'VRP' },
-          { rareness: "rare", img_preview: "https://starmap.vorpal.finance/gui/images/store/red_laser.png", per_user: 999, cost: 1000, currency: 'VRP' },
-          { rareness: "rare", img_preview: "https://starmap.vorpal.finance/gui/images/store/red_laser.png", per_user: 999, cost: 1000, currency: 'VRP' },
-          { rareness: "rare", img_preview: "https://starmap.vorpal.finance/gui/images/store/red_laser.png", per_user: 999, cost: 1000, currency: 'VRP' },
-          { rareness: "rare", img_preview: "https://starmap.vorpal.finance/gui/images/store/red_laser.png", per_user: 999, cost: 1000, currency: 'VRP' },
-          { rareness: "rare", img_preview: "https://starmap.vorpal.finance/gui/images/store/red_laser.png", per_user: 999, cost: 1000, currency: 'VRP' },
-          { rareness: "rare", img_preview: "https://starmap.vorpal.finance/gui/images/store/red_laser.png", per_user: 999, cost: 1000, currency: 'VRP' },
-        ],
+      events:[],
       loading: false,
       buying: false,
       confirmation: false,
@@ -177,21 +159,7 @@ export default {
       selectedCard: null,
       boxContent: [],
       showBoxConent: false,
-      assets: [
-        { rare: 'legendary', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'rare', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'rare', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'rare', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'legendary', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'mythic', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'mythic', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'rare', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'legendary', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'rare', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'rare', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'mythic', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-        { rare: 'mythic', name: 'Name', value: 10000, image: '/gui/images/icons/hydrocarbon.png' },
-      ],
+      assets: [],
       title: 'INVENTORY'
     }
   },
@@ -273,8 +241,7 @@ export default {
 
     },
     async openBox() {
-      // this.boxContent = await this.rewards.openBox()
-      this.boxContent = boxContentConst
+      this.boxContent = await this.rewards.openBox()
       this.showBoxConent = true
       this.fetchAssets()
     },
@@ -296,7 +263,7 @@ export default {
       const balancesMap = Object.fromEntries(balances.map((item) => [item.itemId, item.balance]))
       const storeItemsMap = Object.fromEntries(events.map((item) => [item.id, item]))
       const storeAssets = balances.map(({ itemId, balance }) => {
-        const storeAsset = storeItemsMap[itemId]
+      const storeAsset = storeItemsMap[itemId]
 
         if (!storeAsset) {
           return null

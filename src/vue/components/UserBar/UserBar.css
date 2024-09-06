@@ -1,3 +1,4 @@
+/* General styles */
 .UserBar {
   display: flex;
   gap: 16px;
@@ -12,6 +13,7 @@
   align-items: center;
 }
 
+/* Search styles */
 .UserBar__search {
   position: relative;
 }
@@ -25,23 +27,10 @@
   pointer-events: all;
 }
 
-.UserBar__account {
-  width: auto;
-  height: auto;
-  padding: 4px 8px;
-  color: #00ffff;
-  border: 2px solid currentColor;
-  border-radius: 12px;
-  border: none;
-  text-transform: uppercase;
-  font-size: 12px;
-  white-space: nowrap;
-  pointer-events: all;
-}
-
+/* Button styles */
 .UserBar__button {
   display: block;
-  width: 36px;
+  width: 24px;
   height: 41px;
   padding: 0;
   border: none;
@@ -52,10 +41,17 @@
   pointer-events: all;
   will-change: filter;
   font-family: inherit;
-  transition: ease filter 200ms;
+  transition: filter 200ms ease;
 }
 
-.UserBar__button.is-mint {
+.UserBar__button.active,
+.UserBar__button:hover {
+  filter: drop-shadow(0px 0px 8px #00f0ff);
+}
+
+/* Specific button styles */
+.UserBar__button.is-mint,
+.UserBar__account {
   width: auto;
   height: auto;
   padding: 4px 8px;
@@ -63,20 +59,29 @@
   border: 2px solid currentColor;
   border-radius: 12px;
   text-transform: uppercase;
-  font-size: 17px;
   white-space: nowrap;
+}
+
+.UserBar__button.is-mint {
+  font-size: 17px;
+}
+
+.UserBar__account {
+  border: none;
+  font-size: 12px;
 }
 
 .UserBar__button.is-mint::before {
   display: none;
 }
 
-.UserBar__button.is-search {
-  background-image: url(../gui/images/search.svg);
-}
-
-.UserBar__button.is-box {
-  background-image: url(../gui/images/box-filled.svg);
+.UserBar__button.is-search { background-image: url(../gui/images/search.svg); }
+.UserBar__button.is-box { background-image: url(../gui/images/box-filled.svg); }
+.UserBar__button.is-settings { background-image: url(../gui/images/settings.svg); }
+.UserBar__button.is-wallet { background-image: url(../gui/images/wallet.svg); }
+.UserBar__button.menu-bar { 
+  background-image: url(../gui/images/menu-bar.svg); 
+  width: 21px;
 }
 
 .UserBar__button.is-box[data-count]::before {
@@ -96,28 +101,7 @@
   font-size: 12px;
 }
 
-.UserBar__button.is-settings {
-  background-image: url(../gui/images/settings.svg);
-}
-
-.UserBar__button.is-wallet {
-  background-image: url(../gui/images/wallet.svg);
-}
-
-/* .UserBar__button::before {
-  content: '';
-  width: calc(100% + 20px);
-  height: calc(100% + 20px);
-  position: absolute;
-  left: -10px;
-  top: -10px;
-} */
-
-.UserBar__button.active,
-.UserBar__button:hover {
-  filter: drop-shadow(0px 0px 8px #00f0ff);
-}
-
+/* Popup styles */
 .UserBar__popup {
   position: absolute;
   right: 0;
@@ -125,21 +109,15 @@
   pointer-events: all;
 }
 
+/* Bar icon styles */
 .bar-icon {
   display: none;
   justify-content: flex-end;
   align-items: center;
-  /* width: 108px */
-  gap: 20px
-  
+  gap: 20px;
 }
 
-.UserBar__button.menu-bar {
-  width: 34px;
-  height: 25px;
-  background-image: url(../gui/images/menu-bar.svg);
-}
-
+/* Media queries */
 @media (max-width: 960px) {
   .UserBar__button.is-mint {
     position: fixed;
@@ -173,21 +151,9 @@
     gap: 8px;
     pointer-events: none;
   }
+
   .UserBar__buttons {
     gap: 10px;
-  }
-
-  /* .UserBar__search,
-  .UserBar__button {
-    width: 20px;
-    height: 20px;
-  } */
-
-  .UserBar__button::before {
-    width: 100%;
-    height: 100%;
-    left: 0;
-    top: 0;
   }
 
   .UserBar__button.is-mint {
@@ -207,38 +173,30 @@
   }
 }
 
-@media (max-width: 425px) {
- 
-}
-
 @media (max-width: 375px) {
   .UserBar__button {
     width: 32px;
-    height: 30px
+    height: 30px;
   }
 
   .UserBar__button.menu-bar {
     width: 24px;
     height: 25px;
-
   }
 }
 
+/* User Menu styles */
 .UserMenu {
   position: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   left: 0;
-  top: 0%;
-  width :100%;
+  top: 0;
+  width: 100%;
   height: 100%;
   z-index: 10;
- 
-}
-
-.UserMenu > div {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  height: 100%;
 }
 
 .UserMenu__body {
@@ -247,16 +205,14 @@
   pointer-events: all;
   display: flex;
   flex-direction: column;
-  gap: 10px;
   align-items: center;
   justify-content: center;
   background: rgba(7, 16, 50, 0.5);
   backdrop-filter: blur(32.5px);
-  padding: 5px;
+  padding: 10px;
   border-radius: 37px;
   width: 98%;
   max-width: 450px;
-
 }
 
 .UserMenu__content {
@@ -270,10 +226,15 @@
 .UserMenu__separate__line {
   position: absolute;
   height: 100%;
-  left: 84%
+  left: 84%;
 }
 
-.UserMenu  img {
+.UserMenu__search {
+  width: 100%;
+  transition: all 0.3s ease; /* Add a smooth transition */
+}
+
+.UserMenu img {
   width: 100%;
   height: 100%;
   background-repeat: no-repeat;
@@ -281,12 +242,11 @@
 }
 
 .UserMenu__icons {
- position: absolute;
- width: 89%;
- display: flex;
- align-items: center;
- justify-content: space-between;
-
+  position: absolute;
+  width: 89%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .UserMenu__icon {
@@ -294,11 +254,7 @@
   width: 10%;
 }
 
-.UserMenu__icon:hover {
-  opacity: 100%;
-}
-
+.UserMenu__icon:hover,
 .UserMenu__icon.active {
   opacity: 100%;
 }
-
