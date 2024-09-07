@@ -33,7 +33,7 @@ export class ClientEventsService {
             
             break;
           case 'update':
-            LogMng.debug(`GameEvent.STAR_GAME update:`, clientEvent.updateData);
+            // LogMng.debug(`GameEvent.STAR_GAME update:`, clientEvent.updateData);
             uiStore.star.updateStarGameList(clientEvent.updateData);
       
             break;
@@ -146,11 +146,10 @@ export class ClientEventsService {
             scenesStore.setScene(UISceneNames.Galaxy);
             break;
           
-          case 'playerPick': 
-             await wait(4000);
-
-             scenesStore.setSceneMode('process');
-
+          case 'playerPick':
+            await wait(4000);
+            scenesStore.setSceneMode('process');
+            break;
           
           default:
             LogMng.warn(`vue(ClientEventsService): BATTLE_ACCEPT_SCREEN: unknown clientEvent.action=${clientEvent.action}`);

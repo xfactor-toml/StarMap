@@ -1641,6 +1641,8 @@ export class GalaxyMng implements ILogger {
     this._starGameUpdateTimer -= dt;
     if (this._starGameUpdateTimer > 0) return;
     this._starGameUpdateTimer = 0.1; // 10 times per sec
+    // this._starGameUpdateTimer = 0.1 * 0.5; // 5 times per sec
+    // this._starGameUpdateTimer = 0; // 10 times per sec
 
     const pixelRatio = Math.min(2, DeviceInfo.getInstance().devicePixelRatio);
     STAR_GAMES.forEach((data) => {

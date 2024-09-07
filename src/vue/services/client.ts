@@ -135,11 +135,10 @@ export class ClientService {
     FrontEvents.onBattleAcceptClick.dispatch();
   }
 
-
   onBattleConnectExit() {
     // mock
-    FrontEvents.onBattleAcceptCloseClick.dispatch();
     // useScenesStore().setScene(UISceneNames.Galaxy);
+    FrontEvents.onBattleAcceptCloseClick.dispatch();
   }
 
   onBattleAction(payload: BattleActionPayload) {
