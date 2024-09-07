@@ -8,7 +8,7 @@
         <h2 class="BattleReadyProgress__time --light">
             {{ time }}
         </h2>
-        <button class="BattleReadyProgress__buton" @click="$emit('click')">
+        <button class="BattleReadyProgress__buton" @click="handleButtonClick">
             <img src="/gui/images/battle-ready-progress/readybutton.svg">
             <div class="BattleReadyProgress__acceptprogress">
                 <BattleAcceptProgress 
@@ -53,7 +53,10 @@
             if(this.time == 0) {
                 this.$client.onBattleConnectExit()
             }
-        }
+        },
+        handleButtonClick() {
+            this.$client.onBattleAccept()
+        },
     }, 
     
   }

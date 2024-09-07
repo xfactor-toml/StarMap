@@ -1,44 +1,36 @@
 <template>
-    <div class="BattleTutorialProgress">
+  <div class="BattleTutorialProgress">
     <transition name="fade">
-        <BattleTutorial 
+      <BattleTutorial 
         v-if="showTutorial"
-        @skip="handleSkip" />
-     </transition>
-    <transition name="fade">
-        <BattleReadyProgress 
-            v-if="!showTutorial"
-            @click="battleAccept"/>
+        @skip="handleSkip"
+      />
+      <BattleReadyProgress v-else />
     </transition>
-    </div>
-   
-  </template>
-  
-  <script lang="ts">
-  import { BattleTutorial, BattleReadyProgress } from '@/components';
-  
-  export default {
-    name: 'BattleTutorialProgress',
-    components: {
-      BattleTutorial,
-      BattleReadyProgress
-    },
-    data() {
-      return {
-        showTutorial: true, 
-      }
-    },
-    methods: {
-      handleSkip() {
-        this.showTutorial = false;
-      },
-      battleAccept() {
-        this.$client.onBattleAccept()
-      }
-    }
-  };
-  </script>
+  </div>
+</template>
 
-<style scoped src="./BattleTutorialProgress.css">
+<script lang="ts">
+import { defineComponent } from 'vue';
+import { BattleTutorial, BattleReadyProgress } from '@/components';
 
-</style>
+export default defineComponent({
+  name: 'BattleTutorialProgress',
+  components: {
+    BattleTutorial,
+    BattleReadyProgress
+  },
+  data() {
+    return {
+      showTutorial: true,
+    };
+  },
+  methods: {
+    handleSkip() {
+      this.showTutorial = false;
+    },
+  },
+});
+</script>
+
+<style scoped src="./BattleTutorialProgress.css"></style>
