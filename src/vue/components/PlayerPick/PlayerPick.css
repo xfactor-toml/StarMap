@@ -13,7 +13,6 @@
 }
 
 .PlayerPick__container {
-    max-width: 430px;
     position: relative;
     display: flex;
     align-items: center;
@@ -43,12 +42,12 @@
 
 
 .PlayerPick__item {
-
+    
     display: flex;
     flex-direction: column;
     gap: 10px;
     height: 23%;
-   
+    
 }
 
 .PlayerPick__item-name {
@@ -100,6 +99,7 @@
 .PlayerPick__title {
     padding-left: 17px;
     padding-right: 17px;
+    max-width: 430px;
 }
 
 .PlayerPick p {
@@ -116,6 +116,7 @@
     display: flex;
     gap:10px;
     justify-content: flex-start;
+    max-width: 430px;
     width: 100%;
     padding-top: 30px;
     padding-bottom: 30px;
@@ -141,6 +142,7 @@
 }
 
 .PlayerPick__button {
+    max-width: 430px;
     width: 100%;
     text-align: center;
     color: white;

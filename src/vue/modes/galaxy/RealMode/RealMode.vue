@@ -37,7 +37,6 @@
       />   
       <StarDefenderButton
         v-else-if="uiStore.star.starGameVisible"
-        :key="starGame.id + '-' + JSON.stringify(starGame.position2d)"
         :title="starGame.gameTitle"
         :name="starGame.starName"
         :position="starGame.position2d"
