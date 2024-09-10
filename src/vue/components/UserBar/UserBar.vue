@@ -1,10 +1,9 @@
 <template>
   <div class="UserBar" :class="{ connected: walletStore.connected }">
     <div class="UserBar__buttons">
-      <button
-        v-if="walletStore.connected"
+      <button  
         :class="['UserBar__button', 'is-box', { active: userInventoryVisible }]"
-        :data-count="userBoxes.length"
+        :data-count="barIconCount"
         @mouseenter="$client.onHover()"
         @click="openUserInventory"
       />
@@ -64,9 +63,8 @@
   <transition name="fade">
     <div class="bar-icon">
       <button
-      v-if="walletStore.connected"
       :class="['UserBar__button', 'is-box', { active: userInventoryVisible }]"
-      :data-count="userBoxes.length"
+      :data-count="barIconCount"
       @mouseenter="$client.onHover()"
       @click="openUserInventory"
       />
@@ -141,6 +139,7 @@
     <UserInventoryPopup
       v-if="userInventoryVisible"
       v-click-outside="hideUserInventory"
+      @tab="updateTab"
       @close="hideUserInventory"
     />
   </transition>
@@ -174,6 +173,7 @@ export default defineComponent({
       searchKey: '',
       items: ["search", "settings", "wallet", "log-out", "close"],
       currentTab: null,
+      barIconCount: null,
     };
   },
   computed: {
@@ -239,6 +239,9 @@ export default defineComponent({
     },
     showUserMenu() {
       this.userMenuVisible = true;
+    },
+    updateTab(tab) {
+      this.barIconCount = tab;
     }
   },
 });

@@ -3,7 +3,7 @@
     <div v-if="!showBoxConent" class="UserInventoryPopup__box">
       <div class="UserInventoryPopup__body">
         <div class="UserInventoryPopup__body-image">
-          <img src="/gui/images/user-inventory/background.png">
+          <img :src="imagePath">
           <div class="UserInventoryPopup__title --bold">
             {{ title }}
           </div>
@@ -15,8 +15,10 @@
             <button v-for="tab in tabs" 
               :key="tab"
               :class="['UserInventoryPopup__tab', tab, currentTab === tab ? 'active' : '.', !tab ? 'empty-tab' : '']"
-              :data-count="userBoxes.length" :disabled="!tab" :assets-count="assets.length"
-              :events-count="events.length" 
+              :disabled="!tab" 
+              :data-count="walletStore.connected ? userBoxes.length : null" 
+              :assets-count="walletStore.connected ? assets.length : null"
+              :events-count="walletStore.connected ? events.length : null" 
               @click="selectTab(tab)" />
           </div>
           <div :class="`UserInventoryPopup__content ${currentTab}`">
@@ -149,6 +151,7 @@ export default {
   },
   data() {
     return {
+      imagePath: '/gui/images/user-inventory/background-inventory.png',
       events:[],
       loading: false,
       buying: false,
@@ -186,12 +189,21 @@ export default {
   methods: {
     selectTab(tab) {
       this.currentTab = tab
-      if (tab === 'inventory')
+      if (tab === 'inventory') {
+        this.$emit('tab', this.walletStore.connected ? this.assets.length : null)
         this.title = 'INVENTORY';
-      else if (tab === 'events')
+        this.imagePath = '/gui/images/user-inventory/background-inventory.png';
+      } 
+      else if (tab === 'events') {
+        this.$emit('tab', this.walletStore.connected ? this.events.length : null)
         this.title = 'GALAXY SHOP';
-      else
+        this.imagePath = '/gui/images/user-inventory/background-asset.png';
+      } 
+      else if (tab === 'unboxing') {
+        this.$emit('tab', this.walletStore.connected ? this.userBoxes.length : null)
         this.title = 'OPEN BOX';
+        this.imagePath = '/gui/images/user-inventory/background-unboxing.png';
+      }
     },
     selectCard(card) {
       this.selectedCard = card
@@ -285,7 +297,6 @@ export default {
       this.balance = userAssets.token || 0
       this.assets = [...mapAssets(userAssets), ...storeAssets]
       this.events = this.sortStoreItems(recalcEvents)
-
       this.loading = false
     },
     async confirm() {
