@@ -120,25 +120,6 @@ export default {
     timelimited: false,
     player1Checked: false,
     player2Checked: true,
-    value: {
-      type: 'victory',
-      player: 'cool',
-      owner: 'good',
-      damage: 123,
-      gold: 123,
-      exp: 123,
-      rating: {
-        previous: 12,
-        current: 23,
-      },
-      box: {
-        show: true,
-        level: 12
-      },
-      claim: {
-        show: true
-      }
-    }
   }),
 
   setup(_, { emit }) {
@@ -165,14 +146,13 @@ export default {
     ...mapStores(useBattleStore, useUiStore, useScenesStore),
 
     results() {
-      // this.battleStore.results.setResults(this.value)
       return this.battleStore.results.state
     },
     getImagePath() {
-      if (this.battleStore.results.type == 'victory')
-        return " /gui/images/battle-results/victory-bg.svg"    
+      if (this.results.type == 'victory')
+        return " /gui/images/battle-results/victory-bg.png"    
       else 
-        return " /gui/images/battle-results/defeat-bg.svg"
+        return " /gui/images/battle-results/defeat-bg.png"
     },
 
     ratingChange() {
@@ -201,7 +181,7 @@ export default {
       ]
     },
     title() {
-      if (this.battleStore.results.type == 'victory')
+      if (this.results.type == 'victory')
         return 'VICTORY'
       else
         return 'DEFEAT'
@@ -221,10 +201,12 @@ export default {
     },
     close() {
       this.$client.onCloseBox()
+      timerStore.resetTimer()
     },
     handleCheckboxChange(player, checked) {
       this.$client.onCloseBox()
       this.$client.onGameStartWithBot()
+      timerStore.resetTimer()
       console.log(`${player} checked status: ${checked}`);
     }
   },

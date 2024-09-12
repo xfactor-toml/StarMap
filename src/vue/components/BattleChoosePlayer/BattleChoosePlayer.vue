@@ -72,6 +72,7 @@ export default {
       watch(currentTime, (newTime) => {
         if (newTime === "00") {
           emit('timeReached');
+          timerStore.resetTimer()
         }
       });
 
@@ -115,6 +116,7 @@ export default {
 
      handlePickBtn() {
         this.$emit('picked', this.pickedPlayer)
+        timerStore.resetTimer()
      }
    },
    

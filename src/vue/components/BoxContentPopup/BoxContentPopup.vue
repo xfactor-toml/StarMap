@@ -8,7 +8,7 @@
             <div class="BoxContentPopup__close" @click="$emit('close')"></div>
             <div class="BoxContentPopup__cards">
               <div v-for="(item, index) in list" :key="item.name + index" class="BoxContentPopup__card" :data-rare="item.rare">
-                <img :src="`/gui/images/user-inventory/inventory/${item.rare}.svg`" :alt="item.rare">
+                <img :src="getRarityImage(item.rare)" :alt="item.rare">
                 <div class="BoxContentPopup__cardName">{{ item.name }}</div>
                 <div class="BoxContentPopup__cardFigure">
                   <img class="BoxContentPopup__cardImage" :src="item.image" :alt="item.name">
@@ -48,7 +48,16 @@ export default defineComponent({
       type: Array as PropType<BattleReward[]>,
       required: true
     }
-  }
+  },
+  methods: {
+    getRarityImage(rarity) {
+      const validRarities = ['rare', 'mythic', 'legendary'];
+      const sanitizedRarity = rarity.toLowerCase();
+      return validRarities.includes(sanitizedRarity)
+        ? `/gui/images/user-inventory/inventory/${sanitizedRarity}.svg`
+        : '/gui/images/user-inventory/inventory/rare.svg'; 
+    },
+  },
 });
 </script>
 

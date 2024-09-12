@@ -81,6 +81,7 @@ export default {
         watch(currentTime, (newTime) => {
             if (newTime === "00") {
             emit('timeReached');
+            timerStore.resetTimer()
             }
         });
 
@@ -97,6 +98,7 @@ export default {
         },
         pickHero() {
             this.$emit('pickHero', this.player);
+            timerStore.resetTimer()
         }
     }
 }

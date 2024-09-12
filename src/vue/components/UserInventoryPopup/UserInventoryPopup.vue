@@ -27,7 +27,7 @@
                 <div class="UserInventoryPopup__list">
                   <template v-for="item in assets" :key="item.name">
                     <div class="UserInventoryPopup__card">
-                      <img :src="`/gui/images/user-inventory/inventory/${item.rare}.svg`" />
+                      <img :src="getRarityImage(item.rare)" />
                       <div class="UserInventoryPopup__cardName">
                         {{item.name }}
                       </div>
@@ -59,13 +59,14 @@
                   <div 
                     class="UserInventoryPopup__card is-store" 
                     :data-rare="item.rareness.toLowerCase()"
-                    :data-amount="item.per_user">
+                    :data-amount="item.per_user"
+                    :style="{ opacity: item.per_user === null ? 0.3 : 1 }">
                     <img :src="`/gui/images/user-inventory/shop/${item.rareness.toLowerCase()}.svg`" />
                     <div class="UserInventoryPopup__cardFigure" @click="selectCard(item)">
                       <img class="UserInventoryPopup__cardImage" :src="item.img_preview" />
                     </div>
                     <div v-if="item.per_user !== null" class="UserInventoryPopup__cardCount">
-                      Name | {{ item.per_user}}
+                        {{ item.per_user}}
                     </div>
                     <div class="UserInventoryPopup__cardCaption" @click="buy(item)">
                         <div  class="UserInventoryPopup__cardCaption-button">
@@ -312,6 +313,14 @@ export default {
       this.$emit('close')
       this.boxContent = []
     },
+    getRarityImage(rarity) {
+      const validRarities = ['rare', 'mythic', 'legendary'];
+      const sanitizedRarity = rarity.toLowerCase();
+      return validRarities.includes(sanitizedRarity)
+        ? `/gui/images/user-inventory/inventory/${sanitizedRarity}.svg`
+        : '/gui/images/user-inventory/inventory/rare.svg'; 
+    },
+
   },
   async mounted() {
     if (this.$wallet.connected) {

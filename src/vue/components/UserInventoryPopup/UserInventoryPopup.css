@@ -284,6 +284,7 @@
   opacity: 0.3;
 }
 
+
 .UserInventoryPopup__card[data-rare="rare"] {
   --color: #123EAB;
 }
