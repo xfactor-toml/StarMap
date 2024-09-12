@@ -182,3 +182,10 @@
       padding:5px;
     }
   }
+
+  @media (max-height: 667px) and (min-width: 501px) {
+    .AudioMenu__container {
+      transform: scale(0.7);
+      bottom: -30px;
+    }
+  }

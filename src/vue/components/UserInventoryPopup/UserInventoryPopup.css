@@ -14,29 +14,33 @@
 .UserInventoryPopup__box {
   width: 100%;
   height: 100%;
-  margin-top: 100px;
+  padding-top: 100px;
+  padding-bottom: 40px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .UserInventoryPopup__body {
   display: flex;
   justify-content: center;
-  padding: 0px 10px 0px 10px;
+  align-items: center;
   width: 100%;
-  max-height: calc(100% - 308px);
+  max-height: 610px;
+  height: 100%;
 }
 
 .UserInventoryPopup__body-image {
   position: relative;
   display: flex;
   justify-content: center;
-  max-width: 450px;
-  width: max-content;
+  height: 100%;
+  aspect-ratio: 410/640;
 }
 
 .UserInventoryPopup__body-image>img {
   height: 100%;
   object-fit: contain;
-  max-height: calc(100vh - 140px);
+  width: 100%;
 }
 
 .UserInventoryPopup__title {
@@ -600,9 +604,7 @@
 }
 
 @media (max-width: 980px) {
-  .UserInventoryPopup__body {
-    max-height: calc(100% - 140px);
-  }
+
 }
 
 @media (max-width: 425px) {
@@ -652,4 +654,44 @@
     font-size: 28px;
   }
 }
+
+@media (max-height: 667px) {
+  .UserInventoryPopup__title {
+    font-size: 22px;
+  }
+
+  .UserInventoryPopup__close {
+    top: 2%;
+    width: 16px;
+  }
+
+  .UserInventoryPopup__balance {
+    font-size: 16px;
+    bottom: -2%;
+  }
+
+  .UserInventoryPopup__connect {
+    left: 6%;
+  }
+
+}
+
+@media (max-height: 580px) {
+  .UserInventoryPopup__title {
+    font-size: 20px;
+  }
+}
+
+@media (max-height: 540px) {
+  .UserInventoryPopup__title {
+    font-size: 18px;
+  }
+
+  .UserInventoryPopup__balance {
+    font-size: 14px;
+    bottom: -2%;
+  }
+}
+
+
 

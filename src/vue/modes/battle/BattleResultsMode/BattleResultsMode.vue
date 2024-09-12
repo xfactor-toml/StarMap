@@ -21,14 +21,14 @@
                 <div class="BattleResultsMode__vs-player">
                   <img src="/gui/images/battle-results/player1.png" />
                   <div class="BattleResultsMode__vs-info">
-                    <p class="BattleResultsMode__vs-info-owner --bold">LomaiPaletz</p>
+                    <p class="BattleResultsMode__vs-info-owner --bold">Lomai</p>
                     <p class="BattleResultsMode__vs-info-level">1 LVL</p>
                   </div>
                 </div>
                 <h4 class="BattleResultsMode__vs-title">VS</h4>
                 <div class="BattleResultsMode__vs-player">
                   <div class="BattleResultsMode__vs-info">
-                    <p class="BattleResultsMode__vs-info-owner --bold">LomaiPaletz</p>
+                    <p class="BattleResultsMode__vs-info-owner --bold">Lomai</p>
                     <p class="BattleResultsMode__vs-info-level">1 LVL</p>
                   </div>
                   <img src="/gui/images/battle-results/player1.png" />

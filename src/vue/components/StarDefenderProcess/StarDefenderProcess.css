@@ -119,3 +119,10 @@
         transform: scale(0.8);
     }
 }
+
+@media (max-height: 667px) and (min-width: 501px) {
+  .StarDefenderProcess {
+    transform: scale(0.7);
+  }
+}
+

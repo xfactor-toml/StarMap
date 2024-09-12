@@ -129,3 +129,10 @@
     font-size: 20px;
   }
 }
+
+@media (max-height: 667px) and (min-width: 501px) {
+  .MainMenu__container {
+    bottom: -30px;
+    transform: scale(0.7);
+  }       
+}

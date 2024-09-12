@@ -21,7 +21,7 @@
 .BattleResultMode__container > img {
   height: 100%;
   object-fit: contain;
-  max-height: calc(100vh - 140px);
+  max-height: calc(100vh - 40px);
 }
 
 .BattleResultMode__container-content {
@@ -307,5 +307,19 @@
    .BattleResultsMode__vs-title {
     font-size: 26px;
   }
+  }
+
+  @media (max-height: 667px) {
+    .BattleResultsMode__title {
+      font-size: 30px;
+    }
+
+    .BattleResultsMode__button {
+      font-size: 22px;
+    }
+
+    .BattleResultsMode__status {
+      font-size: 14px;
+    }
   }
   

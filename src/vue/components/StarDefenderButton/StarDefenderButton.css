@@ -72,6 +72,12 @@
     }
 }
 
+@media (max-height: 667px) and (min-width: 501px) {
+    .StarDefenderButton {
+        transform: scale(0.7);
+    }
+}
+
 
 
   

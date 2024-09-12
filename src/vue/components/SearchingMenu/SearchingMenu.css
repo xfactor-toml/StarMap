@@ -433,3 +433,10 @@
         color: #00FFFF;
       }
   }
+
+  @media (max-height: 667px) and (min-width: 501px) {
+    .SearchingMenu__container {
+      transform: scale(0.7);
+      bottom: -30px;
+    }
+  }

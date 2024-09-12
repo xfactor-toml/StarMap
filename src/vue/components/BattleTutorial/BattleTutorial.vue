@@ -1,5 +1,4 @@
-<template>
-   
+<template> 
         <div class="BattleTutorial">
             <div class="BattleTutorial__container">
                 <div class="BattleTutorial__title">

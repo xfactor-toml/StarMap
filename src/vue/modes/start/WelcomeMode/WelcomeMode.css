@@ -5,6 +5,10 @@
   flex-direction: column;
   width: 100%;
   height: 100%;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 20px;
+  padding-bottom: 20px;
   position: absolute;
   left: 0;
   top: 0;
@@ -18,13 +22,13 @@
 }
 
 .WelcomeScene__logo {
-  display: flex;
-  width: calc(100% - 20px);
-  height: calc(100% - 40px);
+  aspect-ratio: 410/700;
+  max-width: 100%;
   max-height: 700px;
+  height: 100%;
+  display: flex;
   align-items: center;
   justify-content: center;
-  max-width: 430px;
   position: relative;
   overflow: hidden;
   background-color: rgba(27, 47, 192, 0.3);
@@ -45,14 +49,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width:70%;
+  width:100%;
   height: 56%;
   position: absolute;
   overflow: hidden;
 }
 
 .WelcomeScene__button-animation {
-  width: 90%;
+  width: 64%;
   height: 90%;
   position: absolute;
   top: 50%;
@@ -210,7 +214,7 @@
 }
   
 .WelcomeScene__start-button {
-  width: 70%;
+  width: 50%;
   background-color: rgba(2, 86, 197, 0.5);
   border-radius: 50px;
   border: none;
@@ -253,11 +257,13 @@
   text-align: center;
   text-transform: uppercase;
   color: #00FFFF;
+  padding: 5px;
 }
 
 .WelcomeScene__caution {
   position: absolute;
   top: 74%;
+  max-width: calc(100% - 40px);
   z-index: -1;
 }
 
@@ -272,7 +278,6 @@
 
 .WelcomeScene__caution a {
   color: #00f0ff;
-  font-family: 'Inter';
   font-weight: 300;
   font-size: 18px;
   text-align: center;
@@ -289,28 +294,47 @@
     font-size: 38px;   
   }
 
-  .WelcomeScene__caution p {
-    font-size: 14px;
-  }
-
-  .WelcomeScene__caution a {
-    font-size: 14px;
-  }
-
 }
-@media (max-height: 580px) 
+
+@media (max-height: 667px) and (min-width: 501px)
 {
   .WelcomeScene__start-button-title {
-    font-size: 28px;   
+    font-size: 38px;   
   }
 
   .WelcomeScene__caution p {
-    font-size: 14px;
+    font-size: 15px;
   }
 
   .WelcomeScene__caution a {
-    font-size: 14px;
+    font-size: 15px;
   }
-}
+
+  .WelcomeScene__caution {
+    max-width: calc(100% - 20px);
+  }
+
+  }
+
+  @media (max-height: 520px) and (min-width: 501px)
+{
+  .WelcomeScene__start-button-title {
+    font-size: 34px;   
+  }
+
+  .WelcomeScene__caution p {
+    font-size: 13px;
+  }
+
+  .WelcomeScene__caution a {
+    font-size: 13px;
+  }
+
+  .WelcomeScene__caution {
+    max-width: calc(100% - 10px);
+  }
+
+  }
+
 
 
