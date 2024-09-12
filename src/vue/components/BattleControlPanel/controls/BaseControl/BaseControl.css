@@ -1,4 +1,11 @@
+.BaseControl__container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
 .BaseControl {
+  position: relative;
   display: flex;
   position: relative;
   justify-content: center;
@@ -6,11 +13,12 @@
   padding: 0;
   border: none;
   background-color: transparent;
-  position: relative;
   color: #005EEA;
   cursor: pointer;
   outline: none;
   user-select: none;
+  pointer-events: all;
+  z-index: 2;
 }
 
 
@@ -22,12 +30,11 @@
 .BaseControl[disabled],
 .BaseControl.cooldown {
   cursor: default;
-  pointer-events: none;
+  /* pointer-events: none; */
 }
 
-
 .BaseControl:not(.disabled, .active) svg {
-  opacity: 0.5;
+  opacity: 0.3;
 }
 
 .BaseControl__fill {
@@ -53,6 +60,15 @@
 
 .BaseControl.invisibility .BaseControl__icon > svg {
   height: 80%;
+}
+
+.BaseControl.canLevelUp {
+  cursor: grab;
+}
+
+.BaseControl.canLevelUp:active {
+  cursor: grabbing;
+  pointer-events: all;
 }
 
 .BaseControl__icon,
@@ -81,6 +97,12 @@
   transform: scale(1.075);
 }
 
+.BaseControl[disabled]:hover .BaseControl__icon,
+.BaseControl[disabled]:hover .BaseControl__content,
+.BaseControl.cooldown:hover .BaseControl__icon,
+.BaseControl.cooldown:hover .BaseControl__content {
+  transform: none;
+}
 .BaseControl:not(.hasContent):active .BaseControl__icon,
 .BaseControl:active .BaseControl__content {
   transform: scale(1);
@@ -127,72 +149,68 @@
   line-height: 1;
 }
 
-.Emotion {
+.BaseSkill__levelUp {
+  position: absolute;
+  pointer-events: all;
+  z-index: 3;
+  top: -10%;
+  left: 0;
+  width: 100%;
+  height: 38%;
+}
+
+.BaseSkill__levelContainer {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.BaseSkill__levelAnimation {
   position: absolute;
   width: 100%;
   height: 100%;
-  top: -30%;
-}
-
-.Emotion__area {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-.Emmotion__animation {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(1,1);
-    transform-origin:center;
-    z-index: -1;
-    overflow: hidden;
-    animation: zoomOut 4s infinite forwards linear;
-  
+  opacity: 0;
+  transform: translateY(25%) scale(1,1);
+  animation: zoomOut 4s infinite forwards linear;
 }
 
 @keyframes zoomOut {
   from {
       opacity: 0;
-      transform: translate(-50%, -50%) scale(1,1);
+      transform: translateY(25%) scale(1,1);
+  }
+  20% {
+    opacity: 0.7;
+    transform: translateY(10%) scale(1,1);
   }
 
-  50% {
-      transform: translate(-50%, -60%) scale(1,1);
-      opacity: 0.5;
-  }
   to {
     opacity: 0;
-    transform: translate(-50%, -70%) scale(1,1);
+    transform: translateY(-40%) scale(1,1);
 }
 }
 
-.Emmotion__animation:nth-child(1) {
+.BaseSkill__levelAnimation:nth-child(1) {
   animation-delay: calc(1000ms * -1);
 }
 
-.Emmotion__animation:nth-child(2) {
+.BaseSkill__levelAnimation:nth-child(2) {
   animation-delay: calc(1000ms * 0);
 }
 
-.Emmotion__animation:nth-child(3) {
+.BaseSkill__levelAnimation:nth-child(3) {
   animation-delay: calc(1000ms * 1);
 }
 
-.Emmotion__animation:nth-child(4) {
+.BaseSkill__levelAnimation:nth-child(4) {
   animation-delay: calc(1000ms * 2);
-}
+} 
 
-.Emmotion__animation:nth-child(5) {
+.BaseSkill__levelAnimation:nth-child(5) {
   animation-delay: calc(1000ms * 3);
 }
 
-.Emmotion__animation:nth-child(6) {
+.BaseSkill__levelAnimation:nth-child(6) {
   animation-delay: calc(1000ms * 4);
 }
-
-
 

@@ -223,6 +223,7 @@ export default {
       this.$client.onCloseBox()
     },
     handleCheckboxChange(player, checked) {
+      this.$client.onCloseBox()
       this.$client.onGameStartWithBot()
       console.log(`${player} checked status: ${checked}`);
     }

@@ -3,15 +3,18 @@
     display: flex;
     justify-content: center;
     left: 0;
-    bottom: 2%;
+    bottom: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
     width: 100%;
     z-index: 2;
     pointer-events: all;
+    transform: scale(0.9);
   }
   
   .AudioMenu {
-    width: 90%;
-    max-width: 410px;
+    width: 100%;
+    max-width: 430px;
     position: relative;
     display: flex;
     align-items: center;
@@ -137,8 +140,11 @@
   }
 
   
-  @media (max-width: 425px) {
-  
+  @media (max-width: 430px) {
+    .AudioMenu__container {
+      transform: scale(0.9);
+    }
+
     .AudioMenu__title {
       font-size: 24px;
     }

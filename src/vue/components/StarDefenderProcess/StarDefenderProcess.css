@@ -113,3 +113,9 @@
   .StarDefenderProcess__dot.is-disabled::after {
     opacity: 0;
   }
+
+  @media (max-width: 430px) {
+    .StarDefenderProcess {
+        transform: scale(0.8);
+    }
+}

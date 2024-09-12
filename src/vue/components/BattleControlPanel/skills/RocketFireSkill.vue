@@ -13,7 +13,9 @@
       :disabled="disabled"
       :cooldown="hasCooldown ? toSeconds(cooldown.duration) : null"
       :progress="cooldown ? cooldown.progress : 0"
+      :params="params"
       @click="$emit('fire')"
+      @levelUp="$emit('levelUp')"
     />
   </BaseSkill>
 </template>

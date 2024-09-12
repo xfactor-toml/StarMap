@@ -66,6 +66,12 @@
     color: white;
 }
 
+@media (max-width: 430px) {
+    .StarDefenderButton {
+        transform: scale(0.8);
+    }
+}
+
 
 
   
