@@ -8,6 +8,10 @@
     transition: transform 0.2s ease;
 }
 
+.BattleTutorialAnimationButton.is-disabled {
+  pointer-events: none;
+}
+
 .BattleTutorialAnimationButton:hover {
   cursor: pointer;
   transform: scale(1.05);

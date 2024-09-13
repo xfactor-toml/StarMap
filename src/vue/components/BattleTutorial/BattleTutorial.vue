@@ -25,6 +25,7 @@
                         :text="item.text"
                         :image-path="item.imagePath"
                         :animationIamgePath="item.animationIamgePath"
+                        :index="currentIndex"
                         @click="handleStep"             
                         />
                     </div>
@@ -60,11 +61,13 @@ export default {
             if(text == 'PREVIOUS') {
                 if(this.currentIndex > 0)
                     this.currentIndex--
-               
+                
             }
             else if(text == 'NEXT') {
                 if(this.currentIndex < 2)
                     this.currentIndex++
+                else
+                    this.$emit('skip');
             }
             else if(text == 'SKIP'){
                 this.$emit('skip');
