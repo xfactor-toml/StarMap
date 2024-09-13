@@ -6,6 +6,8 @@
                 <div class="PreGameCountdown__player-img">
                     <img src="/gui/images/pre-game-countdown/image.png" />
                 </div>
+                <div class="PreGameCountdown__player-shadow"/>
+
             </div>
             <h4 class="PreGameCountdown__player-name orbitron-font --semiBold">NAME HERO</h4>
         </div>
