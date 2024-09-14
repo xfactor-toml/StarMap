@@ -1,4 +1,4 @@
-import { AcceptScreenAction, Emotion, ShopData } from "../battle/Types"
+import { AcceptScreenAction, AcceptScreenData, Emotion, ShopData } from "../battle/Types"
 
 export enum GameEvent {
 
@@ -60,16 +60,8 @@ export enum GameEvent {
 
 }
 
-export type AcceptEventData = {
-  eventName: GameEvent.BATTLE_ACCEPT_SCREEN,
-  action: AcceptScreenAction,
-  time?: {
-    acceptTimeSec: number
-  },
-  state?: {
-    current: number,
-    max: number
-  }
+export type AcceptEventData = AcceptScreenData & {
+  eventName: GameEvent.BATTLE_ACCEPT_SCREEN
 }
 
 export type EmotionEventData = {

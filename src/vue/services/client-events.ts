@@ -118,10 +118,10 @@ export class ClientEventsService {
           case 'start':
             // playersConnectMock();
             // seconds
-            const ACCEPT_TIME = clientEvent.time?.acceptTimeSec || 50
-            // const LOADING_TIME = 4
+            const ACCEPT_TIME = clientEvent.timer || 50;
+            const SHOW_TUTOR = clientEvent.showTutor;
             
-            scenesStore.setScene(UISceneNames.Battle)
+            scenesStore.setScene(UISceneNames.Battle);
 
             // Accept
             scenesStore.setSceneMode('accept');

@@ -70,9 +70,7 @@ export class GameEventDispatcher {
         let data: AcceptEventData = {
             eventName: GameEvent.BATTLE_ACCEPT_SCREEN,
             action: 'start',
-            time: {
-                acceptTimeSec: aAcceptTime
-            }
+            timer: aAcceptTime
         };
         window.dispatchEvent(new CustomEvent('gameEvent', {
             detail: data

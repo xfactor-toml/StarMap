@@ -1,4 +1,4 @@
-import { AcceptScreenAction, BattleShopAction, BoxOpenData, ExpData, GameCompleteData, ShopData, StartGameData } from '~/game/battle/Types';
+import { AcceptScreenAction, AcceptScreenData, BattleShopAction, BoxOpenData, ExpData, GameCompleteData, ShopData, StartGameData } from '~/game/battle/Types';
 import { ServerStarData } from '~/game/data/Types';
 import { FrontEvents } from '~/game/events/FrontEvents';
 import { EmotionEventData, ExplosionEventData, GameEvent, StarGameEventData } from '~/game/events/Types';
@@ -74,16 +74,8 @@ export interface StarModeEvent extends BaseEvent {
   eventName: GameEvent.STAR_MODE;
 }
 
-export interface BattleAcceptScreen extends BaseEvent {
+export interface BattleAcceptScreen extends BaseEvent, AcceptScreenData {
   eventName: GameEvent.BATTLE_ACCEPT_SCREEN;
-  action: AcceptScreenAction;
-  time?: {
-    acceptTimeSec: number
-  },
-  state?: {
-    current: number,
-    max: number
-  }
 }
 export interface BattleSearchingStart extends BaseEvent {
   eventName: GameEvent.BATTLE_SEARCHING_START;
