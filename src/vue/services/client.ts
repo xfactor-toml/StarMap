@@ -126,7 +126,7 @@ export class ClientService {
   }
 
   onPlayerPick() {
-    FrontEvents.onPlayerPickClick.dispatch();
+    FrontEvents.onPlayerHeroPickClick.dispatch();
   }
 
   onBattleAccept() {

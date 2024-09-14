@@ -27,7 +27,7 @@ export class GalaxyScene extends BasicScene {
 
     private _isDuelSearching = false;
     private _timerDuelCheck = 0;
-    
+
     bcs = BlockchainConnectService.getInstance();
 
     constructor() {
@@ -95,7 +95,7 @@ export class GalaxyScene extends BasicScene {
         FrontEvents.onBattleSearch.add(this.onFrontStartBattleSearch, this);
         FrontEvents.onBattleSearchBot.add(this.onFrontStartBattleBotSearch, this);
         FrontEvents.onBattleStopSearch.add(this.onFrontStopBattleSearch, this);
-        FrontEvents.onPlayerPickClick.add(this.onFrontPlayerPickClick, this);
+        FrontEvents.onPlayerHeroPickClick.add(this.onFrontPlayerPickClick, this);
         // battle server events
         let bc = BattleConnection.getInstance();
         bc.on(PackTitle.gameSearching, this.onGameSearchPack, this);
@@ -188,24 +188,13 @@ export class GalaxyScene extends BasicScene {
         this._isBattleSearching = true;
     }
 
-     private onFrontPlayerPickClick() {
-         setTimeout(() => {
-             // this._battleScene.show();
-             this.startScene(SceneNames.BattleScene);
-            }, 3000);
-         GameEventDispatcher.playerPickScreenClose();
-               
-     }
+    private onFrontPlayerPickClick() {
+        setTimeout(() => {
+            this.startScene(SceneNames.BattleScene);
+        }, 3000);
+        GameEventDispatcher.playerPickScreenClose();
 
-    // private onFrontChallengeClick() {
-    //     let con = BattleConnection.getInstance();
-    //     if (!con.connected) {
-    //         GameEventDispatcher.showMessage(`No connection to server!`);
-    //         return;
-    //     }
-    //     GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_START);
-    //     con.sendDuelCreate();
-    // }
+    }
 
     private onFrontStopBattleSearch() {
         AudioMng.getInstance().playSfx({ alias: AudioAlias.SFX_CLICK });
@@ -250,30 +239,30 @@ export class GalaxyScene extends BasicScene {
 
                 GameEventDispatcher.battlePrerollShow(aData);
 
-                // setTimeout(() => {
-                    //this._battleScene.show();
-                //     this.startScene(SceneNames.BattleScene);
-                // }, 1000);
-                // break;
+            // setTimeout(() => {
+            //this._battleScene.show();
+            //     this.startScene(SceneNames.BattleScene);
+            // }, 1000);
+            // break;
             default:
                 this.logDebug(`onBattleStartPackage(): unknown cmd:`, aData);
                 break;
         }
     }
-    
+
     private onDuelPack(aData: DuelInfo) {
         // generate link for challenge
         this.logDebug(`onDuelPack:`, aData);
         switch (aData.cmd) {
             // case 'number':
-                // gen link and copy
-                // let link = `${window.location.origin}?duel=${aData.challengeNumber}#debug`;
-                // this.logDebug(`link: ${link}`);
-                // MyUtils.copyToClipboard(link);
-                // // msg
-                // GameEventDispatcher.showMessage(`Link copied to clipboard`);
+            // gen link and copy
+            // let link = `${window.location.origin}?duel=${aData.challengeNumber}#debug`;
+            // this.logDebug(`link: ${link}`);
+            // MyUtils.copyToClipboard(link);
+            // // msg
+            // GameEventDispatcher.showMessage(`Link copied to clipboard`);
             // break;
-            
+
             case 'found':
                 this._isDuelSearching = true;
                 const thisUserNick = String(this.bcs.telegramLogin()).replace('@', '').toLowerCase();
@@ -297,12 +286,12 @@ export class GalaxyScene extends BasicScene {
                 // GameEventDispatcher.showMessage(`Duel game not found`);
                 GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_STOP);
                 break;
-            
+
             case 'cancel':
                 this.logDebug(`Duel game canceled...`);
                 GameEventDispatcher.dispatchEvent(GameEvent.BATTLE_SEARCHING_STOP);
                 break;
-            
+
         }
     }
 
@@ -476,7 +465,7 @@ export class GalaxyScene extends BasicScene {
         }
 
         const f = DebugGui.getInstance().createFolder('Tests');
-        f.add(DATA, 'getGlobalSize').name('Global Size'); 
+        f.add(DATA, 'getGlobalSize').name('Global Size');
     }
 
     protected onFree() {
