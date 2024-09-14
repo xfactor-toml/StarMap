@@ -9,6 +9,7 @@
   padding-right: 10px;
   z-index: 2;
   pointer-events: all;
+  user-select: none;
   transform: scale(0.9);
 }
 

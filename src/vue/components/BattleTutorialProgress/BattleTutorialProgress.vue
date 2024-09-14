@@ -2,7 +2,7 @@
   <div class="BattleTutorialProgress">
     <transition name="fade">
       <BattleTutorial 
-        v-if="showTutorial"
+        v-if="battleStore.connecting.showTutorial"
         @skip="handleSkip"
       />
       <BattleReadyProgress v-else />
@@ -13,6 +13,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { BattleTutorial, BattleReadyProgress } from '@/components';
+import { useBattleStore } from '@/stores';
+import { mapStores } from 'pinia';
 
 export default defineComponent({
   name: 'BattleTutorialProgress',
@@ -20,14 +22,10 @@ export default defineComponent({
     BattleTutorial,
     BattleReadyProgress
   },
-  data() {
-    return {
-      showTutorial: true,
-    };
-  },
+  computed: mapStores(useBattleStore),
   methods: {
     handleSkip() {
-      this.showTutorial = false;
+      this.battleStore.connecting.setShowTutorial(false);
     },
   },
 });
