@@ -7,8 +7,11 @@
         <div class="ModelControl__boxshadow"/>
         <div class="ModelControl__progress">
             <svg 
-             viewBox="0 0 76 87" 
-             fill="none" 
+                xmlns="http://www.w3.org/2000/svg"
+                width="76"
+                height="87"
+                viewBox="0 0 76 87" 
+                fill="none" 
             >
                  <path 
                     v-if="progress"

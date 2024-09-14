@@ -58,7 +58,7 @@ export default {
   data() {
     return {
       showAgreement: false,
-      preservedFullscreenRun: true
+      preservedFullscreenRun: true,
     };
   },
   computed: {

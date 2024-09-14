@@ -12,7 +12,7 @@
             <img src="/gui/images/battle-ready-progress/readybutton.svg">
             <div class="BattleReadyProgress__acceptprogress">
                 <BattleAcceptProgress 
-                  :total-time="50"
+                  :total-time="battleStore.connecting.acceptTime"
                   :increase="false"
                   @update="updateTime"
                   />
@@ -29,23 +29,31 @@
                 Amet, luctus leo, platea orci, cursus in nisi cursus dictum libero, ipsum nulla imperdiet nulla non molestie justo cursus dolor velit venenatis amet, vel consectetur dictum. Cras id non platea .
             </p>
         </div>
-        <p class="BattleReadyProgress__bottom --bold"> decline match </p>
+        <a class="BattleReadyProgress__bottom --bold" @click="handleDeclineMatch">
+            decline match
+        </a>
         </div>
     </div>
 </template>
 
 <script  lang="ts">
   import { BattleAcceptProgress } from '@/components';
-  
+  import { useBattleStore } from '@/stores';
+  import { mapStores } from 'pinia';
   export default {
     name: 'BattleReadyProgress',
     data() {
         return {
-            time: 50,
+            time: 0,
         }
     },
     components: {
         BattleAcceptProgress,
+    },
+    computed: mapStores(useBattleStore),
+
+    beforeMount() {
+        this.time = this.battleStore.connecting.acceptTime;
     },
     methods: {
         updateTime(time: Number) {
@@ -56,6 +64,9 @@
         },
         handleButtonClick() {
             this.$client.onBattleAccept()
+        },
+        handleDeclineMatch() {
+            this.$client.onBattleConnectExit()
         },
     }, 
     

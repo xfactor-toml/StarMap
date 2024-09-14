@@ -120,6 +120,7 @@ export class ClientEventsService {
             // seconds
             const ACCEPT_TIME = clientEvent.timer || 50;
             const SHOW_TUTOR = clientEvent.showTutor;
+            console.log('SHOW_TUTOR', ACCEPT_TIME, SHOW_TUTOR)
             
             scenesStore.setScene(UISceneNames.Battle);
 
@@ -127,7 +128,7 @@ export class ClientEventsService {
             scenesStore.setSceneMode('accept');
             uiStore.stardefender.setStarDefenderMenu('MAIN MENU')
             battleStore.connecting.setAcceptTime(ACCEPT_TIME);
-
+            battleStore.connecting.setShowTutorial(SHOW_TUTOR);
             // await wait(toMilliseconds({
             //   seconds: ACCEPT_TIME / 3
             // }))

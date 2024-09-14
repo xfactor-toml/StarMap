@@ -182,6 +182,10 @@ export default {
     // Save initial positions
     this.dragStartX = event.clientX;
     this.dragStartY = event.clientY;
+    const content = this.$refs.skillContent as HTMLElement;
+    const svgElement = content.querySelector('svg');
+    svgElement.style.setProperty('opacity', '1', 'important');
+    this.$emit('levelUp');
   },
   handleDrag(event: DragEvent) {
     if (!event.clientX || !event.clientY) return;
@@ -191,15 +195,7 @@ export default {
 
     const content = this.$refs.skillContent as HTMLElement;
     const svgElement = content.querySelector('svg');
-    const levelUp = this.$refs.levelUp as HTMLElement;
-
-    const contentRect = content.getBoundingClientRect();
-    const levelUpRect = levelUp.getBoundingClientRect();
-    content.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
-    if (contentRect.top < levelUpRect.top) {
-      svgElement.style.setProperty('opacity', '1', 'important');
-      this.levelUp = true;
-    }
+    content.style.transform = `translate(${deltaX}px, ${deltaY}px)`
   },
   handleDragEnd(event: DragEvent) {
     this.dragging = false;
@@ -207,16 +203,6 @@ export default {
     content.style.transform = '';
   },
   handleDrop(event: DragEvent) {
-    const content = this.$refs.skillContent as HTMLElement;
-    const levelUp = this.$refs.levelUp as HTMLElement;
-
-    const contentRect = content.getBoundingClientRect();
-    const levelUpRect = levelUp.getBoundingClientRect();
-    if (this.levelUp) {
-    this.$emit('levelUp');
-    console.log('levelUp========================')
-    this.levelUp = false;
-  }
 }
   }
 }
