@@ -115,6 +115,7 @@
   justify-content: flex-end;
   align-items: center;
   gap: 20px;
+  pointer-events: all;
 }
 
 /* Media queries */
@@ -257,4 +258,20 @@
 .UserMenu__icon:hover,
 .UserMenu__icon.active {
   opacity: 100%;
+}
+
+
+@media (max-height: 667px) {
+  .UserMenu__body {
+    transform: scale(0.9);
+    top: 90px;
+  }
+}
+
+@media (min-width: 501px) and (max-height: 667px) {
+
+ .UserMenu__body {
+  transform: scale(0.8);
+  top: 80px;
+ }
 }

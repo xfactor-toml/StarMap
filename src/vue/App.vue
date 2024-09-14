@@ -2,7 +2,7 @@
     <transition :css="false" @enter="onEnter" @leave="onLeave" @after-leave="onAfterLeave">
       <component :is="scenesStore.current.scene.getComponent()" />
     </transition>
-    <!-- <div class="version">{{ version }}</div> -->
+    <div class="version">{{ version }}</div>
     <WalletConnectPopup v-if="walletStore.popup" @close="walletStore.hidePopup" />
 </template>
 

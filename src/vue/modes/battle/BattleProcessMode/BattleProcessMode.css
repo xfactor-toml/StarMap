@@ -100,3 +100,9 @@
     flex-grow: 0;
   }
 }
+
+@media (max-height: 667px) and (min-width: 501px) {
+  .BattleProcessMode__panel {
+    bottom: 0px;
+  }
+}

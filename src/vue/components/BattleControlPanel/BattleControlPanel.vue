@@ -27,6 +27,7 @@
       />
      <ModelControl 
       :level="level.current"
+      :progress="level.progress"
       @click="showShopMenu"
       />
       <SlowdownSkill

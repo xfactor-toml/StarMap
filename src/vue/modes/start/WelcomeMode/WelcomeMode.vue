@@ -38,9 +38,9 @@
           </div>
         </div>
         <div class="WelcomeScene__caution">
-          <p>This site is protected by reCAPTCHA</p>
-          <p>and the Google <a>Privacy Policy</a></p>
-          <p>and <a>Terms of Service</a> apply.</p>
+          <p>This site is protected by reCAPTCHA
+          and the Google <a>Privacy Policy</a>
+          and <a>Terms of Service</a> apply.</p>
         </div>
       </div>
 

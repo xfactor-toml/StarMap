@@ -408,3 +408,15 @@
 .BoxContentPopup__cards::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+@media (max-height: 667px) {
+
+  .BoxContentPopup__title {
+    font-size: 18px;
+  }
+
+  .BoxContentPopup__button-text {
+    font-size: 22px;
+  }
+  
+}

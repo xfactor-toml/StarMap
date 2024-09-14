@@ -64,6 +64,9 @@
 
 .PreGameCountdown__player-info {
     position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     height: calc(100% - 50px);
     width: 80%;
     z-index: 3;
@@ -79,6 +82,23 @@
     align-items: center;
     justify-content: center;
     z-index: 1;
+}
+
+.PreGameCountdown__player-shadow{
+  position: absolute;
+  width: 70%;
+  height: 55%;
+  border-radius: 50%;
+  box-shadow: 
+    0px 0px 4px rgba(0, 93, 234, 0.5),    /* Small shadow all around */
+    0px 0px 16px rgba(0, 93, 234, 0.5),   /* Larger shadow all around */
+    0px 0px 30px rgba(0, 93, 234, 0.5),   /* Larger shadow all around */
+    0px 0px 60px rgba(0, 93, 234, 0.5),   /* Even larger shadow */
+    0px 0px 120px rgba(0, 93, 234, 0.5),  /* Very large shadow */
+    0px 0px 200px rgba(0, 93, 234, 0.5);  /* Extra large shadow */
+    z-index: -1;
+  z-index: -1;
+
 }
 
 .PreGameCountdown__player-name {
