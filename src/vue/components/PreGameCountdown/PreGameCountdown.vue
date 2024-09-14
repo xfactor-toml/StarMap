@@ -11,7 +11,7 @@
             </div>
             <h4 class="PreGameCountdown__player-name orbitron-font --semiBold">NAME HERO</h4>
         </div>
-        <div class="PreGameCountdown__title">
+        <div :key="currentTitleImage" class="PreGameCountdown__title">
             <img :src="currentTitleImage" class="title-image"/>
         </div>
 

@@ -12,6 +12,7 @@
   display: flex;
   justify-content: flex-end;
   align-items: flex-end;
+  user-select: none;
 }
 
 .StarDefenderProcess__connectLine {

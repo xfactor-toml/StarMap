@@ -6,6 +6,8 @@ import { BattleConnectedUsers } from '@/types';
 
 export const useBattleConnectingStore = defineStore('battleConnecting', () => {
   const playerSearching = ref(false)
+  const showTutorial = ref(false)
+  const acceptTime = ref(0)
   const acceptTimeProgress = ref(0)
   const acceptTimeProgressAnimation = ref<anime.AnimeInstance | null>(null)
   const loadingProgress = ref(0)
@@ -14,12 +16,18 @@ export const useBattleConnectingStore = defineStore('battleConnecting', () => {
     max: 0,
   })
 
+
   const setPlayerSearchingState = (state: boolean) => {
     playerSearching.value = state;
   }
 
+  const setShowTutorial = (state: boolean) => {
+    showTutorial.value = state;
+  }
+
   // time - seconds
   const setAcceptTime = (time: number) => {
+    acceptTime.value = time
     if (acceptTimeProgressAnimation.value) {
       cancelAnimation(acceptTimeProgressAnimation.value)
     }
@@ -51,9 +59,12 @@ export const useBattleConnectingStore = defineStore('battleConnecting', () => {
     acceptTimeProgress,
     loadingProgress,
     connectedUsers,
+    acceptTime,
+    showTutorial,
     setAcceptTime,
     setLoadingProgress,
     setPlayerSearchingState,
-    setConnectedUsers
+    setConnectedUsers,
+    setShowTutorial
   }
 });
