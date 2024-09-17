@@ -2,7 +2,7 @@
     <div class="PlayerModel" >
         <img :src="background"/>
         <div class="PlayerModel__pic">
-            <img :src="player.avatar"/>
+            <img :src="player?.avatar"/>
         </div>
         <div class="PlayerModel__info" @click="click">
             <img :src="info"/>

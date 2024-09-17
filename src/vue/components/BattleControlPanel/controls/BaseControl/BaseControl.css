@@ -17,7 +17,6 @@
   cursor: pointer;
   outline: none;
   user-select: none;
-  pointer-events: all;
   z-index: 2;
 }
 

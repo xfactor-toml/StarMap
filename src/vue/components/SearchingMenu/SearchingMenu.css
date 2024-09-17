@@ -57,6 +57,17 @@
     height: 20px;
   }
 
+  .SearchingMenu__inviteFriend {
+    position: absolute;
+    z-index: 10;
+    top: 22.5%;
+    right: 10%;
+  }
+
+  .SearchingMenu__inviteFriend:hover {
+    cursor: pointer;
+  }
+
   .SearchingMenu__close:hover {
     cursor: pointer;
   }
@@ -178,8 +189,8 @@
   }
 
   .SearchingMenu__animation {
-    width: 100%;
-    /* height: 74%; */
+    aspect-ratio: 300/80;
+    height: 74%;
     margin-top: 4%;
     display: flex;
     align-items: center;
@@ -211,18 +222,15 @@
     transition: transform 0.3s ease;
    
   }
-
   
   .SearchingMenu__button-animation {
     display: flex;
     justify-content: center;
     align-items: center;
+    aspect-ratio: 300/80;
     width: 75%;
-    height: 100%;
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(1,1);
+    transform: scale(1,1);
     transform-origin: center;
     opacity: 1;
     z-index: 1;
@@ -232,63 +240,64 @@
   @keyframes zoomOut {
     from {
         opacity: 1;
-        transform: translate(-50%, -50%) scale(1,1);
+        transform: scale(1,1);
     }
+    
     to {
       opacity: 0;
-      transform: translate(-50%, -50%) scale(1.112,1.4);
+      transform: scale(1.112,1.4);
   }
   }
   .SearchingMenu__button-animation:nth-child(1) {
-    animation-delay: calc(1000ms * -10);
-  }
-  
-  .SearchingMenu__button-animation:nth-child(2) {
-    animation-delay: calc(1000ms * -9);
-  }
-  
-  .SearchingMenu__button-animation:nth-child(3) {
-    animation-delay: calc(1000ms * -8);
-  }
-  
-  .SearchingMenu__button-animation:nth-child(4) {
-    animation-delay: calc(1000ms * -7);
-  }
-  
-  .SearchingMenu__button-animation:nth-child(5) {
-    animation-delay: calc(1000ms * -6);
-  }
-  
-  .SearchingMenu__button-animation:nth-child(6) {
-    animation-delay: calc(1000ms * -5);
-  }
-  
-  .SearchingMenu__button-animation:nth-child(7) {
-    animation-delay: calc(1000ms * -4);
-  }
-  
-  .SearchingMenu__button-animation:nth-child(8) {
-    animation-delay: calc(1000ms * -3);
-  }
-
-  .SearchingMenu__button-animation:nth-child(9) {
-    animation-delay: calc(1000ms * -2);
-  }
-  
-  .SearchingMenu__button-animation:nth-child(10) {
     animation-delay: calc(1000ms * -1);
   }
   
-  .SearchingMenu__button-animation:nth-child(11) {
+  .SearchingMenu__button-animation:nth-child(2) {
     animation-delay: calc(1000ms * 0);
   }
   
-  .SearchingMenu__button-animation:nth-child(12) {
+  .SearchingMenu__button-animation:nth-child(3) {
     animation-delay: calc(1000ms * 1);
   }
   
+  .SearchingMenu__button-animation:nth-child(4) {
+    animation-delay: calc(1000ms * 2);
+  }
+  
+  .SearchingMenu__button-animation:nth-child(5) {
+    animation-delay: calc(1000ms * 3);
+  }
+  
+  .SearchingMenu__button-animation:nth-child(6) {
+    animation-delay: calc(1000ms * 4);
+  }
+  
+  .SearchingMenu__button-animation:nth-child(7) {
+    animation-delay: calc(1000ms * 5);
+  }
+  
+  .SearchingMenu__button-animation:nth-child(8) {
+    animation-delay: calc(1000ms * 6);
+  }
+
+  .SearchingMenu__button-animation:nth-child(9) {
+    animation-delay: calc(1000ms * 7);
+  }
+  
+  .SearchingMenu__button-animation:nth-child(10) {
+    animation-delay: calc(1000ms * 8);
+  }
+  
+  .SearchingMenu__button-animation:nth-child(11) {
+    animation-delay: calc(1000ms * 9);
+  }
+  
+  .SearchingMenu__button-animation:nth-child(12) {
+    animation-delay: calc(1000ms * 10);
+  }
+  
   .SearchingMenu__button-animation:nth-child(13) {
-    animation-delay: calc(1000ms * 1);
+    animation-delay: calc(1000ms * 11);
   }
   
   .SearchingMenu__button-animation:nth-child(14) {

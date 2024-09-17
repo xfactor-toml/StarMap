@@ -1,14 +1,17 @@
 <template>
   <div class="BaseControl__container">
     <button
-    class="BaseControl"
-    :class="{ active, disabled, cooldown: hasCooldown, hasContent: Boolean($slots.default),[name]: Boolean(name), canLevelUp: canLevelUp}"
-    :disabled="!active || disabled"
-    ref="skillContent"
-    :draggable="canLevelUp"
-    @dragstart="handleDragStart"
-    @drag="handleDrag"
-    @dragend="handleDragEnd"
+      class="BaseControl"
+      :class="{ active, disabled, cooldown: hasCooldown, hasContent: Boolean($slots.default),[name]: Boolean(name), canLevelUp: canLevelUp}"
+      :disabled="!active || disabled"
+      ref="skillContent"
+      :draggable="canLevelUp"
+      @dragstart="handleDragStart"
+      @drag="handleDrag"
+      @dragend="handleDragEnd"
+      @touchstart="handleTouchStart"
+      @touchmove="handleTouchMove"
+      @touchend="handleTouchEnd"
     >
    <svg 
     class="BaseControl__outline" 
@@ -68,6 +71,7 @@
       ref="levelUp"
       @dragover.prevent
       @drop="handleDrop"
+      @touchend="handleTouchEnd"
       >
       <div class="BaseSkill__levelContainer">
         <div v-for="(item, index) in 6" :key="index" class="BaseSkill__levelAnimation">
@@ -132,12 +136,14 @@ export default {
       dragStartX: 0,
       dragStartY: 0,
       levelUp: false,
+      touchStartX: 0,
+      touchStartY: 0,
     };
   },
   computed: {
     hasCooldown() {
       console.log(this.cooldown, 'cooldown')
-     return this.cooldown !== null
+      return this.cooldown !== null && this.cooldown !== undefined;
     },
     canDrag() {
       return this.canLevelUp && this.hasCooldown;
@@ -203,7 +209,48 @@ export default {
     content.style.transform = '';
   },
   handleDrop(event: DragEvent) {
-}
+},
+  handleTouchStart(event: TouchEvent) {
+    if (!this.canLevelUp) return;
+    this.dragging = true;
+    const touch = event.touches[0];
+    this.touchStartX = touch.clientX;
+    this.touchStartY = touch.clientY;
+    const content = this.$refs.skillContent as HTMLElement;
+    const svgElement = content.querySelector('svg');
+    svgElement.style.setProperty('opacity', '1', 'important');
+    this.$emit('levelUp');
+  },
+  handleTouchMove(event: TouchEvent) {
+    if (!this.dragging) return;
+    const touch = event.touches[0];
+    const deltaX = touch.clientX - this.touchStartX;
+    const deltaY = touch.clientY - this.touchStartY;
+
+    const content = this.$refs.skillContent as HTMLElement;
+    content.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+  },
+  handleTouchEnd(event: TouchEvent) {
+    if (!this.dragging) return;
+    this.dragging = false;
+    const content = this.$refs.skillContent as HTMLElement;
+    content.style.transform = '';
+
+    // Check if the touch ended over the level up area
+    const levelUpElement = this.$refs.levelUp as HTMLElement;
+    if (levelUpElement) {
+      const touch = event.changedTouches[0];
+      const rect = levelUpElement.getBoundingClientRect();
+      if (
+        touch.clientX >= rect.left &&
+        touch.clientX <= rect.right &&
+        touch.clientY >= rect.top &&
+        touch.clientY <= rect.bottom
+      ) {
+        this.handleDrop(event);
+      }
+    }
+  }
   }
 }
 </script>

@@ -80,7 +80,7 @@ export default {
             if ( this.selectedMenu == 'SEARCH GAME')
                 return 'SEARCHING'
             else if ( this.selectedMenu == 'PLAY WITH A BOT')
-                return 'WAITING'
+                return 'BOT WAITING'
             else 
                 return 'DUEL WAITING'
         }

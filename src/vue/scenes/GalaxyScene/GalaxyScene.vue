@@ -26,17 +26,18 @@
 
     <transition name="fade">
       <SearchingMenu 
-        v-if="stardefender == 'SEARCH GAME' || stardefender == 'PLAY WITH A BOT' || stardefender == 'DUEL WAITING'" 
+        v-if="stardefender == 'SEARCH GAME' || stardefender == 'PLAY WITH A BOT' || stardefender == 'DUEL'" 
         @close="closeMenu" 
         @previous="handlePrevious" 
         @cancel="cancelOperation"
+        @inviteFriend="inviteFriend"
         :currentMenu="stardefender"
       />
     </transition>
 
     <transition name="fade">
       <DuelMenu 
-        v-if="stardefender == 'DUEL'" 
+        v-if="stardefender == 'INVITE DUEL'" 
         @close="closeMenu" 
         @previous="handlePrevious" 
         @sendLink="sendLink"
@@ -204,7 +205,11 @@ export default {
     },
 
     sendLink() {
-      this.uiStore.stardefender.setStarDefenderMenu('DUEL WAITING')
+      // this.uiStore.stardefender.setStarDefenderMenu('DUEL WAITING')
+    },
+
+    inviteFriend() {
+      this.uiStore.stardefender.setStarDefenderMenu('INVITE DUEL')
     }
 
   },

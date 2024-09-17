@@ -32,7 +32,8 @@
 
     <template v-for="starGame in uiStore.star.starGameInitList" :key="starGame.id">
       <StarDefenderProcess 
-        v-if="stardefender === 'SEARCH GAME' || stardefender === 'PLAY WITH A BOT' || stardefender === 'DUEL WAITING'"
+        v-if="stardefender === 'SEARCH GAME' || stardefender === 'PLAY WITH A BOT' || stardefender === 'DUEL'"
+        :selectedMenu="stardefender"
         :position="starGame.position2d"
       />   
       <StarDefenderButton

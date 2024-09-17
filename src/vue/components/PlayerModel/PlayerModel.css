@@ -13,6 +13,7 @@
 
 .PlayerModel__pic {
     position: absolute;
+    aspect-ratio: 1/1;
     height: 79%;
     max-width: 170px;
     top: 6%;
@@ -32,7 +33,7 @@
     position: absolute;
     pointer-events: all;
     z-index: -2;
-    width: 80%;
+    width: 60%;
     height: 80%;
     border-radius: 50%;
     box-shadow: 0px 0px 9.87px rgba(12, 123, 238, 0.7),

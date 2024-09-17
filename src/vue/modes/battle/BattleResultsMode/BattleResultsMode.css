@@ -9,26 +9,27 @@
   left: 0;
   top: 0;
   color: #00FFFF;
-  padding: 10px;
+  padding: 30px 10px 30px 10px;
   pointer-events: all;
 }
 
 .BattleResultMode__container {
-  max-width: 430px;
+  max-width: 410px;
+  /* aspect-ratio: 410/700; */
   position: relative;
 }
 
 .BattleResultMode__container > img {
   height: 100%;
+  max-height: calc(100vh - 150px);
+  width: auto;
   object-fit: contain;
-  max-height: calc(100vh - 40px);
 }
 
 .BattleResultMode__container-content {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
   height: calc(100% - 30px);
   overflow-y: auto;
   display: flex;
@@ -320,6 +321,12 @@
 
     .BattleResultsMode__status {
       font-size: 14px;
+    }
+  }
+
+  @media (min-width: 410px) {
+    .BattleResultMode__container-content {
+      width: 100%;
     }
   }
   
