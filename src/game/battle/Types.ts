@@ -149,8 +149,9 @@ export type GameCompleteData = {
   hideClaimBtn?: boolean,
   showBoxClaim?: boolean,
   boxLevel?: number,
-  ownerName: string,
-  params: {
+  playerParams: {
+    name: string,
+    level: number
     damageDone: number,
     goldEarned: number,
     expReceived: number,
@@ -158,6 +159,10 @@ export type GameCompleteData = {
       previous: number,
       current: number
     }
+  },
+  enemyParams: {
+    name: string,
+    level: number
   }
 }
 

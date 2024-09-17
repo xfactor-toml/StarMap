@@ -294,7 +294,7 @@ export class BattleScene extends BasicScene {
     this._state = aData.status == 'win' ? BattleSceneState.win : BattleSceneState.loss;
 
     // set login
-    if (!aData.ownerName) aData.ownerName = ownerName;
+    if (!aData.playerParams.name) aData.playerParams.name = ownerName;
 
     switch (aData.status) {
 

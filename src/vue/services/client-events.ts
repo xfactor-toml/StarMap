@@ -251,16 +251,20 @@ export class ClientEventsService {
           draw: 'defeat'
         }
 
+        // TODO: show enemy params and player level
+        // clientEvent.enemyParams.name
+        // clientEvent.enemyParams.level
+
         battleStore.results.setResults({
           type: typeByStatus[clientEvent.status],
-          player: clientEvent.ownerName,
-          owner: clientEvent.ownerName,
-          damage: clientEvent.params.damageDone,
-          gold: clientEvent.params.goldEarned,
-          exp: clientEvent.params.expReceived,
+          player: clientEvent.playerParams.name,
+          owner: clientEvent.playerParams.name,
+          damage: clientEvent.playerParams.damageDone,
+          gold: clientEvent.playerParams.goldEarned,
+          exp: clientEvent.playerParams.expReceived,
           rating: {
-            previous: clientEvent.params.rating.previous,
-            current: clientEvent.params.rating.current
+            previous: clientEvent.playerParams.rating.previous,
+            current: clientEvent.playerParams.rating.current
           },
           box: {
             show: clientEvent.showBoxClaim,
