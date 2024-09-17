@@ -91,7 +91,9 @@ export class BattleScene extends BasicScene {
       camera: this._camera,
       connection: this._connection
     });
-    this._connection.sendBattleSceneLoaded();
+    // TODO: get real hero id
+    const heroId = 0;
+    this._connection.sendBattleSceneLoaded(heroId);
   }
 
   private initEvents() {

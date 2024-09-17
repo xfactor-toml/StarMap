@@ -246,10 +246,6 @@ export class BattleConnection extends MyEventDispatcher {
   //     this._socket.emit(PackTitle.startSearchGame, data);
   // }
 
-  sendBattleSceneLoaded() {
-    this._socket.emit(PackTitle.battleSceneLoaded);
-  }
-
   sendSkillActionClick(aSkillId: number) {
     let data: SkillRequest = {
       action: 'click',
@@ -290,6 +286,13 @@ export class BattleConnection extends MyEventDispatcher {
       loadingData: aData
     }
     this._socket.emit(PackTitle.battleConfirmation, data);
+  }
+
+  /**
+   * Calls after hero pick
+   */
+  sendBattleSceneLoaded(heroId: number) {
+    this._socket.emit(PackTitle.battleSceneLoaded);
   }
 
   sendExitGame() {
