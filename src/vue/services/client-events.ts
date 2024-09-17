@@ -126,7 +126,7 @@ export class ClientEventsService {
 
             // Accept
             scenesStore.setSceneMode('accept');
-            uiStore.stardefender.setStarDefenderMenu('MAIN MENU')
+            uiStore.stardefender.setStarDefenderMenu('')
             battleStore.connecting.setAcceptTime(ACCEPT_TIME);
             battleStore.connecting.setShowTutorial(SHOW_TUTOR);
             // await wait(toMilliseconds({

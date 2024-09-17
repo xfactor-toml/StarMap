@@ -6,6 +6,9 @@
       </div>
       <div class="SearchingMenu__title --bold"> {{ setTitle }} </div>
       <div class="SearchingMenu__close" @click="close"></div>
+      <div v-if="currentMenu === 'DUEL'" class="SearchingMenu__inviteFriend" @click="inviteFriend">
+        <img src="/gui/images/invite-friend.svg">
+      </div>
       <img src="/gui/images/main-menu/main-menu-background.png">
       <div class="SearchingMenu__items">
         <div class="SearchingMenu__link">
@@ -26,7 +29,7 @@
               Cancel
             </div>
           </div>
-          <div class="SearchingMenu__button-animation" v-for="(item, index) in 30" :key="index">
+          <div class="SearchingMenu__button-animation" v-for="(item, index) in 12" :key="index">
             <img src="/gui/images/searching-menu-box-border.svg" alt="logo">
           </div>
         </div>
@@ -74,7 +77,7 @@ export default {
       else if (this.currentMenu == 'PLAY WITH A BOT')
         return 'BOT'
       else
-        return 'OPPONET'
+        return 'DUEL'
     }
   },
   mounted() {
@@ -96,6 +99,9 @@ export default {
     },
     cancelSearching() {
       this.$emit('cancel', this.currentMenu)
+    },
+    inviteFriend() {
+      this.$emit('inviteFriend')
     }
   },
 };
