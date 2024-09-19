@@ -149,7 +149,10 @@ export class ClientEventsService {
             break;
           
           case 'playerPick':
-            await wait(4000);
+            scenesStore.setSceneMode('init');
+            await wait(2000);
+            scenesStore.setSceneMode('preGameCounter');
+            await wait(5000);
             scenesStore.setSceneMode('process');
             break;
           

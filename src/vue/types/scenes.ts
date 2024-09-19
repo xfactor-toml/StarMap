@@ -58,6 +58,8 @@ export type GuiScenes = {
     Mode<'accept'>,
     Mode<'connect'>,
     Mode<'loading'>,
+    Mode<'playerPick'>,
+    Mode<'preGameCounter'>,
     Mode<'process'>,
     Mode<'results'>,
     Mode<'rewards'>,

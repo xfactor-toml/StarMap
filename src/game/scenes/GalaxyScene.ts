@@ -191,7 +191,7 @@ export class GalaxyScene extends BasicScene {
     private onFrontPlayerPickClick() {
         setTimeout(() => {
             this.startScene(SceneNames.BattleScene);
-        }, 3000);
+        }, 4000);
         GameEventDispatcher.playerPickScreenClose();
 
     }

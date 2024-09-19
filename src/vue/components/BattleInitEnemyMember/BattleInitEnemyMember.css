@@ -1,0 +1,212 @@
+.BattleInitEnemyMember{
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.BattleInitEnemyMember__content {
+    position: absolute;
+    max-width: 300px;
+    height: 82%;
+    aspect-ratio: 300/375;
+    right: 0;
+    top: 0;
+}
+
+.BattleInitEnemyMember__content-container{
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+
+.BattleInitEnemyMember__info{
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  color: #EA1C24;
+  right: 10%;
+  top:35%;
+}
+
+.BattleInitEnemyMember__starOwner{
+    font-size: 15px;
+    text-align: center;
+    color: #FDFDFD;
+    opacity: 0.3;
+}
+
+.BattleInitEnemyMember__name{
+    font-size: 32px;
+    text-align: center;
+    color: #FFFFFF;
+}
+
+.BattleInitEnemyMember__wallet{
+    font-size: 16px;
+    text-align: center;
+    color: #EA1C24;
+}
+
+.BattleInitEnemyMember__telegram{
+    font-size: 16px;
+    text-align: center;
+    color: #EA1C24;
+}
+
+.BattleInitEnemyMember__race{
+    font-size: 24px;
+    text-align: center;
+    color: #FFFFFF;
+}
+
+
+
+.BattleInitEnemyMember__pic {
+    position: absolute;
+    bottom: -16%;
+    left:-41%;
+    width: 78%;
+}
+
+.BattleInitEnemyMember__pic__container{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.BattleInitEnemyMember__pic__img {
+    position: absolute;
+    width: 73%;
+}
+
+.BattleInitEnemyMember__pic__shadow {
+    position: absolute;
+    width: 60%;
+    height: 60%;
+    border-radius: 50%;
+    z-index: -1;
+    box-shadow: 
+    0px 0px 9.62px rgba(0, 93, 234, 1), /* Shadow 1 */
+    0px 0px 19.24px rgba(0, 93, 234, 1), /* Shadow 2 */
+    0px 0px 67.35px rgba(0, 93, 234, 1), /* Shadow 3 */
+    0px 0px 134.7px rgba(0, 93, 234, 1), /* Shadow 4 */
+    0px 0px 230.92px rgba(0, 93, 234, 1), /* Shadow 5 */
+    0px 0px 404.1px rgba(0, 93, 234, 1); /* Shadow 6 */
+}
+
+.BattleInitEnemyMember__left-line {
+    position: absolute;
+    background-color: #F90E1B;
+    width: 60%;
+    height: 4px;
+    transform-origin: right center;
+    transform: rotate(-29deg);
+    bottom: -43px;
+    left: calc(-10% - 50px);
+    border: #F90E1B;
+    box-shadow: 0px -2px 10px 0px rgba(255, 16, 27, 0.8), /* First shadow */
+              0px -2px 15px 0px rgba(255, 16, 27, 0.8), /* Second shadow */
+              0px -2px 30px 0px rgba(255, 16, 27, 0.8), /* Third shadow */
+              0px -2px 50px 0px rgba(255, 16, 27, 0.8), /* Fourth shadow */
+              0px -2px 80px 0px rgba(255, 16, 27, 0.8), /* Fifth shadow */
+              0px -2px 150px 0px rgba(255, 16, 27, 0.8); /* Sixth shadow */
+}
+
+.BattleInitEnemyMember__right-line {
+    position: absolute;
+    background-color: #F90E1B;
+    width: 60%;
+    height: 4px;
+    transform-origin: left center;
+    transform: rotate(-29deg);
+    bottom: 12px;
+    left: calc(50% + 48px);
+    border: #F90E1B;
+    box-shadow: 0px -2px 10px 0px rgba(255, 16, 27, 0.8), /* First shadow */
+              0px -2px 15px 0px rgba(255, 16, 27, 0.8), /* Second shadow */
+              0px -2px 30px 0px rgba(255, 16, 27, 0.8), /* Third shadow */
+              0px -2px 50px 0px rgba(255, 16, 27, 0.8), /* Fourth shadow */
+              0px -2px 80px 0px rgba(255, 16, 27, 0.8), /* Fifth shadow */
+              0px -2px 150px 0px rgba(255, 16, 27, 0.8); /* Sixth shadow */
+}
+
+@media (max-height: 800px) and (min-width: 501px) {
+    .BattleInitEnemyMember__content {
+        height: 92%;
+        aspect-ratio: 300/375;
+        right: 0;
+        top: -19%;
+    }
+
+    .BattleInitEnemyMember__left-line {
+        height: 4px;
+        bottom: -16px;
+        left: calc(-10% - 32px);
+    }
+    
+    .BattleInitEnemyMember__right-line {
+        height: 4px;
+        bottom: 22px;
+        left: calc(50% + 33px);
+        border: #F90E1B;
+    }
+    
+}
+
+@media (max-width: 430px) {
+    .BattleInitEnemyMember__content {
+        height: 75%;
+        aspect-ratio: 300/375;
+    }
+
+    .BattleInitEnemyMember__info{
+        right: 8%;
+        top:30%;
+      }
+
+    .BattleInitEnemyMember__starOwner{
+        font-size: 15px;
+        text-align: center;
+        color: #FDFDFD;
+        opacity: 0.3;
+    }
+    
+    .BattleInitEnemyMember__name{
+        font-size: 25px;
+        text-align: center;
+        color: #FFFFFF;
+    }
+    
+    .BattleInitEnemyMember__wallet{
+        font-size: 0px;
+        text-align: center;
+        color: #EA1C24;
+    }
+    
+    .BattleInitEnemyMember__telegram{
+        font-size: 14px;
+        text-align: center;
+        color: #EA1C24;
+    }
+    
+    .BattleInitEnemyMember__race{
+        font-size: 20px;
+        text-align: center;
+        color: #FFFFFF;
+    }
+
+    .BattleInitEnemyMember__left-line {
+        height: 4px;
+        bottom: -21px;
+        left: calc(-10% - 32px);
+    }
+    
+    .BattleInitEnemyMember__right-line {
+        height: 4px;
+        bottom: 17px;
+        left: calc(50% + 33px);
+        border: #F90E1B;
+    }
+}
