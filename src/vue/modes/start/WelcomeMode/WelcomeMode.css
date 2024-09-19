@@ -296,6 +296,14 @@
 
 }
 
+@media (max-width: 430px)
+{
+  .WelcomeScene__caution {
+   max-width: calc(100% - 10px);
+  }
+
+}
+
 @media (max-height: 667px) and (min-width: 501px)
 {
   .WelcomeScene__start-button-title {
