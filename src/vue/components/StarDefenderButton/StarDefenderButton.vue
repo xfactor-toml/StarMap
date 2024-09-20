@@ -1,6 +1,6 @@
 <template>   
     <div class="StarDefenderButton">
-        <div class="StarDefenderButton__container" :style="containerStyle">
+        <div class="StarDefenderButton__container" ref="container">
             <transition name="fade">
                 <div class="StarDefenderButton__connectLine">
                 <img src="/gui/images/star-defender/connect-line.svg" />
@@ -26,8 +26,9 @@
 
 <script lang="ts">
 import { formatDuration } from '@/utils';
-import { PropType } from 'vue';
+import { PropType, watch } from 'vue';
 import { StarScreenPosition } from '@/models';
+import anime from 'animejs';
 
 export default {
     name: 'StarDefenderButton',
@@ -42,22 +43,31 @@ export default {
         type: Object as PropType<StarScreenPosition>
         }
     },
-    computed: {
-       containerStyle() {
-            return {
-                width: `${this.position.x}px`,
-                height: `${this.position.y}px`
-            }
-       },
-     
+    mounted() {
+        this.updatePosition();
+    },
+    watch: {
+        position: {
+            handler() {
+                this.updatePosition();
+            },
+            deep: true
+        }
     },
     methods: {
         handleClick() {
-            console.log('click=============')
             this.$emit('click')
+        },
+        updatePosition() {
+            anime({
+                targets: this.$refs.container,
+                width: `${this.position.x}px`,
+                height: `${this.position.y}px`,
+                easing: 'easeOutQuad',
+                duration: 500
+            });
         }
     }
-   
 }
 </script>
 
