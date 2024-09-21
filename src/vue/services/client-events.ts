@@ -34,12 +34,11 @@ export class ClientEventsService {
             break;
           case 'update':
             // LogMng.debug(`GameEvent.STAR_GAME update:`, clientEvent.updateData);
-            console.log('clientEvent.updateData', clientEvent.updateData)
             uiStore.star.updateStarGameList(clientEvent.updateData);
             
             break;
           case 'visible':
-            LogMng.debug(`GameEvent.STAR_GAME visible update:`, clientEvent.visible ? 'true' : 'false');
+            // LogMng.debug(`GameEvent.STAR_GAME visible update:`, clientEvent.visible ? 'true' : 'false');
             uiStore.star.visibleStarGame(clientEvent.visible ? true : false);
             break;
         }
