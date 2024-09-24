@@ -1,13 +1,12 @@
 <template>   
     <div class="StarDefenderButton">
         <div class="StarDefenderButton__container" ref="container">
-            <transition name="fade">
                 <div class="StarDefenderButton__connectLine">
                 <img src="/gui/images/star-defender/connect-line.svg" />
                 <div class="StarDefenderButton__content">
                     <div class="StarDefenderButton__bg" >
-                        <img src="/gui/images/star-defender/bg.svg" />
-                        <div class="StarDefenderButton__name">
+                        <img src="/gui/images/star-defender/bg.svg"/>
+                        <div class="StarDefenderButton__name" @click.stop="showStarTooltip">
                             {{ name }}
                         </div>
                         <div class="StarDefenderButton__title --bold" @click="handleClick">
@@ -19,7 +18,6 @@
                     </div>
                 </div>
                 </div>
-            </transition>
         </div>
     </div>
 </template>
@@ -57,6 +55,9 @@ export default {
     methods: {
         handleClick() {
             this.$emit('click')
+        },
+        showStarTooltip() {
+            this.$emit('showStarTooltip')
         },
         updatePosition() {
             anime({
