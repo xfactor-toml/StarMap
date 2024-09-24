@@ -66,6 +66,7 @@ export default {
                 easing: 'easeOutQuad',
                 duration: 500
             });
+            
         }
     }
 }
