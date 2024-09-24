@@ -37,11 +37,12 @@
         :position="starGame.position2d"
       />   
       <StarDefenderButton
-        v-else-if="uiStore.star.starGameVisible"
+        v-else-if="uiStore.star.starGameVisible && uiStore.star.starTooltip == null"
         :title="starGame.gameTitle"
         :name="starGame.starName"
         :position="starGame.position2d"
         @click="showStarDefender"
+        @showStarTooltip="showStarTooltip"
       />
     </template>
 
@@ -79,6 +80,37 @@ export default {
     }
   },
   methods: {
+    showStarTooltip() {
+      const starData = {
+        id: this.uiStore.star.starGameInitList[0].id,
+        owner: 'owner',
+        params: {
+          name: this.uiStore.star.starGameInitList[0].starName,
+          isLive: true,
+          creation: 121,
+          updated: 121,
+          level: 12,
+          fuel: 12,
+          levelUpFuel: 1,
+          fuelSpendings: 1,
+          habitableZoneMin: 1,
+          habitableZoneMax: 1,
+          planetSlots: 1,
+          mass: 1,
+          race:  "Waters",
+          coords: {
+              X: 1,
+              Y: 1,
+              Z: 1
+          }
+        }
+      }
+      this.uiStore.star.showStarTooltip({
+        eventName: "SHOW_STAR_PREVIEW",
+        starData: starData,
+        pos2d: this.uiStore.star.starGameInitList[0].position2d
+      }, 500);
+    },
     hideAllPanels() {
       if (!this.uiStore.overlay.active) return;
       this.uiStore.star.hideStarBoostPanel();
@@ -91,6 +123,7 @@ export default {
     },
 
     showStarDefender() {
+      console.log('showStarDefender')
       this.uiStore.stardefender.setStarDefenderMenu('MAIN MENU');
     },
     

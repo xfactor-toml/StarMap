@@ -84,6 +84,7 @@ export class ClientEventsService {
         break;
 
       case GameEvent.SHOW_STAR_PREVIEW:
+        console.log("SHOW_STAR_PREVIEW", clientEvent);
         uiStore.star.showStarTooltip(clientEvent, 500);
         break;
 
