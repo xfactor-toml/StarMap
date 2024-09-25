@@ -6,6 +6,7 @@
     height: 100%;
     pointer-events: none;
     user-select: none;
+    z-index: 3;
 }
 
 .StarDefenderButton__container {
@@ -83,7 +84,3 @@
         transform: scale(0.7);
     }
 }
-
-
-
-  
