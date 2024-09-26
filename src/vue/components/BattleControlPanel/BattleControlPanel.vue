@@ -1,53 +1,62 @@
 <template>
   <div class="BattleControlPanel">
-    <div class="BattleControlPanel__addItem">
-      <div class="BattleControlPanel__shopItems">
-        <ShopItemControl :items="items"/>
+    <template v-if="showEnemy">
+      <div class="BattleControlPanel__enemy">
+        <EnemyModelControl  
+        :level="level.current" 
+        />
       </div>
-      <div class="BattleControlPanel__score orbitron-font --semibold">
-          <p>GOLD:</p>
-          <p>{{ gold }}</p>
+    </template>
+
+    <div class="BattleControlPanel__player">
+      <div class="BattleControlPanel__addItem">
+        <div class="BattleControlPanel__shopItems">
+          <ShopItemControl :items="items"/>
+        </div>
+        <div class="BattleControlPanel__score orbitron-font --semibold">
+            <p>GOLD:</p>
+            <p>{{ gold }}</p>
+        </div>
+      </div>
+      
+      <div class="BattleControlPanel__row">
+        <SatelliteFireSkill
+          :params="skills['satelliteFire']"
+          :cooldown="cooldown['satelliteFire']"
+          :disabled="isPendingSkill('satelliteFire')"
+          @fire="call('satelliteFire')"
+          @levelUp="levelUp('satelliteFire')"
+        />
+        <RocketFireSkill
+          :params="skills['rocketFire']"
+          :cooldown="cooldown['rocketFire']"
+          :disabled="isPendingSkill('rocketFire')"
+          @fire="call('rocketFire')"
+          @levelUp="levelUp('rocketFire')"
+        />
+      <ModelControl 
+        :level="level.current"
+        :progress="level.progress"
+        @click="showShopMenu"
+        />
+        <SlowdownSkill
+          :params="skills['slowdown']"
+          :cooldown="cooldown['slowdown']"
+          :disabled="isPendingSkill('slowdown')"
+          @apply="call('slowdown')"
+          @levelUp="levelUp('slowdown')"
+        />
+        <InvisibilitySkill
+          :params="skills['invisibility']"
+          :cooldown="cooldown['invisibility']"
+          :disabled="isPendingSkill('invisibility')"
+          @apply="call('invisibility')"
+          @levelUp="levelUp('invisibility')"
+        />
       </div>
     </div>
-    
-    <div class="BattleControlPanel__row">
-      <SatelliteFireSkill
-        :params="skills['satelliteFire']"
-        :cooldown="cooldown['satelliteFire']"
-        :disabled="isPendingSkill('satelliteFire')"
-        @fire="call('satelliteFire')"
-        @levelUp="levelUp('satelliteFire')"
-      />
-      <RocketFireSkill
-        :params="skills['rocketFire']"
-        :cooldown="cooldown['rocketFire']"
-        :disabled="isPendingSkill('rocketFire')"
-        @fire="call('rocketFire')"
-        @levelUp="levelUp('rocketFire')"
-      />
-     <ModelControl 
-      :level="level.current"
-      :progress="level.progress"
-      @click="showShopMenu"
-      />
-      <SlowdownSkill
-        :params="skills['slowdown']"
-        :cooldown="cooldown['slowdown']"
-        :disabled="isPendingSkill('slowdown')"
-        @apply="call('slowdown')"
-        @levelUp="levelUp('slowdown')"
-      />
-      <InvisibilitySkill
-        :params="skills['invisibility']"
-        :cooldown="cooldown['invisibility']"
-        :disabled="isPendingSkill('invisibility')"
-        @apply="call('invisibility')"
-        @levelUp="levelUp('invisibility')"
-      />
-    </div>
-
-
   </div>
+ 
 </template>
 
 <script lang="ts">
@@ -66,6 +75,7 @@ import {
 import { BaseControl } from './controls/BaseControl';
 import { ModelControl } from './controls/ModelControl';
 import { ShopItemControl } from './controls';
+import { EnemyModelControl } from '../EnemyModelControl';
 import {
   GoldControl,
   LevelControl,
@@ -94,6 +104,7 @@ export default {
     BaseControl,
     ShopItemControl,
     ModelControl,
+    EnemyModelControl,
   },
   props: {
     skills: {
@@ -118,6 +129,10 @@ export default {
     },
     items: {
       type: Array as PropType<ShopItemData[]>,
+    },
+    showEnemy: {
+      type: Boolean,
+      default: false
     }
   },
 

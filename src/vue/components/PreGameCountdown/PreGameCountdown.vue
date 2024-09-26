@@ -14,16 +14,16 @@
         <div :key="currentTitleImage" class="PreGameCountdown__title">
             <img :src="currentTitleImage" class="title-image"/>
         </div>
-
-        <BattleControlPanel 
-          :skills="battleStore.process.state.skills"
-          :skillsPendingList="battleStore.process.skillsPendingList"
-          :cooldown="battleStore.process.cooldown"
-          :level="battleStore.process.state.level"
-          :gold="battleStore.process.state.gold"
-          :items="battleStore.shop.items"
-          @action="$client.onBattleAction" />
-
+        <div class="PreGameCountdown__panel">   
+            <BattleControlPanel 
+            :skills="battleStore.process.state.skills"
+            :skillsPendingList="battleStore.process.skillsPendingList"
+            :cooldown="battleStore.process.cooldown"
+            :level="battleStore.process.state.level"
+            :gold="battleStore.process.state.gold"
+            :items="battleStore.shop.items"
+            @action="$client.onBattleAction" />
+        </div>
     </div>
 </template>
 

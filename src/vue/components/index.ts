@@ -49,3 +49,4 @@ export * from './BattleChoosePlayer';
 export * from './PlayerPick';
 export * from './PreGameCountdown';
 export * from './ShopMenu';
+export * from './EnemyModelControl';

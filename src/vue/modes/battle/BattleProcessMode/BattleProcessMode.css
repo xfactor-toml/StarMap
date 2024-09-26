@@ -23,6 +23,7 @@
   align-items: center;
   justify-content: center;
   width: calc(100% - 30px);
+  height: 100%;
   bottom: 18px;
   left: 50%;
   z-index: 0;
