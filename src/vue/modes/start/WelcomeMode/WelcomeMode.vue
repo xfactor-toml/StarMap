@@ -1,51 +1,53 @@
 <template>
-  <div class="WelcomeMode">
-    <template v-if="showAgreement">
-      <div class="WelcomeScene__logo-text" />
-      <p class="WelcomeScene__text">
-        Welcome to the open beta test of the VORPAL Gameverse: stage I.<br>
-        To create stars in the universe, you will need a
-        <a target="_blank" href="https://metamask.io/download">MetaMask wallet</a> and
-        <a target="_blank" href="https://discord.gg/bnbchain">test BNB tokens</a>,
-        if you encounter problems, check out our
-        <a target="_blank" href="https://teletype.in/@vorpal/xzbjyT7vPyl">guide</a>
-        or write to us on
-        <a target="_blank" href="https://discord.gg/epUsWEPaDA">discord</a>.
-      </p>
-      <button class="WelcomeScene__button active" @mouseenter="$client.onHover()" @click="handleAgreementRunClick">
-        Run
-      </button>
-      <label class="WelcomeScene__checkbox" @mouseenter="$client.onHover()">
-        <input type="checkbox" class="WelcomeScene__checkbox-field" :value="settingsStore.agreement.accepted"
-          @change="handleAgreementClick" />
-        <span class="WelcomeScene__checkbox-label">don’t show me again</span>
-      </label>
-    </template>
-    <template v-else>
-      <div class="WelcomeScene__logo">
-        <img src="/gui/images/preloader/logo.svg" alt="logo">
-        <div class="WelcomeScene__animation">
-          <button class="WelcomeScene__start-button" @mouseenter="$client.onHover()"
-          @click="handleRunClick(false)">
-            <img src="/gui/images/preloader/start-button.svg" alt="button">
-            <div>
-              <p class="WelcomeScene__start-button-title --bold">START</p>
-              <p class="WelcomeScene__start-button-description">Audio on = Awesom experiens</p>
+  <transition name="fade">
+    <div class="WelcomeMode">
+      <template v-if="showAgreement">
+        <div class="WelcomeScene__logo-text" />
+        <p class="WelcomeScene__text">
+          Welcome to the open beta test of the VORPAL Gameverse: stage I.<br>
+          To create stars in the universe, you will need a
+          <a target="_blank" href="https://metamask.io/download">MetaMask wallet</a> and
+          <a target="_blank" href="https://discord.gg/bnbchain">test BNB tokens</a>,
+          if you encounter problems, check out our
+          <a target="_blank" href="https://teletype.in/@vorpal/xzbjyT7vPyl">guide</a>
+          or write to us on
+          <a target="_blank" href="https://discord.gg/epUsWEPaDA">discord</a>.
+        </p>
+        <button class="WelcomeScene__button active" @mouseenter="$client.onHover()" @click="handleAgreementRunClick">
+          Run
+        </button>
+        <label class="WelcomeScene__checkbox" @mouseenter="$client.onHover()">
+          <input type="checkbox" class="WelcomeScene__checkbox-field" :value="settingsStore.agreement.accepted"
+            @change="handleAgreementClick" />
+          <span class="WelcomeScene__checkbox-label">don’t show me again</span>
+        </label>
+      </template>
+      <template v-else>
+        <div class="WelcomeScene__logo">
+          <img src="/gui/images/preloader/logo.svg" alt="logo">
+          <div class="WelcomeScene__animation">
+            <button class="WelcomeScene__start-button" @mouseenter="$client.onHover()"
+            @click="handleRunClick(false)">
+              <img src="/gui/images/preloader/start-button.svg" alt="button">
+              <div>
+                <p class="WelcomeScene__start-button-title --bold">START</p>
+                <p class="WelcomeScene__start-button-description">Audio on = Awesom experiens</p>
+              </div>
+            </button>
+            <div class="WelcomeScene__button-animation" v-for="(item, index) in 30" :key="index">
+              <img src="/gui/images/preloader/start-button-animation/Vector.svg" alt="logo">
             </div>
-          </button>
-          <div class="WelcomeScene__button-animation" v-for="(item, index) in 30" :key="index">
-            <img src="/gui/images/preloader/start-button-animation/Vector.svg" alt="logo">
+          </div>
+          <div class="WelcomeScene__caution">
+            <p>This site is protected by reCAPTCHA
+            and the Google <a>Privacy Policy</a>
+            and <a>Terms of Service</a> apply.</p>
           </div>
         </div>
-        <div class="WelcomeScene__caution">
-          <p>This site is protected by reCAPTCHA
-          and the Google <a>Privacy Policy</a>
-          and <a>Terms of Service</a> apply.</p>
-        </div>
-      </div>
-
-    </template>
-  </div>
+  
+      </template>
+    </div>
+  </transition>
 </template>
 
 <script lang="ts">
@@ -59,7 +61,13 @@ export default {
     return {
       showAgreement: false,
       preservedFullscreenRun: true,
+      isLoaded: false,
     };
+  },
+  mounted() {
+    setTimeout(() => {
+      this.isLoaded = true;
+    }, 100);
   },
   computed: {
     ...mapStores(useScenesStore, useSettingsStore, useStarsStore)

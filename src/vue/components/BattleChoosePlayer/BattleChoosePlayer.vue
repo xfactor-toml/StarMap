@@ -1,5 +1,5 @@
 <template>
-    <div class="BattleChoosePlayer">        
+    <div  class="BattleChoosePlayer">        
         <div class="BattleChoosePlayer__item"> 
             <h1 class="BattleChoosePlayer__title orbitron-font --semi-bold">
               CHOOSE A HERO
