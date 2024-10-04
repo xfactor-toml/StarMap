@@ -68,7 +68,10 @@ export type BattleData = {
 
 export type BattleResults = {
   type: 'victory' | 'defeat'
+  enemyName: string
+  enemyLevel: number
   player: string
+  playerLevel: number
   owner: string
   damage: number
   gold: number

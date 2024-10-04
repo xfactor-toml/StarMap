@@ -62,7 +62,7 @@ export default {
             this.$emit('click');
         },
         showStarTooltip() {
-            this.$emit('showStarTooltip');
+            // this.$emit('showStarTooltip');
         },
         updatePosition(applyAnimation: boolean) {
             if (this.isFirstLoad && !applyAnimation) {
