@@ -336,8 +336,8 @@ export class BattleView extends MyEventDispatcher implements IUpdatable {
         const H = 170;
         let zFactor = aIsTop ? -1 : 1;
         this._cameraMng.moveTo({
-            aCamPos: { x: 0, y: H, z: 20 * zFactor },
-            aTargetPos: { x: 0, y: 0, z: 15 * zFactor },
+            aCamPos: { x: 0, y: H, z: 10 * zFactor },
+            aTargetPos: { x: 0, y: 0, z: 9 * zFactor },
             duration: .5
         });
         // this._camera.position.set(0, H, 25 * zFactor);
