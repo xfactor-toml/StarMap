@@ -5,7 +5,7 @@
  */
 export class GlobalParams {
 
-    static galaxyVersion = 'v0.3.517';
+    static galaxyVersion = 'v0.3.518';
     static starDefenderVersion = 'v0.2.0';
     static isDebugMode = false; // TODO: move to env parameters
     static isFPSShow = false; // TODO: move to env parameters
