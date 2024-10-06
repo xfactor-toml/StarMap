@@ -128,12 +128,18 @@ export type ShopInitData = {
   items: ShopItemData[]
 }
 
-export type BattleShopAction = 'purchase' | 'sale' | 'purchaseError' | 'saleError';
+export type BattleShopAction =
+  'purchase' | 'purchaseError' |
+  'sale' | 'saleError' |
+  'inventoryUpdate' | 'inventoryItemActivate' |
+  'error';
 
 export type ShopData = {
   action: BattleShopAction,
+  clientId?: string,
   itemId?: number,
-  msg?: string
+  msg?: string,
+  inventory?: number[] // item id
 }
 
 export type StartGameData = {

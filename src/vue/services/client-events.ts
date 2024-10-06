@@ -398,6 +398,18 @@ export class ClientEventsService {
               autoClose: 2000
             });
             break;
+          case 'inventoryUpdate':
+            let invItemIds = clientEvent.data.inventory;
+            // TODO: update inventory in the GUI
+
+            break;
+          case 'error':
+            LogMng.error(`BATTLE_SHOP error:`, clientEvent.data);
+            toast(clientEvent.data.msg, {
+              type: 'error',
+              autoClose: 2000
+            });
+            break;
           default:
             LogMng.error(`Unknown BATTLE_SHOP action:`, clientEvent);
             break;

@@ -171,6 +171,11 @@ export class ClientService {
     }
   }
 
+  // TODO: call this method from GUI
+  onBattleInventoryItemActivate(aItemId: number) {
+    
+  }
+
   onBattleExit() {
     logger.log('battle exit');
     FrontEvents.onBattleExit.dispatch();
