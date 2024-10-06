@@ -259,10 +259,14 @@ export class ClientEventsService {
         // clientEvent.enemyParams.name
         // clientEvent.enemyParams.level
         console.log('clientEvent.playerParams', clientEvent.enemyParams)
+        console.log(clientEvent.showBoxClaim, clientEvent.boxLevel, !clientEvent.hideClaimBtn, 'claim')
 
         battleStore.results.setResults({
           type: typeByStatus[clientEvent.status],
+          enemyName: clientEvent.enemyParams.name,
+          enemyLevel: clientEvent.enemyParams.level,
           player: clientEvent.playerParams.name,
+          playerLevel: battleStore.process.state.level.current,
           owner: clientEvent.playerParams.name,
           damage: clientEvent.playerParams.damageDone,
           gold: clientEvent.playerParams.goldEarned,

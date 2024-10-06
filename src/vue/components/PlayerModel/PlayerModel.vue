@@ -9,7 +9,6 @@
         </div>
 
         <div class="PlayerModel__shadow" @click.stop="pick"/>
-
     </div>
 </template>
 

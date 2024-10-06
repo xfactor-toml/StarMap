@@ -21,15 +21,15 @@
                 <div class="BattleResultsMode__vs-player">
                   <img src="/gui/images/battle-results/player1.png" />
                   <div class="BattleResultsMode__vs-info">
-                    <p class="BattleResultsMode__vs-info-owner --bold">Lomai</p>
-                    <p class="BattleResultsMode__vs-info-level">1 LVL</p>
+                    <p class="BattleResultsMode__vs-info-owner --bold">{{ results.enemyName }}</p>
+                    <p class="BattleResultsMode__vs-info-level">{{ results.enemyLevel }} LVL</p>
                   </div>
                 </div>
                 <h4 class="BattleResultsMode__vs-title">VS</h4>
                 <div class="BattleResultsMode__vs-player">
                   <div class="BattleResultsMode__vs-info">
-                    <p class="BattleResultsMode__vs-info-owner --bold">Lomai</p>
-                    <p class="BattleResultsMode__vs-info-level">1 LVL</p>
+                    <p class="BattleResultsMode__vs-info-owner --bold">{{ results.player }}</p>
+                    <p class="BattleResultsMode__vs-info-level">{{ results.playerLevel }} LVL</p>
                   </div>
                   <img src="/gui/images/battle-results/player1.png" />
                 </div>
@@ -75,16 +75,13 @@
                       </div>
                   </div>
                 </div>
-                <!-- <div v-if="results.box.show" class="BattleResultsMode__button orbitron-font --semi-bold" @click="close">
+                <div v-if="results.box.show" class="BattleResultsMode__button orbitron-font --semi-bold" @click="openBox">
                   <img src="/gui/images/battle-results/open-box.svg">
                   <div class="BattleResultsMode__button-text orbitron-font --semi-bold">OPEN BOX</div>
-                </div> -->
+                </div>
                 <!-- <button v-if="results.claim.show" class="BattleResultsMode__button" @click="claim">Claim rewards
-              </button>
-                <div v-if="!results.box.show && !results.claim.show" class="BattleResultsMode__button"
-                @click="close">Close
-            </div> -->
-                <button :class="['BattleResultsMode__button white orbitron-font --semi-bold']"
+                </button> -->
+                <button  v-if="!results.box.show && !results.claim.show"  :class="['BattleResultsMode__button white orbitron-font --semi-bold']"
                   @click="close">
                   <img src="/gui/images/battle-results/play-again.svg">
                   <div class="BattleResultsMode__button-text orbitron-font --semi-bold">EXIT</div>
