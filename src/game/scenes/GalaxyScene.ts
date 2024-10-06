@@ -90,6 +90,7 @@ export class GalaxyScene extends BasicScene {
         FrontEvents.onLeftPanelGalaxyClick.add(this.onLeftPanelGalaxyClick, this);
         FrontEvents.onBotPanelPhantomClick.add(this.onBotPanelPhantomClick, this);
         FrontEvents.onBotPanelRealClick.add(this.onBotPanelRealClick, this);
+        FrontEvents.onStarGamePlateNameClick.add(this.onStarGamePlateNameClick, this);
         FrontEvents.onStarCreated.add(this.onStarCreated, this);
         FrontEvents.onStarUpdated.add(this.onStarUpdated, this);
         FrontEvents.onBattleSearch.add(this.onFrontStartBattleSearch, this);
@@ -109,6 +110,7 @@ export class GalaxyScene extends BasicScene {
         FrontEvents.onLeftPanelGalaxyClick.remove(this.onLeftPanelGalaxyClick, this);
         FrontEvents.onBotPanelPhantomClick.remove(this.onBotPanelPhantomClick, this);
         FrontEvents.onBotPanelRealClick.remove(this.onBotPanelRealClick, this);
+        FrontEvents.onStarGamePlateNameClick.remove(this.onStarGamePlateNameClick, this);
         FrontEvents.onStarCreated.remove(this.onStarCreated, this);
         FrontEvents.onStarUpdated.remove(this.onStarUpdated, this);
         FrontEvents.onBattleSearch.remove(this.onFrontStartBattleSearch, this);
@@ -154,6 +156,10 @@ export class GalaxyScene extends BasicScene {
     private onBotPanelRealClick() {
         this.logDebug(`onBotPanelRealClick...`);
         this._galaxy?.openRealMode();
+    }
+
+    private onStarGamePlateNameClick(aStarId: number) {
+        this._galaxy?.onStarGamePlateNameClick(aStarId);
     }
 
     private onStarCreated(aStarData: ServerStarData) {

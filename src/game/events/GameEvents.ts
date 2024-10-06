@@ -1,8 +1,9 @@
 import { AcceptScreenData, BoxOpenData, Emotion, ExpData, GameCompleteData, ShopData, StartGameData } from "../battle/Types";
+import { ServerStarData } from "../data/Types";
 import { AcceptEventData, EmotionEventData, ExplosionEventData, GameEvent, ShopEventData, StarGameEventData, StarGameInitData, StarGameUpdateData } from "./Types";
 
 export class GameEventDispatcher {
-    
+
     static dispatchEvent(aEventName: GameEvent, aData: any = {}) {
         aData.eventName = aEventName;
         window.dispatchEvent(new CustomEvent('gameEvent', { detail: aData }));
@@ -20,6 +21,16 @@ export class GameEventDispatcher {
 
     static showGalaxyMode() {
         this.dispatchEvent(GameEvent.GALAXY_MODE);
+    }
+
+    static showStarPreview(aData: {
+        starData: ServerStarData,
+        pos2d: {
+            x: number,
+            y: number
+        }
+    }) {
+        this.dispatchEvent(GameEvent.SHOW_STAR_PREVIEW, aData);
     }
 
     static battlePrerollShow(aData: StartGameData) {

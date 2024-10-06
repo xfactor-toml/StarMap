@@ -72,7 +72,7 @@ export const useUiStarStore = defineStore('uiStar', () => {
   }
 
   const visibleStarGame = (visible: boolean) => {
-    starGameVisible.value = visible ;
+    starGameVisible.value = visible;
   }
 
   const hideStarTooltip = () => {

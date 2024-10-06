@@ -30,6 +30,9 @@ import anime from 'animejs';
 export default {
     name: 'StarDefenderButton',
     props: {
+        starId: {
+            type: Number,
+        },
         name: {
             type: String,
         },
@@ -62,13 +65,15 @@ export default {
             this.$emit('click');
         },
         showStarTooltip() {
-            this.$emit('showStarTooltip');
+            // this.$emit('showStarTooltip');
+            this.$client.onGamePlateStarNameClick(this.starId);
         },
         updatePosition(applyAnimation: boolean) {
             if (this.isFirstLoad && !applyAnimation) {
                 this.$refs.container.style.width = `${this.position.x}px`;
                 this.$refs.container.style.height = `${this.position.y}px`;
             } else {
+                // TODO: REDO (wrong and unoptimized realization)
                 anime({
                     targets: this.$refs.container,
                     width: `${this.position.x}px`,

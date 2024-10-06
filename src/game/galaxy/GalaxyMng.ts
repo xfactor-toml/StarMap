@@ -41,7 +41,7 @@ let debugObjects = {
 }
 
 export class GalaxyMng implements ILogger {
-
+  
   private _className = 'GalaxyMng';
 
   private _fsm: FSM;
@@ -87,9 +87,11 @@ export class GalaxyMng implements ILogger {
   private _raycaster: THREE.Raycaster;
   private checkMousePointerTimer = 0;
 
-  private starPointSpriteHovered: THREE.Sprite;
-  private starPointHovered: StarPoint;
-  private starPointParamsHovered: StarPointParams;
+  // private starPointSpriteHovered: THREE.Sprite;
+  // private starPointHovered: StarPoint;
+  // private starPointParamsHovered: StarPointParams;
+  private _starParamsHovered: GalaxyStarParams;
+  // private starIdHovered: number;
   private currentStarId = -1;
   private starPointsMng: StarPointsMng;
 
@@ -308,7 +310,7 @@ export class GalaxyMng implements ILogger {
     FrontEvents.diveIn.add((aData: { starId: number }) => {
       this._fsm.startState(GalaxyStates.toStar, {
         starId: aData.starId,
-        starParams: this.starPointParamsHovered.starParams
+        starParams: this._starParamsHovered
       });
     }, this);
 
@@ -521,6 +523,11 @@ export class GalaxyMng implements ILogger {
     FrontEvents.starPreviewClose.removeAll(this);
     FrontEvents.starLevelFilterChanged.removeAll(this);
     FrontEvents.starNameFilterChanged.removeAll(this);
+  }
+
+  private getRealStarDataById(aStarId: number): GalaxyStarParams {
+    let starData = this._realStarsData.find(item => item.id == aStarId);
+    return starData;
   }
 
   gotoGalaxy() {
@@ -1210,8 +1217,43 @@ export class GalaxyMng implements ILogger {
 
   }
 
-  private checkStarUnderPoint(normalCoords: any) {
+  // private checkStarUnderPoint(normalCoords: any) {
 
+  //   this._raycaster.setFromCamera(normalCoords, this._camera);
+  //   const intersects = this._raycaster.intersectObjects(this._dummyGalaxy.children, true);
+  //   let isHover = false;
+
+  //   for (let i = 0; i < intersects.length; i++) {
+  //     const obj = intersects[i].object;
+  //     if (obj[`name`] == 'starPoint') {
+  //       let newSpritePoint = obj as THREE.Sprite;
+  //       if (newSpritePoint != this.starPointSpriteHovered) {
+  //         this.starPointSpriteHovered = newSpritePoint;
+  //         this.starPointHovered = newSpritePoint.parent as StarPoint;
+  //         if (!this.isStarPreviewState) {
+  //           AudioMng.getInstance().playSfx(AudioAlias.SFX_HOVER);
+  //         }
+  //       }
+  //       isHover = true;
+  //       break;
+  //     }
+  //   }
+
+  //   if (!isHover) this.starPointSpriteHovered = null;
+
+  // }
+
+  private getStarDataUnderPoint(normalCoords: any): {
+    starPointParams: StarPointParams,
+    starParams: GalaxyStarParams
+  } {
+    let res: {
+      starPointParams: StarPointParams,
+      starParams: GalaxyStarParams
+    } = {
+      starPointParams: null,
+      starParams: null
+    }
     this._raycaster.setFromCamera(normalCoords, this._camera);
     const intersects = this._raycaster.intersectObjects(this._dummyGalaxy.children, true);
     let isHover = false;
@@ -1220,20 +1262,18 @@ export class GalaxyMng implements ILogger {
       const obj = intersects[i].object;
       if (obj[`name`] == 'starPoint') {
         let newSpritePoint = obj as THREE.Sprite;
-        if (newSpritePoint != this.starPointSpriteHovered) {
-          this.starPointSpriteHovered = newSpritePoint;
-          this.starPointHovered = newSpritePoint.parent as StarPoint;
-          if (!this.isStarPreviewState) {
-            AudioMng.getInstance().playSfx(AudioAlias.SFX_HOVER);
-          }
+        if (newSpritePoint) {
+          // let starPointSpriteHovered = newSpritePoint;
+          let starPoint = newSpritePoint.parent as StarPoint;
+          res.starPointParams = starPoint.params;
+          res.starParams = res.starPointParams.starParams;
         }
         isHover = true;
         break;
       }
     }
 
-    if (!isHover) this.starPointSpriteHovered = null;
-
+    if (isHover) return res; else return null;
   }
 
   private getNearestStarPosition(aPoint: THREE.Vector3): THREE.Vector3 {
@@ -1266,8 +1306,9 @@ export class GalaxyMng implements ILogger {
   private updateInputMove() {
     if (this._disabled) return;
     let inMng = InputMng.getInstance();
-    this.checkStarUnderPoint(inMng.normalPos);
-    document.body.style.cursor = this.starPointSpriteHovered ? 'pointer' : 'default';
+    // this.checkStarUnderPoint(inMng.normalPos);
+    let sd = this.getStarDataUnderPoint(inMng.normalPos);
+    document.body.style.cursor = sd ? 'pointer' : 'default';
   }
 
   private onClick(aClientX: number, aClientY: number) {
@@ -1280,7 +1321,8 @@ export class GalaxyMng implements ILogger {
       y: aClientY
     }
 
-    this.checkStarUnderPoint(inMng.normalDown);
+    // this.checkStarUnderPoint(inMng.normalDown);
+    let pointStarData = this.getStarDataUnderPoint(inMng.normalDown);
 
     switch (this._fsm.getCurrentState().name) {
 
@@ -1296,7 +1338,7 @@ export class GalaxyMng implements ILogger {
         }
         else {
 
-          if (this.starPointSpriteHovered) {
+          if (pointStarData) {
             // star point clicked
             AudioMng.getInstance().playSfx(AudioAlias.SFX_CLICK);
 
@@ -1305,8 +1347,11 @@ export class GalaxyMng implements ILogger {
             this._orbitControl.setSphericalDelta(0, 0);
             if (this._orbitControl.enabled) this._orbitControl.enabled = false;
 
-            this.starPointParamsHovered = this.starPointHovered.params;
-            let starParams = this.starPointHovered.params.starParams;
+            // this.starPointParamsHovered = this.starPointHovered.params;
+            // this.starIdHovered = pointStarData?.starParams?.id;
+            this._starParamsHovered = pointStarData?.starParams;
+
+            let starParams = pointStarData.starParams;
             if (!starParams.starInfo?.serverData) {
               this.logWarn(`onClick: UNKNOWN starParams.starInfo.serverData!`, starParams);
               return;
@@ -1314,14 +1359,13 @@ export class GalaxyMng implements ILogger {
 
             LogMng.debug('onClick(): realStars: starParams:', starParams);
 
-            GameEventDispatcher.dispatchEvent(GameEvent.SHOW_STAR_PREVIEW, {
+            GameEventDispatcher.showStarPreview({
               starData: starParams.starInfo.serverData,
               pos2d: {
                 x: pos.x,
                 y: pos.y
               }
             });
-
           }
           else {
             // galaxy plane click
@@ -1340,7 +1384,7 @@ export class GalaxyMng implements ILogger {
         }
         else {
 
-          if (this.starPointSpriteHovered) {
+          if (pointStarData) {
             // star point clicked
             AudioMng.getInstance().playSfx(AudioAlias.SFX_CLICK);
 
@@ -1349,8 +1393,8 @@ export class GalaxyMng implements ILogger {
             this._orbitControl.setSphericalDelta(0, 0);
             if (this._orbitControl.enabled) this._orbitControl.enabled = false;
 
-            this.starPointParamsHovered = this.starPointHovered.params;
-            this._phantomStarPicked = this.starPointHovered.params.starParams;
+            this._starParamsHovered = pointStarData?.starParams;
+            this._phantomStarPicked = pointStarData?.starParams;
 
             LogMng.debug('onClick(): phantomStar params:', this._phantomStarPicked);
 
@@ -1625,12 +1669,13 @@ export class GalaxyMng implements ILogger {
     const pixelRatio = Math.min(2, DeviceInfo.getInstance().devicePixelRatio);
     let list: StarGameInitData[] = [];
     STAR_GAMES.forEach((data) => {
-      let pos = new THREE.Vector3(data.starPosition.x, data.starPosition.y, data.starPosition.z);
+      let sd = this.getRealStarDataById(data.id);
+      let pos = new THREE.Vector3(sd.pos.x, sd.pos.y, sd.pos.z);
       let pos2d = ThreeUtils.vectorToScreenPosition(this._renderer, pos, this._camera, pixelRatio);
       list.push({
         id: data.id,
         gameTitle: data.title,
-        starName: data.starName,
+        starName: sd.starInfo.name,
         position2d: pos2d
       });
     });
@@ -1646,7 +1691,8 @@ export class GalaxyMng implements ILogger {
 
     const pixelRatio = Math.min(2, DeviceInfo.getInstance().devicePixelRatio);
     STAR_GAMES.forEach((data) => {
-      let pos = new THREE.Vector3(data.starPosition.x, data.starPosition.y, data.starPosition.z);
+      let sd = this.getRealStarDataById(data.id);
+      let pos = new THREE.Vector3(sd.pos.x, sd.pos.y, sd.pos.z);
       let pos2d = ThreeUtils.vectorToScreenPosition(this._renderer, pos, this._camera, pixelRatio);
       GameEventDispatcher.updateStarGamePosition({
         id: data.id, position2d: pos2d
@@ -2555,6 +2601,20 @@ export class GalaxyMng implements ILogger {
     }
   }
 
+  onStarGamePlateNameClick(aStarId: number) {
+    const pixelRatio = Math.min(2, DeviceInfo.getInstance().devicePixelRatio);
+    let sd = this.getRealStarDataById(aStarId);
+    this._starParamsHovered = sd;
+
+    let pos = new THREE.Vector3(sd.pos.x, sd.pos.y, sd.pos.z);
+    let pos2d = ThreeUtils.vectorToScreenPosition(this._renderer, pos, this._camera, pixelRatio);
+    // call star click
+    GameEventDispatcher.showStarPreview({
+      starData: sd.starInfo.serverData,
+      pos2d: pos2d
+    });
+  }
+  
   free() {
     this.removeFrontEvents();
     InputMng.getInstance().onClickSignal.remove(this.onClick, this);
@@ -2607,9 +2667,10 @@ export class GalaxyMng implements ILogger {
 
     this._raycaster = null;
 
-    this.starPointSpriteHovered = null;
-    this.starPointHovered = null;
-    this.starPointParamsHovered = null;
+    // this.starPointSpriteHovered = null;
+    // this.starPointHovered = null;
+    // this.starPointParamsHovered = null;
+    this._starParamsHovered = null;
     this.starPointsMng?.free();
 
     this.bigStarSprite = null;

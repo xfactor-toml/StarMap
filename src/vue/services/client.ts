@@ -206,12 +206,16 @@ export class ClientService {
     FrontEvents.onBattleEmotion.dispatch(aEmotion);
   }
 
-  onBuyBattleItemClick(id: Number) {
+  onBuyBattleItemClick(id: number) {
     FrontEvents.onBattlePurchaseRequest.dispatch(id);
   }
 
-  onSellBattleItemClick(id: Number) {
+  onSellBattleItemClick(id: number) {
     FrontEvents.onBattleSellRequest.dispatch(id);
+  }
+
+  onGamePlateStarNameClick(starId: number) {
+    FrontEvents.onStarGamePlateNameClick.dispatch(starId);
   }
 
   static VuePlugin = {

@@ -10,11 +10,11 @@ export type StarGameData = {
   }
 }
 
-export const STAR_GAMES: StarGameData[] = [
+export const STAR_GAMES = [
   {
-    id: 0,
+    id: 3,
     title: 'Star Defender',
-    starName: 'Antares',
-    starPosition: { x: 20, y: 0, z: 20 },
+    // starName: 'Antares',
+    // starPosition: { x: 20, y: 0, z: 20 },
   }
 ]

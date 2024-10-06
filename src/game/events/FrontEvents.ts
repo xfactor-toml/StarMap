@@ -20,6 +20,7 @@ export const FrontEvents = {
     flyFromStar: new Signal(),
     onHover: new Signal(),
     onClick: new Signal(),
+    onStarGamePlateNameClick: new Signal(),
 
     // left panel
     onLeftPanelGalaxyClick: new Signal(),
@@ -80,5 +81,6 @@ export const FrontEvents = {
      * id: number - item id
      */
     onBattleSellRequest: new Signal(),
+
 
 }

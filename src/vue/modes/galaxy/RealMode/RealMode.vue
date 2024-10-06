@@ -38,6 +38,7 @@
       />   
       <StarDefenderButton
         v-else-if="uiStore.star.starGameVisible && uiStore.star.starTooltip == null"
+        :starId="starGame.id"
         :title="starGame.gameTitle"
         :name="starGame.starName"
         :position="starGame.position2d"

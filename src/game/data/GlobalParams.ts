@@ -103,7 +103,7 @@ export class GlobalParams {
     static duelChecked = false;
     static BATTLE = {
         // serverAddr: wsServerUrl,
-        serverAddr: process.env.WSS_SERVER || 'https://staging-api.vorpal.finance',
+        serverAddr: process.env.WSS_SERVER,
         localConnect: false,
         freeConnect: false,
         // duelNumber: -1
