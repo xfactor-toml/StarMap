@@ -23,9 +23,8 @@
 </template>
 
 <script lang="ts">
-import { PropType, watch } from 'vue';
+import { PropType } from 'vue';
 import { StarScreenPosition } from '@/models';
-import anime from 'animejs';
 
 export default {
     name: 'StarDefenderButton',
@@ -45,17 +44,25 @@ export default {
     },
     data() {
         return {
-            isFirstLoad: true, 
+            currentX: 0,  
+            currentY: 0, 
+            targetX: 0,   
+            targetY: 0, 
+            isMoving: false, 
         };
     },
     mounted() {
-        this.updatePosition(false); 
-        this.isFirstLoad = false; 
+        this.currentX = this.position.x;
+        this.currentY = this.position.y;
+        this.targetX = this.position.x;
+        this.targetY = this.position.y;
     },
     watch: {
         position: {
-            handler() {
-                this.updatePosition(true); 
+            handler(newPos) {
+                this.targetX = newPos.x;
+                this.targetY = newPos.y;
+                this.startInterpolation(); 
             },
             deep: true,
         },
@@ -65,26 +72,51 @@ export default {
             this.$emit('click');
         },
         showStarTooltip() {
-            // this.$emit('showStarTooltip');
             this.$client.onGamePlateStarNameClick(this.starId);
         },
-        updatePosition(applyAnimation: boolean) {
-            if (this.isFirstLoad && !applyAnimation) {
-                this.$refs.container.style.width = `${this.position.x}px`;
-                this.$refs.container.style.height = `${this.position.y}px`;
-            } else {
-                // TODO: REDO (wrong and unoptimized realization)
-                anime({
-                    targets: this.$refs.container,
-                    width: `${this.position.x}px`,
-                    height: `${this.position.y}px`,
-                    easing: 'easeOutQuad',
-                    duration: 500,
-                });
+        startInterpolation() {
+            if (!this.isMoving) {
+                this.isMoving = true;
+                this.interpolatePosition();
             }
+        },
+        interpolatePosition() {
+            const lerp = (start: number, end: number, t: number) => start + (end - start) * t;
+
+            const speed = 0.1; 
+            const threshold = 0.5; 
+
+            const update = () => {
+                const distX = this.targetX - this.currentX;
+                const distY = this.targetY - this.currentY;
+
+                // Update current positions using LERP
+                this.currentX = lerp(this.currentX, this.targetX, speed);
+                this.currentY = lerp(this.currentY, this.targetY, speed);
+
+                // Update the actual container position
+                if (this.$refs.container) {
+                    this.$refs.container.style.width = `${this.currentX}px`;
+                    this.$refs.container.style.height = `${this.currentY}px`;
+                }
+
+                if (Math.abs(distX) > threshold || Math.abs(distY) > threshold) {
+                    requestAnimationFrame(update);
+                } else {
+                    this.currentX = this.targetX;
+                    this.currentY = this.targetY;
+                    this.$refs.container.style.width = `${this.targetX}px`;
+                    this.$refs.container.style.height = `${this.targetY}px`;
+                    this.isMoving = false; 
+                }
+            };
+
+            update();
         },
     },
 };
 </script>
+
+
 
 <style scoped src="./StarDefenderButton.css"></style>

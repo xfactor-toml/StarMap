@@ -57,14 +57,7 @@ export const useUiStarStore = defineStore('uiStar', () => {
     if (starGameInitList.value) {
       const index = starGameInitList.value.findIndex(item => item.id === updateData.id);
       if (index !== -1) {
-        const currentPos = starGameInitList.value[index].position2d;
-        const newPos = updateData.position2d;
-        const distance = Math.pow(newPos.x - currentPos.x, 2) + Math.pow(newPos.y - currentPos.y, 2);
-        if (distance > 30) {
           starGameInitList.value[index].position2d = updateData.position2d;
-        }
-      } else {
-        console.warn(`Star with id ${updateData.id} not found`);
       }
     } else {
       console.warn('Star game list is not initialized');
