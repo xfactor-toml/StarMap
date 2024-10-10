@@ -16,6 +16,14 @@
     </div>
 
     <transition name="fade">
+      <LeadersBoard 
+        v-if="stardefender == 'LEADERS BOARD'"
+        @goBack="handlePrevious"
+        @close="closeMenu"
+      />
+    </transition>
+
+    <transition name="fade">
       <MainMenu 
         v-if="stardefender == 'MAIN MENU'" 
         @close="closeMainMenu" 
@@ -95,7 +103,8 @@ import {
   DuelMenu,
   AudioMenu,
   SearchingMenu,
-  StarDefenderProcess,  
+  StarDefenderProcess, 
+  LeadersBoard,
 } from '@/components';
 
 import {
@@ -125,6 +134,7 @@ export default {
     AudioMenu,
     SearchingMenu,
     StarDefenderProcess,
+    LeadersBoard,
   },
   data: () => {
     return {

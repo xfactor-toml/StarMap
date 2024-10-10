@@ -1,0 +1,50 @@
+.LeadersHero {
+    width:100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    bottom: 0;
+}
+
+.LeadersHero__crown {
+   padding-bottom: 5px;
+}
+
+.LeadersHero__avatar {
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.LeadersHero__info {
+    font-size: 14px;
+    color: #00FFFF;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.gold {
+    background: linear-gradient(180deg, #FF9900 0%, #FEE140 100%);
+    box-shadow: 0px 0px 302.423px #F8D63D, 0px 0px 172.813px #F8D63D, 0px 0px 100.808px #F8D63D, 0px 0px 50.4038px #F8D63D, 0px 0px 14.4011px #F8D63D, 0px 0px 7.20054px #F8D63D;
+}
+
+.silver {
+    background: linear-gradient(0deg, #F5F7FA 0%, #C3CFE2 100%);
+    box-shadow: 0px 0px 302.423px #B5C7E4, 0px 0px 172.813px #B5C7E4, 0px 0px 100.808px #B5C7E4, 0px 0px 50.4038px #B5C7E4, 0px 0px 14.4011px #B5C7E4, 0px 0px 7.20054px #B5C7E4;  
+}
+
+.bronze {
+    background: linear-gradient(0deg, #FF8177 0%, #FF867A 0%, #FF8C7F 21%, #F99185 52%, #CF556C 78%, #B12A5B 100%);
+    box-shadow: 0px 0px 302.423px #FD8A7F, 0px 0px 172.813px #FD8A7F, 0px 0px 100.808px #FD8A7F, 0px 0px 50.4038px #FD8A7F, 0px 0px 14.4011px #FD8A7F, 0px 0px 7.20054px #FD8A7F;
+}
+
+
+

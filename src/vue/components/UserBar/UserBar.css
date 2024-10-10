@@ -202,7 +202,7 @@
 
 .UserMenu__body {
   position: absolute;
-  top: 100px;
+  top: 70px;
   pointer-events: all;
   display: flex;
   flex-direction: column;
@@ -264,7 +264,7 @@
 @media (max-height: 667px) {
   .UserMenu__body {
     transform: scale(0.9);
-    top: 90px;
+    top: 70px;
   }
 }
 
@@ -272,6 +272,6 @@
 
  .UserMenu__body {
   transform: scale(0.8);
-  top: 80px;
+  top: 70px;
  }
 }

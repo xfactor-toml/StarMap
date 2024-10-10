@@ -125,8 +125,7 @@
   .GalaxyScene__header {
     left: 12px;
     right: 12px;
-    top: 40px;
-    /* top: 12.5%; */
+    /* top: 40px; */
   }
 
   .GalaxyScene__headerColumn.is-center {
