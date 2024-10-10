@@ -31,7 +31,7 @@
   top: 0;
   left: 0;
   height: calc(100% - 30px);
-  overflow-y: auto;
+  
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -67,6 +67,7 @@
 
 
 .BattleResultsMode__body {
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   align-items: center;

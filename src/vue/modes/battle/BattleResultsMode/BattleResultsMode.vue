@@ -50,44 +50,44 @@
                   </div>
                 </div>
               </div>
-            </div>
-
-            <div class="BattleResultsMode__time orbitron-font --semi-bold">
-                <hr :class="['BattleResultsMode__timehr', { 'timelimited-hr': timelimited }]"/>
-                  <p :class="['BattleResultsMode__timeText', { 'timelimited-color': timelimited }]"> 00:{{ currentTime }}</p>
-                <hr :class="['BattleResultsMode__timehr', { 'timelimited-hr': timelimited }]"/>
-            </div>
-
-            <div class="BattleResultsMode__footer">
-              <Loader v-if="loading" />
-              <template v-else>
-                <div :class="['BattleResultsMode__button white orbitron-font --semi-bold', {'disabled': timelimited}]" @click="">
-                  <img src="/gui/images/battle-results/play-again.svg">
-                  <div class="BattleResultsMode__playagain orbitron-font --semi-bold">PLAY AGAIN</div>
-                  <div class="BattleResultsMode__status">
-                      <div class="BattleResultsMode__playerstatus">
-                          <p>PLAYER 1</p>
-                          <input type="checkbox" :class="{'disabled': timelimited}" v-model="player1Checked" @change="handleCheckboxChange('Player 1', player1Checked)">
-                      </div>
-                      <div class="BattleResultsMode__playerstatus">
-                          <p>PLAYER 2</p>
-                          <input type="checkbox" class="disabled" v-model="player2Checked" @change="handleCheckboxChange('Player 2', player2Checked)">
-                      </div>
+              <div class="BattleResultsMode__time orbitron-font --semi-bold">
+                  <hr :class="['BattleResultsMode__timehr', { 'timelimited-hr': timelimited }]"/>
+                    <p :class="['BattleResultsMode__timeText', { 'timelimited-color': timelimited }]"> 00:{{ currentTime }}</p>
+                  <hr :class="['BattleResultsMode__timehr', { 'timelimited-hr': timelimited }]"/>
+              </div>
+  
+              <div class="BattleResultsMode__footer">
+                <Loader v-if="loading" />
+                <template v-else>
+                  <div :class="['BattleResultsMode__button white orbitron-font --semi-bold', {'disabled': timelimited}]" @click="">
+                    <img src="/gui/images/battle-results/play-again.svg">
+                    <div class="BattleResultsMode__playagain orbitron-font --semi-bold">PLAY AGAIN</div>
+                    <div class="BattleResultsMode__status">
+                        <div class="BattleResultsMode__playerstatus">
+                            <p>PLAYER 1</p>
+                            <input type="checkbox" :class="{'disabled': timelimited}" v-model="player1Checked" @change="handleCheckboxChange('Player 1', player1Checked)">
+                        </div>
+                        <div class="BattleResultsMode__playerstatus">
+                            <p>PLAYER 2</p>
+                            <input type="checkbox" class="disabled" v-model="player2Checked" @change="handleCheckboxChange('Player 2', player2Checked)">
+                        </div>
+                    </div>
                   </div>
-                </div>
-                <div v-if="results.box.show" class="BattleResultsMode__button orbitron-font --semi-bold" @click="openBox">
-                  <img src="/gui/images/battle-results/open-box.svg">
-                  <div class="BattleResultsMode__button-text orbitron-font --semi-bold">OPEN BOX</div>
-                </div>
-                <!-- <button v-if="results.claim.show" class="BattleResultsMode__button" @click="claim">Claim rewards
-                </button> -->
-                <button  v-if="!results.box.show && !results.claim.show"  :class="['BattleResultsMode__button white orbitron-font --semi-bold']"
-                  @click="close">
-                  <img src="/gui/images/battle-results/play-again.svg">
-                  <div class="BattleResultsMode__button-text orbitron-font --semi-bold">EXIT</div>
-                </button>
-              </template>
+                  <div v-if="results.box.show" class="BattleResultsMode__button orbitron-font --semi-bold" @click="openBox">
+                    <img src="/gui/images/battle-results/open-box.svg">
+                    <div class="BattleResultsMode__button-text orbitron-font --semi-bold">OPEN BOX</div>
+                  </div>
+                  <!-- <button v-if="results.claim.show" class="BattleResultsMode__button" @click="claim">Claim rewards
+                  </button> -->
+                  <button  v-if="!results.box.show"  :class="['BattleResultsMode__button white orbitron-font --semi-bold']"
+                    @click="close">
+                    <img src="/gui/images/battle-results/play-again.svg">
+                    <div class="BattleResultsMode__button-text orbitron-font --semi-bold">EXIT</div>
+                  </button>
+                </template>
+              </div>
             </div>
+
           </div>
         </div>
       </template>
