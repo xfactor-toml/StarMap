@@ -11,6 +11,7 @@
   position: relative;
   justify-content: center;
   width: 100%;
+  aspect-ratio: 1/1.16;
   padding: 0;
   border: none;
   background-color: transparent;
@@ -26,8 +27,17 @@
   left:50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 56px;
-  height: 56px;
+  width: 46px;
+  height: 46px;
+}
+
+.BaseControl__animated-levelUp {
+  position: absolute;
+  left:50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 140%;
+  
 }
 
 .BaseControl__outline {

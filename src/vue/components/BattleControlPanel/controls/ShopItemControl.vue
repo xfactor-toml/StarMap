@@ -17,7 +17,6 @@
                 <BaseControl 
                 :disabled="item.disabled"
                 :active="!item.disabled"
-                :is-inventory="this.battleStore.shop.removedInventoryId == index"
                 />
             </div>
         </div>
