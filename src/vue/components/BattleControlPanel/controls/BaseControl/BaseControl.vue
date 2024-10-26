@@ -214,7 +214,7 @@ export default {
       if (newVal) {
         setTimeout(() => {
           this.isAnimatedLevelUp = false;
-        }, 500);
+        }, 1000);
       }
     }
   },
@@ -223,7 +223,7 @@ export default {
     if(this.isInventory) {
       setTimeout(() => {
         this.isAnimatedInventory = false;
-      }, 500);
+      }, 1000);
     }
   },
 
@@ -231,6 +231,12 @@ export default {
   handleDragStart(event: DragEvent) {
     this.dragging = true;
     event.dataTransfer?.setData('text/plain', 'dragging');
+
+    if (!navigator.userAgent.includes('Mac OS')) {
+    const img = new Image();
+    img.src = ''; // Empty source makes it invisible
+    event.dataTransfer?.setDragImage(img, 0, 0);
+  }
     // Save initial positions
     this.dragStartX = event.clientX;
     this.dragStartY = event.clientY;
