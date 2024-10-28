@@ -1,0 +1,110 @@
+.RewardItem {
+    width: 87.5%;
+    display: flex;
+    flex-direction: column;
+    gap: 5px; 
+}
+
+.RewardItem-avatar {
+    width: 100%;
+    aspect-ratio: 1/1;
+    position: relative;
+    z-index: 3;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+}
+
+.RewardItem-avatar.is-reward-day {
+    border: 2px solid #04FFFB;
+    filter: drop-shadow(0px 0px 6.3px #41B6FF);
+}
+
+.RewardItem-avatar.is-received {
+    background: rgba(112, 255, 68, 0.24);
+    border: 2px solid #70FF44;
+}
+
+.RewardItem-avatar.is-missed {
+    background: rgba(255, 0, 0, 0.24);
+    border: 2px solid #FF0000;
+}
+
+.RewardItem-status {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    z-index: 2;
+}
+
+.RewardItem-status.is-received {
+    background: rgba(112, 255, 68, 0.24);
+}
+
+.RewardItem-status.is-reward-day {
+   
+}
+
+.RewardItem-status.is-missed {
+    background: rgba(255, 0, 0, 0.24);
+}
+
+.RewardItem-status img {
+    width: 50%;
+    height: 50%;
+}
+
+.RewardItem-status.RewardItem__day.is-received{
+    background: rgba(112, 255, 68, 0.24);
+}
+
+.RewardItem__count {
+    position: absolute;
+    top: 2px;
+    right: 0;
+    padding: 0.5px 4px;
+    background: #1B2933;
+    border: 1px solid #ffffff;
+    color: #ffffff;
+    border-radius: 6px;
+    font-size: 12px;
+    z-index: 3;
+}
+
+.RewardItem__count.is-reward-day {
+    border: 1px solid #04FFFB;
+    color: #04FFFB;
+}
+
+.RewardItem__count.is-received {
+    border: 1px solid #70FF44;
+    color: #70FF44;
+} 
+
+.RewardItem__count.is-missed {
+    border: 1px solid #FF0000;
+    color: #FF0000;
+}
+
+.RewardItem__day {
+    text-align: center;
+    font-size: 16px;
+    color: #ffffff;
+}
+
+.RewardItem__day.is-reward-day {
+    color: #04FFFB;
+}
+
+.RewardItem__day.is-received {
+    color: #70FF44;
+}   
+
+.RewardItem__day.is-missed {
+    color: #FF0000;
+}   

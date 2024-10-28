@@ -51,3 +51,4 @@ export * from './PreGameCountdown';
 export * from './ShopMenu';
 export * from './EnemyModelControl';
 export * from './LeadersBoard';
+export * from './Quests';
