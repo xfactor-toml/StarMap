@@ -30,6 +30,7 @@
     flex-direction: column;
     align-items: center;
     width: 100%;
+    max-height: calc(100% - 6px);
 }
 
 .Quests__header {
@@ -96,6 +97,7 @@
     width: 100%;
     padding-right: 15px;
     padding-left: 15px;
+    border-radius: 24px;
     display: flex;
     flex-direction: column;
     align-items: center;  
@@ -122,13 +124,12 @@
   }
 
 .Quests__content {
-    padding-top: 20px;
+    padding-top: 10px;
     width: 100%;
     display: flex;
     flex-direction: column;
     gap: 20px;
     align-items: center;
-    padding-top: 20px;
 }
 
 .Quests__load-more {

@@ -63,7 +63,7 @@ export default {
     data() {
         return {
             navbarItems: ['DAILY', 'WEEKLY', 'UNIQUE'],
-            questNames: ['redTriangle', 'rockAlliance', 'moaiHeads', 'vorpal'],
+            questNames: ['red-triangle', 'star-defender', 'rock-alliance', 'moai-heads', 'vorpal'],
             activeNavItem: 2, 
             displayCount: 10,  
         }

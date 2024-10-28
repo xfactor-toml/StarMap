@@ -2,9 +2,9 @@
      <div class="Quests__item" :class="questTypeClass">
         <div class="Quests__item-cotainer" @click="handleExpand"> 
             <div class="Quests__item-body"> 
-                <div class="Quests__item-icon">
-                    <div class="Quests__item-outer-circle">
-                        <div class="Quests__item-inner-circle">
+                <div class="Quests__item-icon" :class="questIconTypeClass">
+                    <div class="Quests__item-outer-circle" :class="questOuterCircleTypeClass" >
+                        <div class="Quests__item-inner-circle" :class="questInnerCircleTypeClass">
                             <img :src="`/gui/images/quests/${name}.png`" alt="">
                             <div class="Quests__item-count exo2-font">
                                 0/1
@@ -151,16 +151,27 @@ export default {
 
     },
     computed: {
+        questIconTypeClass() {
+            return `Quests__item-icon--${this.name}`
+        },
         questTypeClass() {
             return `Quests__item--${this.name}`
         },
+        questOuterCircleTypeClass() {
+            return `Quests__item-outer-circle--${this.name}`
+        },
+        questInnerCircleTypeClass() {
+            return `Quests__item-inner-circle--${this.name}`
+        },
         strokeColor() {
             switch(this.name) {
-                case 'redTriangle':
-                    return '#474747'  
-                case 'rockAlliance':
+                case 'red-triangle':
+                    return '#474747'
+                case 'star-defender':
+                    return '#0461B5'
+                case 'rock-alliance':
                     return '#0461B5' 
-                case 'moaiHeads':
+                case 'moai-heads':
                     return '#F4771E' 
                 case 'vorpal':
                     return '#104756'
