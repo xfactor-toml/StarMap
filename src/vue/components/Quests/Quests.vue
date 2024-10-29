@@ -30,9 +30,12 @@
                 <div class="Quests__body">
                     <div class="Quests__content">
                        <QuestsItem 
-                       v-for="(item, index) in questNames" 
+                       v-for="(item, index) in QuestItemList" 
                        :key="index" 
-                       :name="questNames[index]" /> 
+                       :rewardsList="item.rewardsList"
+                       :totalBonusDay="item.totalBonusDay"
+                       :currentBonusDay="item.currentBonusDay"
+                       :name="item.name" /> 
 
                         <!-- <div class="Quests__load-more">
                             <button class="Quests__load-more-button --bold" @click="loadMore">
@@ -55,6 +58,7 @@
 
 <script lang="ts">
 import QuestsItem from './QuestsItem';
+import { QuestItemList } from '@/constants/quests';
 export default {
     name: 'Quests',
     components: {
@@ -66,6 +70,7 @@ export default {
             questNames: ['red-triangle', 'star-defender', 'rock-alliance', 'moai-heads', 'vorpal'],
             activeNavItem: 2, 
             displayCount: 10,  
+            QuestItemList,
         }
     },
 
@@ -79,79 +84,7 @@ export default {
     },
 
     methods: {
-        getMyInfoLabel(activeNavItem: number) {
-            switch (activeNavItem) {
-                case 0: return 'Rating';
-                case 1: return 'Unique duels';
-                case 2: return 'Friends';
-                default: return 'Unique duels';
-            }
-        },
-        getMyInfoValue(activeNavItem: number) {
-            switch (activeNavItem) {
-                case 0: return  this.myInfo.ratings;
-                case 1: return  this.myInfo.duels;
-                case 2: return  this.myInfo.friends;
-                default: return this.myInfo.duels;
-            }
-        },
-
-        getRankingAvatar(activeNavItem: number) {
-            switch (activeNavItem) {
-                case 0: return  '/gui/images/leaders-board/raiting.svg';
-                case 1: return  "/gui/images/leaders-board/other-avatar.svg";
-                case 2: return  '/gui/images/leaders-board/main-avatar.svg';
-                default: return  "/gui/images/leaders-board/other-avatar.svg";
-            }
-        },
-
-        getRankingName(activeNavItem: number, index: number) {
-            switch (activeNavItem) {
-                case 0: return  'unknown';
-                case 1: return  this.leaders[index].name;
-                case 2: return  'unknown';
-                default: return  this.leaders[index].name;
-            }
-        },
-
-        getRankingDetail(activeNavItem: number, index: number) {
-            switch (activeNavItem) {
-                case 0: return  'soon';
-                case 1: return  this.leaders[index].uniqueDuels;
-                case 2: return   this.leaders[index].uniqueDuels;
-                default: return  this.leaders[index].uniqueDuels;
-            }
-        },
-
-        getRankingValue(activeNavItem: number, index: number) {
-            switch (activeNavItem) {
-                case 0: return  'soon';
-                case 1: return  index+4;
-                case 2: return   3;
-                default: return  index+4;
-            }
-        },
-        getCrown(index: number) {
-            if (index === 0) {
-                return '/gui/images/leaders-board/silver-crown.svg';
-            }
-            if (index === 1) {
-                return '/gui/images/leaders-board/gold-crown.svg';
-            }
-            if (index === 2) {
-                return '/gui/images/leaders-board/bronze-crown.svg';
-            }
-            return null;
-        },
-        getCrownType(index: number) {
-            if (index === 0) {
-                return 'silver';
-            } else if (index === 1) {
-                return 'gold';
-            } else if (index === 2) {
-                return 'bronze';
-            }
-        },
+       
         goBack() {
             this.$emit('goBack', 'LEADERS BOARD');
         },

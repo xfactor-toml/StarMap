@@ -7,7 +7,7 @@
                         <div class="Quests__item-inner-circle" :class="questInnerCircleTypeClass">
                             <img :src="`/gui/images/quests/${name}.png`" alt="">
                             <div class="Quests__item-count exo2-font">
-                                0/1
+                                {{ currentBonusDay  }} / {{ totalBonusDay }}
                             </div>
                         </div>
                     </div>
@@ -46,17 +46,19 @@
   
         <div v-if="isExpand" class="Quests__item-expand">
             <div class="Quests__item-expand-container">
-                <div v-for="i in 16" 
+                <div v-for="i in rewardsList.length" 
                     class="Quests__item-rewardList" 
                     :class="{'is-last': i%4 === 0}" 
                     :style="{ transform: `translateX(${-currentIndex * 100}%)` }">
-                    <RewardItem 
-                    :isRewardDay="rewardsList[currentIndex + i - 1]?.isRewardDay || false"
-                    :isReceived="rewardsList[currentIndex + i - 1]?.isReceived || false"
-                    :isMissed="rewardsList[currentIndex + i - 1]?.isMissed || false"
+                    <RewardItem
+                    :isRewardDay="rewardsList[i - 1]?.isRewardDay || false"
+                    :isReceived="rewardsList[i - 1]?.isReceived || false"
+                    :isMissed="rewardsList[ i - 1]?.isMissed || false"
+                    :bonusCount="rewardsList[ i - 1]?.bonusCount || 0"
+                    :day="rewardsList[ i - 1]?.day || ''" 
                     />
                     <div class="Quests__item-rewardConnectLine">
-                        <div v-if ="rewardsList[currentIndex + i - 1]?.isReceived && rewardsList[currentIndex + i]?.isReceived" class="Quests__item-rewardConnectLine-inner"></div>
+                        <div v-if ="rewardsList[i - 1]?.isReceived && rewardsList[i]?.isReceived" class="Quests__item-rewardConnectLine-inner"></div>
                     </div>
                 </div>
                 <div class="Quests__item-expand-middleline"></div>
@@ -68,7 +70,7 @@
                            <img src="/gui/images/quests/previous-button.svg" alt="">
                        </div>
                        <div class="Quests__item-rewardList-next-btn" 
-                            v-show="currentIndex < rewardsList.length"
+                            v-show="this.rewardsList.length - 4 > 0 && currentIndex < rewardsList.length - 4"
                             @click="handleNext"
                            >
                            <img src="/gui/images/quests/next-button.svg"   alt="">
@@ -103,8 +105,10 @@
    
 </template>
 <script lang="ts">
-
+import { PropType } from 'vue'
 import RewardItem from './RewardItem/RewardItem.vue';
+import { RewardType } from '@/types/quest';
+import { QuestItemType } from '@/types/quest';
 export default {
     name: 'QuestsItem',
     components: {
@@ -112,31 +116,21 @@ export default {
     },
     props:{
         name: String,
-
+        rewardsList: Array<RewardType>,
+        totalBonusDay: Number,
+        currentBonusDay: Number,
     },
 
     data() {
         return {
             currentIndex: 0,
             isExpand: false,
-            rewardsList: [
-                { isReceived: true, isMissed: false,isRewardDay: false },
-                { isReceived: true, isMissed: false,isRewardDay: false },
-                { isReceived: false, isMissed: true,isRewardDay: false },
-                { isReceived: false, isMissed: true,isRewardDay: false },
-                { isReceived: false, isMissed: false, isRewardDay: true },
-                { isReceived: false, isMissed: false, isRewardDay: true },
-                { isReceived: false, isMissed: false, isRewardDay: false },
-                { isReceived: false, isMissed: false, isRewardDay: false },
-                { isReceived: false, isMissed: false, isRewardDay: false },
-                { isReceived: false, isMissed: false, isRewardDay: false },
-            ],
         }
     },
     methods: {
     handleNext() {
-        console.log(this.currentIndex);
-        if (this.currentIndex < this.rewardsList.length ) {
+        console.log(this.rewardsList.length, "length")
+        if (this.currentIndex < this.rewardsList.length-1 ) {
             this.currentIndex++;
         }
     },

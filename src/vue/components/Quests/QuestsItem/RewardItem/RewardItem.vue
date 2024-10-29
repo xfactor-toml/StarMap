@@ -1,9 +1,9 @@
 <template>
-    <div class="RewardItem">
+    <div class="RewardItem" :class="{ 'is-processed': isReceived || isMissed || isRewardDay}">
         <div class="RewardItem-avatar" :class="{ 'is-reward-day': isRewardDay, 'is-received': isReceived , 'is-missed': isMissed}">
             <img src="/gui/images/quests/reward.png" alt="reward-item">
             <div class="RewardItem__count exo2-font" :class="{ 'is-reward-day': isRewardDay, 'is-received': isReceived , 'is-missed': isMissed}">
-                X14
+                X{{ bonusCount }}
             </div>
 
             <div v-if="isReceived || isMissed" class="RewardItem-status" :class="{ 'is-reward-day': isRewardDay, 'is-received': isReceived , 'is-missed': isMissed}">
@@ -13,7 +13,7 @@
         </div>
     
         <div class="RewardItem__day exo2-font" :class="{ 'is-reward-day': isRewardDay, 'is-received': isReceived , 'is-missed': isMissed}">
-            Day 1
+            {{ day }}
         </div>
     </div>
 </template>
@@ -33,7 +33,16 @@ export default {
        isMissed: {
         type: Boolean,
         default: false
-       }    
+       },
+       bonusCount: {
+        type: Number,
+        default: 0
+       },
+       day: {
+        type: String,
+        default: ''
+       }
+
     }
 }
 </script>
