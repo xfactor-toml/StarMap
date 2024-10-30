@@ -1,7 +1,8 @@
 <template>
     <div class="RewardItem" :class="{ 'is-processed': isReceived || isMissed || isRewardDay}">
         <div class="RewardItem-avatar" :class="{ 'is-reward-day': isRewardDay, 'is-received': isReceived , 'is-missed': isMissed}">
-            <img src="/gui/images/quests/reward.png" alt="reward-item">
+            <img v-if="!isNFT" src="/gui/images/quests/reward.png" alt="reward-item">
+            <img v-else src="/gui/images/quests/nft-reward.png" alt="reward-item">
             <div class="RewardItem__count exo2-font" :class="{ 'is-reward-day': isRewardDay, 'is-received': isReceived , 'is-missed': isMissed}">
                 X{{ bonusCount }}
             </div>
@@ -22,6 +23,10 @@
 export default {
     name: 'RewardItem',
     props: {
+       isNFT: {
+        type: Boolean,
+        default: false
+       },
        isRewardDay: {
         type: Boolean,
         default: false

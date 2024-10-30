@@ -78,8 +78,7 @@
                    </div>
                 </div>
             </div>
-        </div>
-     
+        </div> 
     </div>
 
     <div v-if="false" class="Quests__item-expand-bg">

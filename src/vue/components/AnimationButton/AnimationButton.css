@@ -1,0 +1,169 @@
+.AnimationButton {
+    display: flex;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 287/80;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;  
+    background: linear-gradient(180deg, #FF9900 0%, #FEE140 100%);
+    box-shadow: 0px 0px 224.366px #FFA50E, 0px 0px 74.7885px #FFA50E, 0px 0px 37.3943px #FFA50E, 0px 0px 10.6841px #FFA50E, 0px 0px 5.34204px #FFA50E;
+    pointer-events: all;
+}
+
+.AnimationButton:hover {
+    cursor: pointer;
+    transform: scale(1.05);
+    transition: all 0.3s ease;
+}
+
+.AnimationButton.--blue {
+    background: linear-gradient(360deg, #00C6FB 0%, #005BEA 100%);
+    box-shadow: 0px 0px 1134px #005EEA, 0px 0px 648px #005EEA, 0px 0px 378px #005EEA, 0px 0px 189px #005EEA, 0px 0px 54px #005EEA, 0px 0px 27px #005EEA;
+}
+
+.AnimationButton-bg {
+    position: absolute;
+    z-index: 3;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.AnimationButton__title {
+    font-size: 32px;
+    color:#fff;
+    z-index: 4;
+}
+
+.AnimationButton__animation {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    animation: zoomOut 8s infinite forwards linear;
+}
+
+.AnimationButton svg {
+   width: 100%;
+   height: 100%;
+}
+
+@keyframes zoomOut {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(0.98,0.98);
+    }
+    
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(1.18, 1.5);
+  }
+  }
+
+  .AnimationButton__animation:nth-child(1) {
+    animation-delay: calc(1000ms * -1);
+  }
+
+  .AnimationButton__animation:nth-child(2) {
+    animation-delay: calc(1000ms * 0);
+  }
+
+  .AnimationButton__animation:nth-child(3) {
+    animation-delay: calc(1000ms * 1);
+  }     
+
+ .AnimationButton__animation:nth-child(4) {
+    animation-delay: calc(1000ms * 2);
+  } 
+
+  .AnimationButton__animation:nth-child(5) {
+    animation-delay: calc(1000ms * 3);
+  } 
+
+  .AnimationButton__animation:nth-child(6) {
+    animation-delay: calc(1000ms * 4);
+  } 
+  
+  .AnimationButton__animation:nth-child(7) {
+    animation-delay: calc(1000ms * 5);
+  }     
+  
+  .AnimationButton__animation:nth-child(8) {
+    animation-delay: calc(1000ms * 6);
+  }
+
+  .AnimationButton__animation:nth-child(9) {
+    animation-delay: calc(1000ms * 7);
+  } 
+
+  .AnimationButton__animation:nth-child(10) {
+    animation-delay: calc(1000ms * 8);
+  }
+  
+  .AnimationButton__animation:nth-child(11) {
+    animation-delay: calc(1000ms * 9);
+  }
+
+  .AnimationButton__animation:nth-child(12) {
+    animation-delay: calc(1000ms * 10);
+  }     
+
+  .AnimationButton__animation:nth-child(13) {
+    animation-delay: calc(1000ms * 11);
+  }
+
+  .AnimationButton__animation:nth-child(14) {
+    animation-delay: calc(1000ms * 12);
+  } 
+
+  .AnimationButton__animation:nth-child(15) {
+    animation-delay: calc(1000ms * 13);
+  }
+
+  .AnimationButton__animation:nth-child(16) {
+    animation-delay: calc(1000ms * 14);
+  }
+
+  .AnimationButton__animation:nth-child(17) {
+    animation-delay: calc(1000ms * 15);
+  }
+
+  .AnimationButton__animation:nth-child(18) {
+    animation-delay: calc(1000ms * 16);
+  }
+
+  .AnimationButton__animation:nth-child(19) {
+    animation-delay: calc(1000ms * 17);
+  }
+
+  .AnimationButton__animation:nth-child(20) {
+    animation-delay: calc(1000ms * 18);
+  }
+
+  .AnimationButton__animation:nth-child(21) {
+    animation-delay: calc(1000ms * 19);
+  }
+
+  .AnimationButton__animation:nth-child(22) {
+    animation-delay: calc(1000ms * 20);
+  }
+
+  .AnimationButton__animation:nth-child(23) {
+    animation-delay: calc(1000ms * 21);
+  } 
+
+  .AnimationButton__animation:nth-child(24) {
+    animation-delay: calc(1000ms * 22);
+  }
+  
+  .AnimationButton__animation:nth-child(25) {
+    animation-delay: calc(1000ms * 23);
+  }
+
+  .AnimationButton__animation:nth-child(26) {
+    animation-delay: calc(1000ms * 24);
+  }

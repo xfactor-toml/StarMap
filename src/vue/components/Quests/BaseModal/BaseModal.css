@@ -1,0 +1,68 @@
+.BaseModal {
+    position: relative;
+    display: flex;
+    width: 100%;
+    aspect-ratio: 410/345;
+    border-radius: 32px;
+    flex-direction: column;
+    align-items: center;
+    background-color: #000;
+    background-image: url('/gui/images/quests/yellow-modal.png');
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.BaseModal__title {
+    font-size: 30px;
+    color: #112A5E;
+}
+
+.BaseModal__body {
+    display: flex;
+    width: 100%;
+    padding-top: 20px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.BaseModal__subtitle {
+    font-size: 20px;
+    color: #FFFFFF;
+    text-shadow: 0px 0px 11.2px #63A6FF;
+}  
+
+.BaseModal__content {
+    position: relative;
+    width: 100%;
+    /* padding: 0px 20px; */
+    padding-top: 20px;
+    padding-bottom: 25px;
+    
+}
+
+.BaseModal__btn {
+   width: 70%;
+}  
+
+.BaseModal__content-rewards {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.BaseModal__content-rewards-item {
+    width: 22%;
+    aspect-ratio: 1/1;
+}
+
+.BaseModal__content-middleline {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: calc(100% - 10px);
+    aspect-ratio: 400/48;
+    background: rgba(0, 0, 0, 0.22);
+}

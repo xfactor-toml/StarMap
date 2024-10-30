@@ -51,6 +51,11 @@
                         </div> -->
                     </div>
                 </div>
+                <BaseModal >
+                    <div class="BaseModal__content-rewards-item">
+                        <RewardItem :bonusCount="10" :isRewardDay="true" :isNFT="true" />
+                    </div>
+                </BaseModal>
             </div>
        </div>          
     </div>
@@ -59,10 +64,14 @@
 <script lang="ts">
 import QuestsItem from './QuestsItem';
 import { QuestItemList } from '@/constants/quests';
+import BaseModal from './BaseModal/BaseModal.vue';
+import RewardItem from './QuestsItem/RewardItem';
 export default {
     name: 'Quests',
     components: {
-        QuestsItem
+        QuestsItem,
+        BaseModal,
+        RewardItem
     },
     data() {
         return {
