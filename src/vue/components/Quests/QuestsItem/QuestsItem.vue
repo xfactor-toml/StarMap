@@ -45,17 +45,20 @@
         </div>
   
         <div v-if="isExpand" class="Quests__item-expand">
+            <div v-show="rewardsList.length > 4" class="Quests__item-expand-gradient" :class="gradientClass"/>
             <div class="Quests__item-expand-container">
                 <div v-for="i in rewardsList.length" 
                     class="Quests__item-rewardList" 
-                    :class="{'is-last': i%4 === 0}" 
+                    :class="{'is-last': i%4 === 0, 'is-clickable': canClick(i)}" 
                     :style="{ transform: `translateX(${-currentIndex * 100}%)` }">
                     <RewardItem
-                    :isRewardDay="rewardsList[i - 1]?.isRewardDay || false"
-                    :isReceived="rewardsList[i - 1]?.isReceived || false"
-                    :isMissed="rewardsList[ i - 1]?.isMissed || false"
-                    :bonusCount="rewardsList[ i - 1]?.bonusCount || 0"
-                    :day="rewardsList[ i - 1]?.day || ''" 
+                    @getReward="getReward"
+                    @missedReward="missedReward"
+                    :isRewardDay="rewardsList[i - 1]?.isRewardDay"
+                    :isReceived="rewardsList[i - 1]?.isReceived"
+                    :isMissed="rewardsList[ i - 1]?.isMissed"
+                    :bonusCount="rewardsList[ i - 1]?.bonusCount"
+                    :day="rewardsList[ i - 1]?.day" 
                     />
                     <div class="Quests__item-rewardConnectLine">
                         <div v-if ="rewardsList[i - 1]?.isReceived && rewardsList[i]?.isReceived" class="Quests__item-rewardConnectLine-inner"></div>
@@ -119,30 +122,7 @@ export default {
         totalBonusDay: Number,
         currentBonusDay: Number,
     },
-
-    data() {
-        return {
-            currentIndex: 0,
-            isExpand: false,
-        }
-    },
-    methods: {
-    handleNext() {
-        console.log(this.rewardsList.length, "length")
-        if (this.currentIndex < this.rewardsList.length-1 ) {
-            this.currentIndex++;
-        }
-    },
-    handlePrevious() {
-        if (this.currentIndex > 0) {
-            this.currentIndex--;
-        }
-   },
-   handleExpand(){
-    this.isExpand = !this.isExpand;
-   }
-
-    },
+    emits: ["getReward", "missedReward"],
     computed: {
         questIconTypeClass() {
             return `Quests__item-icon--${this.name}`
@@ -171,8 +151,54 @@ export default {
                 default:
                     return '#474747'  
             }
+        },
+        gradientClass() {
+            if (!this.isExpand) return '';
+            
+            const hasPrevious = this.currentIndex > 0;
+            const hasNext = this.rewardsList.length - 4 > 0 && this.currentIndex < this.rewardsList.length - 4;
+            
+            if (hasPrevious && hasNext) return 'gradient-both';
+            if (hasPrevious) return 'gradient-previous';
+            if (hasNext) return 'gradient-next';
+            return 'gradient-none';
         }
-    }
+    },
+
+    data() {
+        return {
+            currentIndex: 0,
+            isExpand: false,
+        }
+    },
+    methods: {
+        handleNext() {
+            console.log(this.rewardsList.length, "length")
+            if (this.currentIndex < this.rewardsList.length-1 ) {
+                this.currentIndex++;
+            }
+        },
+        handlePrevious() {
+            if (this.currentIndex > 0) {
+                this.currentIndex--;
+            }
+        },
+        handleExpand(){
+            this.isExpand = !this.isExpand;
+        },
+        canClick(index: number) {
+            return  index > this.currentIndex + 1 && index < this.currentIndex + 4;
+        },
+        getReward() {
+            this.$emit('getReward')
+        },
+        missedReward() {
+            this.$emit('missedReward')
+        }
+
+    },
+    
+
 
     
 }

@@ -18,6 +18,18 @@
     color: #112A5E;
 }
 
+.BaseModal__closebtn {
+    position: absolute;
+    top: 0px;
+    right: 27px;
+    font-size: 30px;
+    color: #112A5E;
+}
+
+.BaseModal__closebtn:hover   {
+    cursor: pointer;
+}
+
 .BaseModal__body {
     display: flex;
     width: 100%;
@@ -37,8 +49,8 @@
     position: relative;
     width: 100%;
     /* padding: 0px 20px; */
-    padding-top: 20px;
-    padding-bottom: 25px;
+    padding-top: 10px;
+    padding-bottom: 15px;
     
 }
 

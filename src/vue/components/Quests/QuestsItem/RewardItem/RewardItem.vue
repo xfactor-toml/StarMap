@@ -1,10 +1,16 @@
 <template>
-    <div class="RewardItem" :class="{ 'is-processed': isReceived || isMissed || isRewardDay}">
-        <div class="RewardItem-avatar" :class="{ 'is-reward-day': isRewardDay, 'is-received': isReceived , 'is-missed': isMissed}">
+    <div class="RewardItem" :class="{ 'is-processed': isReceived || isMissed || isRewardDay || isBonusDay}">
+        <div class="RewardItem-avatar" 
+            :class="{ 'is-bonus-day': isBonusDay, 'is-reward-day': isRewardDay, 'is-received': isReceived , 'is-missed': isMissed}" 
+            @click="handleClick">
             <img v-if="!isNFT" src="/gui/images/quests/reward.png" alt="reward-item">
             <img v-else src="/gui/images/quests/nft-reward.png" alt="reward-item">
-            <div class="RewardItem__count exo2-font" :class="{ 'is-reward-day': isRewardDay, 'is-received': isReceived , 'is-missed': isMissed}">
+            <div class="RewardItem__count exo2-font" :class="{ 'is-bonus-day': isBonusDay, 'is-reward-day': isRewardDay, 'is-received': isReceived , 'is-missed': isMissed}">
                 X{{ bonusCount }}
+            </div>
+
+            <div v-if="isBonusDay" class="RewardItem-bonus-text exo2-font --bold">
+                BONUS
             </div>
 
             <div v-if="isReceived || isMissed" class="RewardItem-status" :class="{ 'is-reward-day': isRewardDay, 'is-received': isReceived , 'is-missed': isMissed}">
@@ -27,6 +33,10 @@ export default {
         type: Boolean,
         default: false
        },
+       isBonusDay: {
+        type: Boolean,
+        default: false
+       },
        isRewardDay: {
         type: Boolean,
         default: false
@@ -46,8 +56,18 @@ export default {
        day: {
         type: String,
         default: ''
-       }
+       },
 
+    },
+    methods: {
+        handleClick() {
+           if (this.isRewardDay) {
+            this.$emit('getReward')
+           }
+           else if (this.isMissed){
+            this.$emit('missedReward')
+           }
+        }
     }
 }
 </script>

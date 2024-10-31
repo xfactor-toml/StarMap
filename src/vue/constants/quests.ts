@@ -1,4 +1,5 @@
 import { QuestItemType } from "@/types/quest";
+import { BonusType } from "@/types/quest";
 
 export const QuestItemList: QuestItemType[] = [
     {
@@ -121,4 +122,16 @@ export const QuestItemList: QuestItemType[] = [
             { isReceived: true, isMissed: false, isRewardDay: false, day: 'Bonus', bonusCount: 30 },
         ],
     }
+]
+
+export const BonusList: BonusType[] = [
+    { isBonusDay: false, isRewardDay: true, bonusCount: 4 },
+    { isBonusDay: true, isRewardDay: false, bonusCount: 24 },
+    { isBonusDay: true, isRewardDay: false, bonusCount: 24 },
+    { isBonusDay: true, isRewardDay: false, bonusCount: 24 },
+    { isBonusDay: true, isRewardDay: false, bonusCount: 24 },
+]
+
+export const RewardList: BonusType[] = [
+    { isBonusDay: false, isRewardDay: true, bonusCount: 4 },
 ]

@@ -1,6 +1,9 @@
 <template>
     <div class="BaseModal">
         <h3 class="BaseModal__title">{{ title }}</h3>
+        <div class="BaseModal__closebtn --bold" @click="closeModal">
+            X
+        </div>
         <div class="BaseModal__body">
             <h4 class="BaseModal__subtitle">{{ subtitle }}</h4>
             <div class="BaseModal__content">
@@ -15,13 +18,13 @@
             </div>
         </div>
         <div class="BaseModal__btn">
-            <AnimationButton buttonType="blue"/>
+            <AnimationButton buttonType="buttonType"/>
         </div>
     </div>
 </template>
 <script lang="ts">
 import AnimationButton from '@/components/AnimationButton';
-import RewardItem from '../QuestsItem/RewardItem';
+import RewardItem from '@/components/Quests/QuestsItem/RewardItem/RewardItem.vue';
 export default {
     name: 'BaseModal',
     components: {
@@ -44,6 +47,11 @@ export default {
         buttonType: {
             type: String,
             default: 'yellow'
+        }
+    },
+    methods: {
+        closeModal() {
+            this.$emit('close');
         }
     }
 }

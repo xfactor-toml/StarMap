@@ -30,7 +30,9 @@
                 <div class="Quests__body">
                     <div class="Quests__content">
                        <QuestsItem 
-                       v-for="(item, index) in QuestItemList" 
+                       v-for="(item, index) in QuestItemList"
+                       @getReward="getReward"
+                       @missedReward="missedReward"
                        :key="index" 
                        :rewardsList="item.rewardsList"
                        :totalBonusDay="item.totalBonusDay"
@@ -51,11 +53,17 @@
                         </div> -->
                     </div>
                 </div>
-                <BaseModal >
-                    <div class="BaseModal__content-rewards-item">
-                        <RewardItem :bonusCount="10" :isRewardDay="true" :isNFT="true" />
-                    </div>
-                </BaseModal>
+                <div v-show="unstoppableRewards" class="Quests__modal">
+                    <QuestsModal 
+                    :rewardsList="BonusList" 
+                    @close="closeModal" />
+                </div>
+                <div v-show="canGetReward" class="Quests__modal">
+                    <QuestsModal 
+                    title="NICE WORK, HERO!" 
+                    :rewardsList="RewardList" 
+                    @close="closeModal" />
+                </div>
             </div>
        </div>          
     </div>
@@ -64,14 +72,17 @@
 <script lang="ts">
 import QuestsItem from './QuestsItem';
 import { QuestItemList } from '@/constants/quests';
-import BaseModal from './BaseModal/BaseModal.vue';
+import QuestsModal from './QuestsModal/QuestsModal.vue';
 import RewardItem from './QuestsItem/RewardItem';
+import { BonusList, RewardList } from '@/constants/quests';
+import BaseModal from './QuestsModal/BaseModal/BaseModal.vue';
 export default {
     name: 'Quests',
     components: {
         QuestsItem,
-        BaseModal,
-        RewardItem
+        QuestsModal,
+        RewardItem,
+        BaseModal
     },
     data() {
         return {
@@ -80,6 +91,10 @@ export default {
             activeNavItem: 2, 
             displayCount: 10,  
             QuestItemList,
+            unstoppableRewards: false,
+            canGetReward: false,
+            RewardList,
+            BonusList
         }
     },
 
@@ -93,7 +108,18 @@ export default {
     },
 
     methods: {
-       
+        getReward() {
+            console.log('getReward')
+            this.canGetReward = !this.canGetReward;
+        },
+        missedReward() {
+            console.log('missedReward')
+            this.unstoppableRewards = true  
+        },
+        closeModal() {
+            this.unstoppableRewards = false;
+            this.canGetReward = false;
+        },
         goBack() {
             this.$emit('goBack', 'LEADERS BOARD');
         },

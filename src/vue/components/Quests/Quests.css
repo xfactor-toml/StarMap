@@ -10,6 +10,7 @@
     padding-right: 10px;
     z-index: 10;
     pointer-events: all;
+    user-select: none;
 }
 
 .Quests__container {
@@ -232,6 +233,12 @@
 }
 .Quests__load-more-animation-item:nth-child(13) {
     animation-delay: calc(1000ms * 11);
+}
+
+.Quests__modal {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
 }
 
 @media (max-width: 768px) {

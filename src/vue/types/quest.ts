@@ -1,3 +1,8 @@
+export type BonusType = {
+    isBonusDay: boolean,
+    isRewardDay: boolean,
+    bonusCount: number,
+}
 export type  RewardType = {
     isReceived: boolean,
     isMissed: boolean,

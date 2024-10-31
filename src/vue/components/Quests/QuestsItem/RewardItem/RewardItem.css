@@ -24,6 +24,10 @@
     filter: drop-shadow(0px 0px 6.3px #41B6FF);
 }
 
+.RewardItem-avatar.is-reward-day:hover {
+    cursor: pointer;
+}
+
 .RewardItem-avatar.is-received {
     background: rgba(112, 255, 68, 0.24);
     border: 2px solid #70FF44;
@@ -32,6 +36,15 @@
 .RewardItem-avatar.is-missed {
     background: rgba(255, 0, 0, 0.24);
     border: 2px solid #FF0000;
+}
+
+.RewardItem-avatar.is-missed:hover {
+    cursor: pointer;
+}
+
+.RewardItem-avatar.is-bonus-day {
+    border: 2px solid #FEC023;
+    filter: drop-shadow(0px 0px 6.3px #FEC023);
 }
 
 .RewardItem-status {
@@ -81,6 +94,11 @@
     z-index: 3;
 }
 
+.RewardItem__count.is-bonus-day {
+    border: 1px solid #FEC023;
+    color: #FEC023;
+}
+
 .RewardItem__count.is-reward-day {
     border: 1px solid #04FFFB;
     color: #04FFFB;
@@ -112,4 +130,13 @@
 
 .RewardItem__day.is-missed {
     color: #FF0000;
+}  
+
+.RewardItem-bonus-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #FEC023;
+    text-shadow: 0px 0px 6.9px #293352, 0px 0px 5.1px #192540;
 }   

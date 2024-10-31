@@ -3,7 +3,7 @@
     position: relative;
     width: 100%;
     aspect-ratio: 287/80;
-    border-radius: 50%;
+    border-radius: 50px;
     align-items: center;
     justify-content: center;  
     background: linear-gradient(180deg, #FF9900 0%, #FEE140 100%);
@@ -22,7 +22,7 @@
     box-shadow: 0px 0px 1134px #005EEA, 0px 0px 648px #005EEA, 0px 0px 378px #005EEA, 0px 0px 189px #005EEA, 0px 0px 54px #005EEA, 0px 0px 27px #005EEA;
 }
 
-.AnimationButton-bg {
+.AnimationButton__bg {
     position: absolute;
     z-index: 3;
     top: 0;

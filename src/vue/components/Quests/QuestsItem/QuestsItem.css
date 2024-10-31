@@ -199,6 +199,35 @@
    border-bottom-right-radius: 20px;
 }
 
+.Quests__item-expand-gradient {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    z-index: 5;
+    transform: translateY(-50%);
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(30,30,30,0) 0%, rgba(30,30,30,0) 11%, rgba(30,30,30,0.03125) 89%, rgba(30,30,30,0) 100%);
+}
+
+.Quests__item-expand-gradient.gradient-both {
+    background: linear-gradient(90deg, rgba(30,30,30,1) 0%, rgba(30,30,30,0) 11%, rgba(30,30,30,0.03125) 89%, rgba(30,30,30,1) 100%);
+}
+
+.Quests__item-expand-gradient.gradient-previous {
+    background: linear-gradient(90deg, rgba(30,30,30,1) 0%, rgba(30,30,30,0) 11%, rgba(30,30,30,0.03125) 89%, rgba(30,30,30,0) 100%);
+}
+
+.Quests__item-expand-gradient.gradient-next {
+    background: linear-gradient(90deg, rgba(30,30,30,0) 0%, rgba(30,30,30,0.03125) 11%, rgba(30,30,30,0) 89%, rgba(30,30,30,1) 100%);
+}
+
 .Quests__item-expand-container {
     width: 100%;
     padding: 9px 0px;
@@ -215,6 +244,10 @@
     transition: transform 0.3s ease;
     z-index: 1;
 }  
+
+.Quests__item-rewardList.is-clickable {
+    z-index: 7;
+}
 
 .Quests__item-rewardConnectLine {
     width: 17.5%;
