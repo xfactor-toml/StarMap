@@ -144,7 +144,7 @@ export default {
             this.showCheckModal = false;
         },
         goBack() {
-            this.$emit('goBack', 'LEADERS BOARD');
+            this.$emit('goBack', 'QUESTS');
         },
         close() {
             this.$emit('close');

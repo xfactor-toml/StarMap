@@ -35,8 +35,8 @@
     <transition name="fade">
       <Quests 
         v-if="stardefender == 'QUESTS'" 
-        @close="closeMainMenu" 
-        @selectItem="handleMenuSelection"
+        @close="closeMenu" 
+        @goBack="handlePrevious"
         :selectedItem="previousSelectedMenu" 
       />  
     </transition>
