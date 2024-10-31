@@ -94,6 +94,18 @@
     z-index: 3;
 }
 
+.RewardItem-check {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 5px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #1B2933;
+    border: 1px solid #04FFFB;
+}
+
 .RewardItem__count.is-bonus-day {
     border: 1px solid #FEC023;
     color: #FEC023;

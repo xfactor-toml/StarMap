@@ -1,6 +1,93 @@
 import { QuestItemType } from "@/types/quest";
 import { BonusType } from "@/types/quest";
 
+export const QuestDailyItemList: QuestItemType[] = [
+    {
+        name: 'space-battle',
+        totalBonusDay: 1,
+        currentBonusDay: 0,
+        isWaiting: false,
+        waitingTime: 0,
+        rewardsList: [
+            { isReceived: false, isMissed: false, isRewardDay: true, day: 'Day1', bonusCount: 1 },
+        ],
+    },
+    {
+        name: 'space-battle',
+        totalBonusDay: 1,
+        currentBonusDay: 0,
+        isWaiting: false,
+        waitingTime: 0,
+        rewardsList: [
+            { isReceived: false, isMissed: false, isRewardDay: true, day: 'Day1', bonusCount: 1 },
+        ],
+    },
+    {
+        name: 'space-battle',
+        totalBonusDay: 1,
+        currentBonusDay: 0,
+        isWaiting: false,
+        waitingTime: 0,
+        rewardsList: [
+            { isReceived: false, isMissed: false, isRewardDay: true, day: 'Day1', bonusCount: 1 },
+        ],
+    },
+    {
+        name: 'space-battle',
+        totalBonusDay: 1,
+        currentBonusDay: 0,
+        isWaiting: false,
+        waitingTime: 0,
+        rewardsList: [
+            { isReceived: false, isMissed: false, isRewardDay: true, day: 'Day1', bonusCount: 1 },
+        ],
+    },
+
+]
+
+export const QuestWeeklyItemList: QuestItemType[] = [
+    {
+        name: 'space-battle',
+        totalBonusDay: 1,
+        currentBonusDay: 0,
+        isWaiting: false,
+        waitingTime: 0,
+        rewardsList: [
+            { isReceived: false, isMissed: false, isRewardDay: true, day: 'Day1', bonusCount: 5 },
+        ],
+    },
+    {
+        name: 'space-battle',
+        totalBonusDay: 1,
+        currentBonusDay: 0,
+        isWaiting: false,
+        waitingTime: 0,
+        rewardsList: [
+            { isReceived: false, isMissed: false, isRewardDay: true, day: 'Day1', bonusCount: 5 },
+        ],
+    },
+    {
+        name: 'space-battle',
+        totalBonusDay: 1,
+        currentBonusDay: 0,
+        isWaiting: false,
+        waitingTime: 0,
+        rewardsList: [
+            { isReceived: false, isMissed: false, isRewardDay: true, day: 'Day1', bonusCount: 5 },
+        ],
+    },
+    {
+        name: 'space-battle',
+        totalBonusDay: 1,
+        currentBonusDay: 0,
+        isWaiting: false,
+        waitingTime: 0,
+        rewardsList: [
+            { isReceived: false, isMissed: false, isRewardDay: true, day: 'Day1', bonusCount: 5 },
+        ],
+    },
+]
+
 export const QuestItemList: QuestItemType[] = [
     {
         name: 'red-triangle',

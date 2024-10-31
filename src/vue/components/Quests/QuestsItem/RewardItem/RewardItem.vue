@@ -3,10 +3,17 @@
         <div class="RewardItem-avatar" 
             :class="{ 'is-bonus-day': isBonusDay, 'is-reward-day': isRewardDay, 'is-received': isReceived , 'is-missed': isMissed}" 
             @click="handleClick">
-            <img v-if="!isNFT" src="/gui/images/quests/reward.png" alt="reward-item">
-            <img v-else src="/gui/images/quests/nft-reward.png" alt="reward-item">
-            <div class="RewardItem__count exo2-font" :class="{ 'is-bonus-day': isBonusDay, 'is-reward-day': isRewardDay, 'is-received': isReceived , 'is-missed': isMissed}">
+            <img :src="imageSource" alt="reward-item">
+            <div v-if="bonusCount" class="RewardItem__count exo2-font" :class="{ 'is-bonus-day': isBonusDay, 'is-reward-day': isRewardDay, 'is-received': isReceived , 'is-missed': isMissed}">
                 X{{ bonusCount }}
+            </div>
+
+            <div v-if="hasCheck" class="RewardItem-check">
+                <img src="/gui/images/quests/check-icon.svg" alt="reward-item">
+            </div>
+
+            <div v-if="hasCancel" class="RewardItem-check">
+                <img src="/gui/images/quests/cancel-icon.svg" alt="reward-item">
             </div>
 
             <div v-if="isBonusDay" class="RewardItem-bonus-text exo2-font --bold">
@@ -29,10 +36,10 @@
 export default {
     name: 'RewardItem',
     props: {
-       isNFT: {
-        type: Boolean,
-        default: false
-       },
+        imageSrc: {
+        type: String,
+        default: 'reward'
+        },
        isBonusDay: {
         type: Boolean,
         default: false
@@ -51,13 +58,26 @@ export default {
        },
        bonusCount: {
         type: Number,
-        default: 0
+        default: null
+       },
+       hasCheck: {
+        type: Boolean,
+        default: false
+       },
+       hasCancel: {
+        type: Boolean,
+        default: false
        },
        day: {
         type: String,
         default: ''
        },
 
+    },
+    computed: {
+        imageSource() {
+            return `/gui/images/quests/${this.imageSrc}.png`
+        }
     },
     methods: {
         handleClick() {

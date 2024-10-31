@@ -13,6 +13,10 @@
     user-select: none;
 }
 
+.Quests.disabled {
+    pointer-events: none;
+}
+
 .Quests__container {
     max-width: 410px;
     max-height: calc(100vh - 100px);
@@ -104,6 +108,11 @@
     flex-direction: column;
     align-items: center;  
     overflow-y: auto;
+}
+
+.Quests__body.disabled {
+    opacity: 0.6;
+    pointer-events: none;
 }
 
 .Quests__body::-webkit-scrollbar {
@@ -239,6 +248,14 @@
     position: absolute;
     bottom: 0;
     width: 100%;
+}
+
+.Quests__refresh-modal {
+    width: 45%;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
 }
 
 @media (max-width: 768px) {

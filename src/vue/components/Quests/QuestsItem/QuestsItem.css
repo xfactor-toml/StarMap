@@ -6,6 +6,11 @@
     transition: all 0.3s ease;
 }
 
+.Quests__item--weekly {
+    background: #011F41;
+    border: 2px solid #043874;
+}
+
 .Quests__item--star-defender {
     background: linear-gradient(123.69deg, rgba(0, 110, 255, 0.46) 2.27%, rgba(0, 61, 141, 0.46) 72.49%);
     border: 2px solid #0461B5;
@@ -34,24 +39,28 @@
     width: 100%;
 }
 
-.Quests__item-cotainer:hover {
+.Quests__item-cotainer.expand:hover {
     cursor: pointer;
 }
 
 .Quests__item-body {
     width: 100%;
     display: flex;
-    gap: 10px;
+    gap: 1px;
     justify-content:flex-start;
     padding: 5px 10px 5px 0px;
 }
 
 .Quests__item-icon {
     width: 24%;
-   border-radius: 50%;
-   border: 1px solid rgba(112, 112, 112, 0.2);
-   padding: 4px;
+    border-radius: 50%;
+    border: 1px solid rgba(112, 112, 112, 0.2);
+    padding: 4px;
 }
+
+.Quests__item-icon--space-battle {
+    border: none;
+} 
 
 .Quests__item-icon--star-defender {
     border: 1px solid rgba(4, 137, 234, 0.2);
@@ -97,9 +106,12 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
+    padding: 2px;
     background: linear-gradient(180deg, #E9E9E9 0%, #A9A9A9 48%, #6B6B6B 100%);
     box-shadow: 0px 0px 30px #6F6F6F, 0px 0px 8.99873px #696969;
 }
+
+
 
 .Quests__item-inner-circle--star-defender {
     background: linear-gradient(180deg, #86CCFF 0%, #0A8EED 48%, #037BD1 100%);
@@ -135,6 +147,22 @@
     padding: 2px 3px;
 }
 
+.Quests__item-refresh {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    top: -6px;
+    right: -5px;
+    background: #1B2933;
+    border: 1px solid #787979;
+    border-radius: 50%;
+    padding: 2px;
+}
+
+.Quests__item-refresh:hover {
+    cursor: pointer;
+}   
+
 .Quests__item-content {
     width: 65%;
     font-size: 16px;
@@ -156,15 +184,27 @@
            
 }
 
+.Quests__item-reward-Link {
+    position: absolute;
+    width: 22%;
+    top: 50%;
+    transform: translateY(-50%);
+    right:-8px
+}    
+
 .Quests__item-bottom {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
     bottom: -5.3px;
-    width: calc(100% - 29px);
+    width: calc(60%);
 }
 
-.Quests__item-bottom.is-expand {
+
+.Quests__item-bottom.is-unique {
+    width: calc(100% - 29px);
+}
+.Quests__item-bottom.is-unique.is-expand {
     bottom: -3px;
     width: calc(100% - 0px);
 }

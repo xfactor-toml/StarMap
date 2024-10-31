@@ -1,5 +1,5 @@
 <template>
-    <div class="BaseModal">
+    <div class="BaseModal" :class="`--${bgColor}`">
         <h3 class="BaseModal__title">{{ title }}</h3>
         <div class="BaseModal__closebtn --bold" @click="closeModal">
             X
@@ -7,7 +7,7 @@
         <div class="BaseModal__body">
             <h4 class="BaseModal__subtitle">{{ subtitle }}</h4>
             <div class="BaseModal__content">
-                <div class="BaseModal__content-middleline"/>
+                <div class="BaseModal__content-middleline" />
                 <div class="BaseModal__content-rewards">
                     <slot>
                         <!-- <div class="BaseModal__content-rewards-item">
@@ -18,7 +18,7 @@
             </div>
         </div>
         <div class="BaseModal__btn">
-            <AnimationButton buttonType="buttonType"/>
+            <AnimationButton :buttonType="buttonType"/>
         </div>
     </div>
 </template>
@@ -32,6 +32,10 @@ export default {
         RewardItem
     },
     props: {
+        bgColor: {
+            type: String,
+            default: 'yellow'
+        },
         title: {
             type: String,
             default: 'UNSTOPPABLE'

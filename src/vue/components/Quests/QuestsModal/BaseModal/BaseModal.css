@@ -13,6 +13,10 @@
     background-size: contain;
 }
 
+.BaseModal.--blue {
+    background-image: url('/gui/images/quests/blue-modal.png');
+}
+
 .BaseModal__title {
     font-size: 30px;
     color: #112A5E;
@@ -21,9 +25,10 @@
 .BaseModal__closebtn {
     position: absolute;
     top: 0px;
-    right: 27px;
+    right: 35px;
     font-size: 30px;
     color: #112A5E;
+    pointer-events: all;
 }
 
 .BaseModal__closebtn:hover   {

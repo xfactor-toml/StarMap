@@ -1,8 +1,8 @@
 <template>
-    <div class="Quests">
+    <div class="Quests" :class="{ 'disabled': isModalOpen }">
         <div class="Quests__container">
             <img src="/gui/images/leaders-board/bg.png" alt="">
-            <div class="Quests__container-content">
+            <div class="Quests__container-content" >
                 <div class="Quests__header">
                     <div class="Quests__header-menu">
                         <div class="Quests__header-previous" @click="goBack">
@@ -27,18 +27,20 @@
                         </div>
                     </div>
                 </div>
-                <div class="Quests__body">
+                <div class="Quests__body" :class="{ 'disabled': isModalOpen }">
                     <div class="Quests__content">
                        <QuestsItem 
-                       v-for="(item, index) in QuestItemList"
+                       v-for="(item, index) in questItemList"
+                       @refresh="refresh"
                        @getReward="getReward"
                        @missedReward="missedReward"
-                       :key="index" 
+                       :questType="navbarItems[activeNavItem]"
+                       :name="item.name" 
                        :rewardsList="item.rewardsList"
                        :totalBonusDay="item.totalBonusDay"
                        :currentBonusDay="item.currentBonusDay"
-                       :name="item.name" /> 
-
+                       :key="index"/> 
+                       
                         <!-- <div class="Quests__load-more">
                             <button class="Quests__load-more-button --bold" @click="loadMore">
                                 Load more
@@ -53,17 +55,31 @@
                         </div> -->
                     </div>
                 </div>
-                <div v-show="unstoppableRewards" class="Quests__modal">
-                    <QuestsModal 
-                    :rewardsList="BonusList" 
-                    @close="closeModal" />
-                </div>
-                <div v-show="canGetReward" class="Quests__modal">
-                    <QuestsModal 
-                    title="NICE WORK, HERO!" 
-                    :rewardsList="RewardList" 
-                    @close="closeModal" />
-                </div>
+            </div>
+            <div v-show="unstoppableRewards" class="Quests__modal">
+                <QuestsModal 
+                :rewardsList="BonusList" 
+                @close="closeModal" />
+            </div>
+            <div v-show="canGetReward" class="Quests__modal">
+                <QuestsModal 
+                title="NICE WORK!" 
+                :rewardsList="RewardList" 
+                @close="closeModal" />
+            </div>
+            <div v-show="showCheckModal" class="Quests__modal">
+                <BaseModal 
+                bgColor="blue"
+                title="NOTIFICATION"
+                subtitle="SUBSCRIBE TO"
+                buttonName="CHECK"
+                buttonType="blue"
+                @close="closeModal">
+                    <div class="Quests__refresh-modal">
+                        <RewardItem  :isRewardDay="true" imageSrc="vorpal" :hasCheck="true" />
+                        <RewardItem  :isRewardDay="true" imageSrc="red-vector" :hasCancel="true" />
+                    </div>
+                </BaseModal>
             </div>
        </div>          
     </div>
@@ -71,10 +87,9 @@
 
 <script lang="ts">
 import QuestsItem from './QuestsItem';
-import { QuestItemList } from '@/constants/quests';
+import { QuestItemList, QuestDailyItemList, QuestWeeklyItemList, BonusList, RewardList } from '@/constants/quests';
 import QuestsModal from './QuestsModal/QuestsModal.vue';
 import RewardItem from './QuestsItem/RewardItem';
-import { BonusList, RewardList } from '@/constants/quests';
 import BaseModal from './QuestsModal/BaseModal/BaseModal.vue';
 export default {
     name: 'Quests',
@@ -87,12 +102,12 @@ export default {
     data() {
         return {
             navbarItems: ['DAILY', 'WEEKLY', 'UNIQUE'],
-            questNames: ['red-triangle', 'star-defender', 'rock-alliance', 'moai-heads', 'vorpal'],
             activeNavItem: 2, 
             displayCount: 10,  
-            QuestItemList,
+            questItemList: QuestItemList,
             unstoppableRewards: false,
             canGetReward: false,
+            showCheckModal: false,
             RewardList,
             BonusList
         }
@@ -105,9 +120,16 @@ export default {
         hasMoreLeaders() {
             return this.displayCount < this.leaders.length;
         },
+        isModalOpen() {
+            return this.unstoppableRewards || this.canGetReward || this.showCheckModal;
+        }
     },
 
     methods: {
+        refresh() {
+            console.log('refresh')
+            this.showCheckModal = true;
+        },
         getReward() {
             console.log('getReward')
             this.canGetReward = !this.canGetReward;
@@ -119,6 +141,7 @@ export default {
         closeModal() {
             this.unstoppableRewards = false;
             this.canGetReward = false;
+            this.showCheckModal = false;
         },
         goBack() {
             this.$emit('goBack', 'LEADERS BOARD');
@@ -128,6 +151,16 @@ export default {
         },
         setActiveNavItem(index: number) {
             this.activeNavItem = index;
+            if(this.navbarItems[index] === 'DAILY') {
+                this.questItemList = QuestDailyItemList;
+            }
+            else if(this.navbarItems[index] === 'WEEKLY') {
+                this.questItemList = QuestWeeklyItemList;
+            }
+            else {
+                this.questItemList = QuestItemList;
+            }
+            
         },
         loadMore() {
             this.displayCount = Math.min(this.displayCount + 10, this.leaders.length);
