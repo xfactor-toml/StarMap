@@ -1,4 +1,5 @@
 .RewardItem {
+    position: relative;
     width: 87.5%;
     display: flex;
     flex-direction: column;
@@ -11,17 +12,18 @@
 }
 
 .RewardItem-avatar {
-    width: 100%;
-    aspect-ratio: 1/1;
     position: relative;
     z-index: 3;
+    width: 100%;
+    aspect-ratio: 1/1;
     border-radius: 50%;
     border: 2px solid #ffffff;
+    overflow: hidden;
 }
 
 .RewardItem-avatar.is-reward-day {
     border: 2px solid #04FFFB;
-    filter: drop-shadow(0px 0px 6.3px #41B6FF);
+    box-shadow: 0px 0px 6.3px #41B6FF;
 }
 
 .RewardItem-avatar.is-reward-day:hover {
@@ -44,7 +46,7 @@
 
 .RewardItem-avatar.is-bonus-day {
     border: 2px solid #FEC023;
-    filter: drop-shadow(0px 0px 6.3px #FEC023);
+    box-shadow: 0px 0px 6.3px #FEC023;
 }
 
 .RewardItem-status {
@@ -85,6 +87,8 @@
     position: absolute;
     top: 0;
     right: 0;
+    width: 32px;
+    text-align: center;
     padding: 0.5px 4px;
     background: #1B2933;
     border: 1px solid #ffffff;
@@ -98,6 +102,7 @@
     position: absolute;
     top: 0;
     right: 0;
+    z-index: 3;
     padding: 5px;
     width: 28px;
     height: 28px;

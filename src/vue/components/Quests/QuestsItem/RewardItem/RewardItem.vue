@@ -4,26 +4,25 @@
             :class="{ 'is-bonus-day': isBonusDay, 'is-reward-day': isRewardDay, 'is-received': isReceived , 'is-missed': isMissed}" 
             @click="handleClick">
             <img :src="imageSource" alt="reward-item">
-            <div v-if="bonusCount" class="RewardItem__count exo2-font" :class="{ 'is-bonus-day': isBonusDay, 'is-reward-day': isRewardDay, 'is-received': isReceived , 'is-missed': isMissed}">
-                X{{ bonusCount }}
-            </div>
-
-            <div v-if="hasCheck" class="RewardItem-check">
-                <img src="/gui/images/quests/check-icon.svg" alt="reward-item">
-            </div>
-
-            <div v-if="hasCancel" class="RewardItem-check">
-                <img src="/gui/images/quests/cancel-icon.svg" alt="reward-item">
-            </div>
-
-            <div v-if="isBonusDay" class="RewardItem-bonus-text exo2-font --bold">
-                BONUS
-            </div>
-
             <div v-if="isReceived || isMissed" class="RewardItem-status" :class="{ 'is-reward-day': isRewardDay, 'is-received': isReceived , 'is-missed': isMissed}">
-                <img v-if="isReceived" src="/gui/images/quests/check-icon.svg" alt="reward-item">
-                <img v-else-if="isMissed" src="/gui/images/quests/no-icon.svg" alt="reward-item">            
-            </div>
+            <img v-if="isReceived" src="/gui/images/quests/check-icon.svg" alt="reward-item">
+            <img v-else-if="isMissed" src="/gui/images/quests/no-icon.svg" alt="reward-item">            
+        </div>
+        </div>
+        <div v-if="bonusCount" class="RewardItem__count exo2-font" :class="{ 'is-bonus-day': isBonusDay, 'is-reward-day': isRewardDay, 'is-received': isReceived , 'is-missed': isMissed}">
+            X{{ bonusCount }}
+        </div>
+
+        <div v-if="hasCheck" class="RewardItem-check">
+            <img src="/gui/images/quests/check-icon.svg" alt="reward-item">
+        </div>
+
+        <div v-if="hasCancel" class="RewardItem-check">
+            <img src="/gui/images/quests/cancel-icon.svg" alt="reward-item">
+        </div>
+
+        <div v-if="isBonusDay" class="RewardItem-bonus-text exo2-font --bold">
+            BONUS
         </div>
     
         <div class="RewardItem__day exo2-font" :class="{ 'is-reward-day': isRewardDay, 'is-received': isReceived , 'is-missed': isMissed}">

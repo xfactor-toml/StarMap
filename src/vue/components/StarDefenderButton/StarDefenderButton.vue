@@ -2,11 +2,11 @@
     <div class="StarDefenderButton">
       <div class="StarDefenderButton__wrapper" ref="wrapper">
         <div class="StarDefenderButton__container">
-          <div class="StarDefenderButton__connectLine">
-            <img src="/gui/images/star-defender/connect-line.svg" />
+          <div class="StarDefenderButton__connectLine" v-show="imagesLoaded">
+            <img src="/gui/images/star-defender/connect-line.svg" @load="handleImageLoad('connectLine')" />
             <div class="StarDefenderButton__content">
               <div class="StarDefenderButton__bg">
-                <img src="/gui/images/star-defender/bg.svg" />
+                <img src="/gui/images/star-defender/bg.svg" @load="handleImageLoad('bg')" />
                 <template v-if="isSearching">
                   <div class="StarDefenderButton__name">
                     Star Defender
@@ -80,6 +80,10 @@
         animationFrame: null as number | null,
         wrapperEl: null as HTMLElement | null,
         isAnimating: false,
+        loadedImages: {
+          connectLine: false,
+          bg: false,
+        },
       };
     },
     computed: {
@@ -94,6 +98,9 @@
           this.selectedMenu === 'PLAY WITH A BOT' ||
           this.selectedMenu === 'DUEL'
         );
+      },
+      imagesLoaded() {
+        return this.loadedImages.connectLine && this.loadedImages.bg;
       },
     },
     mounted() {
@@ -175,6 +182,9 @@
         if (this.wrapperEl) {
           this.wrapperEl.style.transform = `translate3d(${this.currentX}px, ${this.currentY}px, 0)`;
         }
+      },
+      handleImageLoad(imageKey: string) {
+        this.loadedImages[imageKey] = true;
       },
     },
   });

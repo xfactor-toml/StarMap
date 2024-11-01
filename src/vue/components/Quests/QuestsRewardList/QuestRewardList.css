@@ -71,13 +71,13 @@
   
  .QuestRewardList-btn {
      position: absolute;
-     width: 100%;
      top: 50%;
-     transform: translateY(-50%);
+     width: 100%;
+     z-index: 6;
      height: 21px;
      padding: 0px 7px;
-     z-index: 5;
- 
+     transform: translateY(-50%);
+     pointer-events: all;
  }  
  
  .QuestRewardList-btn-container {
