@@ -16,6 +16,15 @@
     </div>
 
     <transition name="fade">
+      <MainMenu 
+        v-if="stardefender == 'MAIN MENU'" 
+        @close="closeMainMenu" 
+        @selectItem="handleMenuSelection"
+        :selectedItem="previousSelectedMenu" 
+      />  
+    </transition>
+
+    <transition name="fade">
       <LeadersBoard 
         v-if="stardefender == 'LEADERS BOARD'"
         @goBack="handlePrevious"
@@ -24,10 +33,10 @@
     </transition>
 
     <transition name="fade">
-      <MainMenu 
-        v-if="stardefender == 'MAIN MENU'" 
-        @close="closeMainMenu" 
-        @selectItem="handleMenuSelection"
+      <Quests 
+        v-if="stardefender == 'QUESTS'" 
+        @close="closeMenu" 
+        @goBack="handlePrevious"
         :selectedItem="previousSelectedMenu" 
       />  
     </transition>
@@ -105,6 +114,7 @@ import {
   SearchingMenu,
   StarDefenderProcess, 
   LeadersBoard,
+  Quests,
 } from '@/components';
 
 import {
@@ -135,6 +145,7 @@ export default {
     SearchingMenu,
     StarDefenderProcess,
     LeadersBoard,
+    Quests,
   },
   data: () => {
     return {

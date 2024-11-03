@@ -1,0 +1,373 @@
+.Quests__item {
+    width: 100%;
+    background: linear-gradient(124.1deg, rgba(92, 92, 92, 0.46) 2.18%, rgba(45, 45, 45, 0.46) 72.26%), rgba(45, 45, 45, 0.46);
+    border: 2px solid rgba(143, 143, 143, 0.3);
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.Quests__item--weekly {
+    background: #011F41;
+    border: 2px solid #043874;
+}
+
+.Quests__item--star-defender {
+    background: linear-gradient(123.69deg, rgba(0, 110, 255, 0.46) 2.27%, rgba(0, 61, 141, 0.46) 72.49%);
+    border: 2px solid #0461B5;
+    box-shadow: 0px 0px 30px #0094FF;
+}
+
+.Quests__item--rock-alliance {
+    background: linear-gradient(125.41deg, #3D00B8 1.9%, #230069 70.78%);
+    border: 2px solid #036ECE;
+    box-shadow: 0px 0px 30px rgba(85, 0, 255, 1),inset 0px 0px 43.9px rgba(85, 0, 255, 0.5);
+}
+
+.Quests__item--moai-heads {
+    background: linear-gradient(125.97deg, #AA3300 2.01%, #892900 71.03%);
+    border: 2px solid rgba(244, 119, 30, 0.64);
+    box-shadow: 0px 0px 30px #FF9D00, inset 0px 0px 43.9px rgba(255, 236, 24, 0.81);
+}
+
+.Quests__item--vorpal {
+    background-image: url(../gui/images/quests/vorpal-bg.png);
+    border: 2px solid #104756;
+    filter: drop-shadow(0px 0px 20px rgba(0, 255, 255, 0.3));
+}
+.Quests__item-cotainer{
+    position: relative;
+    width: 100%;
+}
+
+.Quests__item-cotainer.expand:hover {
+    cursor: pointer;
+}
+
+.Quests__item-body {
+    width: 100%;
+    display: flex;
+    gap: 1px;
+    justify-content:flex-start;
+    padding: 5px 10px 5px 0px;
+}
+
+.Quests__item-icon {
+    width: 24%;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    border: 1px solid rgba(112, 112, 112, 0.2);
+    padding: 4px;
+}
+
+.Quests__item-icon--space-battle {
+    border: none;
+} 
+
+.Quests__item-icon--star-defender {
+    border: 1px solid rgba(4, 137, 234, 0.2);
+}
+
+.Quests__item-icon--rock-alliance {
+    border: 1px solid rgba(160, 113, 255, 0.2);
+}
+
+.Quests__item-icon--moai-heads {
+    border: 1px solid rgba(215, 196, 55, 0.2);
+}
+
+.Quests__item-icon--vorpal {
+    border: 1px solid rgba(42, 179, 218, 0.2);
+}
+
+.Quests__item-outer-circle {
+    border-radius: 50%;
+    border: 1px solid rgba(131, 131, 131, 0.6);
+    padding: 4px;
+}
+
+.Quests__item-outer-circle--star-defender {
+    border: 1px solid rgba(4, 137, 234, 0.6);
+}
+
+.Quests__item-outer-circle--rock-alliance {
+    border: 1px solid rgba(160, 113, 255, 0.6);
+}
+
+.Quests__item-outer-circle--moai-heads {
+    border: 1px solid rgba(215, 196, 55, 0.6);
+}
+
+.Quests__item-outer-circle--vorpal {
+    border: 1px solid rgba(42, 179, 218, 0.4);
+}
+
+.Quests__item-inner-circle {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    padding: 2px;
+    background: linear-gradient(180deg, #E9E9E9 0%, #A9A9A9 48%, #6B6B6B 100%);
+    box-shadow: 0px 0px 30px #6F6F6F, 0px 0px 8.99873px #696969;
+}
+
+
+
+.Quests__item-inner-circle--star-defender {
+    background: linear-gradient(180deg, #86CCFF 0%, #0A8EED 48%, #037BD1 100%);
+    box-shadow: 0px 0px 377.947px #008CF1, 0px 0px 215.97px #0094FF, 0px 0px 125.982px #0195FF, 0px 0px 8.99873px #0094FF;
+}
+
+.Quests__item-inner-circle--rock-alliance {
+    background: linear-gradient(180deg, #C1A3FF 0%, #9E6DFF 48%, #894EFF 100%);
+    box-shadow: 0px 0px 377.947px #5500FF, 0px 0px 215.97px #5500FF, 0px 0px 125.982px #5500FF, 0px 0px 8.99873px #5500FF;
+}
+
+.Quests__item-inner-circle--moai-heads {
+    background: linear-gradient(180deg, #FFECC4 0%, #F5D141 48%, #C99526 100%);
+    box-shadow: 0px 0px 377.947px #DC8A18, 0px 0px 215.97px #DC8A18, 0px 0px 125.982px #BB9519, 0px 0px 8.99873px #CE841C;
+}
+
+.Quests__item-inner-circle--vorpal {
+    background: linear-gradient(180deg, #65DDFF 0%, #45A5BF 48%, #2488A4 100%);
+    box-shadow: 0px 0px 377.947px #2FB5DB, 0px 0px 215.97px #31ABCD, 0px 0px 125.982px #3F8EA4, 0px 0px 8.99873px #2AA0C0;
+}
+
+.Quests__item-count {
+    position: absolute;
+    width: 38px;
+    bottom: 0;
+    transform: translateY(50%);
+    text-align: center;
+    background: #1B2933;
+    border: 1px solid #787979;
+    border-radius: 6px;
+    font-size: 9px;
+    color: #00FFFF;
+    padding: 2px 3px;
+}
+
+.Quests__item-refresh {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    top: -6px;
+    right: -5px;
+    background: #1B2933;
+    border: 1px solid #787979;
+    border-radius: 50%;
+    padding: 2px;
+}
+
+.Quests__item-refresh:hover {
+    cursor: pointer;
+}   
+
+.Quests__item-content {
+    width: 65%;
+    font-size: 16px;
+    color: #FFFFFF;
+    mix-blend-mode: normal;
+    opacity: 0.8;
+}
+
+
+.Quests__item-external-Link {
+    position: absolute;
+    width: 8%;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    filter: drop-shadow(0px 0px 4.05px rgba(0, 255, 255, 1))
+            drop-shadow(0px 0px 8.1px rgba(0, 255, 255, 1))
+            /* drop-shadow(0px 0px 18.35px rgba(0, 255, 255, 1)) */
+           
+}
+
+.Quests__item-reward-Link {
+    position: absolute;
+    width: 22%;
+    top: 50%;
+    transform: translateY(-50%);
+    right:-8px
+}    
+
+.Quests__item-bottom {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -5.3px;
+    width: calc(60%);
+}
+
+
+.Quests__item-bottom.is-unique {
+    width: calc(100% - 29px);
+}
+.Quests__item-bottom.is-unique.is-expand {
+    bottom: -3px;
+    width: calc(100% - 0px);
+}
+
+.Quests__item-bottom svg {
+    width: 100%;
+    height: 100%;;
+}
+
+.Quests__item-bottom-content {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -1px;
+    font-size: 16px;
+    color: #00FFFF;
+    text-shadow:  0px 0px 8.3px #00FFFF, 0px 0px 5.8px #00FFFF;
+    text-align: center;
+}
+
+.Quests__item-bottom-content.is-expand {
+    bottom: 3px;
+}
+
+.Quests__item-expand {
+    position: relative;
+   width: 100%;
+   padding: 0px 7px;
+   /* background: #1E1E1E; */
+   background: linear-gradient(270deg, rgba(30, 30, 30, 0) 1.91%, rgba(30, 30, 30, 0.75) 15.3%);
+   filter: drop-shadow(0px 4px 8px rgba(30, 30, 30, 0.6));
+   border-bottom-left-radius: 20px;
+   border-bottom-right-radius: 20px;
+}
+
+.Quests__item-expand-gradient {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    z-index: 5;
+    transform: translateY(-50%);
+    width: 100%;
+    height: 100%;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    background: linear-gradient(90deg, rgba(30,30,30,0) 0%, rgba(30,30,30,0) 11%, rgba(30,30,30,0.03125) 89%, rgba(30,30,30,0) 100%);
+}
+
+.Quests__item-expand-gradient.gradient-both {
+    background: linear-gradient(90deg, rgba(30,30,30,1) 0%, rgba(30,30,30,0) 11%, rgba(30,30,30,0.03125) 89%, rgba(30,30,30,1) 100%);
+}
+
+.Quests__item-expand-gradient.gradient-previous {
+    background: linear-gradient(90deg, rgba(30,30,30,1) 0%, rgba(30,30,30,0) 11%, rgba(30,30,30,0.03125) 89%, rgba(30,30,30,0) 100%);
+}
+
+.Quests__item-expand-gradient.gradient-next {
+    background: linear-gradient(90deg, rgba(30,30,30,0) 0%, rgba(30,30,30,0.03125) 11%, rgba(30,30,30,0) 89%, rgba(30,30,30,1) 100%);
+}
+
+.Quests__item-expand-container {
+    width: 100%;
+    padding: 9px 0px;
+    display: flex;
+    position: relative;
+    justify-content:flex-start;
+    overflow-x: hidden;
+}
+
+.Quests__item-rewardList {
+    min-width: 26%;
+    width: 26%;
+    display: flex;
+    transition: transform 0.3s ease;
+    z-index: 1;
+}  
+
+.Quests__item-rewardList.is-clickable {
+    z-index: 7;
+}
+
+.Quests__item-rewardConnectLine {
+    width: 17.5%;
+    position: relative;
+}
+
+.Quests__item-rewardConnectLine-inner {
+   position: absolute;
+   top: 35%;
+   height: 2px;
+   width: 100%;
+   background: #71FE44;
+}   
+
+.Quests__item-expand-middleline {
+    position: absolute;
+    z-index: 0;
+    left: 15%;
+    width: 80%;
+    height: 32%;
+    top: 50%;
+    transform: translateY(-80%);
+    background: rgba(0, 0, 0, 0.22)
+}
+
+.Quests__item-rewardList-btn {
+    position: absolute;
+    width: 100%;
+    top: 29%;
+    height: 21px;
+    padding: 0px 7px;
+
+}  
+
+.Quests__item-rewardList-btn-container {
+    width: 100%;
+    position: relative;
+}   
+
+.Quests__item-rewardList-previous-btn {
+    position: absolute;
+    left: -5px;
+    z-index: 5;
+}
+
+.Quests__item-rewardList-previous-btn:hover {
+    cursor: pointer;
+}
+
+.Quests__item-rewardList-next-btn {
+    position: absolute;
+    right: -6px;
+    z-index: 5;
+}
+
+.Quests__item-rewardList-next-btn:hover {
+    cursor: pointer;
+}
+
+.Quests__item-reward {
+    width: 22%;
+}
+
+/* .Quests__item-expand img {
+   width: 75px;
+
+} */
+
+.Quests__item-expand-bg {
+   width: calc(100% - 20px);
+   position: absolute;
+   bottom: 0;
+}
+
+.Quests__item-expand-bg svg {
+    width: 100%;
+}
+
+
+
+@media (max-width: 410px) {
+    .Quests__item-content {
+        font-size: 14px;
+    }
+}
