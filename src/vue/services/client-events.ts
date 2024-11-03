@@ -251,7 +251,7 @@ export class ClientEventsService {
           loss: 'defeat',
           draw: 'defeat'
         }
-        battleStore.shop.clearList()
+        battleStore.shop.clearList();
         battleStore.results.setResults({
           type: typeByStatus[clientEvent.status],
           enemyName: clientEvent.enemyParams.name,

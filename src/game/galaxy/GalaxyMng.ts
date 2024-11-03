@@ -1670,6 +1670,10 @@ export class GalaxyMng implements ILogger {
     let list: StarGameInitData[] = [];
     STAR_GAMES.forEach((data) => {
       let sd = this.getRealStarDataById(data.id);
+      if (!sd) {
+        this.logWarn(`!starData for data:`, data);
+        return;
+      }
       let pos = new THREE.Vector3(sd.pos.x, sd.pos.y, sd.pos.z);
       let pos2d = ThreeUtils.vectorToScreenPosition(this._renderer, pos, this._camera, pixelRatio);
       list.push({
@@ -1692,6 +1696,9 @@ export class GalaxyMng implements ILogger {
     const pixelRatio = Math.min(2, DeviceInfo.getInstance().devicePixelRatio);
     STAR_GAMES.forEach((data) => {
       let sd = this.getRealStarDataById(data.id);
+      if (!sd) {
+        return;
+      }
       let pos = new THREE.Vector3(sd.pos.x, sd.pos.y, sd.pos.z);
       let pos2d = ThreeUtils.vectorToScreenPosition(this._renderer, pos, this._camera, pixelRatio);
       GameEventDispatcher.updateStarGamePosition({
@@ -2604,6 +2611,10 @@ export class GalaxyMng implements ILogger {
   onStarGamePlateNameClick(aStarId: number) {
     const pixelRatio = Math.min(2, DeviceInfo.getInstance().devicePixelRatio);
     let sd = this.getRealStarDataById(aStarId);
+    if (!sd) {
+      this.logWarn(`onStarGamePlateNameClick: !starData for starId:`, aStarId);
+      return;
+    }
     this._starParamsHovered = sd;
 
     let pos = new THREE.Vector3(sd.pos.x, sd.pos.y, sd.pos.z);

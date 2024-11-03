@@ -81,7 +81,7 @@ export default {
                 return;
             }
             else {
-                this.$client.onBattleInventoryItemActivate(itemId);
+                this.$client.onBattleInventoryItemActivate(itemId, index);
                 this.battleStore.shop.setRemovedInventoryId(index);
             }
         }
