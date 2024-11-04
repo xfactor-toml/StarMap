@@ -128,8 +128,8 @@ export default {
             confirmation: false,
             confirmResolver: null,
             ImagePath: [
-                "/assets/battleIcon/tower.svg",
-                "/assets/battleIcon/star.svg",
+                "/assets/battleIcon/towerRecovery.svg",
+                "/assets/battleIcon/starRecovery.svg",
                 "/assets/battleIcon/ship.svg",
                 "/assets/battleIcon/linkor.svg"
             ],

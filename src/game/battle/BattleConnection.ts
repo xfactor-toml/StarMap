@@ -317,10 +317,11 @@ export class BattleConnection extends MyEventDispatcher {
     this._socket.emit(PackTitle.debugTest, data);
   }
 
-  sendInventoryItemActivate(aItemId: number) {
+  sendInventoryItemActivate(aItemId: number, aCellId: number) {
     let data: ShopData = {
       action: 'inventoryItemActivate',
-      itemId: aItemId
+      itemId: aItemId,
+      invCellId: aCellId
     }
     this._socket.emit(PackTitle.shop, data);
   }

@@ -279,8 +279,8 @@ export class BattleScene extends BasicScene {
     this.closeScene();
   }
 
-  private onFrontBattleInventoryItemActivate(aItemId: number) {
-    this._connection.sendInventoryItemActivate(aItemId);
+  private onFrontBattleInventoryItemActivate(aItemId: number, aCellId: number) {
+    this._connection.sendInventoryItemActivate(aItemId, aCellId);
   }
 
   private onFrontBattleEmotion(aEmotion: Emotion) {

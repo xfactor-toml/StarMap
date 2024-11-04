@@ -172,9 +172,9 @@ export class ClientService {
   }
 
   // TODO: call this method from GUI
-  onBattleInventoryItemActivate(aItemId: number) {
-    console.log('onBattleInventoryItemActivate', aItemId);
-    FrontEvents.onBattleInventoryItemActivate.dispatch(aItemId);
+  onBattleInventoryItemActivate(aItemId: number, aCellId: number) {
+    // console.log('onBattleInventoryItemActivate: cell id = ', aCellId);
+    FrontEvents.onBattleInventoryItemActivate.dispatch(aItemId, aCellId);
   }
 
   onBattleExit() {
