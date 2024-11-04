@@ -4,6 +4,7 @@ import { BonusType } from "@/types/quest";
 export const QuestDailyItemList: QuestItemType[] = [
     {
         name: 'space-battle',
+        rarity: '',
         content: 'Deal 500 Damage by rocket',
         totalBonusDay: 1000,
         currentBonusDay: 999,
@@ -15,6 +16,7 @@ export const QuestDailyItemList: QuestItemType[] = [
     },
     {
         name: 'space-battle',
+        rarity: '',
         content: 'Deal 500 Damage by rocket',
         totalBonusDay: 5,
         currentBonusDay: 0,
@@ -26,6 +28,7 @@ export const QuestDailyItemList: QuestItemType[] = [
     },
     {
         name: 'space-battle',
+        rarity: '',
         content: 'Deal 500 Damage by rocket',
         totalBonusDay: 500,
         currentBonusDay: 0,
@@ -36,7 +39,45 @@ export const QuestDailyItemList: QuestItemType[] = [
         ],
     },
     {
+        name: 'guide',
+        rarity: 'normal',
+        content: 'Destroy Linkor5 times by rocket',
+        totalBonusDay: 500,
+        currentBonusDay: 0,
+        isWaiting: false,
+        waitingTime: 0,
+        rewardsList: [
+            { isReceived: false, isMissed: false, isRewardDay: true, day: 'Day1', bonusCount: 1 },
+        ],
+    },
+    {
+        name: 'xp',
+        rarity: 'mythic',
+        content: 'Earn 100 Experience',
+        totalBonusDay: 500,
+        currentBonusDay: 0,
+        isWaiting: false,
+        waitingTime: 0,
+        rewardsList: [
+            { isReceived: false, isMissed: false, isRewardDay: true, day: 'Day1', bonusCount: 1 },
+        ],
+    },
+    {
+        name: 'xp',
+        rarity: 'legendary',
+        content: 'Earn 100 Experience',
+        totalBonusDay: 500,
+        currentBonusDay: 0,
+        isWaiting: false,
+        waitingTime: 0,
+        rewardsList: [
+            { isReceived: false, isMissed: false, isRewardDay: true, day: 'Day1', bonusCount: 1 },
+        ],
+    },
+
+    {
         name: 'space-battle',
+        rarity: 'rare',
         content: 'Daily check in to the two main socials of Star Defender',
         totalBonusDay: 1,
         currentBonusDay: 0,
@@ -46,12 +87,12 @@ export const QuestDailyItemList: QuestItemType[] = [
             { isReceived: false, isMissed: false, isRewardDay: true, day: 'Day1', bonusCount: 1 },
         ],
     },
-
 ]
 
 export const QuestWeeklyItemList: QuestItemType[] = [
     {
         name: 'space-battle',
+        rarity: '',
         content: "vrajeskim korablyam nanesite 500 urona vrajeskim korablyam",
         totalBonusDay: 1,
         currentBonusDay: 0,
@@ -63,6 +104,7 @@ export const QuestWeeklyItemList: QuestItemType[] = [
     },
     {
         name: 'space-battle',
+        rarity: '',
         content: "vrajeskim korablyam nanesite 500 urona vrajeskim korablyam",
         totalBonusDay: 1,
         currentBonusDay: 0,
@@ -74,6 +116,7 @@ export const QuestWeeklyItemList: QuestItemType[] = [
     },
     {
         name: 'space-battle',
+        rarity: '',
         content: "vrajeskim korablyam nanesite 500 urona vrajeskim korablyam",
         totalBonusDay: 1,
         currentBonusDay: 0,
@@ -83,12 +126,50 @@ export const QuestWeeklyItemList: QuestItemType[] = [
             { isReceived: false, isMissed: false, isRewardDay: true, day: 'Day1', bonusCount: 5 },
         ],
     },
+    {
+        name: 'space-battle',
+        rarity: 'normal',
+        content: "vrajeskim korablyam nanesite 500 urona vrajeskim korablyam",
+        totalBonusDay: 1,
+        currentBonusDay: 0,
+        isWaiting: false,
+        waitingTime: 0,
+        rewardsList: [
+            { isReceived: false, isMissed: false, isRewardDay: true, day: 'Day1', bonusCount: 5 },
+        ],
+    },
+    {
+        name: 'space-battle',
+        rarity: 'mythic',
+        content: "vrajeskim korablyam nanesite 500 urona vrajeskim korablyam",
+        totalBonusDay: 1,
+        currentBonusDay: 0,
+        isWaiting: false,
+        waitingTime: 0,
+        rewardsList: [
+            { isReceived: false, isMissed: false, isRewardDay: true, day: 'Day1', bonusCount: 5 },
+        ],
+    },
+    {
+        name: 'space-battle',
+        rarity: 'legendary',
+        content: "vrajeskim korablyam nanesite 500 urona vrajeskim korablyam",
+        totalBonusDay: 1,
+        currentBonusDay: 0,
+        isWaiting: false,
+        waitingTime: 0,
+        rewardsList: [
+            { isReceived: false, isMissed: false, isRewardDay: true, day: 'Day1', bonusCount: 5 },
+        ],
+    },
+
 
 ]
 
 export const QuestItemList: QuestItemType[] = [
     {
         name: 'red-triangle',
+        rarity: 'normal',
         content: 'Amet, luctus leo, platea orci, cursus in nisi cursus dictum libero, ipsum fgeb',
         totalBonusDay: 1,
         currentBonusDay: 0 ,
@@ -100,6 +181,7 @@ export const QuestItemList: QuestItemType[] = [
     },
     {
         name: 'star-defender',
+        rarity: 'rare',
         content: 'Amet, luctus leo, platea orci, cursus in nisi cursus dictum libero, ipsum fgeb',
         totalBonusDay: 3,
         currentBonusDay: 2,
@@ -114,6 +196,7 @@ export const QuestItemList: QuestItemType[] = [
     } ,
     {
         name: 'rock-alliance',
+        rarity: 'mythic',
         content: 'Amet, luctus leo, platea orci, cursus in nisi cursus dictum libero, ipsum fgeb',
         totalBonusDay: 7,
         currentBonusDay: 6,
@@ -133,6 +216,7 @@ export const QuestItemList: QuestItemType[] = [
     },
     {
         name: 'moai-heads',
+        rarity: 'legendary',
         content: 'Amet, luctus leo, platea orci, cursus in nisi cursus dictum libero, ipsum fgeb',
         totalBonusDay: 14,
         currentBonusDay: 7,
@@ -162,6 +246,7 @@ export const QuestItemList: QuestItemType[] = [
     },
     {
         name: 'vorpal',
+        rarity: 'vorpal',
         content: 'Amet, luctus leo, platea orci, cursus in nisi cursus dictum libero, ipsum fgeb',
         totalBonusDay: 30,
         currentBonusDay: 29,

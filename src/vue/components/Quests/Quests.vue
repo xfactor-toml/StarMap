@@ -41,6 +41,7 @@
                        :totalBonusDay="item.totalBonusDay"
                        :currentBonusDay="item.currentBonusDay"
                        :isWaiting="item.isWaiting"
+                       :rarity="item.rarity"
                        :key="index"/> 
                        
                         <!-- <div class="Quests__load-more">

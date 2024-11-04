@@ -4,7 +4,7 @@
       <div class="MainMenu__title --bold">STAR DEFENDER</div>
       <div class="MainMenu__close" @click="$emit('close')"></div>
       <img src="/gui/images/main-menu/main-menu-background.png">
-      <div class="MainMenu__items">
+      <div class="MainMenu__items" @scroll="handleScroll" ref="menuItems">
         <div 
           v-for="(item, index) in items" 
           :key="index" 
@@ -19,6 +19,11 @@
           {{ item.text }}
         </div>
       </div>
+      <div 
+        class="MainMenu__items-boxshadow"
+        :class="{ 'MainMenu__items-boxshadow--hidden': isScrolledToBottom }"
+      ></div> 
+      
     </div>
   </div>
 </template>
@@ -26,6 +31,11 @@
 <script lang="ts">
 export default {
   name: 'MainMenu',
+  props: {
+    selectedItem: {
+      type: String,
+    }
+  },
   data() {
     return {
       items: [
@@ -37,15 +47,11 @@ export default {
         { text: 'SETTINGS', opacity: 1, selected: false },
       ],
       scrolling: false,
+      isScrolledToBottom: false,
     };
   },
   mounted() {
-    const itemsContainer = this.$el.querySelector('.MainMenu__items') as HTMLElement;
-    itemsContainer.addEventListener('scroll', this.handleScroll);
-
-    this.debounceScrollStop = this.debounce(() => {
-      this.stopScroll();
-    }, 100); 
+    
   },
   methods: {
     selectItem(name: string) {
@@ -55,60 +61,14 @@ export default {
       this.$emit('selectItem', name); 
     },
     handleScroll(event: Event) {
-      const container = event.target as HTMLElement;
-      const scrollTop = container.scrollTop;
-      const clientHeight = container.clientHeight;
-      const children = container.querySelectorAll('.MainMenu__item');
-
-      children.forEach((item: HTMLElement, index: number) => {
-        const itemTop = item.offsetTop;
-        const itemBottom = itemTop + item.clientHeight;
-
-        if (itemBottom >= scrollTop && itemTop <= scrollTop + clientHeight) {
-          this.items[index].opacity = 1;
-        } else if (
-          (itemTop < scrollTop && itemBottom > scrollTop) || 
-          (itemBottom > scrollTop + clientHeight && itemTop < scrollTop + clientHeight) 
-        ) {
-          this.items[index].opacity = 0.5;
-        } else {
-          this.items[index].opacity = 0.3;
-        }
-      });
-
-      this.scrolling = true;
-      this.debounceScrollStop();
-    },
-    stopScroll() {
-      const itemsContainer = this.$el.querySelector('.MainMenu__items') as HTMLElement;
-      const scrollTop = itemsContainer.scrollTop;
-      const clientHeight = itemsContainer.clientHeight;
-      const children = itemsContainer.querySelectorAll('.MainMenu__item');
-
-      children.forEach((item: HTMLElement, index: number) => {
-        const itemTop = item.offsetTop;
-        const itemBottom = itemTop + item.clientHeight;
-
-        if (itemBottom >= scrollTop && itemTop <= scrollTop + clientHeight) {
-          this.items[index].opacity = 1;
-        }
-      });
-
-      this.scrolling = false;
-    },
-    debounce(func: Function, wait: number) {
-      let timeout: any;
-      return function (...args: any[]) {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(this, args), wait);
-      };
+      // const target = event.target as HTMLElement;
+      // const bottomReached = Math.abs(
+      //   target.scrollHeight - target.scrollTop - target.clientHeight
+      // ) < 5;
+      // this.isScrolledToBottom = bottomReached;
     },
   },
-  props: {
-    selectedItem: {
-      type: String,
-    }
-  }
+ 
 };
 </script>
 

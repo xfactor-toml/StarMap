@@ -90,7 +90,8 @@
 .UserInventoryPopup__tabs {
   position: absolute;
   height: 76.6%;
-  overflow-y: auto;
+  overflow-y: auto !important; 
+  -webkit-overflow-scrolling: touch !important;
   display: flex;
   left: 0px;
   top: 12.5%;
@@ -222,7 +223,8 @@
   position: absolute;
   height: 76.6%;
   width: calc(100% - 64px);
-  overflow-y: auto;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
   left: 55px;
   top: 11.4%;
   display: flex;
@@ -250,7 +252,8 @@
   align-content: flex-start;
   gap: 10px;
   width: 100%;
-  overflow: auto;
+  overflow: auto !important;
+  -webkit-overflow-scrolling: touch !important;
   padding-right: 5px;
 }
 

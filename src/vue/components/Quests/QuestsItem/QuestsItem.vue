@@ -8,7 +8,7 @@
                             <img :src="`/gui/images/quests/${name}.png`" alt="">
                         </div>
                     </div>
-                    <div v-if="questType === 'UNIQUE'" class="Quests__item-count exo2-font">
+                    <div v-if="questType === 'UNIQUE'" class="Quests__item-count exo2-font" :class="questClass('count')">
                         {{ currentBonusDay  }} / {{ totalBonusDay }}
                     </div>
                     <div v-if="!isWaiting && questType !== 'UNIQUE'" class="Quests__item-refresh" @click="handleRefresh">
@@ -106,27 +106,30 @@ export default {
         totalBonusDay: Number,
         currentBonusDay: Number,
         questType: String,
-        isWaiting: Boolean
+        isWaiting: Boolean,
+        rarity: String,
     },
     emits: ["getReward", "missedReward", "refresh"],
     computed: {
         strokeColor() {
-            switch(this.name) {
-                case 'space-battle':
-                    if (this.isWaiting) return '#3687C1';
+            switch(this.rarity) {
+                case '':
                    return '#3F3F3F';
-                case 'red-triangle':
-                    return '#474747'
-                case 'star-defender':
+                case 'normal':
+                    if (this.questType === 'UNIQUE') return '#474747';
+                    return '#2E2E2E'
+                case 'rare':
+                    if (this.questType === 'UNIQUE') return '#0461B5';
                     return '#0461B5'
-                case 'rock-alliance':
-                    return '#0461B5' 
-                case 'moai-heads':
+                case 'mythic':
+                    if (this.questType === 'UNIQUE') return '#6732D4';
+                    return '#4315B1';
+                case 'legendary':
                     return '#F4771E' 
                 case 'vorpal':
                     return '#104756'
                 default:
-                    return '#474747'  
+                    return '#3F3F3F'  
             } 
         },
         gradientClass() {
@@ -151,9 +154,9 @@ export default {
     methods: {
         questClass(suffix: string) {
             if(suffix === '') {
-                return `Quests__item--${this.name}`;
+                return `Quests__item--${this.questType.toLowerCase()}--${this.rarity}`;
             }
-            return `Quests__item-${suffix}--${this.name}`;
+            return `Quests__item-${suffix}--${this.questType.toLowerCase()}--${this.rarity}`;
         },
         questTypeClass(suffix: string) {
             return `Quests__item-${suffix}--${this.questType.toLowerCase()}`;

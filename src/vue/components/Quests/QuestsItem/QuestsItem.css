@@ -1,7 +1,7 @@
 .Quests__item {
     width: 100%;
-    background: linear-gradient(124.1deg, rgba(92, 92, 92, 0.46) 2.18%, rgba(45, 45, 45, 0.46) 72.26%), rgba(45, 45, 45, 0.46);
-    border: 2px solid rgba(143, 143, 143, 0.3);
+    background: #272727;
+    border: 2px solid #3F3F3F;
     border-radius: 20px;
     transition: all 0.3s ease;
 }
@@ -11,25 +11,56 @@
     border: 2px solid #3689C1;
 }
 
-.Quests__item--star-defender {
+.Quests__item--daily--normal {
+    background-image: url(../gui/images/quests/vorpal-bg.png);
+    border: 2px solid #2E2E2E;
+}
+
+.Quests__item--daily--mythic {
+    border: 2px solid #4315B1;
+}
+
+.Quests__item--daily--legendary {
+    border: 2px solid #F4771E;
+}
+
+.Quests__item--weekly--normal {
+    background-image: url(../gui/images/quests/vorpal-bg.png);
+    border: 2px solid #2E2E2E;
+}
+
+.Quests__item--weekly--mythic {
+    border: 2px solid #4315B1;
+}
+
+.Quests__item--weekly--legendary {
+    border: 2px solid #F4771E;
+}
+
+.Quests__item--unique--normal {
+    background: linear-gradient(124.1deg, rgba(92, 92, 92, 0.46) 2.18%, rgba(45, 45, 45, 0.46) 72.26%), rgba(45, 45, 45, 0.46);
+    border: 2px solid rgba(143, 143, 143, 0.3);
+}
+
+.Quests__item--unique--rare {
     background: linear-gradient(123.69deg, rgba(0, 110, 255, 0.46) 2.27%, rgba(0, 61, 141, 0.46) 72.49%);
     border: 2px solid #0461B5;
     box-shadow: 0px 0px 30px #0094FF;
 }
 
-.Quests__item--rock-alliance {
+.Quests__item--unique--mythic {
     background: linear-gradient(125.41deg, #3D00B8 1.9%, #230069 70.78%);
-    border: 2px solid #036ECE;
+    border: 2px solid #6732D4;
     box-shadow: 0px 0px 30px rgba(85, 0, 255, 1),inset 0px 0px 43.9px rgba(85, 0, 255, 0.5);
 }
 
-.Quests__item--moai-heads {
+.Quests__item--unique--legendary {
     background: linear-gradient(125.97deg, #AA3300 2.01%, #892900 71.03%);
     border: 2px solid rgba(244, 119, 30, 0.64);
     box-shadow: 0px 0px 30px #FF9D00, inset 0px 0px 43.9px rgba(255, 236, 24, 0.81);
 }
 
-.Quests__item--vorpal {
+.Quests__item--unique--vorpal {
     background-image: url(../gui/images/quests/vorpal-bg.png);
     border: 2px solid #104756;
     filter: drop-shadow(0px 0px 20px rgba(0, 255, 255, 0.3));
@@ -72,19 +103,19 @@
     padding: 5px;
 }
 
-.Quests__item-icon--star-defender {
+.Quests__item-icon--unique--rare {
     border: 1px solid rgba(4, 137, 234, 0.2);
 }
 
-.Quests__item-icon--rock-alliance {
+.Quests__item-icon--unique--mythic {
     border: 1px solid rgba(160, 113, 255, 0.2);
 }
 
-.Quests__item-icon--moai-heads {
+.Quests__item-icon--unique--legendary {
     border: 1px solid rgba(215, 196, 55, 0.2);
 }
 
-.Quests__item-icon--vorpal {
+.Quests__item-icon--unique--vorpal {
     border: 1px solid rgba(42, 179, 218, 0.2);
 }
 
@@ -98,19 +129,31 @@
     border: none;
 }
 
-.Quests__item-outer-circle--star-defender {
+.Quests__item-outer-circle--weekly--rare {
     border: 1px solid rgba(4, 137, 234, 0.6);
 }
 
-.Quests__item-outer-circle--rock-alliance {
+.Quests__item-outer-circle--weekly--mythic {
     border: 1px solid rgba(160, 113, 255, 0.6);
 }
 
-.Quests__item-outer-circle--moai-heads {
+.Quests__item-outer-circle--weekly--legendary {
     border: 1px solid rgba(215, 196, 55, 0.6);
 }
 
-.Quests__item-outer-circle--vorpal {
+.Quests__item-outer-circle--weekly--rare {
+    border: 1px solid rgba(4, 137, 234, 0.6);
+}
+
+.Quests__item-outer-circle--unique--mythic {
+    border: 1px solid rgba(160, 113, 255, 0.6);
+}
+
+.Quests__item-outer-circle--unique--legendary {
+    border: 1px solid rgba(215, 196, 55, 0.6);
+}
+
+.Quests__item-outer-circle--unique--vorpal {
     border: 1px solid rgba(42, 179, 218, 0.4);
 }
 
@@ -123,9 +166,28 @@
     padding: 2px;
     background: linear-gradient(180deg, #E9E9E9 0%, #A9A9A9 48%, #6B6B6B 100%);
     box-shadow: 0px 0px 30px #6F6F6F, 0px 0px 8.99873px #696969;
+
+}
+.Quests__item-inner-circle--daily {
+    box-shadow: none;
 }
 
-.Quests__item-inner-circle--daily {
+.Quests__item-inner-circle--daily--normal {
+    box-shadow: none;
+}
+
+.Quests__item-inner-circle--daily--rare {
+    background: linear-gradient(180deg, #86CCFF 0%, #0A8EED 48%, #037BD1 100%);
+    box-shadow: none;
+}
+
+.Quests__item-inner-circle--daily--mythic {
+    background: linear-gradient(180deg, #4B0FDB 0%, #3B1D82 100%);
+    box-shadow: none;
+}
+
+.Quests__item-inner-circle--daily--legendary {
+    background: linear-gradient(180deg, #F4771E 0%, #7A3300 100%);
     box-shadow: none;
 }
 
@@ -133,22 +195,41 @@
     box-shadow: none;
 }
 
-.Quests__item-inner-circle--star-defender {
+.Quests__item-inner-circle--weekly--normal {
+    box-shadow: none;
+}
+
+.Quests__item-inner-circle--weekly--rare {
+    background: linear-gradient(180deg, #86CCFF 0%, #0A8EED 48%, #037BD1 100%);
+    box-shadow: none;
+}
+
+.Quests__item-inner-circle--weekly--mythic {
+    background: linear-gradient(180deg, #4B0FDB 0%, #3B1D82 100%);
+    box-shadow: none;
+}
+
+.Quests__item-inner-circle--weekly--legendary {
+    background: linear-gradient(180deg, #F4771E 0%, #7A3300 100%);
+    box-shadow: none;
+}
+
+.Quests__item-inner-circle--unique--rare {
     background: linear-gradient(180deg, #86CCFF 0%, #0A8EED 48%, #037BD1 100%);
     box-shadow: 0px 0px 377.947px #008CF1, 0px 0px 215.97px #0094FF, 0px 0px 125.982px #0195FF, 0px 0px 8.99873px #0094FF;
 }
 
-.Quests__item-inner-circle--rock-alliance {
+.Quests__item-inner-circle--unique--mythic {
     background: linear-gradient(180deg, #C1A3FF 0%, #9E6DFF 48%, #894EFF 100%);
     box-shadow: 0px 0px 377.947px #5500FF, 0px 0px 215.97px #5500FF, 0px 0px 125.982px #5500FF, 0px 0px 8.99873px #5500FF;
 }
 
-.Quests__item-inner-circle--moai-heads {
+.Quests__item-inner-circle--unique--legendary {
     background: linear-gradient(180deg, #FFECC4 0%, #F5D141 48%, #C99526 100%);
     box-shadow: 0px 0px 377.947px #DC8A18, 0px 0px 215.97px #DC8A18, 0px 0px 125.982px #BB9519, 0px 0px 8.99873px #CE841C;
 }
 
-.Quests__item-inner-circle--vorpal {
+.Quests__item-inner-circle--unique--vorpal {
     background: linear-gradient(180deg, #65DDFF 0%, #45A5BF 48%, #2488A4 100%);
     box-shadow: 0px 0px 377.947px #2FB5DB, 0px 0px 215.97px #31ABCD, 0px 0px 125.982px #3F8EA4, 0px 0px 8.99873px #2AA0C0;
 }
@@ -166,6 +247,29 @@
     font-size: 9px;
     color: #00FFFF;
     padding: 2px 3px;
+}
+
+.Quests__item-count--unique--rare {
+    background: #102B3F;
+    border: 1px solid #0C81D6;
+}
+
+.Quests__item-count--unique--mythic {
+    background: #200E4A;
+    border: 1px solid #8858FB;
+    color: #BCAEFF;
+}
+
+.Quests__item-count--unique--legendary {
+    background: #453013;
+    border: 1px solid #DDBF8A;
+    color: #FFEDDC;
+}
+
+.Quests__item-count--unique--vorpal {
+    background: #0D101E;
+    border: 1px solid #338BA6;
+    color: #68D4F1;
 }
 
 .Quests__item-refresh {

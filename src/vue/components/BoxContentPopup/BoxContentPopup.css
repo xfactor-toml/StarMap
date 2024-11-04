@@ -74,7 +74,8 @@
   padding: 8px;
   margin-top: 16px;
   flex-grow: 1;
-  overflow: auto;
+  overflow: auto !important;
+  -webkit-overflow-scrolling: touch !important;
   max-height: 57%;
   width: 83%;
   top: 12%;

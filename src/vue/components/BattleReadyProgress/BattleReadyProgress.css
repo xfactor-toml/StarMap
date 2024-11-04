@@ -20,7 +20,8 @@
     align-items: center;
     justify-content: center;
     padding-bottom: 20px;
-    overflow-y: auto;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
     padding: 10px;
 }
 
