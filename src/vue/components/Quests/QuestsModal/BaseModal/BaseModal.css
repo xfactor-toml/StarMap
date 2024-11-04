@@ -18,7 +18,7 @@
 }
 
 .BaseModal__title {
-    font-size: 30px;
+    font-size: 28px;
     color: #112A5E;
 }
 
@@ -82,4 +82,12 @@
     width: calc(100% - 10px);
     aspect-ratio: 400/48;
     background: rgba(0, 0, 0, 0.22);
+}
+
+
+@media (max-width: 768px) {
+    .BaseModal__closebtn {
+        top: -3px;
+        width: 18px;
+    }
 }

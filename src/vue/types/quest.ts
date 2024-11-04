@@ -13,6 +13,8 @@ export type  RewardType = {
 
 export type QuestItemType = {
     name: string,
+    rarity: string,
+    content: string,
     totalBonusDay: number,
     currentBonusDay: number,
     isWaiting: boolean,

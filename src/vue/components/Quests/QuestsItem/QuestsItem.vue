@@ -1,22 +1,22 @@
 <template>
-     <div class="Quests__item" :class="questClass('')">
+     <div class="Quests__item" :class="questClass(''), {'is-waiting': isWaiting}">
         <div class="Quests__item-cotainer" :class="{'expand': questType === 'UNIQUE'}" @click="handleExpand"> 
             <div class="Quests__item-body"> 
-                <div class="Quests__item-icon" :class="questClass('icon')">
-                    <div class="Quests__item-outer-circle" :class="questClass('outer-circle')" >
-                        <div class="Quests__item-inner-circle" :class="questClass('inner-circle')">
+                <div class="Quests__item-icon" :class="questClass('icon'), questTypeClass('icon')">
+                    <div class="Quests__item-outer-circle" :class="questClass('outer-circle'), questTypeClass('outer-circle')">
+                        <div class="Quests__item-inner-circle" :class="questClass('inner-circle'), questTypeClass('inner-circle')">
                             <img :src="`/gui/images/quests/${name}.png`" alt="">
-                             <div v-if="questType === 'UNIQUE'" class="Quests__item-count exo2-font">
-                                {{ currentBonusDay  }} / {{ totalBonusDay }}
-                            </div>
-                            <div v-else class="Quests__item-refresh" @click="handleRefresh">
-                                <img src="/gui/images/quests/refresh.svg" alt="refresh"> 
-                            </div>
                         </div>
                     </div>
+                    <div v-if="questType === 'UNIQUE'" class="Quests__item-count exo2-font" :class="questClass('count')">
+                        {{ currentBonusDay  }} / {{ totalBonusDay }}
+                    </div>
+                    <div v-if="!isWaiting && questType !== 'UNIQUE'" class="Quests__item-refresh" @click="handleRefresh">
+                        <img src="/gui/images/quests/refresh.svg" alt="refresh"> 
+                    </div>
                 </div>
-                <div class="Quests__item-content exo2-font">
-                    Amet, luctus leo, platea orci, cursus in nisi cursus dictum libero, ipsum fgeb
+                <div class="Quests__item-content exo2-font" :class="questTypeClass('content')">
+                    {{ content }}
                 </div>
                 <div v-if="questType === 'UNIQUE'" class="Quests__item-external-Link">
                     <img src="/gui/images/quests/external-link.svg" alt="">
@@ -40,7 +40,12 @@
                 NEWREWARD
             </div>
             <div v-else class="Quests__item-bottom-content exo2-font">
-                {{ currentBonusDay  }} / {{ totalBonusDay }}
+                <div v-if="isWaiting">
+                    REWARD AVAIBLE
+                </div>
+                <div v-else>
+                    {{ currentBonusDay  }} / {{ totalBonusDay }}
+                </div>
             </div>
         </div>
   
@@ -96,30 +101,35 @@ export default {
     },
     props:{
         name: String,
+        content: String,
         rewardsList: Array<RewardType>,
         totalBonusDay: Number,
         currentBonusDay: Number,
-        questType: String
+        questType: String,
+        isWaiting: Boolean,
+        rarity: String,
     },
     emits: ["getReward", "missedReward", "refresh"],
     computed: {
         strokeColor() {
-            switch(this.name) {
-                case 'space-battle':
-                    if (this.questType === 'DAILY') return '#3F3F3F';
-                    return '#043874'
-                case 'red-triangle':
-                    return '#474747'
-                case 'star-defender':
+            switch(this.rarity) {
+                case '':
+                   return '#3F3F3F';
+                case 'normal':
+                    if (this.questType === 'UNIQUE') return '#474747';
+                    return '#2E2E2E'
+                case 'rare':
+                    if (this.questType === 'UNIQUE') return '#0461B5';
                     return '#0461B5'
-                case 'rock-alliance':
-                    return '#0461B5' 
-                case 'moai-heads':
+                case 'mythic':
+                    if (this.questType === 'UNIQUE') return '#6732D4';
+                    return '#4315B1';
+                case 'legendary':
                     return '#F4771E' 
                 case 'vorpal':
                     return '#104756'
                 default:
-                    return '#474747'  
+                    return '#3F3F3F'  
             } 
         },
         gradientClass() {
@@ -144,13 +154,15 @@ export default {
     methods: {
         questClass(suffix: string) {
             if(suffix === '') {
-                if(this.questType === 'WEEKLY') return `Quests__item--weekly`;
-                return `Quests__item--${this.name}`;
+                return `Quests__item--${this.questType.toLowerCase()}--${this.rarity}`;
             }
-            return `Quests__item-${suffix}--${this.name}`;
+            return `Quests__item-${suffix}--${this.questType.toLowerCase()}--${this.rarity}`;
+        },
+        questTypeClass(suffix: string) {
+            return `Quests__item-${suffix}--${this.questType.toLowerCase()}`;
         },
         handleRefresh() {
-            this.$emit('refresh')
+            // this.$emit('refresh')
         },
         handleNext() {
             console.log(this.rewardsList.length, "length")
@@ -171,7 +183,11 @@ export default {
             return  index > this.currentIndex + 1 && index < this.currentIndex + 4;
         },
         getReward() {
-            this.$emit('getReward')
+            if (this.isWaiting) {
+                this.$emit('refresh')
+            } else {
+                this.$emit('getReward')
+            }
         },
         missedReward() {
             this.$emit('missedReward')
