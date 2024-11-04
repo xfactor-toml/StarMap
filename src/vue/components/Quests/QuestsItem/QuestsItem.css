@@ -6,9 +6,9 @@
     transition: all 0.3s ease;
 }
 
-.Quests__item--weekly {
-    background: #011F41;
-    border: 2px solid #043874;
+.Quests__item.is-waiting {
+    background: #0E4DA2;
+    border: 2px solid #3689C1;
 }
 
 .Quests__item--star-defender {
@@ -46,22 +46,31 @@
 .Quests__item-body {
     width: 100%;
     display: flex;
-    gap: 1px;
+    gap: 7px;
     justify-content:flex-start;
-    padding: 5px 10px 5px 0px;
+    padding: 2px;
 }
 
 .Quests__item-icon {
-    width: 24%;
-    aspect-ratio: 1/1;
+    position: relative;
+    width: 26%;
+    /* aspect-ratio: 1/1; */
     border-radius: 50%;
     border: 1px solid rgba(112, 112, 112, 0.2);
+    padding-top: 26%;
     padding: 4px;
+    overflow: show;
 }
 
-.Quests__item-icon--space-battle {
+.Quests__item-icon--daily {
     border: none;
-} 
+    padding: 6px;
+}
+
+.Quests__item-icon--weekly {
+    border: none;
+    padding: 5px;
+}
 
 .Quests__item-icon--star-defender {
     border: 1px solid rgba(4, 137, 234, 0.2);
@@ -83,6 +92,10 @@
     border-radius: 50%;
     border: 1px solid rgba(131, 131, 131, 0.6);
     padding: 4px;
+}
+
+.Quests__item-outer-circle--daily {
+    border: none;
 }
 
 .Quests__item-outer-circle--star-defender {
@@ -112,7 +125,13 @@
     box-shadow: 0px 0px 30px #6F6F6F, 0px 0px 8.99873px #696969;
 }
 
+.Quests__item-inner-circle--daily {
+    box-shadow: none;
+}
 
+.Quests__item-inner-circle--weekly {
+    box-shadow: none;
+}
 
 .Quests__item-inner-circle--star-defender {
     background: linear-gradient(180deg, #86CCFF 0%, #0A8EED 48%, #037BD1 100%);
@@ -137,8 +156,9 @@
 .Quests__item-count {
     position: absolute;
     width: 38px;
-    bottom: 0;
-    transform: translateY(50%);
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
     text-align: center;
     background: #1B2933;
     border: 1px solid #787979;
@@ -152,12 +172,12 @@
     position: absolute;
     width: 24px;
     height: 24px;
-    top: -6px;
-    right: -5px;
+    top: 7px;
+    right: 6px;
     background: #1B2933;
     border: 1px solid #787979;
     border-radius: 50%;
-    padding: 2px;
+    padding: 1px 1px 3px 1px;
 }
 
 .Quests__item-refresh:hover {
@@ -165,18 +185,28 @@
 }   
 
 .Quests__item-content {
-    width: 65%;
+    width: 56%;
+    padding-top: 5px;
     font-size: 16px;
     color: #FFFFFF;
     mix-blend-mode: normal;
     opacity: 0.8;
 }
 
+.Quests__item-content--daily {
+    width: 48%;
+    padding-top: 11px;
+}
+
+.Quests__item-content--weekly {
+    width: 48%;
+    opacity: 1;
+}
 
 .Quests__item-external-Link {
     position: absolute;
     width: 8%;
-    right: 8px;
+    right: 18px;
     top: 50%;
     transform: translateY(-50%);
     filter: drop-shadow(0px 0px 4.05px rgba(0, 255, 255, 1))
@@ -190,44 +220,47 @@
     width: 22%;
     top: 50%;
     transform: translateY(-50%);
-    right:-8px
+    right: 4px;
 }    
 
 .Quests__item-bottom {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    bottom: -5.3px;
+    z-index: 2;
+    bottom: -5px;
     width: calc(60%);
 }
 
 
 .Quests__item-bottom.is-unique {
-    width: calc(100% - 29px);
+    width: 100%;
 }
-.Quests__item-bottom.is-unique.is-expand {
-    bottom: -3px;
-    width: calc(100% - 0px);
+.Quests__item-bottom.is-unique.is-expand svg {
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+.Quests__item-bottom.is-unique svg {
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
 }
 
 .Quests__item-bottom svg {
     width: 100%;
-    height: 100%;;
+    height: 100%;
 }
 
 .Quests__item-bottom-content {
     position: absolute;
+    z-index: 3;
     left: 50%;
     transform: translateX(-50%);
-    bottom: -1px;
+    bottom: 1px;
     font-size: 16px;
     color: #00FFFF;
     text-shadow:  0px 0px 8.3px #00FFFF, 0px 0px 5.8px #00FFFF;
     text-align: center;
-}
-
-.Quests__item-bottom-content.is-expand {
-    bottom: 3px;
 }
 
 .Quests__item-expand {
@@ -251,19 +284,19 @@
     height: 100%;
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
-    background: linear-gradient(90deg, rgba(30,30,30,0) 0%, rgba(30,30,30,0) 11%, rgba(30,30,30,0.03125) 89%, rgba(30,30,30,0) 100%);
+    background: linear-gradient(90deg, rgba(30,30,30,0) 0%, rgba(30,30,30,0) 0%, rgba(30,30,30,0.03125) 0%, rgba(30,30,30,0) 0%);
 }
 
 .Quests__item-expand-gradient.gradient-both {
-    background: linear-gradient(90deg, rgba(30,30,30,1) 0%, rgba(30,30,30,0) 11%, rgba(30,30,30,0.03125) 89%, rgba(30,30,30,1) 100%);
+    background: linear-gradient(90deg, rgba(30,30,30,1) 0%, rgba(30,30,30,0) 32%, rgba(30,30,30,0.03125) 68%, rgba(30,30,30,1) 100%);
 }
 
 .Quests__item-expand-gradient.gradient-previous {
-    background: linear-gradient(90deg, rgba(30,30,30,1) 0%, rgba(30,30,30,0) 11%, rgba(30,30,30,0.03125) 89%, rgba(30,30,30,0) 100%);
+    background: linear-gradient(90deg, rgba(30,30,30,1) 0%, rgba(30,30,30,0) 32%, rgba(30,30,30,0.03125) 0%, rgba(30,30,30,0) 100%);
 }
 
 .Quests__item-expand-gradient.gradient-next {
-    background: linear-gradient(90deg, rgba(30,30,30,0) 0%, rgba(30,30,30,0.03125) 11%, rgba(30,30,30,0) 89%, rgba(30,30,30,1) 100%);
+    background: linear-gradient(90deg, rgba(30,30,30,0) 0%, rgba(30,30,30,0.03125) 0%, rgba(30,30,30,0) 68%, rgba(30,30,30,1) 100%);
 }
 
 .Quests__item-expand-container {

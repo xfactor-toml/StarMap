@@ -4,7 +4,19 @@ import { BonusType } from "@/types/quest";
 export const QuestDailyItemList: QuestItemType[] = [
     {
         name: 'space-battle',
-        totalBonusDay: 1,
+        content: 'Deal 500 Damage by rocket',
+        totalBonusDay: 1000,
+        currentBonusDay: 999,
+        isWaiting: false,
+        waitingTime: 0,
+        rewardsList: [
+            { isReceived: false, isMissed: false, isRewardDay: true, day: 'Day1', bonusCount: 1 },
+        ],
+    },
+    {
+        name: 'space-battle',
+        content: 'Deal 500 Damage by rocket',
+        totalBonusDay: 5,
         currentBonusDay: 0,
         isWaiting: false,
         waitingTime: 0,
@@ -14,7 +26,8 @@ export const QuestDailyItemList: QuestItemType[] = [
     },
     {
         name: 'space-battle',
-        totalBonusDay: 1,
+        content: 'Deal 500 Damage by rocket',
+        totalBonusDay: 500,
         currentBonusDay: 0,
         isWaiting: false,
         waitingTime: 0,
@@ -24,19 +37,10 @@ export const QuestDailyItemList: QuestItemType[] = [
     },
     {
         name: 'space-battle',
+        content: 'Daily check in to the two main socials of Star Defender',
         totalBonusDay: 1,
         currentBonusDay: 0,
-        isWaiting: false,
-        waitingTime: 0,
-        rewardsList: [
-            { isReceived: false, isMissed: false, isRewardDay: true, day: 'Day1', bonusCount: 1 },
-        ],
-    },
-    {
-        name: 'space-battle',
-        totalBonusDay: 1,
-        currentBonusDay: 0,
-        isWaiting: false,
+        isWaiting: true,
         waitingTime: 0,
         rewardsList: [
             { isReceived: false, isMissed: false, isRewardDay: true, day: 'Day1', bonusCount: 1 },
@@ -48,6 +52,7 @@ export const QuestDailyItemList: QuestItemType[] = [
 export const QuestWeeklyItemList: QuestItemType[] = [
     {
         name: 'space-battle',
+        content: "vrajeskim korablyam nanesite 500 urona vrajeskim korablyam",
         totalBonusDay: 1,
         currentBonusDay: 0,
         isWaiting: false,
@@ -58,6 +63,7 @@ export const QuestWeeklyItemList: QuestItemType[] = [
     },
     {
         name: 'space-battle',
+        content: "vrajeskim korablyam nanesite 500 urona vrajeskim korablyam",
         totalBonusDay: 1,
         currentBonusDay: 0,
         isWaiting: false,
@@ -68,6 +74,7 @@ export const QuestWeeklyItemList: QuestItemType[] = [
     },
     {
         name: 'space-battle',
+        content: "vrajeskim korablyam nanesite 500 urona vrajeskim korablyam",
         totalBonusDay: 1,
         currentBonusDay: 0,
         isWaiting: false,
@@ -76,21 +83,13 @@ export const QuestWeeklyItemList: QuestItemType[] = [
             { isReceived: false, isMissed: false, isRewardDay: true, day: 'Day1', bonusCount: 5 },
         ],
     },
-    {
-        name: 'space-battle',
-        totalBonusDay: 1,
-        currentBonusDay: 0,
-        isWaiting: false,
-        waitingTime: 0,
-        rewardsList: [
-            { isReceived: false, isMissed: false, isRewardDay: true, day: 'Day1', bonusCount: 5 },
-        ],
-    },
+
 ]
 
 export const QuestItemList: QuestItemType[] = [
     {
         name: 'red-triangle',
+        content: 'Amet, luctus leo, platea orci, cursus in nisi cursus dictum libero, ipsum fgeb',
         totalBonusDay: 1,
         currentBonusDay: 0 ,
         isWaiting: false,
@@ -101,6 +100,7 @@ export const QuestItemList: QuestItemType[] = [
     },
     {
         name: 'star-defender',
+        content: 'Amet, luctus leo, platea orci, cursus in nisi cursus dictum libero, ipsum fgeb',
         totalBonusDay: 3,
         currentBonusDay: 2,
         isWaiting: true,
@@ -114,6 +114,7 @@ export const QuestItemList: QuestItemType[] = [
     } ,
     {
         name: 'rock-alliance',
+        content: 'Amet, luctus leo, platea orci, cursus in nisi cursus dictum libero, ipsum fgeb',
         totalBonusDay: 7,
         currentBonusDay: 6,
         isWaiting: false,
@@ -132,6 +133,7 @@ export const QuestItemList: QuestItemType[] = [
     },
     {
         name: 'moai-heads',
+        content: 'Amet, luctus leo, platea orci, cursus in nisi cursus dictum libero, ipsum fgeb',
         totalBonusDay: 14,
         currentBonusDay: 7,
         isWaiting: false,
@@ -160,6 +162,7 @@ export const QuestItemList: QuestItemType[] = [
     },
     {
         name: 'vorpal',
+        content: 'Amet, luctus leo, platea orci, cursus in nisi cursus dictum libero, ipsum fgeb',
         totalBonusDay: 30,
         currentBonusDay: 29,
         isWaiting: false,

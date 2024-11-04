@@ -2,7 +2,7 @@
     <div class="BaseModal" :class="`--${bgColor}`">
         <h3 class="BaseModal__title">{{ title }}</h3>
         <div class="BaseModal__closebtn --bold" @click="closeModal">
-            X
+            <img src="/gui/images/user-inventory/inventory/close.svg" alt="close">
         </div>
         <div class="BaseModal__body">
             <h4 class="BaseModal__subtitle">{{ subtitle }}</h4>

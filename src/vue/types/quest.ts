@@ -13,6 +13,7 @@ export type  RewardType = {
 
 export type QuestItemType = {
     name: string,
+    content: string,
     totalBonusDay: number,
     currentBonusDay: number,
     isWaiting: boolean,

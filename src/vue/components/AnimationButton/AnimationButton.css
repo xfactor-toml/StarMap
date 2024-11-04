@@ -65,105 +65,106 @@
   }
 
   .AnimationButton__animation:nth-child(1) {
-    animation-delay: calc(1000ms * -1);
+    animation-delay: calc(1000ms * -1 - 8000ms);
   }
-
+  
   .AnimationButton__animation:nth-child(2) {
-    animation-delay: calc(1000ms * 0);
+    animation-delay: calc(1000ms * 0 - 8000ms);
   }
-
+  
   .AnimationButton__animation:nth-child(3) {
-    animation-delay: calc(1000ms * 1);
+    animation-delay: calc(1000ms * 1 - 8000ms);
   }     
-
- .AnimationButton__animation:nth-child(4) {
-    animation-delay: calc(1000ms * 2);
+  
+  .AnimationButton__animation:nth-child(4) {
+    animation-delay: calc(1000ms * 2 - 8000ms);
   } 
-
+  
   .AnimationButton__animation:nth-child(5) {
-    animation-delay: calc(1000ms * 3);
+    animation-delay: calc(1000ms * 3 - 8000ms);
   } 
-
+  
   .AnimationButton__animation:nth-child(6) {
-    animation-delay: calc(1000ms * 4);
+    animation-delay: calc(1000ms * 4 - 8000ms);
   } 
   
   .AnimationButton__animation:nth-child(7) {
-    animation-delay: calc(1000ms * 5);
+    animation-delay: calc(1000ms * 5 - 8000ms);
   }     
   
   .AnimationButton__animation:nth-child(8) {
-    animation-delay: calc(1000ms * 6);
+    animation-delay: calc(1000ms * 6 - 8000ms);
   }
-
+  
   .AnimationButton__animation:nth-child(9) {
-    animation-delay: calc(1000ms * 7);
+    animation-delay: calc(1000ms * 7 - 8000ms);
   } 
-
+  
   .AnimationButton__animation:nth-child(10) {
-    animation-delay: calc(1000ms * 8);
+    animation-delay: calc(1000ms * 8 - 8000ms);
   }
   
   .AnimationButton__animation:nth-child(11) {
-    animation-delay: calc(1000ms * 9);
+    animation-delay: calc(1000ms * 9 - 8000ms);
   }
-
+  
   .AnimationButton__animation:nth-child(12) {
-    animation-delay: calc(1000ms * 10);
+    animation-delay: calc(1000ms * 10 - 8000ms);
   }     
-
+  
   .AnimationButton__animation:nth-child(13) {
-    animation-delay: calc(1000ms * 11);
+    animation-delay: calc(1000ms * 11 - 8000ms);
   }
-
+  
   .AnimationButton__animation:nth-child(14) {
-    animation-delay: calc(1000ms * 12);
+    animation-delay: calc(1000ms * 12 - 8000ms);
   } 
-
+  
   .AnimationButton__animation:nth-child(15) {
-    animation-delay: calc(1000ms * 13);
+    animation-delay: calc(1000ms * 13 - 8000ms);
   }
-
+  
   .AnimationButton__animation:nth-child(16) {
-    animation-delay: calc(1000ms * 14);
+    animation-delay: calc(1000ms * 14 - 8000ms);
   }
-
+  
   .AnimationButton__animation:nth-child(17) {
-    animation-delay: calc(1000ms * 15);
+    animation-delay: calc(1000ms * 15 - 8000ms);
   }
-
+  
   .AnimationButton__animation:nth-child(18) {
-    animation-delay: calc(1000ms * 16);
+    animation-delay: calc(1000ms * 16 - 8000ms);
   }
-
+  
   .AnimationButton__animation:nth-child(19) {
-    animation-delay: calc(1000ms * 17);
+    animation-delay: calc(1000ms * 17 - 8000ms);
   }
-
+  
   .AnimationButton__animation:nth-child(20) {
-    animation-delay: calc(1000ms * 18);
+    animation-delay: calc(1000ms * 18 - 8000ms);
   }
-
+  
   .AnimationButton__animation:nth-child(21) {
-    animation-delay: calc(1000ms * 19);
+    animation-delay: calc(1000ms * 19 - 8000ms);
   }
-
+  
   .AnimationButton__animation:nth-child(22) {
-    animation-delay: calc(1000ms * 20);
+    animation-delay: calc(1000ms * 20 - 8000ms);
   }
-
+  
   .AnimationButton__animation:nth-child(23) {
-    animation-delay: calc(1000ms * 21);
+    animation-delay: calc(1000ms * 21 - 8000ms);
   } 
-
+  
   .AnimationButton__animation:nth-child(24) {
-    animation-delay: calc(1000ms * 22);
+    animation-delay: calc(1000ms * 22 - 8000ms);
   }
   
   .AnimationButton__animation:nth-child(25) {
-    animation-delay: calc(1000ms * 23);
+    animation-delay: calc(1000ms * 23 - 8000ms);
   }
-
+  
   .AnimationButton__animation:nth-child(26) {
-    animation-delay: calc(1000ms * 24);
+    animation-delay: calc(1000ms * 24 - 8000ms);
   }
+  

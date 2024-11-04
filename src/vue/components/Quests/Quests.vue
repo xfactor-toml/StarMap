@@ -36,9 +36,11 @@
                        @missedReward="missedReward"
                        :questType="navbarItems[activeNavItem]"
                        :name="item.name" 
+                       :content="item.content"
                        :rewardsList="item.rewardsList"
                        :totalBonusDay="item.totalBonusDay"
                        :currentBonusDay="item.currentBonusDay"
+                       :isWaiting="item.isWaiting"
                        :key="index"/> 
                        
                         <!-- <div class="Quests__load-more">
