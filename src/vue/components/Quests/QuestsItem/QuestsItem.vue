@@ -50,7 +50,7 @@
         </div>
   
         <div v-if="isExpand && questType === 'UNIQUE'" class="Quests__item-expand">
-            <div v-show="rewardsList.length > 4" class="Quests__item-expand-gradient" :class="gradientClass"/>
+            
             <div class="Quests__item-expand-container">
                 <div v-for="i in rewardsList.length" 
                     class="Quests__item-rewardList" 
@@ -85,6 +85,7 @@
                        </div>
                    </div>
                 </div>
+                <div v-show="rewardsList.length > 4" class="Quests__item-expand-gradient" :class="gradientClass"/>
             </div>
         </div> 
     </div>

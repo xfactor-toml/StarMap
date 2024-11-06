@@ -369,13 +369,13 @@
 
 .Quests__item-expand {
     position: relative;
-   width: 100%;
-   padding: 0px 7px;
-   /* background: #1E1E1E; */
-   background: linear-gradient(270deg, rgba(30, 30, 30, 0) 1.91%, rgba(30, 30, 30, 0.75) 15.3%);
-   filter: drop-shadow(0px 4px 8px rgba(30, 30, 30, 0.6));
-   border-bottom-left-radius: 20px;
-   border-bottom-right-radius: 20px;
+    width: 100%;
+    /* padding: 0px 7px; */
+    /* background: #1E1E1E; */
+    background: linear-gradient(270deg, rgba(30, 30, 30, 0) 1.91%, rgba(30, 30, 30, 0.75) 15.3%);
+    filter: drop-shadow(0px 4px 8px rgba(30, 30, 30, 0.6));
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
 }
 
 .Quests__item-expand-gradient {
@@ -405,12 +405,13 @@
 }
 
 .Quests__item-expand-container {
-    width: 100%;
-    padding: 9px 0px;
-    display: flex;
     position: relative;
+    width: 100%;
+    padding: 9px 7px;
+    display: flex;
     justify-content:flex-start;
     overflow-x: hidden;
+
 }
 
 .Quests__item-rewardList {
@@ -451,11 +452,12 @@
 
 .Quests__item-rewardList-btn {
     position: absolute;
-    width: 100%;
     top: 29%;
+    z-index: 8 !important;
+    width: 100%;
     height: 21px;
     padding: 0px 7px;
-
+    pointer-events: all;
 }  
 
 .Quests__item-rewardList-btn-container {
@@ -475,7 +477,7 @@
 
 .Quests__item-rewardList-next-btn {
     position: absolute;
-    right: -6px;
+    right: 10px;
     z-index: 5;
 }
 
