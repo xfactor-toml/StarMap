@@ -1,6 +1,6 @@
 <template>
     <div class="BattleReadyProgress">
-        <div class="BattleReadyProgress__container">
+        <div class="BattleReadyProgress__container" ref="battleReadyProgressContainer">
             <h1 class="BattleReadyProgress__title jura-font --bold">
             <span >Your GAME</span>
             <span >IS READY</span>
@@ -54,6 +54,21 @@
 
     beforeMount() {
         this.time = this.battleStore.connecting.acceptTime;
+    },
+    mounted() {
+        const battleReadyProgressContainer = this.$refs.battleReadyProgressContainer;
+    let startY;
+
+        battleReadyProgressContainer.addEventListener('touchstart', (e) => {
+            startY = e.touches[0].pageY;
+        });
+
+        battleReadyProgressContainer.addEventListener('touchmove', (e) => {
+            const moveY = e.touches[0].pageY - startY;
+            battleReadyProgressContainer.scrollTop -= moveY;
+            startY = e.touches[0].pageY;
+            e.preventDefault(); 
+    });
     },
     methods: {
         updateTime(time: Number) {

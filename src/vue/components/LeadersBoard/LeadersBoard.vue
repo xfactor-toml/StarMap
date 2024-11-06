@@ -27,7 +27,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="LeadersBoard__body">
+                <div class="LeadersBoard__body" ref="leadersBoardBody">
                     <div class="LeadersBoard__content">
                         <div class="LeadersBoard__info">
                             <div class="LeadersBoard__info-avatar">
@@ -171,6 +171,21 @@ export default {
             activeNavItem: 1, // Default to 'DUELS'
             displayCount: 10, // Initial number of leaders to display
         }
+    },
+    mounted() {
+        const leadersBoardBody = this.$refs.leadersBoardBody;
+        let startY;
+
+        leadersBoardBody.addEventListener('touchstart', (e) => {
+            startY = e.touches[0].pageY;
+        });
+
+        leadersBoardBody.addEventListener('touchmove', (e) => {
+            const moveY = e.touches[0].pageY - startY;
+            leadersBoardBody.scrollTop -= moveY;
+            startY = e.touches[0].pageY;
+            e.preventDefault(); 
+        });
     },
 
     computed: {

@@ -31,8 +31,6 @@
     align-items: center;
     width: 100%;
     max-height: calc(100% - 10px);
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch !important;
 }
 
 .LeadersBoard__header {

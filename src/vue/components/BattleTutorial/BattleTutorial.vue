@@ -1,6 +1,6 @@
 <template> 
         <div class="BattleTutorial">
-            <div class="BattleTutorial__container">
+            <div class="BattleTutorial__container" ref="battleTutorialContainer">
                 <div class="BattleTutorial__title">
                     TUTORIAL
                 </div>
@@ -55,6 +55,21 @@ export default {
             currentIndex: 0,
             BattleTutorialContent
         }
+    },
+    mounted() {
+        const battleTutorialContainer = this.$refs.battleTutorialContainer;
+        let startY;
+
+        battleTutorialContainer.addEventListener('touchstart', (e) => {
+            startY = e.touches[0].pageY;
+        });
+
+        battleTutorialContainer.addEventListener('touchmove', (e) => {
+            const moveY = e.touches[0].pageY - startY;
+            battleTutorialContainer.scrollTop -= moveY;
+            startY = e.touches[0].pageY;
+            e.preventDefault(); 
+    });
     },
     methods: {
         handleStep(text: String) {

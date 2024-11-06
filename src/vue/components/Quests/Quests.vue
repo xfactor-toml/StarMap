@@ -27,7 +27,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="Quests__body" :class="{ 'disabled': isModalOpen }">
+                <div class="Quests__body" :class="{ 'disabled': isModalOpen }" ref="questsBody">
                     <div class="Quests__content">
                        <QuestsItem 
                        v-for="(item, index) in questItemList"
@@ -115,7 +115,21 @@ export default {
             BonusList
         }
     },
+    mounted() {
+        const questsBody = this.$refs.questsBody;
+        let startY;
 
+        questsBody.addEventListener('touchstart', (e) => {
+            startY = e.touches[0].pageY;
+        });
+
+        questsBody.addEventListener('touchmove', (e) => {
+            const moveY = e.touches[0].pageY - startY;
+            questsBody.scrollTop -= moveY;
+            startY = e.touches[0].pageY;
+            e.preventDefault(); 
+        });
+    },
     computed: {
         displayedLeaders() {
             return this.leaders.slice(0, this.displayCount);

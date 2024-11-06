@@ -1,6 +1,6 @@
 <template>
     <div class="PlayerPick">
-      <div class="PlayerPick__container">
+      <div class="PlayerPick__container" ref="playerPickContainer">
         <h1 class="PlayerPick__name orbitron-font --semi-bold">
             <span>{{ player.name }}</span>
             <span>{{ player.category }}</span>
@@ -91,6 +91,19 @@ export default {
     },
     mounted() {
         timerStore.startTimer(); // Ensure the timer continues running when this component is mounted
+        const playerPickContainer = this.$refs.playerPickContainer;
+        let startY;
+
+        playerPickContainer.addEventListener('touchstart', (e) => {
+            startY = e.touches[0].pageY;
+        });
+
+        playerPickContainer.addEventListener('touchmove', (e) => {
+            const moveY = e.touches[0].pageY - startY;
+            playerPickContainer.scrollTop -= moveY;
+            startY = e.touches[0].pageY;
+            e.preventDefault(); 
+        });
     },
     methods: {
         cancelPick() {

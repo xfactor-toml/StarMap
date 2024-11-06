@@ -4,7 +4,7 @@
       <div class="MainMenu__title --bold">STAR DEFENDER</div>
       <div class="MainMenu__close" @click="$emit('close')"></div>
       <img src="/gui/images/main-menu/main-menu-background.png">
-      <div class="MainMenu__items" @scroll="handleScroll" ref="menuItems">
+      <div class="MainMenu__items" ref="menuItems">
         <div 
           v-for="(item, index) in items" 
           :key="index" 
@@ -51,7 +51,19 @@ export default {
     };
   },
   mounted() {
-    
+    const menuItems = this.$refs.menuItems;
+    let startY;
+
+    menuItems.addEventListener('touchstart', (e) => {
+      startY = e.touches[0].pageY;
+    });
+
+    menuItems.addEventListener('touchmove', (e) => {
+      const moveY = e.touches[0].pageY - startY;
+      menuItems.scrollTop -= moveY;
+      startY = e.touches[0].pageY;
+      e.preventDefault(); 
+    });
   },
   methods: {
     selectItem(name: string) {

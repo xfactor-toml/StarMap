@@ -6,7 +6,7 @@
             <img src="/gui/images/user-inventory/inventory/background.png" alt="Background">
             <div class="BoxContentPopup__title --bold">Congratulations</div>
             <div class="BoxContentPopup__close" @click="$emit('close')"></div>
-            <div class="BoxContentPopup__cards">
+            <div class="BoxContentPopup__cards" ref="boxContentPopupCards">
               <div v-for="(item, index) in list" :key="item.name + index" class="BoxContentPopup__card" :data-rare="item.rare">
                 <img :src="getRarityImage(item.rare)" :alt="item.rare">
                 <div class="BoxContentPopup__cardName">{{ item.name }}</div>
@@ -48,6 +48,21 @@ export default defineComponent({
       type: Array as PropType<BattleReward[]>,
       required: true
     }
+  },
+  mounted() {
+    const boxContentPopupCards = this.$refs.boxContentPopupCards;
+    let startY;
+
+    boxContentPopupCards.addEventListener('touchstart', (e) => {
+      startY = e.touches[0].pageY;
+    });
+
+    boxContentPopupCards.addEventListener('touchmove', (e) => {
+      const moveY = e.touches[0].pageY - startY;
+      boxContentPopupCards.scrollTop -= moveY;
+      startY = e.touches[0].pageY;
+      e.preventDefault(); 
+    });
   },
   methods: {
     getRarityImage(rarity) {

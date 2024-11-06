@@ -16,7 +16,7 @@
                 Player: {{ results.player }}
               </h3>
             </div>
-            <div class="BattleResultsMode__body">
+            <div class="BattleResultsMode__body" ref="battleResultsModeBody">
               <div class="BattleResultsMode__vs">
                 <div class="BattleResultsMode__vs-player">
                   <img src="/gui/images/battle-results/player1.png" />
@@ -184,6 +184,22 @@ export default {
         return 'DEFEAT'
     }
   },
+  mounted() {
+    timerStore.startTimer(); 
+    const battleResultsModeBody = this.$refs.battleResultsModeBody;
+    let startY;
+
+    battleResultsModeBody.addEventListener('touchstart', (e) => {
+      startY = e.touches[0].pageY;
+    });
+
+    battleResultsModeBody.addEventListener('touchmove', (e) => {
+      const moveY = e.touches[0].pageY - startY;
+      battleResultsModeBody.scrollTop -= moveY;
+      startY = e.touches[0].pageY;
+      e.preventDefault(); 
+    });
+  },
 
   methods: {
     getShortAddress,
@@ -207,10 +223,7 @@ export default {
       console.log(`${player} checked status: ${checked}`);
     }
   },
-  mounted() {
-    timerStore.startTimer(); 
-    // this.uiStore.blur.enable()
-  },
+
   beforeUnmount() {
     // this.uiStore.blur.disable()
   }
