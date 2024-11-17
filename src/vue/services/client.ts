@@ -182,6 +182,10 @@ export class ClientService {
     FrontEvents.onBattleExit.dispatch();
   }
 
+  onBattlePlayAgainClick() {
+    
+  }
+
 
   onClaim() {
     logger.log('claim');

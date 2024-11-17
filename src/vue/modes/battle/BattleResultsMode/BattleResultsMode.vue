@@ -59,7 +59,7 @@
               <div class="BattleResultsMode__footer">
                 <Loader v-if="loading" />
                 <template v-else>
-                  <div :class="['BattleResultsMode__button white orbitron-font --semi-bold', {'disabled': timelimited}]" @click="">
+                  <div :class="['BattleResultsMode__button white orbitron-font --semi-bold', {'disabled': timelimited}]" @click="playAgain">
                     <img src="/gui/images/battle-results/play-again.svg">
                     <div class="BattleResultsMode__playagain orbitron-font --semi-bold">PLAY AGAIN</div>
                     <div class="BattleResultsMode__status">
@@ -199,6 +199,9 @@ export default {
     close() {
       this.$client.onCloseBox()
       timerStore.resetTimer()
+    },
+    playAgain() {
+      this.$client.onBattlePlayAgainClick()
     },
     handleCheckboxChange(player, checked) {
       this.$client.onCloseBox()
